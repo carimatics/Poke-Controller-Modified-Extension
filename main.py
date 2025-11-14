@@ -1,5 +1,8 @@
+from SerialController.Constant import NAME, VERSION
+
+
 def main():
-    pass
+    print(f"{NAME} {VERSION}")
 
 
 if __name__ == "__main__":
