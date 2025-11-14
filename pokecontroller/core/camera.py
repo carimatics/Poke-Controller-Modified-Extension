@@ -42,7 +42,7 @@ class Camera:
 
         self.camera.set(cv2.CAP_PROP_FRAME_WIDTH, self.frame_size[0])
         self.camera.set(cv2.CAP_PROP_FRAME_HEIGHT, self.frame_size[1])
-        self.camera.set(cv2.CAP_PROP_FPS, self.fps)
+        # self.camera.set(cv2.CAP_PROP_FPS, self.fps)
 
     def close(self) -> None:
         if self.is_opened:

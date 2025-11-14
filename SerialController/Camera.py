@@ -3,10 +3,13 @@
 from __future__ import annotations
 from typing import List, TYPE_CHECKING
 
-import cv2
 import datetime
 import os
 from logging import getLogger, DEBUG, NullHandler
+
+from pokecontroller.core.image import Image, ImageCropArgs
+from pokecontroller.core.camera import Camera as LibCamera
+from pokecontroller.utils import path
 
 if TYPE_CHECKING:
     import numpy
@@ -17,23 +20,17 @@ def imwrite(filename: str, img: numpy.ndarray, params: int = None):
     _logger.addHandler(NullHandler())
     _logger.setLevel(DEBUG)
     _logger.propagate = True
-    try:
-        ext = os.path.splitext(filename)[1]
-        result, n = cv2.imencode(ext, img, params)
 
-        if result:
-            with open(filename, mode="w+b") as f:
-                n.tofile(f)
-            return True
-        else:
-            return False
+    image = Image(img)
+    try:
+        return image.write_to(filename)
     except Exception as e:
         print(e)
         _logger.error(f"Image Write Error: {e}")
         return False
 
 
-CAPTURE_DIR = "./Captures/"
+CAPTURE_DIR = path.join("Captures")
 
 
 def _get_save_filespec(filename: str) -> str:
@@ -48,62 +45,69 @@ def _get_save_filespec(filename: str) -> str:
     Returns:
         str: _description_
     """
-    if os.path.isabs(filename):
+    if path.is_absolute(filename):
         return filename
     else:
-        return os.path.join(CAPTURE_DIR, filename)
+        return path.to_absolute(path.join(CAPTURE_DIR, filename))
 
 
 class Camera:
     def __init__(self, fps: int = 45):
-        self.camera = None
-        self.capture_size = (1280, 720)
+        self.camera = LibCamera(fps=fps, frame_size=(1280, 720))
+        self.image_bgr = None
         # self.capture_size = (1920, 1080)
         self.capture_dir = "Captures"
-        self.fps = int(fps)
 
         self._logger = getLogger(__name__)
         self._logger.addHandler(NullHandler())
         self._logger.setLevel(DEBUG)
         self._logger.propagate = True
 
-    def openCamera(self, cameraId: int):
-        if self.camera is not None and self.camera.isOpened():
-            self._logger.debug("Camera is already opened")
-            self.destroy()
+    @property
+    def fps(self):
+        return self.camera.fps
 
+    @fps.setter
+    def fps(self, fps: int):
+        self.camera.fps = fps
+
+    @property
+    def capture_size(self):
+        return self.camera.frame_size
+
+    @capture_size.setter
+    def capture_size(self, size: tuple[int, int]):
+        self.camera.frame_size = size
+
+    def openCamera(self, cameraId: int):
+        if not self.camera.is_opened:
+            self._logger.debug("Camera is already opened")
         if os.name == "nt":
             self._logger.debug("NT OS")
-            self.camera = cv2.VideoCapture(cameraId, cv2.CAP_DSHOW)
-        # self.camera = cv2.VideoCapture(cameraId)
         else:
             self._logger.debug("Not NT OS")
-            self.camera = cv2.VideoCapture(cameraId)
 
-        if not self.camera.isOpened():
+        self.camera.open(camera_id=cameraId)
+
+        if not self.isOpened():
             print("Camera ID " + str(cameraId) + " can't open.")
             self._logger.error(f"Camera ID {cameraId} cannot open.")
             return
         print("Camera ID " + str(cameraId) + " opened successfully")
         self._logger.debug(f"Camera ID {cameraId} opened successfully.")
-        # print(self.camera.get(cv2.CAP_PROP_FRAME_WIDTH))
-        # self.camera.set(cv2.CAP_PROP_FPS, 60)
-        self.camera.set(cv2.CAP_PROP_FRAME_WIDTH, self.capture_size[0])
-        self.camera.set(cv2.CAP_PROP_FRAME_HEIGHT, self.capture_size[1])
-
-    # self.camera.set(cv2.CAP_PROP_SETTINGS, 0)
 
     def isOpened(self):
         self._logger.debug("Camera is opened")
-        return self.camera.isOpened()
+        return self.camera.is_opened
 
     def readFrame(self):
-        _, self.image_bgr = self.camera.read()
+        self.camera.read_current_frame()
+        self.image_bgr = self.camera.current_frame
         return self.image_bgr
 
     def saveCapture(self, filename: str = None, crop: int = None, crop_ax: List[int] = None, img: numpy.ndarray = None):
         if crop_ax is None:
-            crop_ax = [0, 0, 1280, 720]
+            crop_ax = [0, 0, self.capture_size[0], self.capture_size[1]]
         else:
             pass
             # print(crop_ax)
@@ -117,9 +121,21 @@ class Camera:
         if crop is None:
             image = self.image_bgr
         elif crop == 1 or crop == "1":
-            image = self.image_bgr[crop_ax[1] : crop_ax[3], crop_ax[0] : crop_ax[2]]
+            args = ImageCropArgs(
+                x=crop_ax[0],
+                y=crop_ax[1],
+                width=crop_ax[2] - crop_ax[0],
+                height=crop_ax[3] - crop_ax[1],
+            )
+            image = Image(self.image_bgr).crop(args).raw_value
         elif crop == 2 or crop == "2":
-            image = self.image_bgr[crop_ax[1] : crop_ax[1] + crop_ax[3], crop_ax[0] : crop_ax[0] + crop_ax[2]]
+            args = ImageCropArgs(
+                x=crop_ax[0],
+                y=crop_ax[1],
+                width=crop_ax[2],
+                height=crop_ax[3],
+            )
+            image = Image(self.image_bgr).crop(args).raw_value
         elif img is not None:
             image = img
         else:
@@ -136,12 +152,10 @@ class Camera:
             imwrite(save_path, image)
             self._logger.debug(f"Capture succeeded: {save_path}")
             print("capture succeeded: " + save_path)
-        except cv2.error as e:
+        except Exception as e:
             print("Capture Failed")
             self._logger.error(f"Capture Failed :{e}")
 
     def destroy(self):
-        if self.camera is not None and self.camera.isOpened():
-            self.camera.release()
-            self.camera = None
-            self._logger.debug("Camera destroyed")
+        self.camera.close()
+        self._logger.debug("Camera destroyed")
