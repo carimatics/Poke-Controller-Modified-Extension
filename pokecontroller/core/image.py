@@ -162,6 +162,17 @@ class TemplateMatcher(ABC):
         self._threshold = threshold
         return self
 
+    def _match_result(self, matched: cv2.typing.MatLike) -> TemplateMatchResult:
+        _, max_val, _, max_loc = cv2.minMaxLoc(matched)
+        self._last_result = TemplateMatchResult(
+            contains=max_val > self._threshold,
+            location=(max_loc[0], max_loc[1]),
+            width=self._template.width,
+            height=self._template.height,
+            value=max_val,
+        )
+        return self._last_result
+
 
 class CpuTemplateMatcher(TemplateMatcher):
     def __init__(self, threshold: float = 0.8):
@@ -189,15 +200,7 @@ class CpuTemplateMatcher(TemplateMatcher):
         mask_value = self._mask.raw_value
         method = cv2.TM_CCOEFF_NORMED if mask_value is None else cv2.TM_CCORR_NORMED
         result = cv2.matchTemplate(self._image.raw_value, self._template.raw_value, method, mask=mask_value)
-        _, max_val, _, max_loc = cv2.minMaxLoc(result)
-        self._last_result = TemplateMatchResult(
-            contains=max_val > self._threshold,
-            location=(max_loc[0], max_loc[1]),
-            width=self._template.width,
-            height=self._template.height,
-            value=max_val,
-        )
-        return self._last_result
+        return self._match_result(result)
 
 
 class GpuTemplateMatcher(TemplateMatcher):
@@ -261,15 +264,7 @@ class GpuTemplateMatcher(TemplateMatcher):
 
         self._gpu_result = self._gpu_matcher.match(self._gpu_image, self._gpu_template)
         result = self._gpu_result.download()
-        _, max_val, _, max_loc = cv2.minMaxLoc(result)
-        self._last_result = TemplateMatchResult(
-            contains=max_val > self._threshold,
-            location=(max_loc[0], max_loc[1]),
-            width=self._template.width,
-            height=self._template.height,
-            value=max_val,
-        )
-        return self._last_result
+        return self._match_result(result)
 
 
 class TemplateMatcherGenerator:
