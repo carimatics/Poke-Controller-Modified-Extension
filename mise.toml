@@ -1,0 +1,5 @@
+[tools]
+uv = "0.8.24"
+
+[tasks]
+run = "uv run main.py"

@@ -8,18 +8,22 @@ import os
 from typing import List, Tuple, Optional
 from logging import getLogger, DEBUG, NullHandler
 
+from pokecontroller.core.image import (
+    Image,
+    ImageReadMode,
+    ImageBinarizeHsvArgs,
+    TemplateMatcherMode,
+    TemplateMatcherGenerator,
+    parse_crop,
+)
+
 
 def crop_image(image: ndarray, crop: List[int] = None) -> ndarray:
     """
     画像をトリミングする
     [y軸始点, y軸終点, x軸始点, x軸終点]
     """
-    try:
-        cropped_image = image[crop[0] : crop[1], crop[2] : crop[3]]
-    except Exception:
-        cropped_image = image
-
-    return cropped_image
+    return crop_image_extend(image, crop_fmt=13, crop=crop)
 
 
 def crop_image_extend(image: ndarray, crop_fmt: int | str = None, crop: List[int] = None) -> ndarray:
@@ -38,31 +42,16 @@ def crop_image_extend(image: ndarray, crop_fmt: int | str = None, crop: List[int
     crop_fmt=14: [y軸始点, トリミング後の画像のサイズ(縦), x軸始点, トリミング後の画像のサイズ(横)]
     """
 
-    try:
-        # pillow形式
-        if crop_fmt == 1 or crop_fmt == "1":
-            cropped_image = image[crop[1] : crop[3], crop[0] : crop[2]]
-        elif crop_fmt == 2 or crop_fmt == "2":
-            cropped_image = image[crop[1] : crop[1] + crop[3], crop[0] : crop[0] + crop[2]]
-        elif crop_fmt == 3 or crop_fmt == "3":
-            cropped_image = image[crop[2] : crop[3], crop[0] : crop[1]]
-        elif crop_fmt == 4 or crop_fmt == "4":
-            cropped_image = image[crop[2] : crop[2] + crop[3], crop[0] : crop[0] + crop[1]]
-        # opencv形式
-        elif crop_fmt == 11 or crop_fmt == "11":
-            cropped_image = image[crop[0] : crop[2], crop[1] : crop[3]]
-        elif crop_fmt == 12 or crop_fmt == "12":
-            cropped_image = image[crop[0] : crop[0] + crop[2], crop[1] : crop[1] + crop[3]]
-        elif crop_fmt == 13 or crop_fmt == "13":
-            cropped_image = image[crop[0] : crop[1], crop[2] : crop[3]]
-        elif crop_fmt == 14 or crop_fmt == "14":
-            cropped_image = image[crop[0] : crop[0] + crop[1], crop[2] : crop[2] + crop[3]]
-        else:
-            cropped_image = image
-    except Exception:
-        cropped_image = image
+    fmt = int(crop_fmt) if crop_fmt is not None else None
 
-    return cropped_image
+    if fmt is None or crop is None:
+        return image
+
+    args = parse_crop(fmt, crop)
+    try:
+        return Image(image).crop(args).raw_value
+    except:
+        return image
 
 
 def getInterframeDiff(frame1: ndarray, frame2: ndarray, frame3: ndarray, threshold: float) -> ndarray:
@@ -70,35 +59,28 @@ def getInterframeDiff(frame1: ndarray, frame2: ndarray, frame3: ndarray, thresho
     Get interframe difference binarized image
     フレーム間差分により2値化された画像を取得する
     """
-    diff1 = cv2.absdiff(frame1, frame2)
-    diff2 = cv2.absdiff(frame2, frame3)
-
-    diff = cv2.bitwise_and(diff1, diff2)
-
-    # binarize
-    img_th = cv2.threshold(diff, threshold, 255, cv2.THRESH_BINARY)[1]
-
-    # remove noise
-    mask = cv2.medianBlur(img_th, 3)
-    return mask
+    image1, image2, image3 = Image(frame1), Image(frame2), Image(frame3)
+    return image1.binarize_by_interframe_diff(image2, image3, threshold).raw_value
 
 
 def getImage(path: str, mode: str = "color"):
     """
     画像の読み込みを行う。
     """
-    if path:
-        try:
-            if mode == "binary":
-                return cv2.imread(path, 0)
-            elif mode == "gray":
-                return cv2.imread(path, cv2.IMREAD_GRAYSCALE)
-            else:
-                return cv2.imread(path, cv2.IMREAD_COLOR)
-        except Exception:
-            print(f"{path}が開けませんでした。ファイル名およびファイルの格納場所を確認してください。")
-            return None
-    else:
+    if not path:
+        return None
+
+    if mode == "binary":
+        m = ImageReadMode.BINARY
+    elif mode == "gray":
+        m = ImageReadMode.GRAY
+    else:  # mode == "color"
+        m = ImageReadMode.COLOR
+
+    try:
+        return Image.read_from(path, m).raw_value
+    except:
+        print(f"{path}が開けませんでした。ファイル名およびファイルの格納場所を確認してください。")
         return None
 
 
@@ -115,19 +97,19 @@ def doPreprocessImage(
     """
     src = crop_image(image, crop=crop)  # トリミング
 
+    img = Image(src)
     if use_gray:
-        src = cv2.cvtColor(src, cv2.COLOR_BGR2GRAY)  # グレースケール化
+        img = img.to_grayscale()
     elif BGR_range is not None:  # 2値化
-        src = cv2.inRange(
-            src, array(BGR_range["lower"]), array(BGR_range["upper"])
-        )  # inRangeで元画像を２値化(指定した色の範囲を抽出できる)
-
+        args = ImageBinarizeHsvArgs(
+            lower=array(BGR_range["lower"]),
+            upper=array(BGR_range["upper"]),
+        )
+        img = img.binarize_by_hsv(args)
     if threshold_binary is not None:
-        _, src = cv2.threshold(src, threshold_binary, 255, cv2.THRESH_BINARY)
+        img = img.binarize_by_threshold(threshold_binary)
 
-    width, height = src.shape[1], src.shape[0]  # テンプレート画像のサイズ
-
-    return src, width, height
+    return img.raw_value, img.width, img.height
 
 
 def opneImage(image: ndarray, crop: List[int] = None, title="image"):
@@ -161,23 +143,12 @@ class ImageProcessing:
             self.__logger.addHandler(NullHandler())
             self.__logger.setLevel(DEBUG)
             self.__logger.propagate = True
-        # GUP使用時、デバイスのメモリを確保する(1回だけ)
-        if use_gpu:
-            """
-            テンプレートマッチングをGPUで行うようにする。
-            うまく設定できたらuse_gpuのフラグをTrueにする。
-            """
-            try:
-                if self.__gsrc is None:
-                    self.__gsrc = cv2.cuda_GpuMat()
-                if self.__gtmpl is None:
-                    self.__gtmpl = cv2.cuda_GpuMat()
-                if self.__gresult is None:
-                    self.__gresult = cv2.cuda_GpuMat()
-                self.__use_gpu = True
-                print("template matching:mask is ignored.")
-            except Exception:
-                self.__use_gpu = False
+
+        matcher_mode = TemplateMatcherMode.GPU if use_gpu else TemplateMatcherMode.CPU
+        self.__matcher = TemplateMatcherGenerator.generate(preferred_mode=matcher_mode)
+        if self.__matcher.mode == TemplateMatcherMode.GPU:
+            print("template matching:mask is ignored.")
+            self.__use_gpu = True
         else:
             self.__use_gpu = False
 
@@ -186,15 +157,7 @@ class ImageProcessing:
         画像を書き込む
         """
         try:
-            ext = os.path.splitext(filename)[1]
-            result, n = cv2.imencode(ext, image, params)
-
-            if result:
-                with open(filename, mode="w+b") as f:
-                    n.tofile(f)
-                return True
-            else:
-                return False
+            return Image(raw_value=image).write_to(filename)
         except Exception as e:
             print(e)
             self.__logger.error(f"Image Write Error: {e}")
@@ -207,22 +170,15 @@ class ImageProcessing:
         テンプレートマッチングをする
         画像は必要に応じて事前にグレースケール化やトリミングをしておく必要がある
         """
-        # 比較方式を設定する
-        method = cv2.TM_CCORR_NORMED if isinstance(mask_image, ndarray) else cv2.TM_CCOEFF_NORMED
-
-        # テンプレートマッチングをする
-        if self.__use_gpu:  # GPUを使用する場合(マスク非対応)
-            print("template matching mode:GPU")
-            self.__gsrc.upload(image)
-            self.__gtmpl.upload(template_image)
-            matcher = cv2.cuda.createTemplateMatching(cv2.CV_8UC1, method)
-            self.__gresult = matcher.match(self.__gsrc, self.__gtmpl)
-            res = self.gresult.download()
+        result = self.__matcher \
+            .set_image(Image(image)) \
+            .set_template(Image(template_image)) \
+            .set_mask(Image(mask_image) if mask_image is not None else None) \
+            .match()
+        if result is None:
+            return 0.0, (0.0, 0.0)
         else:
-            res = cv2.matchTemplate(image, template_image, method, mask=mask_image)
-        _, max_val, _, max_loc = cv2.minMaxLoc(res)  # 結果から類似度と類似度が最大となる場所を抽出
-
-        return max_val, max_loc
+            return result.value, result.location
 
     def isContainTemplate(
         self,
@@ -231,10 +187,10 @@ class ImageProcessing:
         mask_image: ndarray = None,
         threshold: float = 0.7,
         use_gray: bool = True,
-        crop: List[int] = [],
+        crop: List[int] = None,
         BGR_range: Optional[dict] = None,
         threshold_binary: Optional[int] = None,
-        crop_template: list[int] = [],
+        crop_template: list[int] = None,
         show_image: bool = False,
     ) -> Tuple[bool, tuple, int, int, float]:
         """
@@ -272,10 +228,10 @@ class ImageProcessing:
         mask_image_list: List[ndarray] = [],
         threshold: float = 0.7,
         use_gray: bool = True,
-        crop: List[int] = [],
+        crop: List[int] = None,
         BGR_range: Optional[dict] = None,
         threshold_binary: Optional[int] = None,
-        crop_template: list[int] = [],
+        crop_template: list[int] = None,
         show_image: bool = False,
     ) -> Tuple[int, List[float], List[tuple], List[int], List[int], List[bool]]:
         """
@@ -329,7 +285,6 @@ class ImageProcessing:
         """
         画像を保存する。
         """
-        # トリミングを行う
         cropped_image = crop_image(image, crop=crop)
 
         # ファイル名からパスを抽出する
@@ -342,7 +297,7 @@ class ImageProcessing:
 
         # 画像を保存する
         try:
-            self.imwrite(filename, cropped_image)
+            Image(cropped_image).write_to(filename)
             self.__logger.debug(f"Capture succeeded: {filename}")
             print("capture succeeded: " + filename)
         except cv2.error as e:
@@ -350,13 +305,14 @@ class ImageProcessing:
             self.__logger.error(f"Capture Failed :{e}")
 
 
+# FIXME: delete or migrate to tests
 if __name__ == "__main__":
     ImgProc = ImageProcessing()
     ImgProc.set_template_path("./")
     camera = cv2.VideoCapture(0)
     if camera.isOpened():
         _, image = camera.read()
-        ret, _, _, _ = ImgProc.isContainTemplate(image, "test.png")
+        ret, _, _, _, _ = ImgProc.isContainTemplate(image, "test.png")
         print(ret)
         camera.release()
     else:

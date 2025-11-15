@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-NAME = "Poke-Controller Modified Extension"
-VERSION = "0.1.8"
+from pokecontroller import NAME as LIB_NAME, VERSION as LIB_VERSION
+
+NAME = LIB_NAME
+VERSION = LIB_VERSION
