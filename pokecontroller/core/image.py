@@ -274,7 +274,7 @@ class GpuTemplateMatcher(TemplateMatcher):
 
 class TemplateMatcherGenerator:
     @staticmethod
-    def create(preferred_mode: TemplateMatcherMode = TemplateMatcherMode.CPU) -> TemplateMatcher:
+    def generate(preferred_mode: TemplateMatcherMode = TemplateMatcherMode.CPU) -> TemplateMatcher:
         if preferred_mode == TemplateMatcherMode.CPU:
             return CpuTemplateMatcher()
         elif preferred_mode == TemplateMatcherMode.GPU:
