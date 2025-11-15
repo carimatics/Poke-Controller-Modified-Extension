@@ -241,7 +241,7 @@ class GpuTemplateMatcher(TemplateMatcher):
             self._gpu_template = cv2.cuda.GpuMat()
             self._gpu_result = cv2.cuda.GpuMat()
             self._initialized = True
-        except Exception:
+        except:
             self._initialized = False
 
     def set_image(self, image: Image) -> "GpuTemplateMatcher":
@@ -277,7 +277,7 @@ class TemplateMatcherGenerator:
             try:
                 matcher = GpuTemplateMatcher()
                 return matcher if matcher.initialized else CpuTemplateMatcher()
-            except Exception:
+            except:
                 return CpuTemplateMatcher()
         else:
             raise ValueError(f"Invalid mode: {preferred_mode}")
