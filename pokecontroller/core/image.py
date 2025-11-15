@@ -37,24 +37,38 @@ class TemplateMatchResult:
 
 
 def parse_crop(fmt: int, crop: list[int]) -> ImageCropArgs:
+    """
+    fmt形式のcropをImageCropArgsに変換するユーティリティ関数
+
+    - Pillow形式(x,yの順序)
+    fmt=1: [x-start, y-start, x-end, y-end]
+    fmt=2: [x-start, y-start, width, height]
+    fmt=3: [x-start, x-end, y-start, y-end]
+    fmt=4: [x-start, width, y-start, height]
+    - opencv形式(y, xの順序)
+    fmt=11: [y-start, x-start, y-end, x-end]
+    fmt=12: [y-start, x-start, height, width]
+    fmt=13: [y-start, y-end, x-start, x-end]
+    fmt=14: [y-start, height, x-start, width]
+    """
     if fmt < 10:  # pillow format
-        if fmt == 1:  # [x軸始点, y軸始点, x軸終点, y軸終点]
+        if fmt == 1:  # [x-start, y-start, x-end, y-end]
             x, y, w, h = (crop[0], crop[1], crop[2] - crop[0], crop[3] - crop[1])
-        elif fmt == 2:  # [x軸始点, y軸始点, トリミング後の画像のサイズ(横), トリミング後の画像のサイズ(縦)]
+        elif fmt == 2:  # [x-start, y-start, width, height]
             x, y, w, h = (crop[0], crop[1], crop[2], crop[3])
-        elif fmt == 3:  # [x軸始点, x軸終点, y軸始点, y軸終点]
+        elif fmt == 3:  # [x-start, x-end, y-start, y-end]
             x, y, w, h = (crop[0], crop[2], crop[1] - crop[0], crop[3] - crop[2])
-        else:  # [x軸始点, トリミング後の画像のサイズ(横), y軸始点, トリミング後の画像のサイズ(縦)]
+        else:  # fmt == 4 [x-start, width, y-start, height]
             x, y, w, h = (crop[0], crop[2], crop[1], crop[3])
 
     else:  # opencv format
-        if fmt == 11:  # [y軸始点, x軸始点, y軸終点, x軸終点]
+        if fmt == 11:  # [y-start, x-start, y-end, x-end]
             x, y, w, h = (crop[1], crop[0], crop[3] - crop[1], crop[2] - crop[0])
-        elif fmt == 12:  # [y軸始点, x軸始点, トリミング後の画像のサイズ(縦), トリミング後の画像のサイズ(横)]
+        elif fmt == 12:  # [y-start, x-start, height, width]
             x, y, w, h = (crop[1], crop[0], crop[3], crop[2])
-        elif fmt == 13:  # [y軸始点, y軸終点, x軸始点, x軸終点]
+        elif fmt == 13:  # [y-start, y-end, x-start, x-end]
             x, y, w, h = (crop[2], crop[0], crop[3] - crop[2], crop[1] - crop[0])
-        else:  # [y軸始点, トリミング後の画像のサイズ(縦), x軸始点, トリミング後の画像のサイズ(横)]
+        else:  # fmt == 14 [y-start, height, x-start, width]
             x, y, w, h = (crop[2], crop[0], crop[3], crop[1])
 
     return ImageCropArgs(x=x, y=y, width=w, height=h)
