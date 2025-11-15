@@ -118,9 +118,10 @@ class Camera:
         else:
             filename = filename + ".png"
 
-        if crop is None:
+        crop_fmt = int(crop) if crop is not None else None
+        if crop_fmt is None:
             image = self.image_bgr
-        elif crop == 1 or crop == "1":
+        elif crop_fmt == 1:
             args = ImageCropArgs(
                 x=crop_ax[0],
                 y=crop_ax[1],
@@ -128,7 +129,7 @@ class Camera:
                 height=crop_ax[3] - crop_ax[1],
             )
             image = Image(self.image_bgr).crop(args).raw_value
-        elif crop == 2 or crop == "2":
+        elif crop_fmt == 2:
             args = ImageCropArgs(
                 x=crop_ax[0],
                 y=crop_ax[1],
