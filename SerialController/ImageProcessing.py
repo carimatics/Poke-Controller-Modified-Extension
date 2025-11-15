@@ -85,11 +85,11 @@ def getImage(path: str, mode: str = "color"):
 
 
 def doPreprocessImage(
-        image: ndarray,
-        use_gray: bool = True,
-        crop: List[int] = None,
-        BGR_range: Optional[dict] = None,
-        threshold_binary: Optional[int] = None,
+    image: ndarray,
+    use_gray: bool = True,
+    crop: List[int] = None,
+    BGR_range: Optional[dict] = None,
+    threshold_binary: Optional[int] = None,
 ) -> Tuple[ndarray, int, int]:
     """
     画像をトリミングしてグレースケール化/2値化する
@@ -164,7 +164,7 @@ class ImageProcessing:
             return False
 
     def doTemplateMatch(
-            self, image: ndarray, template_image: ndarray, mask_image: ndarray = None
+        self, image: ndarray, template_image: ndarray, mask_image: ndarray = None
     ) -> Tuple[float, tuple]:
         """
         テンプレートマッチングをする
@@ -181,17 +181,17 @@ class ImageProcessing:
             return result.value, result.location
 
     def isContainTemplate(
-            self,
-            image: ndarray,
-            template_image: ndarray,
-            mask_image: ndarray = None,
-            threshold: float = 0.7,
-            use_gray: bool = True,
-            crop: List[int] = None,
-            BGR_range: Optional[dict] = None,
-            threshold_binary: Optional[int] = None,
-            crop_template: list[int] = None,
-            show_image: bool = False,
+        self,
+        image: ndarray,
+        template_image: ndarray,
+        mask_image: ndarray = None,
+        threshold: float = 0.7,
+        use_gray: bool = True,
+        crop: List[int] = None,
+        BGR_range: Optional[dict] = None,
+        threshold_binary: Optional[int] = None,
+        crop_template: list[int] = None,
+        show_image: bool = False,
     ) -> Tuple[bool, tuple, int, int, float]:
         """
         テンプレートマッチングを行い類似度が閾値を超えているかを確認する
@@ -222,17 +222,17 @@ class ImageProcessing:
         return max_val > threshold, max_loc, width, height, max_val
 
     def isContainTemplate_max(
-            self,
-            image: ndarray,
-            template_image_list: List[ndarray],
-            mask_image_list: List[ndarray] = [],
-            threshold: float = 0.7,
-            use_gray: bool = True,
-            crop: List[int] = None,
-            BGR_range: Optional[dict] = None,
-            threshold_binary: Optional[int] = None,
-            crop_template: list[int] = None,
-            show_image: bool = False,
+        self,
+        image: ndarray,
+        template_image_list: List[ndarray],
+        mask_image_list: List[ndarray] = [],
+        threshold: float = 0.7,
+        use_gray: bool = True,
+        crop: List[int] = None,
+        BGR_range: Optional[dict] = None,
+        threshold_binary: Optional[int] = None,
+        crop_template: list[int] = None,
+        show_image: bool = False,
     ) -> Tuple[int, List[float], List[tuple], List[int], List[int], List[bool]]:
         """
         複数のテンプレート画像を用いてそれぞれテンプレートマッチングを行い類似度が最も大きい画像のindexを返す
