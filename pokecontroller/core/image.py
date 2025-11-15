@@ -23,8 +23,8 @@ class ImageCropArgs:
 
 @dataclass
 class ImageBinarizeHsvArgs:
-    lower: tuple[int, int, int]
-    upper: tuple[int, int, int]
+    lower: cv2.typing.MatLike
+    upper: cv2.typing.MatLike
 
 
 @dataclass
@@ -52,7 +52,8 @@ class Image:
         return Image(raw_value=cv2.inRange(self.raw_value, args.lower, args.upper))
 
     def binarize_by_threshold(self, threshold: float) -> "Image":
-        return Image(raw_value=cv2.threshold(self.raw_value, threshold, 255, cv2.THRESH_BINARY))
+        _, value = cv2.threshold(self.raw_value, threshold, 255, cv2.THRESH_BINARY)
+        return Image(raw_value=value)
 
     def binarize_by_interframe_diff(self, next1: "Image", next2: "Image", threshold: float) -> "Image":
         diff1 = cv2.absdiff(self.raw_value, next1.raw_value)
