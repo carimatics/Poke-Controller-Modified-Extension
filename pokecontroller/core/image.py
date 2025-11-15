@@ -275,7 +275,8 @@ class TemplateMatcherGenerator:
             return CpuTemplateMatcher()
         elif preferred_mode == TemplateMatcherMode.GPU:
             try:
-                return GpuTemplateMatcher()
+                matcher = GpuTemplateMatcher()
+                return matcher if matcher.initialized else CpuTemplateMatcher()
             except Exception:
                 return CpuTemplateMatcher()
         else:
