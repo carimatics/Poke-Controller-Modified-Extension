@@ -17,6 +17,70 @@ xy_range: dict[str, int] = {
 }
 
 
+def _normalize_range(value: int) -> int:
+    if value < xy_range["min"]:
+        return xy_range["min"]
+    if value > xy_range["max"]:
+        return xy_range["max"]
+    return math.floor(value)
+
+
+def _normalize_r(r: float) -> float:
+    if r < 0.0:
+        return 0.0
+    if r > 1.0:
+        return 1.0
+    return r
+
+
+def _normalize_degree(degree: float) -> float:
+    return degree % 360
+
+
+def _polar_to_xy(r: float, degree: float) -> tuple[int, int]:
+    nr = _normalize_r(r if r >= 0.0 else -r)
+    nd = _normalize_degree(degree if r >= 0.0 else degree + 180.0)
+    theta = math.radians(nd)
+    x = math.ceil(127.5 * math.cos(theta) * nr + 127.5)
+    y = math.floor(127.5 * math.sin(theta) * nr + 127.5)
+    return x, y
+
+
+def _generate_xy_presets() -> dict[int, tuple[int, int]]:
+    """
+    Generate dict that accessing presets using tilt.
+    _xy_preset[tilt] => (x, y)
+
+    examples:
+        _xy_preset[TOP] => top
+        _xy_preset[TOP|RIGHT] => top_right
+        _xy_preset[TOP|BOTTOM] => None (invalid)
+        _xy_preset[TOP|BOTTOM|LEFT] => None (invalid)
+    """
+    neutral = (xy_range["center_x"], xy_range["center_y"])
+    right = _polar_to_xy(1.0, 0.0)
+    top_right = _polar_to_xy(1.0, 45.0)
+    top = _polar_to_xy(1.0, 90.0)
+    top_left = _polar_to_xy(1.0, 135.0)
+    left = _polar_to_xy(1.0, 180.0)
+    bottom_left = _polar_to_xy(1.0, 225.0)
+    bottom = _polar_to_xy(1.0, 270.0)
+    bottom_right = _polar_to_xy(1.0, 315.0)
+
+    return {
+        # LBRT
+        0b0000: neutral,
+        0b0001: top,
+        0b0010: right,
+        0b0011: top_right,
+        0b0100: bottom,
+        0b0110: bottom_right,
+        0b1000: left,
+        0b1001: top_left,
+        0b1100: bottom_left,
+    }
+
+
 class SwitchStickState:
     def __init__(self):
         self._x: int = xy_range["center_x"]
@@ -39,7 +103,7 @@ class SwitchStickState:
         return self._is_dirty
 
     def set_xy(self, x: int, y: int) -> None:
-        normalize = SwitchStickState._normalize_value
+        normalize = _normalize_range
         self._set_xy(
             x=normalize(x),
             y=normalize(y),
@@ -55,7 +119,7 @@ class SwitchStickState:
         self.to_neutral()
 
     def tilt_by_polar(self, r: float, degree: float) -> None:
-        x, y = SwitchStickState._polar_to_xy(r, degree)
+        x, y = _polar_to_xy(r, degree)
         self._set_xy(x, y)
 
     def tilt_by_preset(self, tilt: int) -> None:
@@ -97,71 +161,7 @@ class SwitchStickState:
 
     @staticmethod
     def from_polar(r: float, degree: float) -> "SwitchStickState":
-        x, y = SwitchStickState._polar_to_xy(r, degree)
+        x, y = _polar_to_xy(r, degree)
         return SwitchStickState(x, y)
-
-    @staticmethod
-    def _polar_to_xy(r: float, degree: float) -> tuple[int, int]:
-        nr = SwitchStickState._normalize_r(r if r >= 0.0 else -r)
-        nd = SwitchStickState._normalize_degree(degree if r >= 0.0 else degree + 180.0)
-        theta = math.radians(nd)
-        x = math.ceil(127.5 * math.cos(theta) * nr + 127.5)
-        y = math.floor(127.5 * math.sin(theta) * nr + 127.5)
-        return x, y
-
-    @staticmethod
-    def _normalize_r(r: float) -> float:
-        if r < 0.0:
-            return 0.0
-        if r > 1.0:
-            return 1.0
-        return r
-
-    @staticmethod
-    def _normalize_degree(degree: float) -> float:
-        return degree % 360
-
-    @staticmethod
-    def _normalize_value(value: int) -> int:
-        if value < xy_range["min"]:
-            return xy_range["min"]
-        if value > xy_range["max"]:
-            return xy_range["max"]
-        return math.floor(value)
-
-    @staticmethod
-    def _generate_xy_presets() -> dict[int, tuple[int, int]]:
-        """
-        Generate dict that accessing presets using tilt.
-        _xy_preset[tilt] => (x, y)
-
-        examples:
-            _xy_preset[TOP] => top
-            _xy_preset[TOP|RIGHT] => top_right
-            _xy_preset[TOP|BOTTOM] => None (invalid)
-            _xy_preset[TOP|BOTTOM|LEFT] => None (invalid)
-        """
-        neutral = (xy_range["center_x"], xy_range["center_y"])
-        right = SwitchStickState._polar_to_xy(1.0, 0.0)
-        top_right = SwitchStickState._polar_to_xy(1.0, 45.0)
-        top = SwitchStickState._polar_to_xy(1.0, 90.0)
-        top_left = SwitchStickState._polar_to_xy(1.0, 135.0)
-        left = SwitchStickState._polar_to_xy(1.0, 180.0)
-        bottom_left = SwitchStickState._polar_to_xy(1.0, 225.0)
-        bottom = SwitchStickState._polar_to_xy(1.0, 270.0)
-        bottom_right = SwitchStickState._polar_to_xy(1.0, 315.0)
-
-        return {
-            # LBRT
-            0b0000: neutral,
-            0b0001: top,
-            0b0010: right,
-            0b0011: top_right,
-            0b0100: bottom,
-            0b0110: bottom_right,
-            0b1000: left,
-            0b1001: top_left,
-            0b1100: bottom_left,
-        }
 
     _xy_presets: dict[int, tuple[int, int]] = _generate_xy_presets()
