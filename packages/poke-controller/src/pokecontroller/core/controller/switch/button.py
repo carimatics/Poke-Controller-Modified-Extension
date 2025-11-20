@@ -20,15 +20,19 @@ class SwitchButton(IntFlag):
 
 class SwitchButtonState:
     def __init__(self):
-        self.state = 0
+        self._value = 0
 
-    def reset(self):
-        self.state = 0
+    @property
+    def value(self) -> int:
+        return self._value
 
-    def push(self, buttons: list[SwitchButton]):
+    def reset(self) -> None:
+        self._value = 0
+
+    def push(self, buttons: list[SwitchButton]) -> None:
         for button in buttons:
-            self.state |= button
+            self._value |= button
 
-    def release(self, buttons: list[SwitchButton]):
+    def release(self, buttons: list[SwitchButton]) -> None:
         for button in buttons:
-            self.state &= ~button
+            self._value &= ~button

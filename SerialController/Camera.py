@@ -1,29 +1,30 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 from __future__ import annotations
-from typing import List, TYPE_CHECKING
+from typing import List, TYPE_CHECKING, Sequence
 
 import datetime
 import os
 from logging import getLogger, DEBUG, NullHandler
 
-from pokecontroller.core.image import Image, ImageCropArgs
-from pokecontroller.core.camera import Camera as LibCamera
+from pokecontroller.core import (
+    camera as lib_camera,
+    image as lib_image,
+)
 from pokecontroller.utils import path
 
 if TYPE_CHECKING:
     import numpy
 
 
-def imwrite(filename: str, img: numpy.ndarray, params: int = None):
+def imwrite(filename: str, img: numpy.ndarray, params: Sequence[int] = None):
     _logger = getLogger(__name__)
     _logger.addHandler(NullHandler())
     _logger.setLevel(DEBUG)
     _logger.propagate = True
 
-    image = Image(img)
     try:
-        return image.write_to(filename)
+        return lib_image.write(img, filename, params)
     except Exception as e:
         print(e)
         _logger.error(f"Image Write Error: {e}")
@@ -53,7 +54,7 @@ def _get_save_filespec(filename: str) -> str:
 
 class Camera:
     def __init__(self, fps: int = 45):
-        self.camera = LibCamera(fps=fps, frame_size=(1280, 720))
+        self.camera = lib_camera.Camera(fps=fps, frame_size=(1280, 720))
         self.image_bgr = None
         # self.capture_size = (1920, 1080)
         self.capture_dir = "Captures"
@@ -101,8 +102,8 @@ class Camera:
         return self.camera.is_opened
 
     def readFrame(self):
-        self.camera.read_current_frame()
-        self.image_bgr = self.camera.current_frame
+        self.camera.read()
+        self.image_bgr = self.camera.frame
         return self.image_bgr
 
     def saveCapture(self, filename: str = None, crop: int = None, crop_ax: List[int] = None, img: numpy.ndarray = None):
@@ -122,21 +123,21 @@ class Camera:
         if crop_fmt is None:
             image = self.image_bgr
         elif crop_fmt == 1:
-            args = ImageCropArgs(
+            args = lib_image.ImageCropArgs(
                 x=crop_ax[0],
                 y=crop_ax[1],
                 width=crop_ax[2] - crop_ax[0],
                 height=crop_ax[3] - crop_ax[1],
             )
-            image = Image(self.image_bgr).crop(args).raw_value
+            image = lib_image.crop(self.image_bgr, args)
         elif crop_fmt == 2:
-            args = ImageCropArgs(
+            args = lib_image.ImageCropArgs(
                 x=crop_ax[0],
                 y=crop_ax[1],
                 width=crop_ax[2],
                 height=crop_ax[3],
             )
-            image = Image(self.image_bgr).crop(args).raw_value
+            image = lib_image.crop(self.image_bgr, args)
         elif img is not None:
             image = img
         else:
@@ -150,7 +151,7 @@ class Camera:
             self._logger.debug("Created Capture folder")
 
         try:
-            imwrite(save_path, image)
+            lib_image.write(image, save_path)
             self._logger.debug(f"Capture succeeded: {save_path}")
             print("capture succeeded: " + save_path)
         except Exception as e:

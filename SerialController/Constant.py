@@ -1,4 +1,7 @@
-from pokecontroller import NAME as LIB_NAME, VERSION as LIB_VERSION
+from pokecontroller.app import (
+    NAME as APP_NAME,
+    VERSION as APP_VERSION,
+)
 
-NAME = LIB_NAME
-VERSION = LIB_VERSION
+NAME = APP_NAME
+VERSION = APP_VERSION
