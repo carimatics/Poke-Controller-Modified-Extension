@@ -2,6 +2,9 @@ from .button import (
     SwitchButton as SwitchButton,
     SwitchButtonState as SwitchButtonState,
 )
+from .context_manager import (
+    open as open,
+)
 from .controller import (
     SwitchController as SwitchController,
     SwitchControllerState as SwitchControllerState,
