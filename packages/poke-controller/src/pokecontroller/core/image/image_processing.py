@@ -103,7 +103,7 @@ def match_template(
 
 
 def match_template_by_gpu(
-    matcher: cv2.cuda.TemplateMatcing,
+    matcher,
     image: cv2.cuda.GpuMat,
     template: cv2.cuda.GpuMat,
 ) -> cv2.cuda.GpuMat:

@@ -26,8 +26,9 @@ class Camera:
     def frame_size(self, size: tuple[int, int]) -> None:
         self._frame_size = size
         if self.is_opened:
-            self._video_capture.set(cv2.CAP_PROP_FRAME_WIDTH, self._frame_size[0])
-            self._video_capture.set(cv2.CAP_PROP_FRAME_HEIGHT, self._frame_size[1])
+            width, height = self._frame_size
+            self._video_capture.set(cv2.CAP_PROP_FRAME_WIDTH, float(width))
+            self._video_capture.set(cv2.CAP_PROP_FRAME_HEIGHT, float(height))
 
     @property
     def fps(self) -> int:
@@ -37,7 +38,7 @@ class Camera:
     def fps(self, fps: int) -> None:
         self._fps = fps
         if self.is_opened:
-            self._video_capture.set(cv2.CAP_PROP_FPS, self._fps)
+            self._video_capture.set(cv2.CAP_PROP_FPS, float(self._fps))
 
     @property
     def frame(self) -> RawImage | None:
@@ -55,9 +56,8 @@ class Camera:
         if not self.is_opened:
             return
 
-        self._video_capture.set(cv2.CAP_PROP_FRAME_WIDTH, self._frame_size[0])
-        self._video_capture.set(cv2.CAP_PROP_FRAME_HEIGHT, self._frame_size[1])
-        self.camera.set(cv2.CAP_PROP_FPS, self.fps)
+        self.frame_size = self._frame_size
+        self.fps = self._fps
 
     def close(self) -> None:
         if self.is_opened:
