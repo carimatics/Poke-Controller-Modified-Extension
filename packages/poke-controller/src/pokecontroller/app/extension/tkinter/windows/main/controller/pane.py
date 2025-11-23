@@ -2,6 +2,8 @@ import platform
 import tkinter as tk
 import tkinter.ttk as ttk
 
+from ....components import AppFrame
+
 # 4字に揃えるためにアンダースコア(_)で名前をパディングしている
 A___ = 'A'
 B___ = 'B'
@@ -37,7 +39,8 @@ BUTTON_COLORS = {
     'fg': '#FFFFFF' if platform.system() == 'Windows' else None,
 }
 
-class ControllerPane(ttk.Frame):
+
+class ControllerPane(AppFrame):
     def __init__(self, master, *args, **kwargs):
         super().__init__(master, *args, **kwargs)
         self.build_ui()
@@ -45,33 +48,11 @@ class ControllerPane(ttk.Frame):
     def build_ui(self):
         labelframe = ttk.Labelframe(self, text="Software-Controller")
 
-        # Functions
-        button_functions = {
-            A___: lambda: print(A___),
-            B___: lambda: print(B___),
-            X___: lambda: print(X___),
-            Y___: lambda: print(Y___),
-            L___: lambda: print(L___),
-            R___: lambda: print(R___),
-            ZL__: lambda: print(ZL__),
-            ZR__: lambda: print(ZR__),
-            LC__: lambda: print(LC__),
-            RC__: lambda: print(RC__),
-            LSL_: lambda: print(LSL_),
-            LSU_: lambda: print(LSU_),
-            LSR_: lambda: print(LSR_),
-            LSD_: lambda: print(LSD_),
-            CAP_: lambda: print(CAP_),
-            HOME: lambda: print(HOME),
-            MIN_: lambda: print(MIN_),
-            PLUS: lambda: print(PLUS),
-        }
-
-        # Wrapper
-        frame = ttk.Frame(labelframe)
+        # Wrapper Frame
+        wrapper = ttk.Frame(labelframe)
 
         # Left
-        left_frame = tk.Frame(frame,
+        left_frame = tk.Frame(wrapper,
                               bg="#56CCF2",
                               width=200,
                               height=200)
@@ -84,12 +65,13 @@ class ControllerPane(ttk.Frame):
                                   width=4,
                                   bg=BUTTON_COLORS['bg'],
                                   highlightbackground=BUTTON_COLORS['bg'],
-                                  fg=BUTTON_COLORS['fg'],
-                                  command=button_functions[btn])
+                                  fg=BUTTON_COLORS['fg'])
+                    b.bind("<ButtonPress>", lambda _, btn=btn: self.app_model.push_button(btn))
+                    b.bind("<ButtonRelease>", lambda _, btn=btn: self.app_model.release_button(btn))
                     b.grid(row=r, column=c, padx=2, pady=2, sticky=tk.NSEW)
 
         # Right
-        right_frame = tk.Frame(frame,
+        right_frame = tk.Frame(wrapper,
                                bg="#E9514E",
                                width=200,
                                height=200)
@@ -102,12 +84,13 @@ class ControllerPane(ttk.Frame):
                                   width=4,
                                   bg=BUTTON_COLORS['bg'],
                                   highlightbackground=BUTTON_COLORS['bg'],
-                                  fg=BUTTON_COLORS['fg'],
-                                  command=button_functions[btn])
+                                  fg=BUTTON_COLORS['fg'])
+                    b.bind("<ButtonPress>", lambda _, btn=btn: self.app_model.push_button(btn))
+                    b.bind("<ButtonRelease>", lambda _, btn=btn: self.app_model.release_button(btn))
                     b.grid(row=r, column=c, padx=2, pady=2, sticky=tk.NSEW)
 
         # Layout
         left_frame.pack(expand=False, fill=tk.BOTH, side=tk.LEFT)
         right_frame.pack(expand=False, fill=tk.BOTH, side=tk.LEFT)
-        frame.pack(expand=False, fill=tk.Y, anchor=tk.CENTER)
+        wrapper.pack(expand=False, fill=tk.Y, anchor=tk.CENTER)
         labelframe.pack(expand=False, fill=tk.BOTH)

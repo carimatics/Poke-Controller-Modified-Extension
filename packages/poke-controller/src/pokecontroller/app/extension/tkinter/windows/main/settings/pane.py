@@ -1,6 +1,8 @@
 import tkinter as tk
 import tkinter.ttk as ttk
 
+from ....components import AppFrame
+
 from .camera import CameraSettings
 from .commands import CommandsSettings
 from .manual_control import ManualControlSettings
@@ -25,7 +27,7 @@ SETTINGS: list[tuple[str, type[ttk.Frame], str]] = [
 ]
 
 
-class SettingsPane(ttk.Frame):
+class SettingsPane(AppFrame):
     def __init__(self, master, *args, **kwargs):
         super().__init__(master, *args, **kwargs)
         self.build_ui()

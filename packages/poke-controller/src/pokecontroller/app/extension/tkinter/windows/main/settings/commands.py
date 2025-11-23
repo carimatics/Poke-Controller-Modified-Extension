@@ -2,6 +2,7 @@ from typing import Callable
 import tkinter as tk
 import tkinter.ttk as ttk
 
+from ....components import AppFrame
 from ....utils import (
     separator,
 )
@@ -17,13 +18,26 @@ COMMANDS = [
 ]
 
 
-class CommandsSettings(ttk.Frame):
+class CommandsSettings(AppFrame):
     def __init__(self, master, *args, **kwargs):
         super().__init__(master, *args, **kwargs)
+
         self._open_dir_button_image: tk.PhotoImage = tk.PhotoImage(file="../assets/icons8-OpenDir-16.png")
+        self.python_commands_filter_list: list[str] = self.app_model.load_python_commands_filter_list()
+        self.python_command_list: list[str] = self.app_model.load_python_command_list()
+        self.mcu_commands_filter_list: list[str] = self.app_model.load_mcu_commands_filter_list()
+        self.mcu_command_list: list[str] = self.app_model.load_mcu_command_list()
         self.shortcut_button_texts: list[tk.StringVar] = []
-        self.shotcut_commands: list[Callable[[], None]] = []
+        self.shortcut_commands: list[Callable[[], None]] = []
         self.shortcut_buttons: list[ttk.Button] = []
+
+        self.python_commands_filter = self.app_state.command_python_commands_filter
+        self.python_command = self.app_state.command_python_command
+        self.mcu_commands_filter = self.app_state.command_mcu_commands_filter
+        self.mcu_command = self.app_state.command_mcu_command
+        self.shortcut_number = self.app_state.command_shortcut_number
+        self.shortcuts = self.app_state.command_shortcuts
+
         self.build_ui()
 
     def build_ui(self):
@@ -37,10 +51,9 @@ class CommandsSettings(ttk.Frame):
         open_dir_button = ttk.Button(upper_frame,
                                      width=5,
                                      image=self._open_dir_button_image,
-                                     command=self.open_commands_directory)
+                                     command=self.app_model.open_commands_directory)
 
         # Settings
-        shotcut_number = tk.IntVar(value=1)
         shortcut_label = ttk.Label(lower_frame,
                                    text="Shortcut: ")
         shortcut_spinbox = ttk.Spinbox(lower_frame,
@@ -48,20 +61,20 @@ class CommandsSettings(ttk.Frame):
                                        from_=1,
                                        to=10,
                                        increment=1,
-                                       textvariable=shotcut_number,
-                                       command=self.set_shortcut_number)
+                                       textvariable=self.shortcut_number,
+                                       command=self.app_model.set_shortcut_number)
         shortcut_set_button = ttk.Button(lower_frame,
                                          text="Set",
-                                         command=self.set_command_to_shortcut)
+                                         command=self.app_model.set_command_to_shortcut)
         command_reload_button = ttk.Button(lower_frame,
                                            text="Reload",
-                                           command=self.reload_commands)
+                                           command=self.app_model.load_commands)
         start_button = ttk.Button(lower_frame,
                                   text="Start",
-                                  command=self.start_command)
+                                  command=self.app_model.start_command)
         pause_button = ttk.Button(lower_frame,
                                   text="Pause",
-                                  command=self.pause_command)
+                                  command=self.app_model.pause_command)
 
         # Layout
         notebook.pack(expand=True, fill=tk.X, side=tk.LEFT)
@@ -103,32 +116,26 @@ class CommandsSettings(ttk.Frame):
         lower_frame = ttk.Frame(frame)
 
         # Filter
-        filter_list = [
-            "-"
-        ]
         filter = tk.StringVar(value="-")
         filter_label = ttk.Label(upper_frame,
                                  text="Filter: ",
                                  width=8)
         filter_combobox = ttk.Combobox(upper_frame,
                                        state="readonly",
-                                       textvariable=filter,
-                                       values=filter_list)
-        filter_combobox.bind("<<ComboboxSelected>>", self.set_python_commands_filter)
+                                       textvariable=self.python_commands_filter,
+                                       values=self.python_commands_filter_list)
+        filter_combobox.bind("<<ComboboxSelected>>", self.app_model.set_python_commands_filter)
 
         # Command
-        command_list = [
-            "-"
-        ]
-        command = tk.StringVar(value="-")
         command_label = ttk.Label(lower_frame,
                                   text="Command: ",
                                   width=8)
         command_combobox = ttk.Combobox(lower_frame,
                                         state="readonly",
-                                        textvariable=command,
-                                        values=command_list)
-        command_combobox.bind("<<ComboboxSelected>>", self.set_python_command)
+                                        textvariable=self.python_command,
+                                        values=self.python_command_list)
+        command_combobox.bind("<<ComboboxSelected>>", self.app_model.set_python_command)
+        command_combobox.current(0)
 
         # Layout
         filter_label.pack(expand=False, fill=tk.X, side=tk.LEFT)
@@ -148,32 +155,25 @@ class CommandsSettings(ttk.Frame):
         lower_frame = ttk.Frame(frame)
 
         # Filter
-        filter_list = [
-            "-"
-        ]
-        filter = tk.StringVar(value="-")
         filter_label = ttk.Label(upper_frame,
                                  text="Filter: ",
                                  width=8)
         filter_combobox = ttk.Combobox(upper_frame,
                                        state="readonly",
-                                       textvariable=filter,
-                                       values=filter_list)
-        filter_combobox.bind("<<ComboboxSelected>>", self.set_mcu_commands_filter)
+                                       textvariable=self.mcu_commands_filter,
+                                       values=self.mcu_commands_filter_list)
+        filter_combobox.bind("<<ComboboxSelected>>", self.app_model.set_mcu_commands_filter)
 
         # Command
-        command_list = [
-            "-"
-        ]
-        command = tk.StringVar(value="-")
         command_label = ttk.Label(lower_frame,
                                   text="Command: ",
                                   width=8)
         command_combobox = ttk.Combobox(lower_frame,
                                         state="readonly",
-                                        textvariable=command,
-                                        values=command_list)
-        command_combobox.bind("<<ComboboxSelected>>", self.set_mcu_command)
+                                        textvariable=self.mcu_command,
+                                        values=self.mcu_command_list)
+        command_combobox.bind("<<ComboboxSelected>>", self.app_model.set_mcu_command)
+        command_combobox.current(0)
 
         # Layout
         filter_label.pack(expand=False, fill=tk.X, side=tk.LEFT)
@@ -197,16 +197,16 @@ class CommandsSettings(ttk.Frame):
             for i in range(1, 11)
         ]
         self.shortcut_commands = [
-            lambda: self.shortcut_command(id=1),
-            lambda: self.shortcut_command(id=2),
-            lambda: self.shortcut_command(id=3),
-            lambda: self.shortcut_command(id=4),
-            lambda: self.shortcut_command(id=5),
-            lambda: self.shortcut_command(id=6),
-            lambda: self.shortcut_command(id=7),
-            lambda: self.shortcut_command(id=8),
-            lambda: self.shortcut_command(id=9),
-            lambda: self.shortcut_command(id=10),
+            lambda: self.app_model.start_shortcut_command(id=1),
+            lambda: self.app_model.start_shortcut_command(id=2),
+            lambda: self.app_model.start_shortcut_command(id=3),
+            lambda: self.app_model.start_shortcut_command(id=4),
+            lambda: self.app_model.start_shortcut_command(id=5),
+            lambda: self.app_model.start_shortcut_command(id=6),
+            lambda: self.app_model.start_shortcut_command(id=7),
+            lambda: self.app_model.start_shortcut_command(id=8),
+            lambda: self.app_model.start_shortcut_command(id=9),
+            lambda: self.app_model.start_shortcut_command(id=10),
         ]
         self.shortcut_buttons = [
                                     ttk.Button(upper_frame,
@@ -229,36 +229,3 @@ class CommandsSettings(ttk.Frame):
         lower_frame.pack(expand=False, fill=tk.X, side=tk.TOP, padx=4)
 
         return frame
-
-    def set_python_commands_filter(self, event) -> None:
-        pass
-
-    def set_python_command(self, event) -> None:
-        pass
-
-    def set_mcu_commands_filter(self, event) -> None:
-        pass
-
-    def set_mcu_command(self, event) -> None:
-        pass
-
-    def shortcut_command(self, id: int) -> None:
-        pass
-
-    def open_commands_directory(self):
-        pass
-
-    def set_shortcut_number(self) -> None:
-        pass
-
-    def set_command_to_shortcut(self) -> None:
-        pass
-
-    def reload_commands(self) -> None:
-        pass
-
-    def start_command(self) -> None:
-        pass
-
-    def pause_command(self) -> None:
-        pass

@@ -1,8 +1,11 @@
 import tkinter as tk
 import tkinter.ttk as ttk
 
+from ....components import AppFrame
 
-class Output(ttk.Frame):
+
+# FIXME
+class Output(AppFrame):
     def __init__(self, master, id, *args, **kwargs):
         super().__init__(master, *args, **kwargs)
         self.id: int = id

@@ -1,6 +1,8 @@
 import tkinter as tk
 import tkinter.ttk as ttk
 
+from ...components import AppFrame
+
 from .camera import CameraPane
 from .controller import ControllerPane
 from .outputs import OutputsPane
@@ -19,9 +21,10 @@ PANES = [
 ]
 
 
-class MainWindow(ttk.Frame):
+class MainWindow(AppFrame):
     def __init__(self, master, *args, **kwargs):
         super().__init__(master, *args, **kwargs)
+
         self.panes: dict[str, ttk.Frame] = {}
         self.build_ui()
 

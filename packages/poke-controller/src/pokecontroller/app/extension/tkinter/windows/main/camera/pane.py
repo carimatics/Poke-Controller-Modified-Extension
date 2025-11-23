@@ -1,13 +1,19 @@
 import tkinter as tk
 import tkinter.ttk as ttk
 
+from ....components import AppFrame
+
 from .buttons import Buttons
 from .canvas import Canvas
 
 
-class CameraPane(ttk.Frame):
+class CameraPane(AppFrame):
     def __init__(self, master, *args, **kwargs):
         super().__init__(master, *args, **kwargs)
+
+        size = [int(s) for s in self.app_state.camera_size.get().split('x')]
+        self.size: tuple[int, int] = (size[0], size[1])
+
         self.build_ui()
 
     def build_ui(self):
@@ -18,8 +24,8 @@ class CameraPane(ttk.Frame):
         # Main Panel
         buttons = Buttons(labelframe)
         canvas = Canvas(labelframe,
-                        width=640,
-                        height=360,
+                        width=self.size[0],
+                        height=self.size[1],
                         relief=tk.GROOVE)
 
         # Layout

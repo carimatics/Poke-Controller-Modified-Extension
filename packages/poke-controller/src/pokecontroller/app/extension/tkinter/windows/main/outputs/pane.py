@@ -1,10 +1,12 @@
 import tkinter as tk
 import tkinter.ttk as ttk
 
+from ....components import AppFrame
+
 from .output import Output
 
 
-class OutputsPane(ttk.Frame):
+class OutputsPane(AppFrame):
     def __init__(self, master, *args, **kwargs):
         super().__init__(master, *args, **kwargs)
         self.build_ui()
