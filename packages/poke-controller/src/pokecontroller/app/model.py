@@ -113,9 +113,6 @@ class PokeControllerAppModel(ABC):
     def load_commands(self):
         pass
 
-    def start_command(self):
-        pass
-
     def pause_command(self):
         pass
 

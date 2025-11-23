@@ -5,12 +5,12 @@ class AppAccessor:
 
     @property
     def app_info(self):
-        return self.app.info
+        return self.app.app_info
 
     @property
     def app_model(self):
-        return self.app.model
+        return self.app.app_model
 
     @property
     def app_state(self):
-        return self.app.model.state
+        return self.app.app_state

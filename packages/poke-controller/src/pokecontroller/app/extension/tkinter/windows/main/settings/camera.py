@@ -113,21 +113,18 @@ class CameraSettings(AppFrame):
         labelframe = ttk.Labelframe(self, text="Display Settings")
 
         # Show Realtime
-        is_show_realtime = tk.BooleanVar()
         show_realtime_checkbutton = ttk.Checkbutton(labelframe,
                                                     text="Show Realtime",
                                                     variable=self.show_realtime,
                                                     command=self.app_model.set_show_realtime)
 
         # Show Value
-        is_show_value = tk.BooleanVar()
         show_value_checkbutton = ttk.Checkbutton(labelframe,
                                                  text="Show Value",
                                                  variable=self.show_value,
                                                  command=self.app_model.set_show_value)
 
         # Show Guide
-        is_show_guide = tk.BooleanVar()
         show_guide_checkbutton = ttk.Checkbutton(labelframe,
                                                  text="Show Guide",
                                                  variable=self.show_guide,

@@ -27,14 +27,12 @@ class NotificationSettings(AppFrame):
         labelframe = ttk.Labelframe(self, text="Windows Notification")
 
         # Start
-        is_enable_start = tk.BooleanVar()
         enable_start_checkbutton = ttk.Checkbutton(labelframe,
                                                    text="Start",
                                                    variable=self.enabled_notify_windows_start,
                                                    command=self.app_model.set_enabled_notify_windows_start)
 
         # End
-        is_enable_end = tk.BooleanVar()
         enable_end_checkbutton = ttk.Checkbutton(labelframe,
                                                  text="End",
                                                  variable=self.enabled_notify_windows_end,
@@ -56,14 +54,12 @@ class NotificationSettings(AppFrame):
         labelframe = ttk.Labelframe(self, text="Discord Notification")
 
         # Start
-        is_enable_start = tk.BooleanVar()
         enable_start_checkbutton = ttk.Checkbutton(labelframe,
                                                    text="Start",
                                                    variable=self.enabled_notify_discord_start,
                                                    command=self.app_model.set_enabled_notify_discord_start)
 
         # End
-        is_enable_end = tk.BooleanVar()
         enable_end_checkbutton = ttk.Checkbutton(labelframe,
                                                  text="End",
                                                  variable=self.enabled_notify_discord_end,

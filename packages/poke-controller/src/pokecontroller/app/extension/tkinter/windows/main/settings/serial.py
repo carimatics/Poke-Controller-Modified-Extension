@@ -88,7 +88,6 @@ class SerialSettings(AppFrame):
         data_format_combobox.bind("<<ComboboxSelected>>", self.app_model.set_serial_data_format)
 
         # Show Serial
-        is_show_serial = tk.BooleanVar(value=False)
         show_serial_checkbutton = ttk.Checkbutton(labelframe,
                                                   text="Show Serial",
                                                   variable=self.show_data)

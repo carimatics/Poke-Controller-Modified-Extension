@@ -116,7 +116,6 @@ class CommandsSettings(AppFrame):
         lower_frame = ttk.Frame(frame)
 
         # Filter
-        filter = tk.StringVar(value="-")
         filter_label = ttk.Label(upper_frame,
                                  text="Filter: ",
                                  width=8)

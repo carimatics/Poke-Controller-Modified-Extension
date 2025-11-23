@@ -152,7 +152,6 @@ class OthersSettings(AppFrame):
         labelframe = ttk.Labelframe(master, text="Dialogue OK/Cancel Position")
 
         # Position
-        position = tk.StringVar(value="top")
         position_radiobuttons = [
             ttk.Radiobutton(labelframe,
                             text="Top",

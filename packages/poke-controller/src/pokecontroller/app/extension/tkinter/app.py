@@ -27,18 +27,19 @@ class PokeControllerExtensionApp(tk.Tk):
 
         # FIXME
         self.title("PokeController Extension")
+
         self.build_ui()
 
     @property
-    def info(self) -> Info:
+    def app_info(self) -> Info:
         return self._info
 
     @property
-    def model(self) -> Model:
+    def app_model(self) -> Model:
         return self._model
 
     @property
-    def state(self) -> State:
+    def app_state(self) -> State:
         return self._model.state
 
     def run(self):
