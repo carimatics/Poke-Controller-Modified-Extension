@@ -29,6 +29,7 @@ SerialController/Commands/PythonCommands/*
 SerialController/Commands/PythonCommands/ImageProcessingOnly/*
 !SerialController/Commands/PythonCommands/ImageProcessingOnly/Samples/
 
+SerialControllerSandbox/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
