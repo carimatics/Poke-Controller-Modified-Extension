@@ -14,5 +14,5 @@ class OutputsPane(ttk.Frame):
             Output(self, id=1),
             Output(self, id=2),
         ]
-        outputs[0].pack(expand=True, fill=tk.BOTH, pady=(0, 8))
+        outputs[0].pack(expand=True, fill=tk.BOTH, pady=(0, 4))
         outputs[1].pack(expand=True, fill=tk.BOTH)

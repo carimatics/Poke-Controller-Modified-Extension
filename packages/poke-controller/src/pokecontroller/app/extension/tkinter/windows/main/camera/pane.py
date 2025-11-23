@@ -13,12 +13,10 @@ class CameraPane(ttk.Frame):
     def build_ui(self):
         # Create Labelframe
         labelframe = ttk.Labelframe(self,
-                                    text="Main Panel",
-                                    relief=tk.SOLID,
-                                    borderwidth=5)
+                                    text="Main Panel")
 
         # Main Panel
-        buttons = Buttons(labelframe, relief=tk.SOLID, borderwidth=5)
+        buttons = Buttons(labelframe)
         canvas = Canvas(labelframe,
                         width=640,
                         height=360,

@@ -1,4 +1,5 @@
 import tkinter as tk
+from tkinter import ttk
 
 from ...app import PokeControllerApp
 from ...info import PokeControllerAppInfo
@@ -12,6 +13,10 @@ class PokeControllerExtensionApp(tk.Tk, PokeControllerApp):
         tk.Tk.__init__(self, *args, **kwargs)
         PokeControllerApp.__init__(self, info, state)
 
+        # Theme
+        style = ttk.Style(self)
+        style.theme_use('aqua')
+
         # FIXME
         self.title("PokeController Extension")
 
@@ -22,7 +27,5 @@ class PokeControllerExtensionApp(tk.Tk, PokeControllerApp):
 
     def build_ui(self):
         main_window = MainWindow(self,
-                                 padding=5,
-                                 relief=tk.SOLID,
-                                 borderwidth=5)
+                                 padding=5)
         main_window.pack(expand=True, fill=tk.BOTH)
