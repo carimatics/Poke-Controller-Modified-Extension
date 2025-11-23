@@ -2,13 +2,13 @@
 # -*- coding: utf-8 -*-
 from __future__ import annotations
 
-import cv2
 from numpy import ndarray, array, argmax
 import os
 from typing import List, Tuple, Optional, Sequence
 from logging import getLogger, DEBUG, NullHandler
 
 import pokecontroller.core.image as lib_image
+import pokecontroller.gui.image as lib_image_utils
 
 from pokecontroller.core.image import (
     Image,
@@ -119,9 +119,8 @@ def opneImage(image: ndarray, crop: List[int] = None, title="image"):
     Contributor: kochan (敬称略)
     """
     src = crop_image(image, crop=crop)  # トリミング
-    cv2.imshow(f"{title}", src)
-    cv2.waitKey(0)
-    cv2.destroyAllWindows()
+    lib_image_utils.show(src, title)
+    lib_image_utils.destroy_all_windows()
 
 
 class ImageProcessing:
@@ -204,8 +203,7 @@ class ImageProcessing:
 
         # [DEBUG] テンプレートマッチング対象画像を表示する
         if show_image:
-            cv2.imshow("image", src)
-            cv2.waitKey()
+            lib_image_utils.show(src, "image")
 
         # テンプレート画像を加工する
         template, width, height = doPreprocessImage(
@@ -262,8 +260,7 @@ class ImageProcessing:
 
         # [DEBUG] テンプレートマッチング対象画像を表示する
         if show_image:
-            cv2.imshow("image", src)
-            cv2.waitKey()
+            lib_image_utils.show(src, "image")
 
         for template_image, mask_image in zip(template_image_list, mask_image_list_temp):
             # テンプレート画像を加工する
@@ -302,6 +299,6 @@ class ImageProcessing:
             lib_image.write(cropped_image, filename)
             self.__logger.debug(f"Capture succeeded: {filename}")
             print("capture succeeded: " + filename)
-        except cv2.error as e:
+        except Exception as e:
             print("Capture Failed")
             self.__logger.error(f"Capture Failed :{e}")

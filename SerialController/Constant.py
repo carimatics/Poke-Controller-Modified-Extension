@@ -1,4 +1,4 @@
-from pokecontroller.app import (
+from pokecontroller.app.extension import (
     NAME as APP_NAME,
     VERSION as APP_VERSION,
 )
