@@ -29,7 +29,8 @@ class CameraSettings(ttk.Frame):
         # Name
         name = tk.StringVar()
         name_label = ttk.Label(upper_frame,
-                               text="Camera Name:",
+                               text="Camera Name: ",
+                               width=11,
                                anchor=tk.CENTER)
         name_combobox = ttk.Combobox(upper_frame,
                                      state="readonly",
@@ -43,8 +44,9 @@ class CameraSettings(ttk.Frame):
         # ID
         id = tk.IntVar()
         id_label = ttk.Label(lower_frame,
-                             text="Camera ID:      ",
-                             anchor=tk.CENTER)
+                             text="Camera ID: ",
+                             width=11,
+                             anchor=tk.W)
         id_entry = ttk.Entry(lower_frame,
                              width=3,
                              state=tk.DISABLED,

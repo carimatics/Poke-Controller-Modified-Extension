@@ -45,7 +45,7 @@ class OthersSettings(ttk.Frame):
                                command=self.set_outputs_size)
 
         # Layout
-        size_scale.pack(expand=True, fill=tk.X, side=tk.LEFT, anchor=tk.CENTER, padx=4)
+        size_scale.pack(expand=True, fill=tk.X, side=tk.LEFT, anchor=tk.CENTER, padx=4, pady=(5, 12))
 
         return labelframe
 
@@ -88,7 +88,7 @@ class OthersSettings(ttk.Frame):
 
         # Layout
         for button in buttons:
-            button.pack(expand=False, fill=tk.X, side=tk.LEFT, padx=4)
+            button.pack(expand=False, fill=tk.X, side=tk.LEFT, padx=4, pady=(3, 5))
 
         return labelframe
 

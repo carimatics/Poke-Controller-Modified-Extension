@@ -65,7 +65,7 @@ class CommandsSettings(ttk.Frame):
 
         # Layout
         notebook.pack(expand=True, fill=tk.X, side=tk.LEFT)
-        open_dir_button.pack(expand=False, fill=tk.X, side=tk.LEFT)
+        open_dir_button.pack(expand=False, fill=tk.X, side=tk.LEFT, padx=(8, 0))
         upper_frame.pack(expand=True, fill=tk.X, side=tk.TOP, padx=4)
 
         shortcut_label.pack(expand=False, fill=tk.X, side=tk.LEFT)
@@ -108,7 +108,8 @@ class CommandsSettings(ttk.Frame):
         ]
         filter = tk.StringVar(value="-")
         filter_label = ttk.Label(upper_frame,
-                                 text="Filter:          ")
+                                 text="Filter: ",
+                                 width=8)
         filter_combobox = ttk.Combobox(upper_frame,
                                        state="readonly",
                                        textvariable=filter,
@@ -121,7 +122,8 @@ class CommandsSettings(ttk.Frame):
         ]
         command = tk.StringVar(value="-")
         command_label = ttk.Label(lower_frame,
-                                  text="Command: ")
+                                  text="Command: ",
+                                  width=8)
         command_combobox = ttk.Combobox(lower_frame,
                                         state="readonly",
                                         textvariable=command,
@@ -151,7 +153,8 @@ class CommandsSettings(ttk.Frame):
         ]
         filter = tk.StringVar(value="-")
         filter_label = ttk.Label(upper_frame,
-                                 text="Filter:          ")
+                                 text="Filter: ",
+                                 width=8)
         filter_combobox = ttk.Combobox(upper_frame,
                                        state="readonly",
                                        textvariable=filter,
@@ -164,7 +167,8 @@ class CommandsSettings(ttk.Frame):
         ]
         command = tk.StringVar(value="-")
         command_label = ttk.Label(lower_frame,
-                                  text="Command: ")
+                                  text="Command: ",
+                                  width=8)
         command_combobox = ttk.Combobox(lower_frame,
                                         state="readonly",
                                         textvariable=command,

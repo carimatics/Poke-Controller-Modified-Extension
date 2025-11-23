@@ -81,7 +81,7 @@ class ControllerPane(ttk.Frame):
                 if btn is not None:
                     b = tk.Button(left_frame,
                                   text=btn,
-                                  width=5,
+                                  width=4,
                                   bg=BUTTON_COLORS['bg'],
                                   highlightbackground=BUTTON_COLORS['bg'],
                                   fg=BUTTON_COLORS['fg'],
@@ -99,7 +99,7 @@ class ControllerPane(ttk.Frame):
                 if btn is not None:
                     b = tk.Button(right_frame,
                                   text=btn,
-                                  width=5,
+                                  width=4,
                                   bg=BUTTON_COLORS['bg'],
                                   highlightbackground=BUTTON_COLORS['bg'],
                                   fg=BUTTON_COLORS['fg'],

@@ -15,7 +15,8 @@ class PokeControllerExtensionApp(tk.Tk, PokeControllerApp):
 
         # Theme
         style = ttk.Style(self)
-        style.theme_use('aqua')
+        # FIXME
+        style.theme_use("default")
 
         # FIXME
         self.title("PokeController Extension")

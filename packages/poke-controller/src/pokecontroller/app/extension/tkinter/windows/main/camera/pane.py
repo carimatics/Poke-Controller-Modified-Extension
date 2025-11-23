@@ -24,5 +24,5 @@ class CameraPane(ttk.Frame):
 
         # Layout
         buttons.pack(expand=True, fill=tk.NONE, anchor=tk.CENTER)
-        canvas.pack(expand=True, fill=tk.NONE, anchor=tk.CENTER)
+        canvas.pack(expand=True, fill=tk.NONE, anchor=tk.CENTER, pady=4)
         labelframe.pack(expand=True, fill=tk.BOTH)

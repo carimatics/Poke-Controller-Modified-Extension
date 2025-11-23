@@ -65,8 +65,8 @@ class SerialSettings(ttk.Frame):
         baud_rate_label.pack(expand=False, side=tk.LEFT)
         baud_rate_combobox.pack(expand=False, fill=tk.X, side=tk.LEFT)
         separator(labelframe).pack(expand=False, fill=tk.Y, side=tk.LEFT, padx=5, pady=8)
-        reconnect_button.pack(expand=False, fill=tk.X, side=tk.LEFT, padx=4)
-        disconnect_button.pack(expand=False, fill=tk.X, side=tk.LEFT, padx=4)
+        reconnect_button.pack(expand=False, fill=tk.X, side=tk.LEFT, padx=4, pady=4)
+        disconnect_button.pack(expand=False, fill=tk.X, side=tk.LEFT, padx=4, pady=4)
 
         return labelframe
 
@@ -96,9 +96,9 @@ class SerialSettings(ttk.Frame):
                                                   variable=is_show_serial)
 
         # Layout
-        data_format_label.pack(expand=False, side=tk.LEFT, padx=4)
-        data_format_combobox.pack(expand=False, side=tk.LEFT, padx=4)
-        show_serial_checkbutton.pack(expand=False, side=tk.LEFT, padx=4)
+        data_format_label.pack(expand=False, side=tk.LEFT, padx=4, pady=(0, 4))
+        data_format_combobox.pack(expand=False, side=tk.LEFT, padx=4, pady=(0, 4))
+        show_serial_checkbutton.pack(expand=False, side=tk.LEFT, padx=4, pady=(0, 4))
 
         return labelframe
 

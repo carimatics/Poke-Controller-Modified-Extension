@@ -40,7 +40,7 @@ class NotificationSettings(ttk.Frame):
         # Layout
         enable_start_checkbutton.pack(expand=False, fill=tk.NONE, side=tk.LEFT, padx=4)
         enable_end_checkbutton.pack(expand=False, fill=tk.NONE, side=tk.LEFT, padx=8)
-        test_button.pack(expand=False, fill=tk.NONE, side=tk.LEFT, padx=4)
+        test_button.pack(expand=False, fill=tk.NONE, side=tk.LEFT, padx=4, pady=4)
 
         return labelframe
 
@@ -68,7 +68,7 @@ class NotificationSettings(ttk.Frame):
         # Layout
         enable_start_checkbutton.pack(expand=False, fill=tk.NONE, side=tk.LEFT, padx=4)
         enable_end_checkbutton.pack(expand=False, fill=tk.NONE, side=tk.LEFT, padx=8)
-        test_button.pack(expand=False, fill=tk.NONE, side=tk.LEFT, padx=4)
+        test_button.pack(expand=False, fill=tk.NONE, side=tk.LEFT, padx=4, pady=4)
 
         return labelframe
 
