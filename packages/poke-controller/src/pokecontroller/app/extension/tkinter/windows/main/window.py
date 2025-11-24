@@ -115,7 +115,7 @@ class MainWindow(AppFrame):
         visible_outputs_both = visible_output1 and visible_output2
 
         # adjust outputs
-        self.adjust_outputs_size()
+        self._adjust_outputs_size()
         if visible_outputs_both:
             output1.pack(expand=True, fill=tk.BOTH)
             output2.pack(expand=True, fill=tk.BOTH, pady=(0, 4))
@@ -149,10 +149,10 @@ class MainWindow(AppFrame):
     def _on_widget_state_changed(self, _var_name: str, _index: str, _mode: str):
         self._layout_right_frame()
 
-    def _on_outputs_size_changed(self, _var_name: str = None, _index: str = None, _mode: str = None):
-        self.adjust_outputs_size()
+    def _on_outputs_size_changed(self, _var_name: str, _index: str, _mode: str):
+        self._adjust_outputs_size()
 
-    def adjust_outputs_size(self):
+    def _adjust_outputs_size(self):
         outputs_pane_height = self._left_frame.winfo_height()
         if self._visible_controller.get():
             controller_height = 180
