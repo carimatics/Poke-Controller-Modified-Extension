@@ -11,23 +11,23 @@ class CameraSettings(AppFrame):
     def __init__(self, master, *args, **kwargs):
         super().__init__(master, *args, **kwargs)
 
-        self.name_list: list[str] = self._load_camera_list()
-        self.size_list: list[str] = self._load_camera_size_list()
+        self._name_list: list[str] = self._load_camera_list()
+        self._size_list: list[str] = self._load_camera_size_list()
 
         # noinspection PyTypeChecker
-        self.id: tk.StringVar = self.app_state.camera_id
+        self._id: tk.StringVar = self.app_state.camera_id
         # noinspection PyTypeChecker
-        self.name: tk.StringVar = self.app_state.camera_name
+        self._camera_name: tk.StringVar = self.app_state.camera_name
         # noinspection PyTypeChecker
-        self.fps: tk.IntVar = self.app_state.camera_fps
+        self._fps: tk.IntVar = self.app_state.camera_fps
         # noinspection PyTypeChecker
-        self.size: tk.StringVar = self.app_state.camera_size
+        self._size: tk.StringVar = self.app_state.camera_size
         # noinspection PyTypeChecker
-        self.show_realtime: tk.BooleanVar = self.app_state.camera_show_realtime
+        self._show_realtime: tk.BooleanVar = self.app_state.camera_show_realtime
         # noinspection PyTypeChecker
-        self.show_value: tk.BooleanVar = self.app_state.camera_show_matched
+        self._show_value: tk.BooleanVar = self.app_state.camera_show_matched
         # noinspection PyTypeChecker
-        self.show_guide: tk.BooleanVar = self.app_state.camera_show_guide
+        self._show_guide: tk.BooleanVar = self.app_state.camera_show_guide
 
         self.build_ui()
 
@@ -53,12 +53,12 @@ class CameraSettings(AppFrame):
                                anchor=tk.CENTER)
         name_combobox = ttk.Combobox(upper_frame,
                                      state="readonly",
-                                     textvariable=self.name,
-                                     values=self.name_list)
+                                     textvariable=self._camera_name,
+                                     values=self._name_list)
         # FIXME: 必要か検証する
         name_combobox.bind("<<ComboboxSelected>>", self._on_camera_name_selected, add="")
         name_combobox.current(0)
-        self.id.set(self.name_list[0])
+        self._id.set(self._name_list[0])
 
         # Lower Frame
         lower_frame = ttk.Frame(labelframe)
@@ -71,7 +71,7 @@ class CameraSettings(AppFrame):
         id_entry = ttk.Entry(lower_frame,
                              width=3,
                              state=tk.DISABLED,
-                             textvariable=self.id)
+                             textvariable=self._id)
 
         # FPS
         fps_list = [60, 45, 30, 15, 5]
@@ -80,7 +80,7 @@ class CameraSettings(AppFrame):
                                     width=3,
                                     justify=tk.LEFT,
                                     state="readonly",
-                                    textvariable=self.fps,
+                                    textvariable=self._fps,
                                     values=[str(f) for f in fps_list])
         # FIXME: 必要か検証する
         fps_combobox.bind("<<ComboboxSelected>>", self._on_camera_fps_selected, add="")
@@ -90,11 +90,11 @@ class CameraSettings(AppFrame):
         size_combobox = ttk.Combobox(lower_frame,
                                      width=8,
                                      state="readonly",
-                                     textvariable=self.size,
-                                     values=self.size_list)
+                                     textvariable=self._size,
+                                     values=self._size_list)
         # FIXME: 必要か検証する
         size_combobox.bind("<<ComboboxSelected>>", self._on_camera_size_selected, add="")
-        size_combobox.current(self.size_list.index(self.size.get()))
+        size_combobox.current(self._size_list.index(self._size.get()))
 
         # Reload
         reload_button = ttk.Button(lower_frame,
@@ -126,19 +126,19 @@ class CameraSettings(AppFrame):
         # Show Realtime
         show_realtime_checkbutton = ttk.Checkbutton(labelframe,
                                                     text="Show Realtime",
-                                                    variable=self.show_realtime,
+                                                    variable=self._show_realtime,
                                                     command=self._on_show_realtime_changed)
 
         # Show Value
         show_matched_checkbutton = ttk.Checkbutton(labelframe,
                                                    text="Show Matched",
-                                                   variable=self.show_value,
+                                                   variable=self._show_value,
                                                    command=self._on_show_matched_changed)
 
         # Show Guide
         show_guide_checkbutton = ttk.Checkbutton(labelframe,
                                                  text="Show Guide",
-                                                 variable=self.show_guide,
+                                                 variable=self._show_guide,
                                                  command=self._on_show_guide_changed)
 
         # Layout
