@@ -5,7 +5,7 @@ from ...components import AppFrame
 
 from .camera import CameraPane
 from .controller import ControllerPane
-from .outputs import OutputsPane
+from .outputs import OutputsPane, Output
 from .settings import SettingsPane
 
 CAMERA = 'camera'
@@ -36,7 +36,14 @@ class MainWindow(AppFrame):
         # noinspection PyTypeChecker
         self._controller_position: tk.StringVar = self.app_state.other_widget_software_controller_position
         self._callback_ids: list[tuple[tk.Variable, str]] = [
-            (var, var.trace_add('write', self._on_widget_state_changed)) for var in [
+            (
+                var,
+                var.trace_add(
+                    'write',
+                    self._on_outputs_size_changed if var is self._outputs_size else self._on_widget_state_changed,
+                )
+            )
+            for var in [
                 self._outputs_size,
                 self._visible_output1,
                 self._visible_output2,
@@ -84,8 +91,8 @@ class MainWindow(AppFrame):
     def _layout_right_frame(self):
         right_frame = self._right_frame
         outputs_pane = self._outputs_pane
-        output1 = outputs_pane.outputs[0]
-        output2 = outputs_pane.outputs[1]
+        output1: Output = outputs_pane.outputs[0]
+        output2: Output = outputs_pane.outputs[1]
         visible_output1 = self._visible_output1.get()
         visible_output2 = self._visible_output2.get()
         visible_outputs = visible_output1 or visible_output2
@@ -99,12 +106,18 @@ class MainWindow(AppFrame):
         output2.pack_forget()
         controller_pane.pack_forget()
 
-        pady_output2 = (0, 0)
-        if visible_output1:
-            output1.pack(expand=True, fill=tk.BOTH)
-            pady_output2 = (4, 0)
-        if visible_output2:
-            output2.pack(expand=True, fill=tk.BOTH, pady=pady_output2)
+        self.adjust_outputs_size()
+        if visible_outputs:
+            if not (visible_output1 and visible_output2):
+                # どちらか一方のみ表示
+                if visible_output1:
+                    output1.pack(expand=True, fill=tk.BOTH)
+                if visible_output2:
+                    output2.pack(expand=True, fill=tk.BOTH)
+            else:
+                # 両方表示
+                output1.pack(expand=True, fill=tk.BOTH)
+                output2.pack(expand=True, fill=tk.BOTH, pady=(0, 4))
 
         pady_lower_pane = (0, 0)
         if controller_position == 'bottom':
@@ -124,6 +137,33 @@ class MainWindow(AppFrame):
 
     def _on_widget_state_changed(self, _var_name: str, _index: str, _mode: str):
         self._layout_right_frame()
+
+    def _on_outputs_size_changed(self, _var_name: str = None, _index: str = None, _mode: str = None):
+        self.adjust_outputs_size()
+
+    def adjust_outputs_size(self):
+        size_adjuster_value = self._outputs_size.get() / 100
+        outputs_pane = self._outputs_pane
+        outputs_pane_height = outputs_pane.winfo_height() / 13
+        output1: Output = outputs_pane.outputs[0]
+        output2: Output = outputs_pane.outputs[1]
+        visible_output1 = self._visible_output1.get()
+        visible_output2 = self._visible_output2.get()
+        visible_outputs = visible_output1 or visible_output2
+
+        if visible_outputs:
+            if not (visible_output1 and visible_output2):
+                # どちらか一方のみ表示
+                shareable_height = outputs_pane_height - 5
+                if visible_output1:
+                    output1.text_area.configure(height=shareable_height)
+                if visible_output2:
+                    output2.text_area.configure(height=shareable_height)
+            else:
+                # 両方表示
+                shareable_height = outputs_pane_height - 10
+                output1.text_area.configure(height=shareable_height * size_adjuster_value)
+                output2.text_area.configure(height=shareable_height * (1 - size_adjuster_value))
 
     def destroy(self):
         for var, callback_id in self._callback_ids:
