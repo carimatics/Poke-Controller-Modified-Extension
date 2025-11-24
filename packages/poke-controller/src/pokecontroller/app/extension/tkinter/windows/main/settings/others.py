@@ -8,13 +8,20 @@ class OthersSettings(AppFrame):
     def __init__(self, master, *args, **kwargs):
         super().__init__(master, *args, **kwargs)
 
-        self.output_size = self.app_state.other_output_size
-        self.output_stdout = self.app_state.other_output_stdout
-        self.output1_visibility = self.app_state.other_widget_output1_visibility
-        self.output2_visibility = self.app_state.other_widget_output2_visibility
-        self.software_controller_visibility = self.app_state.other_widget_software_controller_visibility
-        self.software_controller_position = self.app_state.other_widget_software_controller_position
-        self.confirm_dialogue_buttons_position = self.app_state.other_widget_dialogue_confirm_buttons_position
+        # noinspection PyTypeChecker
+        self.output_size: tk.IntVar = self.app_state.other_output_size
+        # noinspection PyTypeChecker
+        self.output_stdout: tk.IntVar = self.app_state.other_output_stdout
+        # noinspection PyTypeChecker
+        self.output1_visibility: tk.BooleanVar = self.app_state.other_widget_output1_visibility
+        # noinspection PyTypeChecker
+        self.output2_visibility: tk.BooleanVar = self.app_state.other_widget_output2_visibility
+        # noinspection PyTypeChecker
+        self.software_controller_visibility: tk.BooleanVar = self.app_state.other_widget_software_controller_visibility
+        # noinspection PyTypeChecker
+        self.software_controller_position: tk.StringVar = self.app_state.other_widget_software_controller_position
+        # noinspection PyTypeChecker
+        self.confirm_dialogue_buttons_position: tk.StringVar = self.app_state.other_widget_dialogue_confirm_buttons_position
 
         self.build_ui()
 

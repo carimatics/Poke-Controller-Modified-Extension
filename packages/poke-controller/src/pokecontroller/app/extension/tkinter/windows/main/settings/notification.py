@@ -8,10 +8,14 @@ class NotificationSettings(AppFrame):
     def __init__(self, master, *args, **kwargs):
         super().__init__(master, *args, **kwargs)
 
-        self.enabled_windows_started = self.app_state.notification_enabled_notify_windows_when_command_started
-        self.enabled_windows_ended = self.app_state.notification_enabled_notify_windows_when_command_ended
-        self.enabled_discord_started = self.app_state.notification_enabled_notify_discord_when_command_started
-        self.enabled_discord_ended = self.app_state.notification_enabled_notify_discord_when_command_ended
+        # noinspection PyTypeChecker
+        self.enabled_windows_started: tk.BooleanVar = self.app_state.notification_enabled_notify_windows_when_command_started
+        # noinspection PyTypeChecker
+        self.enabled_windows_ended: tk.BooleanVar = self.app_state.notification_enabled_notify_windows_when_command_ended
+        # noinspection PyTypeChecker
+        self.enabled_discord_started: tk.BooleanVar = self.app_state.notification_enabled_notify_discord_when_command_started
+        # noinspection PyTypeChecker
+        self.enabled_discord_ended: tk.BooleanVar = self.app_state.notification_enabled_notify_discord_when_command_ended
 
         self.build_ui()
 

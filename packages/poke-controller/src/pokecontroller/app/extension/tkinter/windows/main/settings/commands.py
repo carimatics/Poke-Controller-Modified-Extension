@@ -31,12 +31,18 @@ class CommandsSettings(AppFrame):
         self.shortcut_commands: list[Callable[[], None]] = []
         self.shortcut_buttons: list[ttk.Button] = []
 
-        self.python_commands_filter = self.app_state.command_python_commands_filter
-        self.python_command = self.app_state.command_python_command
-        self.mcu_commands_filter = self.app_state.command_mcu_commands_filter
-        self.mcu_command = self.app_state.command_mcu_command
-        self.shortcut_number = self.app_state.command_shortcut_number
-        self.shortcuts = self.app_state.command_shortcuts
+        # noinspection PyTypeChecker
+        self.python_commands_filter: tk.StringVar = self.app_state.command_python_commands_filter
+        # noinspection PyTypeChecker
+        self.python_command: tk.StringVar = self.app_state.command_python_command
+        # noinspection PyTypeChecker
+        self.mcu_commands_filter: tk.StringVar = self.app_state.command_mcu_commands_filter
+        # noinspection PyTypeChecker
+        self.mcu_command: tk.StringVar = self.app_state.command_mcu_command
+        # noinspection PyTypeChecker
+        self.shortcut_number: tk.StringVar = self.app_state.command_shortcut_number
+        # noinspection PyTypeChecker
+        self.shortcuts: tk.StringVar = self.app_state.command_shortcuts
 
         self.build_ui()
 

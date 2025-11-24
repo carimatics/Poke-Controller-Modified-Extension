@@ -13,12 +13,20 @@ class CameraSettings(AppFrame):
 
         self.name_list: list[str] = self.app_model.load_camera_list()
         self.size_list: list[str] = self.app_model.load_camera_size_list()
+
+        # noinspection PyTypeChecker
         self.id: tk.StringVar = self.app_state.camera_id
+        # noinspection PyTypeChecker
         self.name: tk.StringVar = self.app_state.camera_name
+        # noinspection PyTypeChecker
         self.fps: tk.IntVar = self.app_state.camera_fps
+        # noinspection PyTypeChecker
         self.size: tk.StringVar = self.app_state.camera_size
+        # noinspection PyTypeChecker
         self.show_realtime: tk.BooleanVar = self.app_state.camera_show_realtime
+        # noinspection PyTypeChecker
         self.show_value: tk.BooleanVar = self.app_state.camera_show_matched
+        # noinspection PyTypeChecker
         self.show_guide: tk.BooleanVar = self.app_state.camera_show_guide
 
         self.build_ui()

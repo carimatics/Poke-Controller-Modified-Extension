@@ -8,10 +8,15 @@ class ManualControlSettings(AppFrame):
     def __init__(self, master, *args, **kwargs):
         super().__init__(master, *args, **kwargs)
 
+        # noinspection PyTypeChecker
         self.enabled_keyboard: tk.BooleanVar = self.app_state.manual_control_enabled_keyboard
+        # noinspection PyTypeChecker
         self.enabled_lstick_mouse: tk.BooleanVar = self.app_state.manual_control_enabled_lstick_mouse
+        # noinspection PyTypeChecker
         self.enabled_rstick_mouse: tk.BooleanVar = self.app_state.manual_control_enabled_rstick_mouse
+        # noinspection PyTypeChecker
         self.enabled_pro_controller: tk.BooleanVar = self.app_state.manual_control_enabled_pro_controller
+        # noinspection PyTypeChecker
         self.enabled_record_pro_controller: tk.BooleanVar = self.app_state.manual_control_enabled_record_pro_controller
 
         self.build_ui()

@@ -15,9 +15,14 @@ class SerialSettings(AppFrame):
         self.port_list: list[str] = self.app_model.load_serial_port_list()
         self.baud_rate_list: list[int] = self.app_model.load_serial_baud_rate_list()
         self.data_format_list: list[str] = self.app_model.load_serial_data_format_list()
+
+        # noinspection PyTypeChecker
         self.port: tk.StringVar = self.app_state.serial_port
+        # noinspection PyTypeChecker
         self.baud_rate: tk.IntVar = self.app_state.serial_baud_rate
+        # noinspection PyTypeChecker
         self.data_format: tk.StringVar = self.app_state.serial_data_format
+        # noinspection PyTypeChecker
         self.show_data: tk.BooleanVar = self.app_state.serial_show_data
 
         self.build_ui()
