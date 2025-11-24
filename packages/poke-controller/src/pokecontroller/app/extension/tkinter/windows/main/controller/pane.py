@@ -66,8 +66,8 @@ class ControllerPane(AppFrame):
                                   bg=BUTTON_COLORS['bg'],
                                   highlightbackground=BUTTON_COLORS['bg'],
                                   fg=BUTTON_COLORS['fg'])
-                    b.bind("<ButtonPress>", lambda _, btn=btn: self._on_button_pushed(btn))
-                    b.bind("<ButtonRelease>", lambda _, btn=btn: self._on_button_pushed(btn))
+                    b.bind("<ButtonPress>", lambda _, btn=btn: self._on_button_pushed(btn), add="")
+                    b.bind("<ButtonRelease>", lambda _, btn=btn: self._on_button_pushed(btn), add="")
                     b.grid(row=r, column=c, padx=2, pady=2, sticky=tk.NSEW)
 
         # Right
