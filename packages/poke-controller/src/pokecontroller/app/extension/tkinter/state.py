@@ -8,34 +8,34 @@ def load_state() -> PokeControllerAppState:
         theme=tk.StringVar(value="default"),
 
         # Camera Settings
-        camera_id = tk.StringVar(value=""),
-        camera_name = tk.StringVar(value=""),
-        camera_fps = tk.IntVar(value=45),
-        camera_size = tk.StringVar(value="640x360"),
-        camera_show_realtime = tk.BooleanVar(value=True),
-        camera_show_matched = tk.BooleanVar(value=False),
-        camera_show_guide = tk.BooleanVar(value=False),
+        camera_id=tk.StringVar(value=""),
+        camera_name=tk.StringVar(value=""),
+        camera_fps=tk.IntVar(value=45),
+        camera_size=tk.StringVar(value="640x360"),
+        camera_show_realtime=tk.BooleanVar(value=True),
+        camera_show_matched=tk.BooleanVar(value=False),
+        camera_show_guide=tk.BooleanVar(value=False),
 
         # Serial Settings
-        serial_port = tk.StringVar(value="COM 1"),
-        serial_baud_rate = tk.IntVar(value=9600),
-        serial_data_format = tk.StringVar(value="Default"),
-        serial_show_data = tk.BooleanVar(value=False),
+        serial_port=tk.StringVar(value="COM 1"),
+        serial_baud_rate=tk.IntVar(value=9600),
+        serial_data_format=tk.StringVar(value="Default"),
+        serial_show_data=tk.BooleanVar(value=False),
 
         # Manual Control Settings
-        manual_control_enabled_keyboard = tk.BooleanVar(value=False),
-        manual_control_enabled_lstick_mouse = tk.BooleanVar(value=False),
-        manual_control_enabled_rstick_mouse = tk.BooleanVar(value=False),
-        manual_control_enabled_pro_controller = tk.BooleanVar(value=False),
-        manual_control_enabled_record_pro_controller = tk.BooleanVar(value=False),
+        manual_control_enabled_keyboard=tk.BooleanVar(value=False),
+        manual_control_enabled_lstick_mouse=tk.BooleanVar(value=False),
+        manual_control_enabled_rstick_mouse=tk.BooleanVar(value=False),
+        manual_control_enabled_pro_controller=tk.BooleanVar(value=False),
+        manual_control_enabled_record_pro_controller=tk.BooleanVar(value=False),
 
         # Command Settings
-        command_python_commands_filter = tk.StringVar(value="-"),
-        command_python_command = tk.StringVar(value=""),
-        command_mcu_commands_filter = tk.StringVar(value="-"),
-        command_mcu_command = tk.StringVar(value=""),
-        command_shortcut_number = tk.IntVar(value=1),
-        command_shortcuts = [
+        command_python_commands_filter=tk.StringVar(value="-"),
+        command_python_command=tk.StringVar(value=""),
+        command_mcu_commands_filter=tk.StringVar(value="-"),
+        command_mcu_command=tk.StringVar(value=""),
+        command_shortcut_number=tk.IntVar(value=1),
+        command_shortcuts=[
             tk.StringVar(value=None),
             tk.StringVar(value=None),
             tk.StringVar(value=None),
@@ -49,17 +49,21 @@ def load_state() -> PokeControllerAppState:
         ],
 
         # Notification Settings
-        notification_enabled_notify_windows_when_command_started = tk.BooleanVar(value=False),
-        notification_enabled_notify_windows_when_command_ended = tk.BooleanVar(value=False),
-        notification_enabled_notify_discord_when_command_started = tk.BooleanVar(value=False),
-        notification_enabled_notify_discord_when_command_ended = tk.BooleanVar(value=False),
+        notification_enabled_notify_windows_when_command_started=tk.BooleanVar(value=False),
+        notification_enabled_notify_windows_when_command_ended=tk.BooleanVar(value=False),
+        notification_enabled_notify_discord_when_command_started=tk.BooleanVar(value=False),
+        notification_enabled_notify_discord_when_command_ended=tk.BooleanVar(value=False),
 
         # Other Settings
-        other_output_size = tk.IntVar(value=50),
-        other_output_stdout = tk.IntVar(value=1),
-        other_widget_output1_visibility = tk.BooleanVar(value=True),
-        other_widget_output2_visibility = tk.BooleanVar(value=True),
-        other_widget_software_controller_visibility = tk.BooleanVar(value=True),
-        other_widget_software_controller_position = tk.StringVar(value="bottom"),
-        other_widget_dialogue_confirm_buttons_position = tk.StringVar(value="bottom"),
+        other_output_size=tk.IntVar(value=50),
+        other_output_stdout=tk.IntVar(value=1),
+        other_widget_output1_visibility=tk.BooleanVar(value=True),
+        other_widget_output2_visibility=tk.BooleanVar(value=True),
+        other_widget_software_controller_visibility=tk.BooleanVar(value=True),
+        other_widget_software_controller_position=tk.StringVar(value="bottom"),
+        other_widget_dialogue_confirm_buttons_position=tk.StringVar(value="bottom"),
     )
+
+
+def save_state(state: PokeControllerAppState):
+    pass
