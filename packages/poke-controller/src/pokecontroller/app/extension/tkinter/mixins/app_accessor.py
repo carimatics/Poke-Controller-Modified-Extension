@@ -1,7 +1,7 @@
 from ..app import PokeControllerExtensionApp as App
-from ..info import PokeControllerAppInfo as Info
-from ..model import PokeControllerAppModel as Model
-from ..state import PokeControllerAppState as State
+from ..info import PokeControllerAppInfo as AppInfo
+from ..model import PokeControllerAppModel as AppModel
+from ..state import PokeControllerAppState as AppState
 
 
 class AppAccessor:
@@ -10,13 +10,13 @@ class AppAccessor:
         return self.winfo_toplevel()
 
     @property
-    def app_info(self) -> Info:
+    def app_info(self) -> AppInfo:
         return self.app.app_info
 
     @property
-    def app_model(self) -> Model:
+    def app_model(self) -> AppModel:
         return self.app.app_model
 
     @property
-    def app_state(self) -> State:
+    def app_state(self) -> AppState:
         return self.app.app_state
