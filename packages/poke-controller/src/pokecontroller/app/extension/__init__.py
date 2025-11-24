@@ -1,5 +1,5 @@
-from .tkinter import (
-    PokeControllerExtensionApp as PokeControllerExtensionApp,
+from .runner import (
+    run_app as run_app,
 )
 
 NAME = "Poke-Controller Modified Extension"

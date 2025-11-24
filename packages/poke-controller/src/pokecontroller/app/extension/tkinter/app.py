@@ -11,14 +11,13 @@ from .state import (
     load_state,
 )
 
-from .windows import MainWindow
-
 
 class PokeControllerExtensionApp(tk.Tk):
     def __init__(self, *args, **kwargs):
         tk.Tk.__init__(self, *args, **kwargs)
 
-        self._model: Model = Model(load_state())
+        self._state: State = load_state()
+        self._model: Model = Model(self._state)
         self._info: Info = INFO
 
         # Theme
@@ -27,8 +26,6 @@ class PokeControllerExtensionApp(tk.Tk):
 
         # FIXME
         self.title("PokeController Extension")
-
-        self.build_ui()
 
     @property
     def app_info(self) -> Info:
@@ -40,12 +37,7 @@ class PokeControllerExtensionApp(tk.Tk):
 
     @property
     def app_state(self) -> State:
-        return self._model.state
+        return self._state
 
     def run(self):
         self.mainloop()
-
-    def build_ui(self):
-        main_window = MainWindow(self,
-                                 padding=5)
-        main_window.pack(expand=True, fill=tk.BOTH)
