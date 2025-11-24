@@ -24,26 +24,26 @@ class CommandsSettings(AppFrame):
 
         self._open_dir_button_image: tk.PhotoImage = tk.PhotoImage(file="../assets/icons8-OpenDir-16.png")
 
-        self.python_commands_filter_list: list[str] = self._load_python_commands_filter_list()
-        self.python_command_list: list[str] = self._load_python_command_list()
-        self.mcu_commands_filter_list: list[str] = self._load_mcu_commands_filter_list()
-        self.mcu_command_list: list[str] = self._load_mcu_command_list()
-        self.shortcut_button_texts: list[tk.StringVar] = []
-        self.shortcut_commands: list[Callable[[], None]] = []
-        self.shortcut_buttons: list[ttk.Button] = []
+        self._python_commands_filter_list: list[str] = self._load_python_commands_filter_list()
+        self._python_command_list: list[str] = self._load_python_command_list()
+        self._mcu_commands_filter_list: list[str] = self._load_mcu_commands_filter_list()
+        self._mcu_command_list: list[str] = self._load_mcu_command_list()
+        self._shortcut_button_texts: list[tk.StringVar] = []
+        self._shortcut_commands: list[Callable[[], None]] = []
+        self._shortcut_buttons: list[ttk.Button] = []
 
         # noinspection PyTypeChecker
-        self.python_commands_filter: tk.StringVar = self.app_state.command_python_commands_filter
+        self._python_commands_filter: tk.StringVar = self.app_state.command_python_commands_filter
         # noinspection PyTypeChecker
-        self.python_command: tk.StringVar = self.app_state.command_python_command
+        self._python_command: tk.StringVar = self.app_state.command_python_command
         # noinspection PyTypeChecker
-        self.mcu_commands_filter: tk.StringVar = self.app_state.command_mcu_commands_filter
+        self._mcu_commands_filter: tk.StringVar = self.app_state.command_mcu_commands_filter
         # noinspection PyTypeChecker
-        self.mcu_command: tk.StringVar = self.app_state.command_mcu_command
+        self._mcu_command: tk.StringVar = self.app_state.command_mcu_command
         # noinspection PyTypeChecker
-        self.shortcut_number: tk.StringVar = self.app_state.command_shortcut_number
+        self._shortcut_number: tk.StringVar = self.app_state.command_shortcut_number
         # noinspection PyTypeChecker
-        self.shortcuts: tk.StringVar = self.app_state.command_shortcuts
+        self._shortcuts: tk.StringVar = self.app_state.command_shortcuts
 
         self.build_ui()
 
@@ -68,7 +68,7 @@ class CommandsSettings(AppFrame):
                                        from_=1,
                                        to=10,
                                        increment=1,
-                                       textvariable=self.shortcut_number,
+                                       textvariable=self._shortcut_number,
                                        command=self._on_shortcut_number_changed)
         shortcut_set_button = ttk.Button(lower_frame,
                                          text="Set",
@@ -128,8 +128,8 @@ class CommandsSettings(AppFrame):
                                  width=8)
         filter_combobox = ttk.Combobox(upper_frame,
                                        state="readonly",
-                                       textvariable=self.python_commands_filter,
-                                       values=self.python_commands_filter_list)
+                                       textvariable=self._python_commands_filter,
+                                       values=self._python_commands_filter_list)
         filter_combobox.bind("<<ComboboxSelected>>", self._on_python_commands_filter_selected, add="")
 
         # Command
@@ -138,8 +138,8 @@ class CommandsSettings(AppFrame):
                                   width=8)
         command_combobox = ttk.Combobox(lower_frame,
                                         state="readonly",
-                                        textvariable=self.python_command,
-                                        values=self.python_command_list)
+                                        textvariable=self._python_command,
+                                        values=self._python_command_list)
         command_combobox.bind("<<ComboboxSelected>>", self._on_python_command_selected, add="")
         command_combobox.current(0)
 
@@ -166,8 +166,8 @@ class CommandsSettings(AppFrame):
                                  width=8)
         filter_combobox = ttk.Combobox(upper_frame,
                                        state="readonly",
-                                       textvariable=self.mcu_commands_filter,
-                                       values=self.mcu_commands_filter_list)
+                                       textvariable=self._mcu_commands_filter,
+                                       values=self._mcu_commands_filter_list)
         filter_combobox.bind("<<ComboboxSelected>>", self._on_mcu_commands_filter_selected, add="")
 
         # Command
@@ -176,8 +176,8 @@ class CommandsSettings(AppFrame):
                                   width=8)
         command_combobox = ttk.Combobox(lower_frame,
                                         state="readonly",
-                                        textvariable=self.mcu_command,
-                                        values=self.mcu_command_list)
+                                        textvariable=self._mcu_command,
+                                        values=self._mcu_command_list)
         command_combobox.bind("<<ComboboxSelected>>", self._on_mcu_command_selected, add="")
         command_combobox.current(0)
 
@@ -198,21 +198,21 @@ class CommandsSettings(AppFrame):
         upper_frame = ttk.Frame(frame)
         lower_frame = ttk.Frame(frame)
 
-        self.shortcut_button_texts = [
+        self._shortcut_button_texts = [
             tk.StringVar(value=f"({i})")
             for i in range(1, 11)
         ]
-        self.shortcut_commands = [lambda i=num: self._on_shortcut_pushed(i) for num in range(1, 11)]
-        self.shortcut_buttons = [
+        self._shortcut_commands = [lambda i=num: self._on_shortcut_pushed(i) for num in range(1, 11)]
+        self._shortcut_buttons = [
             ttk.Button(upper_frame if i < 5 else lower_frame,
                        width=7,
-                       textvariable=self.shortcut_button_texts[i],
-                       command=self.shortcut_commands[i])
+                       textvariable=self._shortcut_button_texts[i],
+                       command=self._shortcut_commands[i])
             for i in range(10)
         ]
 
         # Layout
-        for b in self.shortcut_buttons:
+        for b in self._shortcut_buttons:
             b.pack(expand=True, fill=tk.X, side=tk.LEFT, padx=4, pady=2)
         upper_frame.pack(expand=False, fill=tk.X, side=tk.TOP, padx=4)
         lower_frame.pack(expand=False, fill=tk.X, side=tk.TOP, padx=4)
