@@ -9,13 +9,13 @@ class NotificationSettings(AppFrame):
         super().__init__(master, *args, **kwargs)
 
         # noinspection PyTypeChecker
-        self.enabled_windows_started: tk.BooleanVar = self.app_state.notification_enabled_notify_windows_when_command_started
+        self._enabled_windows_started: tk.BooleanVar = self.app_state.notification_enabled_notify_windows_when_command_started
         # noinspection PyTypeChecker
-        self.enabled_windows_ended: tk.BooleanVar = self.app_state.notification_enabled_notify_windows_when_command_ended
+        self._enabled_windows_ended: tk.BooleanVar = self.app_state.notification_enabled_notify_windows_when_command_ended
         # noinspection PyTypeChecker
-        self.enabled_discord_started: tk.BooleanVar = self.app_state.notification_enabled_notify_discord_when_command_started
+        self._enabled_discord_started: tk.BooleanVar = self.app_state.notification_enabled_notify_discord_when_command_started
         # noinspection PyTypeChecker
-        self.enabled_discord_ended: tk.BooleanVar = self.app_state.notification_enabled_notify_discord_when_command_ended
+        self._enabled_discord_ended: tk.BooleanVar = self.app_state.notification_enabled_notify_discord_when_command_ended
 
         self.build_ui()
 
@@ -33,13 +33,13 @@ class NotificationSettings(AppFrame):
         # Start
         enable_start_checkbutton = ttk.Checkbutton(labelframe,
                                                    text="Start",
-                                                   variable=self.enabled_windows_started,
+                                                   variable=self._enabled_windows_started,
                                                    command=self._on_windows_start_changed)
 
         # End
         enable_end_checkbutton = ttk.Checkbutton(labelframe,
                                                  text="End",
-                                                 variable=self.enabled_windows_ended,
+                                                 variable=self._enabled_windows_ended,
                                                  command=self._on_windows_end_changed)
 
         # Test
@@ -60,13 +60,13 @@ class NotificationSettings(AppFrame):
         # Start
         enable_start_checkbutton = ttk.Checkbutton(labelframe,
                                                    text="Start",
-                                                   variable=self.enabled_discord_started,
+                                                   variable=self._enabled_discord_started,
                                                    command=self._on_discord_start_changed)
 
         # End
         enable_end_checkbutton = ttk.Checkbutton(labelframe,
                                                  text="End",
-                                                 variable=self.enabled_discord_ended,
+                                                 variable=self._enabled_discord_ended,
                                                  command=self._on_discord_end_changed)
 
         # Test
