@@ -54,40 +54,32 @@ class ControllerPane(AppFrame):
         # Left
         left_frame = tk.Frame(wrapper, bg="#56CCF2")
         left_buttons = [bs[:3] for bs in BUTTONS]
-        for r, row in enumerate(left_buttons):
-            for c, btn in enumerate(row):
-                if btn is not None:
-                    b = tk.Button(left_frame,
-                                  text=btn,
-                                  width=4,
-                                  bg=BUTTON_COLORS['bg'],
-                                  highlightbackground=BUTTON_COLORS['bg'],
-                                  fg=BUTTON_COLORS['fg'])
-                    b.bind("<ButtonPress>", lambda _, btn=btn: self._on_button_pushed(btn), add="")
-                    b.bind("<ButtonRelease>", lambda _, btn=btn: self._on_button_released(btn), add="")
-                    b.grid(row=r, column=c, padx=2, pady=2, sticky=tk.NSEW)
+        self._build_grid_frame(left_frame, left_buttons)
 
         # Right
         right_frame = tk.Frame(wrapper, bg="#E9514E")
         right_buttons = [bs[3:] for bs in BUTTONS]
-        for r, row in enumerate(right_buttons):
-            for c, btn in enumerate(row):
-                if btn is not None:
-                    b = tk.Button(right_frame,
-                                  text=btn,
-                                  width=4,
-                                  bg=BUTTON_COLORS['bg'],
-                                  highlightbackground=BUTTON_COLORS['bg'],
-                                  fg=BUTTON_COLORS['fg'])
-                    b.bind("<ButtonPress>", lambda _, btn=btn: self._on_button_pushed(btn), add="")
-                    b.bind("<ButtonRelease>", lambda _, btn=btn: self._on_button_released(btn), add="")
-                    b.grid(row=r, column=c, padx=2, pady=2, sticky=tk.NSEW)
+        self._build_grid_frame(right_frame, right_buttons)
 
         # Layout
         left_frame.pack(expand=False, fill=tk.BOTH, side=tk.LEFT)
         right_frame.pack(expand=False, fill=tk.BOTH, side=tk.LEFT)
         wrapper.pack(expand=False, fill=tk.Y, anchor=tk.CENTER)
         labelframe.pack(expand=False, fill=tk.BOTH)
+
+    def _build_grid_frame(self, frame: tk.Frame, button_matrix: list[list[str]]):
+        for buttons_i, buttons in enumerate(button_matrix):
+            for button_i, button in enumerate(buttons):
+                if button is not None:
+                    b = tk.Button(frame,
+                                  text=button,
+                                  width=4,
+                                  bg=BUTTON_COLORS['bg'],
+                                  highlightbackground=BUTTON_COLORS['bg'],
+                                  fg=BUTTON_COLORS['fg'])
+                    b.bind("<ButtonPress>", lambda _, btn=button: self._on_button_pushed(btn), add="")
+                    b.bind("<ButtonRelease>", lambda _, btn=button: self._on_button_released(btn), add="")
+                    b.grid(row=buttons_i, column=button_i, padx=2, pady=2, sticky=tk.NSEW)
 
     def _on_button_pushed(self, button: str):
         self.app_model.push_controller_button(button)
