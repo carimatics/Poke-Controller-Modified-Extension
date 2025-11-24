@@ -9,15 +9,15 @@ class ManualControlSettings(AppFrame):
         super().__init__(master, *args, **kwargs)
 
         # noinspection PyTypeChecker
-        self.enabled_keyboard: tk.BooleanVar = self.app_state.manual_control_enabled_keyboard
+        self._enabled_keyboard: tk.BooleanVar = self.app_state.manual_control_enabled_keyboard
         # noinspection PyTypeChecker
-        self.enabled_lstick_mouse: tk.BooleanVar = self.app_state.manual_control_enabled_lstick_mouse
+        self._enabled_lstick_mouse: tk.BooleanVar = self.app_state.manual_control_enabled_lstick_mouse
         # noinspection PyTypeChecker
-        self.enabled_rstick_mouse: tk.BooleanVar = self.app_state.manual_control_enabled_rstick_mouse
+        self._enabled_rstick_mouse: tk.BooleanVar = self.app_state.manual_control_enabled_rstick_mouse
         # noinspection PyTypeChecker
-        self.enabled_pro_controller: tk.BooleanVar = self.app_state.manual_control_enabled_pro_controller
+        self._enabled_pro_controller: tk.BooleanVar = self.app_state.manual_control_enabled_pro_controller
         # noinspection PyTypeChecker
-        self.enabled_record_pro_controller: tk.BooleanVar = self.app_state.manual_control_enabled_record_pro_controller
+        self._enabled_record_pro_controller: tk.BooleanVar = self.app_state.manual_control_enabled_record_pro_controller
 
         self.build_ui()
 
@@ -45,19 +45,19 @@ class ManualControlSettings(AppFrame):
         # Use Keyboard
         use_keyboard_checkbutton = ttk.Checkbutton(lower_frame,
                                                    text="Use Keyboard",
-                                                   variable=self.enabled_keyboard,
+                                                   variable=self._enabled_keyboard,
                                                    command=self._on_enabled_keyboard_changed)
 
         # Use LStick Mouse
         use_lstick_mouse_checkbutton = ttk.Checkbutton(lower_frame,
                                                        text="Use LStick Mouse",
-                                                       variable=self.enabled_lstick_mouse,
+                                                       variable=self._enabled_lstick_mouse,
                                                        command=self._on_enabled_lstick_mouse_changed)
 
         # Use RStick Mouse
         use_rstick_mouse_checkbutton = ttk.Checkbutton(lower_frame,
                                                        text="Use RStick Mouse",
-                                                       variable=self.enabled_rstick_mouse,
+                                                       variable=self._enabled_rstick_mouse,
                                                        command=self._on_enabled_rstick_mouse_changed)
 
         # Layout
@@ -76,13 +76,13 @@ class ManualControlSettings(AppFrame):
         # Use Pro Controller
         use_pro_controller_checkbutton = ttk.Checkbutton(labelframe,
                                                          text="Use Pro Controller",
-                                                         variable=self.enabled_pro_controller,
+                                                         variable=self._enabled_pro_controller,
                                                          command=self._on_enabled_pro_controller_changed)
 
         # Record Pro Controller
         record_pro_controller_checkbutton = ttk.Checkbutton(labelframe,
                                                             text="Record Pro Controller",
-                                                            variable=self.enabled_record_pro_controller,
+                                                            variable=self._enabled_record_pro_controller,
                                                             command=self._on_enabled_record_pro_controller_changed)
 
         # Layout
