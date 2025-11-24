@@ -6,10 +6,10 @@ from ....components import AppFrame
 
 # FIXME
 class Output(AppFrame):
-    def __init__(self, master, id, *args, **kwargs):
+    def __init__(self, master, id: int, *args, **kwargs):
         super().__init__(master, *args, **kwargs)
 
-        self.id: int = id
+        self._id: int = id
         # noinspection PyTypeChecker
         self.text_area: tk.Text = None
 
@@ -17,7 +17,7 @@ class Output(AppFrame):
 
     def build_ui(self):
         labelframe = ttk.Labelframe(self,
-                                    text=f"Output#{self.id}",
+                                    text=f"Output#{self._id}",
                                     relief=tk.GROOVE)
 
         # Text Area
