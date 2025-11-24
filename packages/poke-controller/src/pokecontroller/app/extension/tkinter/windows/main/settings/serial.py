@@ -12,18 +12,18 @@ class SerialSettings(AppFrame):
     def __init__(self, master, *args, **kwargs):
         super().__init__(master, *args, **kwargs)
 
-        self.port_list: list[str] = self._load_serial_port_list()
-        self.baud_rate_list: list[int] = self._load_serial_baud_rate_list()
-        self.data_format_list: list[str] = self._load_serial_data_format_list()
+        self._port_list: list[str] = self._load_serial_port_list()
+        self._baud_rate_list: list[int] = self._load_serial_baud_rate_list()
+        self._data_format_list: list[str] = self._load_serial_data_format_list()
 
         # noinspection PyTypeChecker
-        self.port: tk.StringVar = self.app_state.serial_port
+        self._port: tk.StringVar = self.app_state.serial_port
         # noinspection PyTypeChecker
-        self.baud_rate: tk.IntVar = self.app_state.serial_baud_rate
+        self._baud_rate: tk.IntVar = self.app_state.serial_baud_rate
         # noinspection PyTypeChecker
-        self.data_format: tk.StringVar = self.app_state.serial_data_format
+        self._data_format: tk.StringVar = self.app_state.serial_data_format
         # noinspection PyTypeChecker
-        self.show_data: tk.BooleanVar = self.app_state.serial_show_data
+        self._show_data: tk.BooleanVar = self.app_state.serial_show_data
 
         self.build_ui()
 
@@ -45,8 +45,8 @@ class SerialSettings(AppFrame):
         port_entry = ttk.Combobox(labelframe,
                                   width=5,
                                   state="readonly",
-                                  textvariable=self.port,
-                                  values=self.port_list)
+                                  textvariable=self._port,
+                                  values=self._port_list)
 
         # Baud Rate
         baud_rate_label = ttk.Label(labelframe, text="Baud Rate: ")
@@ -54,8 +54,8 @@ class SerialSettings(AppFrame):
                                           width=6,
                                           justify=tk.RIGHT,
                                           state="readonly",
-                                          textvariable=self.baud_rate,
-                                          values=[str(i) for i in self.baud_rate_list])
+                                          textvariable=self._baud_rate,
+                                          values=[str(i) for i in self._baud_rate_list])
 
         # Reconnect Button
         reconnect_button = ttk.Button(labelframe,
@@ -88,14 +88,14 @@ class SerialSettings(AppFrame):
                                       anchor=tk.CENTER)
         data_format_combobox = ttk.Combobox(labelframe,
                                             state=tk.NORMAL,
-                                            textvariable=self.data_format,
-                                            values=self.data_format_list)
+                                            textvariable=self._data_format,
+                                            values=self._data_format_list)
         data_format_combobox.bind("<<ComboboxSelected>>", self._on_data_format_selected, add="")
 
         # Show Serial
         show_serial_checkbutton = ttk.Checkbutton(labelframe,
                                                   text="Show Serial",
-                                                  variable=self.show_data)
+                                                  variable=self._show_data)
 
         # Layout
         data_format_label.pack(expand=False, side=tk.LEFT, padx=4, pady=(0, 4))
