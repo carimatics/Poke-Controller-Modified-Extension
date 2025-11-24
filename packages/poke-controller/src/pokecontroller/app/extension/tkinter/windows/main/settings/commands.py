@@ -23,10 +23,11 @@ class CommandsSettings(AppFrame):
         super().__init__(master, *args, **kwargs)
 
         self._open_dir_button_image: tk.PhotoImage = tk.PhotoImage(file="../assets/icons8-OpenDir-16.png")
-        self.python_commands_filter_list: list[str] = self.app_model.load_python_commands_filter_list()
-        self.python_command_list: list[str] = self.app_model.load_python_command_list()
-        self.mcu_commands_filter_list: list[str] = self.app_model.load_mcu_commands_filter_list()
-        self.mcu_command_list: list[str] = self.app_model.load_mcu_command_list()
+
+        self.python_commands_filter_list: list[str] = self._load_python_commands_filter_list()
+        self.python_command_list: list[str] = self._load_python_command_list()
+        self.mcu_commands_filter_list: list[str] = self._load_mcu_commands_filter_list()
+        self.mcu_command_list: list[str] = self._load_mcu_command_list()
         self.shortcut_button_texts: list[tk.StringVar] = []
         self.shortcut_commands: list[Callable[[], None]] = []
         self.shortcut_buttons: list[ttk.Button] = []
@@ -57,7 +58,7 @@ class CommandsSettings(AppFrame):
         open_dir_button = ttk.Button(upper_frame,
                                      width=5,
                                      image=self._open_dir_button_image,
-                                     command=self.app_model.open_commands_directory_window)
+                                     command=self._on_open_dir_pushed)
 
         # Settings
         shortcut_label = ttk.Label(lower_frame,
@@ -68,19 +69,19 @@ class CommandsSettings(AppFrame):
                                        to=10,
                                        increment=1,
                                        textvariable=self.shortcut_number,
-                                       command=self.app_model.set_command_shortcut_number)
+                                       command=self._on_shortcut_number_changed)
         shortcut_set_button = ttk.Button(lower_frame,
                                          text="Set",
-                                         command=self.app_model.register_command_shortcut)
+                                         command=self._on_set_pushed)
         command_reload_button = ttk.Button(lower_frame,
                                            text="Reload",
-                                           command=self.app_model.load_commands)
+                                           command=self._on_reload_pushed)
         start_button = ttk.Button(lower_frame,
                                   text="Start",
-                                  command=self.app_model.start_command)
+                                  command=self._on_start_pushed)
         pause_button = ttk.Button(lower_frame,
                                   text="Pause",
-                                  command=self.app_model.pause_command)
+                                  command=self._on_pause_pushed)
 
         # Layout
         notebook.pack(expand=True, fill=tk.X, side=tk.LEFT)
@@ -104,7 +105,7 @@ class CommandsSettings(AppFrame):
             self.build_mcu_commands_frame,
             self.build_shortcut_commands_frame,
         ]
-        commands_builders: tuple[str, Callable[ttk.Widget, ttk.Frame], str] = map(
+        commands_builders: tuple[str, Callable[[ttk.Widget], ttk.Frame], str] = map(
             lambda f: (f[0][0], f[1], f[0][1]),
             zip(COMMANDS, commands_frame_builders),
         )
@@ -129,7 +130,7 @@ class CommandsSettings(AppFrame):
                                        state="readonly",
                                        textvariable=self.python_commands_filter,
                                        values=self.python_commands_filter_list)
-        filter_combobox.bind("<<ComboboxSelected>>", self.app_model.apply_python_commands_filter)
+        filter_combobox.bind("<<ComboboxSelected>>", self._on_python_commands_filter_selected, add="")
 
         # Command
         command_label = ttk.Label(lower_frame,
@@ -139,7 +140,7 @@ class CommandsSettings(AppFrame):
                                         state="readonly",
                                         textvariable=self.python_command,
                                         values=self.python_command_list)
-        command_combobox.bind("<<ComboboxSelected>>", self.app_model.set_python_command)
+        command_combobox.bind("<<ComboboxSelected>>", self._on_python_command_selected, add="")
         command_combobox.current(0)
 
         # Layout
@@ -167,7 +168,7 @@ class CommandsSettings(AppFrame):
                                        state="readonly",
                                        textvariable=self.mcu_commands_filter,
                                        values=self.mcu_commands_filter_list)
-        filter_combobox.bind("<<ComboboxSelected>>", self.app_model.apply_mcu_commands_filter)
+        filter_combobox.bind("<<ComboboxSelected>>", self._on_mcu_commands_filter_selected, add="")
 
         # Command
         command_label = ttk.Label(lower_frame,
@@ -177,7 +178,7 @@ class CommandsSettings(AppFrame):
                                         state="readonly",
                                         textvariable=self.mcu_command,
                                         values=self.mcu_command_list)
-        command_combobox.bind("<<ComboboxSelected>>", self.app_model.set_mcu_command)
+        command_combobox.bind("<<ComboboxSelected>>", self._on_mcu_command_selected, add="")
         command_combobox.current(0)
 
         # Layout
@@ -202,16 +203,16 @@ class CommandsSettings(AppFrame):
             for i in range(1, 11)
         ]
         self.shortcut_commands = [
-            lambda: self.app_model.start_shortcut_command(1),
-            lambda: self.app_model.start_shortcut_command(2),
-            lambda: self.app_model.start_shortcut_command(3),
-            lambda: self.app_model.start_shortcut_command(4),
-            lambda: self.app_model.start_shortcut_command(5),
-            lambda: self.app_model.start_shortcut_command(6),
-            lambda: self.app_model.start_shortcut_command(7),
-            lambda: self.app_model.start_shortcut_command(8),
-            lambda: self.app_model.start_shortcut_command(9),
-            lambda: self.app_model.start_shortcut_command(10),
+            lambda: self._on_shortcut_pushed(1),
+            lambda: self._on_shortcut_pushed(2),
+            lambda: self._on_shortcut_pushed(3),
+            lambda: self._on_shortcut_pushed(4),
+            lambda: self._on_shortcut_pushed(5),
+            lambda: self._on_shortcut_pushed(6),
+            lambda: self._on_shortcut_pushed(7),
+            lambda: self._on_shortcut_pushed(8),
+            lambda: self._on_shortcut_pushed(9),
+            lambda: self._on_shortcut_pushed(10),
         ]
         self.shortcut_buttons = [
                                     ttk.Button(upper_frame,
@@ -234,3 +235,48 @@ class CommandsSettings(AppFrame):
         lower_frame.pack(expand=False, fill=tk.X, side=tk.TOP, padx=4)
 
         return frame
+
+    def _load_python_commands_filter_list(self) -> list[str]:
+        return self.app_model.load_python_commands_filter_list()
+
+    def _load_python_command_list(self) -> list[str]:
+        return self.app_model.load_python_command_list()
+
+    def _load_mcu_commands_filter_list(self) -> list[str]:
+        return self.app_model.load_mcu_commands_filter_list()
+
+    def _load_mcu_command_list(self) -> list[str]:
+        return self.app_model.load_mcu_command_list()
+
+    def _on_open_dir_pushed(self):
+        self.app_model.open_commands_directory_window()
+
+    def _on_shortcut_number_changed(self):
+        self.app_model.set_command_shortcut_number()
+
+    def _on_set_pushed(self):
+        self.app_model.register_command_shortcut()
+
+    def _on_reload_pushed(self):
+        self.app_model.load_commands()
+
+    def _on_start_pushed(self):
+        self.app_model.start_command()
+
+    def _on_pause_pushed(self):
+        self.app_model.pause_command()
+
+    def _on_python_commands_filter_selected(self, _event):
+        self.app_model.apply_python_commands_filter()
+
+    def _on_python_command_selected(self, _event):
+        self.app_model.set_python_command()
+
+    def _on_mcu_commands_filter_selected(self, _event):
+        self.app_model.apply_mcu_commands_filter()
+
+    def _on_mcu_command_selected(self, _event):
+        self.app_model.set_mcu_command()
+
+    def _on_shortcut_pushed(self, shortcut_number: int):
+        self.app_model.start_shortcut_command(shortcut_number)

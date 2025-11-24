@@ -12,9 +12,9 @@ class SerialSettings(AppFrame):
     def __init__(self, master, *args, **kwargs):
         super().__init__(master, *args, **kwargs)
 
-        self.port_list: list[str] = self.app_model.load_serial_port_list()
-        self.baud_rate_list: list[int] = self.app_model.load_serial_baud_rate_list()
-        self.data_format_list: list[str] = self.app_model.load_serial_data_format_list()
+        self.port_list: list[str] = self._load_serial_port_list()
+        self.baud_rate_list: list[int] = self._load_serial_baud_rate_list()
+        self.data_format_list: list[str] = self._load_serial_data_format_list()
 
         # noinspection PyTypeChecker
         self.port: tk.StringVar = self.app_state.serial_port
@@ -60,12 +60,12 @@ class SerialSettings(AppFrame):
         # Reconnect Button
         reconnect_button = ttk.Button(labelframe,
                                       text="Reconnect",
-                                      command=self.app_model.connect_serial_port)
+                                      command=self._on_reconnect_pushed)
 
         # Disconnect Button
         disconnect_button = ttk.Button(labelframe,
                                        text="Disconnect",
-                                       command=self.app_model.disconnect_serial_port)
+                                       command=self._on_disconnect_pushed)
 
         # Layout
         port_label.pack(expand=False, side=tk.LEFT, padx=4)
@@ -90,7 +90,7 @@ class SerialSettings(AppFrame):
                                             state=tk.NORMAL,
                                             textvariable=self.data_format,
                                             values=self.data_format_list)
-        data_format_combobox.bind("<<ComboboxSelected>>", self.app_model.apply_controller_data_format)
+        data_format_combobox.bind("<<ComboboxSelected>>", self._on_data_format_selected, add="")
 
         # Show Serial
         show_serial_checkbutton = ttk.Checkbutton(labelframe,
@@ -103,3 +103,21 @@ class SerialSettings(AppFrame):
         show_serial_checkbutton.pack(expand=False, side=tk.LEFT, padx=4, pady=(0, 4))
 
         return labelframe
+
+    def _load_serial_port_list(self) -> list[str]:
+        return self.app_model.load_serial_port_list()
+
+    def _load_serial_baud_rate_list(self) -> list[int]:
+        return self.app_model.load_serial_baud_rate_list()
+
+    def _load_serial_data_format_list(self) -> list[str]:
+        return self.app_model.load_serial_data_format_list()
+
+    def _on_reconnect_pushed(self):
+        self.app_model.connect_serial_port()
+
+    def _on_disconnect_pushed(self):
+        self.app_model.disconnect_serial_port()
+
+    def _on_data_format_selected(self, _event):
+        self.app_model.apply_controller_data_format()

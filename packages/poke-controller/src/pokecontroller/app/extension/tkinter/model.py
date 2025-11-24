@@ -105,9 +105,6 @@ class PokeControllerExtensionAppModel(PokeControllerAppModel):
     def release_controller_button(self, button: str):
         pass
 
-    def open_controller_window(self):
-        pass
-
     def apply_controller_data_format(self):
         pass
 

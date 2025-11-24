@@ -28,7 +28,7 @@ class OthersSettings(AppFrame):
     def build_ui(self):
         upper_frame = ttk.Labelframe(self, text="Output Settings")
         size_adjuster = self.build_size_adjuster(upper_frame)
-        standard_output_destination_settings = self.build_standard_output_destination_settings(upper_frame)
+        standard_output_destination_settings = self.build_stdout_settings(upper_frame)
         clear_outputs = self.build_clear_outputs(upper_frame)
 
         lower_frame = ttk.Labelframe(self, text="Widget Settings")
@@ -58,32 +58,32 @@ class OthersSettings(AppFrame):
                                from_=0,
                                to=100,
                                variable=self.output_size,
-                               command=self.app_model.adjust_log_outputs_size)
+                               command=self._on_size_adjuster_changed)
 
         # Layout
         size_scale.pack(expand=True, fill=tk.X, side=tk.LEFT, anchor=tk.CENTER, padx=4, pady=(5, 12))
 
         return labelframe
 
-    def build_standard_output_destination_settings(self, master) -> ttk.Labelframe:
+    def build_stdout_settings(self, master) -> ttk.Labelframe:
         labelframe = ttk.Labelframe(master, text="Standard Output")
 
         # Destination
-        destination_radiobuttons = [
+        stdout_radiobuttons = [
             ttk.Radiobutton(labelframe,
                             text="Output#1",
                             value=1,
                             variable=self.output_stdout,
-                            command=self.app_model.apply_change_log_stdout),
+                            command=self._on_stdout_changed),
             ttk.Radiobutton(labelframe,
                             text="Output#2",
                             value=2,
                             variable=self.output_stdout,
-                            command=self.app_model.apply_change_log_stdout),
+                            command=self._on_stdout_changed),
         ]
 
         # Layout
-        for radiobutton in destination_radiobuttons:
+        for radiobutton in stdout_radiobuttons:
             radiobutton.pack(expand=False, fill=tk.X, side=tk.LEFT, padx=4)
 
         return labelframe
@@ -95,10 +95,10 @@ class OthersSettings(AppFrame):
         buttons = [
             ttk.Button(labelframe,
                        text="Clear(#1)",
-                       command=lambda: self.app_model.clear_log_output(output_id=1)),
+                       command=lambda: self._on_clear_pushed(output_id=1)),
             ttk.Button(labelframe,
                        text="Clear(#2)",
-                       command=lambda: self.app_model.clear_log_output(output_id=2)),
+                       command=lambda: self._on_clear_pushed(output_id=2)),
         ]
 
         # Layout
@@ -115,15 +115,15 @@ class OthersSettings(AppFrame):
             ttk.Checkbutton(labelframe,
                             text="Output#1",
                             variable=self.output1_visibility,
-                            command=self.app_model.apply_outputs_visibility),
+                            command=self._on_output_visibility_changed),
             ttk.Checkbutton(labelframe,
                             text="Output#2",
                             variable=self.output2_visibility,
-                            command=self.app_model.apply_outputs_visibility),
+                            command=self._on_output_visibility_changed),
             ttk.Checkbutton(labelframe,
                             text="Software-Controller",
                             variable=self.software_controller_visibility,
-                            command=self.app_model.apply_software_controller_visibility),
+                            command=self._on_software_controller_visibility_changed),
         ]
 
         # Layout
@@ -141,12 +141,12 @@ class OthersSettings(AppFrame):
                             text="Top",
                             value="top",
                             variable=self.software_controller_position,
-                            command=self.app_model.apply_software_controller_position),
+                            command=self._on_software_controller_position_changed),
             ttk.Radiobutton(labelframe,
                             text="Bottom",
                             value="bottom",
                             variable=self.software_controller_position,
-                            command=self.app_model.apply_software_controller_position),
+                            command=self._on_software_controller_position_changed),
         ]
 
         # Layout
@@ -164,17 +164,17 @@ class OthersSettings(AppFrame):
                             text="Top",
                             value="top",
                             variable=self.confirm_dialogue_buttons_position,
-                            command=self.app_model.apply_confirm_buttons_position),
+                            command=self._on_confirm_buttons_position_changed),
             ttk.Radiobutton(labelframe,
                             text="Bottom",
                             value="bottom",
                             variable=self.confirm_dialogue_buttons_position,
-                            command=self.app_model.apply_confirm_buttons_position),
+                            command=self._on_confirm_buttons_position_changed),
             ttk.Radiobutton(labelframe,
                             text="Both",
                             value="both",
                             variable=self.confirm_dialogue_buttons_position,
-                            command=self.app_model.apply_confirm_buttons_position),
+                            command=self._on_confirm_buttons_position_changed),
         ]
 
         # Layout
@@ -182,3 +182,24 @@ class OthersSettings(AppFrame):
             radiobutton.pack(expand=False, fill=tk.X, side=tk.LEFT, padx=4, pady=4)
 
         return labelframe
+
+    def _on_size_adjuster_changed(self, _value: str):
+        self.app_model.adjust_log_outputs_size()
+
+    def _on_stdout_changed(self):
+        self.app_model.apply_change_log_stdout()
+
+    def _on_clear_pushed(self, output_id: int):
+        self.app_model.clear_log_output(output_id)
+
+    def _on_output_visibility_changed(self):
+        self.app_model.apply_outputs_visibility()
+
+    def _on_software_controller_visibility_changed(self):
+        self.app_model.apply_software_controller_visibility()
+
+    def _on_software_controller_position_changed(self):
+        self.app_model.apply_software_controller_position()
+
+    def _on_confirm_buttons_position_changed(self):
+        self.app_model.apply_confirm_buttons_position()

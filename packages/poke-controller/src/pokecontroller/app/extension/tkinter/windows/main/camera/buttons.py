@@ -28,27 +28,46 @@ class Buttons(AppFrame):
 
     def build_ui(self):
         # Create Buttons
-        buttons: dict[str, ttk.Button] = {}
-        buttons[START] = ttk.Button(self,
-                                    text="Start",
-                                    command=self.app_model.start_command)
-        buttons[CONTROLLER] = ttk.Button(self,
-                                         text="Controller",
-                                         command=self.app_model.open_controller_window)
-        buttons[CLEAR_OUTPUTS] = ttk.Button(self,
-                                            text="Clear Outputs",
-                                            command=self.app_model.clear_log_outputs)
-        buttons[CAPTURE] = ttk.Button(self,
-                                      text="Capture",
-                                      command=self.app_model.save_screencapture)
-        buttons[OPEN_CAPTURE_DIR] = ttk.Button(self,
-                                               padding=1,
-                                               image=self._open_dir_button_image,
-                                               command=self.app_model.open_screencapture_directory_window)
-        buttons[NOTIFY_DISCORD] = ttk.Button(self,
-                                             text="Discord",
-                                             command=self.app_model.notify_discord)
+        buttons: dict[str, ttk.Button] = {
+            START: ttk.Button(self,
+                              text="Start",
+                              command=self._on_start_pushed),
+            CONTROLLER: ttk.Button(self,
+                                   text="Controller",
+                                   command=self._on_controller_pushed),
+            CLEAR_OUTPUTS: ttk.Button(self,
+                                      text="Clear Outputs",
+                                      command=self._on_clear_outputs_pushed),
+            CAPTURE: ttk.Button(self,
+                                text="Capture",
+                                command=self._on_capture_pushed),
+            OPEN_CAPTURE_DIR: ttk.Button(self,
+                                         padding=1,
+                                         image=self._open_dir_button_image,
+                                         command=self._on_open_dir_pushed),
+            NOTIFY_DISCORD: ttk.Button(self,
+                                       text="Discord",
+                                       command=self._on_notify_discord_pushed)
+        }
 
         # Layout
         for button in BUTTONS:
             buttons[button].pack(expand=True, anchor=tk.CENTER, side=tk.LEFT, padx=4)
+
+    def _on_start_pushed(self):
+        self.app_model.start_command()
+
+    def _on_controller_pushed(self):
+        self.app_model.open_software_controller_window()
+
+    def _on_clear_outputs_pushed(self):
+        self.app_model.clear_log_outputs()
+
+    def _on_capture_pushed(self):
+        self.app_model.save_screencapture()
+
+    def _on_open_dir_pushed(self):
+        self.app_model.open_screencapture_directory_window()
+
+    def _on_notify_discord_pushed(self):
+        self.app_model.notify_discord()

@@ -159,10 +159,6 @@ class PokeControllerAppModel(ABC):
         pass
 
     @abstractmethod
-    def open_controller_window(self):
-        pass
-
-    @abstractmethod
     def apply_controller_data_format(self):
         pass
 

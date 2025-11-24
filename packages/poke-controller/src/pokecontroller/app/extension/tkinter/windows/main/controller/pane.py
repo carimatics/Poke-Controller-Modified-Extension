@@ -66,8 +66,8 @@ class ControllerPane(AppFrame):
                                   bg=BUTTON_COLORS['bg'],
                                   highlightbackground=BUTTON_COLORS['bg'],
                                   fg=BUTTON_COLORS['fg'])
-                    b.bind("<ButtonPress>", lambda _, btn=btn: self.app_model.push_controller_button(btn))
-                    b.bind("<ButtonRelease>", lambda _, btn=btn: self.app_model.release_controller_button(btn))
+                    b.bind("<ButtonPress>", lambda _, btn=btn: self._on_button_pushed(btn))
+                    b.bind("<ButtonRelease>", lambda _, btn=btn: self._on_button_pushed(btn))
                     b.grid(row=r, column=c, padx=2, pady=2, sticky=tk.NSEW)
 
         # Right
@@ -85,8 +85,8 @@ class ControllerPane(AppFrame):
                                   bg=BUTTON_COLORS['bg'],
                                   highlightbackground=BUTTON_COLORS['bg'],
                                   fg=BUTTON_COLORS['fg'])
-                    b.bind("<ButtonPress>", lambda _, btn=btn: self.app_model.push_controller_button(btn))
-                    b.bind("<ButtonRelease>", lambda _, btn=btn: self.app_model.release_controller_button(btn))
+                    b.bind("<ButtonPress>", lambda _, btn=btn: self._on_button_pushed(btn), add="")
+                    b.bind("<ButtonRelease>", lambda _, btn=btn: self._on_button_pushed(btn), add="")
                     b.grid(row=r, column=c, padx=2, pady=2, sticky=tk.NSEW)
 
         # Layout
@@ -94,3 +94,6 @@ class ControllerPane(AppFrame):
         right_frame.pack(expand=False, fill=tk.BOTH, side=tk.LEFT)
         wrapper.pack(expand=False, fill=tk.Y, anchor=tk.CENTER)
         labelframe.pack(expand=False, fill=tk.BOTH)
+
+    def _on_button_pushed(self, button: str):
+        self.app_model.push_controller_button(button)

@@ -1,6 +1,6 @@
 from ..app import PokeControllerExtensionApp as App
 from ..info import PokeControllerAppInfo as AppInfo
-from ..model import PokeControllerAppModel as AppModel
+from ..model import PokeControllerExtensionAppModel as AppModel
 from ..state import PokeControllerAppState as AppState
 
 
