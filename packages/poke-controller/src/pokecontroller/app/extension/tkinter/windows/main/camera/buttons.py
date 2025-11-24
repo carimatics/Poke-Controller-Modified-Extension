@@ -37,14 +37,14 @@ class Buttons(AppFrame):
                                          command=self.app_model.open_controller_window)
         buttons[CLEAR_OUTPUTS] = ttk.Button(self,
                                             text="Clear Outputs",
-                                            command=self.app_model.clear_outputs)
+                                            command=self.app_model.clear_log_outputs)
         buttons[CAPTURE] = ttk.Button(self,
                                       text="Capture",
-                                      command=self.app_model.save_screen_capture)
+                                      command=self.app_model.save_screencapture)
         buttons[OPEN_CAPTURE_DIR] = ttk.Button(self,
                                                padding=1,
                                                image=self._open_dir_button_image,
-                                               command=self.app_model.open_capture_directory)
+                                               command=self.app_model.open_screencapture_directory_window)
         buttons[NOTIFY_DISCORD] = ttk.Button(self,
                                              text="Discord",
                                              command=self.app_model.notify_discord)

@@ -51,7 +51,7 @@ class CommandsSettings(AppFrame):
         open_dir_button = ttk.Button(upper_frame,
                                      width=5,
                                      image=self._open_dir_button_image,
-                                     command=self.app_model.open_commands_directory)
+                                     command=self.app_model.open_commands_directory_window)
 
         # Settings
         shortcut_label = ttk.Label(lower_frame,
@@ -62,10 +62,10 @@ class CommandsSettings(AppFrame):
                                        to=10,
                                        increment=1,
                                        textvariable=self.shortcut_number,
-                                       command=self.app_model.set_shortcut_number)
+                                       command=self.app_model.set_command_shortcut_number)
         shortcut_set_button = ttk.Button(lower_frame,
                                          text="Set",
-                                         command=self.app_model.set_command_to_shortcut)
+                                         command=self.app_model.register_command_shortcut)
         command_reload_button = ttk.Button(lower_frame,
                                            text="Reload",
                                            command=self.app_model.load_commands)
@@ -123,7 +123,7 @@ class CommandsSettings(AppFrame):
                                        state="readonly",
                                        textvariable=self.python_commands_filter,
                                        values=self.python_commands_filter_list)
-        filter_combobox.bind("<<ComboboxSelected>>", self.app_model.set_python_commands_filter)
+        filter_combobox.bind("<<ComboboxSelected>>", self.app_model.apply_python_commands_filter)
 
         # Command
         command_label = ttk.Label(lower_frame,
@@ -161,7 +161,7 @@ class CommandsSettings(AppFrame):
                                        state="readonly",
                                        textvariable=self.mcu_commands_filter,
                                        values=self.mcu_commands_filter_list)
-        filter_combobox.bind("<<ComboboxSelected>>", self.app_model.set_mcu_commands_filter)
+        filter_combobox.bind("<<ComboboxSelected>>", self.app_model.apply_mcu_commands_filter)
 
         # Command
         command_label = ttk.Label(lower_frame,
@@ -196,16 +196,16 @@ class CommandsSettings(AppFrame):
             for i in range(1, 11)
         ]
         self.shortcut_commands = [
-            lambda: self.app_model.start_shortcut_command(id=1),
-            lambda: self.app_model.start_shortcut_command(id=2),
-            lambda: self.app_model.start_shortcut_command(id=3),
-            lambda: self.app_model.start_shortcut_command(id=4),
-            lambda: self.app_model.start_shortcut_command(id=5),
-            lambda: self.app_model.start_shortcut_command(id=6),
-            lambda: self.app_model.start_shortcut_command(id=7),
-            lambda: self.app_model.start_shortcut_command(id=8),
-            lambda: self.app_model.start_shortcut_command(id=9),
-            lambda: self.app_model.start_shortcut_command(id=10),
+            lambda: self.app_model.start_shortcut_command(1),
+            lambda: self.app_model.start_shortcut_command(2),
+            lambda: self.app_model.start_shortcut_command(3),
+            lambda: self.app_model.start_shortcut_command(4),
+            lambda: self.app_model.start_shortcut_command(5),
+            lambda: self.app_model.start_shortcut_command(6),
+            lambda: self.app_model.start_shortcut_command(7),
+            lambda: self.app_model.start_shortcut_command(8),
+            lambda: self.app_model.start_shortcut_command(9),
+            lambda: self.app_model.start_shortcut_command(10),
         ]
         self.shortcut_buttons = [
                                     ttk.Button(upper_frame,

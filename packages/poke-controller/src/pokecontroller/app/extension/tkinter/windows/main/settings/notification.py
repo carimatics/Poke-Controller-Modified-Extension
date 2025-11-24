@@ -8,10 +8,10 @@ class NotificationSettings(AppFrame):
     def __init__(self, master, *args, **kwargs):
         super().__init__(master, *args, **kwargs)
 
-        self.enabled_notify_windows_start = self.app_state.notification_enabled_windows_start
-        self.enabled_notify_windows_end = self.app_state.notification_enabled_windows_end
-        self.enabled_notify_discord_start = self.app_state.notification_enabled_discord_start
-        self.enabled_notify_discord_end = self.app_state.notification_enabled_discord_end
+        self.enabled_windows_started = self.app_state.notification_enabled_notify_windows_when_command_started
+        self.enabled_windows_ended = self.app_state.notification_enabled_notify_windows_when_command_ended
+        self.enabled_discord_started = self.app_state.notification_enabled_notify_discord_when_command_started
+        self.enabled_discord_ended = self.app_state.notification_enabled_notify_discord_when_command_ended
 
         self.build_ui()
 
@@ -29,19 +29,19 @@ class NotificationSettings(AppFrame):
         # Start
         enable_start_checkbutton = ttk.Checkbutton(labelframe,
                                                    text="Start",
-                                                   variable=self.enabled_notify_windows_start,
-                                                   command=self.app_model.set_enabled_notify_windows_start)
+                                                   variable=self.enabled_windows_started,
+                                                   command=self.app_model.apply_enabled_notify_windows_when_command_started)
 
         # End
         enable_end_checkbutton = ttk.Checkbutton(labelframe,
                                                  text="End",
-                                                 variable=self.enabled_notify_windows_end,
-                                                 command=self.app_model.set_enabled_notify_windows_end)
+                                                 variable=self.enabled_windows_ended,
+                                                 command=self.app_model.apply_enabled_notify_windows_when_command_ended)
 
         # Test
         test_button = ttk.Button(labelframe,
                                  text="Test",
-                                 command=self.app_model.test_windows_notification)
+                                 command=self.app_model.notify_windows_force)
 
         # Layout
         enable_start_checkbutton.pack(expand=False, fill=tk.NONE, side=tk.LEFT, padx=4)
@@ -56,19 +56,19 @@ class NotificationSettings(AppFrame):
         # Start
         enable_start_checkbutton = ttk.Checkbutton(labelframe,
                                                    text="Start",
-                                                   variable=self.enabled_notify_discord_start,
-                                                   command=self.app_model.set_enabled_notify_discord_start)
+                                                   variable=self.enabled_discord_started,
+                                                   command=self.app_model.apply_enabled_notify_discord_when_command_started)
 
         # End
         enable_end_checkbutton = ttk.Checkbutton(labelframe,
                                                  text="End",
-                                                 variable=self.enabled_notify_discord_end,
-                                                 command=self.app_model.set_enabled_notify_discord_end)
+                                                 variable=self.enabled_discord_ended,
+                                                 command=self.app_model.apply_enabled_notify_discord_when_command_ended)
 
         # Test
         test_button = ttk.Button(labelframe,
                                  text="Test",
-                                 command=self.app_model.test_discord_notification)
+                                 command=self.app_model.notify_discord_force)
         # Layout
         enable_start_checkbutton.pack(expand=False, fill=tk.NONE, side=tk.LEFT, padx=4)
         enable_end_checkbutton.pack(expand=False, fill=tk.NONE, side=tk.LEFT, padx=8)

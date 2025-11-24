@@ -3,6 +3,7 @@ from ...state import PokeControllerAppState
 
 
 def load_state() -> PokeControllerAppState:
+    # noinspection PyTypeChecker
     return PokeControllerAppState(
         theme=tk.StringVar(value="default"),
 
@@ -12,7 +13,7 @@ def load_state() -> PokeControllerAppState:
         camera_fps = tk.IntVar(value=45),
         camera_size = tk.StringVar(value="640x360"),
         camera_show_realtime = tk.BooleanVar(value=True),
-        camera_show_value = tk.BooleanVar(value=False),
+        camera_show_matched = tk.BooleanVar(value=False),
         camera_show_guide = tk.BooleanVar(value=False),
 
         # Serial Settings
@@ -48,17 +49,17 @@ def load_state() -> PokeControllerAppState:
         ],
 
         # Notification Settings
-        notification_enabled_windows_start = tk.BooleanVar(value=False),
-        notification_enabled_windows_end = tk.BooleanVar(value=False),
-        notification_enabled_discord_start = tk.BooleanVar(value=False),
-        notification_enabled_discord_end = tk.BooleanVar(value=False),
+        notification_enabled_notify_windows_when_command_started = tk.BooleanVar(value=False),
+        notification_enabled_notify_windows_when_command_ended = tk.BooleanVar(value=False),
+        notification_enabled_notify_discord_when_command_started = tk.BooleanVar(value=False),
+        notification_enabled_notify_discord_when_command_ended = tk.BooleanVar(value=False),
 
         # Other Settings
         other_output_size = tk.IntVar(value=50),
-        other_output_standard = tk.IntVar(value=1),
-        other_widget_visibled_output1 = tk.BooleanVar(value=True),
-        other_widget_visibled_output2 = tk.BooleanVar(value=True),
-        other_widget_visibled_software_controller = tk.BooleanVar(value=True),
-        other_software_controller_position = tk.StringVar(value="bottom"),
-        other_dialogue_confirm_buttons_position = tk.StringVar(value="bottom"),
+        other_output_stdout = tk.IntVar(value=1),
+        other_widget_output1_visibility = tk.BooleanVar(value=True),
+        other_widget_output2_visibility = tk.BooleanVar(value=True),
+        other_widget_software_controller_visibility = tk.BooleanVar(value=True),
+        other_widget_software_controller_position = tk.StringVar(value="bottom"),
+        other_widget_dialogue_confirm_buttons_position = tk.StringVar(value="bottom"),
     )

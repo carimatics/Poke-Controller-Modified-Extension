@@ -41,19 +41,19 @@ class ManualControlSettings(AppFrame):
         use_keyboard_checkbutton = ttk.Checkbutton(lower_frame,
                                                    text="Use Keyboard",
                                                    variable=self.enabled_keyboard,
-                                                   command=self.app_model.set_enable_keyboard)
+                                                   command=self.app_model.apply_enabled_keyboard)
 
         # Use LStick Mouse
         use_lstick_mouse_checkbutton = ttk.Checkbutton(lower_frame,
                                                        text="Use LStick Mouse",
                                                        variable=self.enabled_lstick_mouse,
-                                                       command=self.app_model.set_enable_lstick_mouse)
+                                                       command=self.app_model.apply_enabled_lstick_mouse)
 
         # Use RStick Mouse
         use_rstick_mouse_checkbutton = ttk.Checkbutton(lower_frame,
                                                        text="Use RStick Mouse",
                                                        variable=self.enabled_rstick_mouse,
-                                                       command=self.app_model.set_enable_rstick_mouse)
+                                                       command=self.app_model.apply_enabled_rstick_mouse)
 
         # Layout
         controller_button.pack(expand=False, fill=tk.NONE, side=tk.LEFT, padx=4, pady=4)
@@ -72,13 +72,13 @@ class ManualControlSettings(AppFrame):
         use_pro_controller_checkbutton = ttk.Checkbutton(labelframe,
                                                          text="Use Pro Controller",
                                                          variable=self.enabled_pro_controller,
-                                                         command=self.app_model.set_enable_pro_controller)
+                                                         command=self.app_model.apply_enabled_pro_controller)
 
         # Record Pro Controller
         record_pro_controller_checkbutton = ttk.Checkbutton(labelframe,
                                                             text="Record Pro Controller",
                                                             variable=self.enabled_record_pro_controller,
-                                                            command=self.app_model.set_enable_record_pro_controller)
+                                                            command=self.app_model.apply_enabled_record_pro_controller)
 
         # Layout
         use_pro_controller_checkbutton.pack(expand=False, fill=tk.X, side=tk.LEFT, padx=4, pady=4)

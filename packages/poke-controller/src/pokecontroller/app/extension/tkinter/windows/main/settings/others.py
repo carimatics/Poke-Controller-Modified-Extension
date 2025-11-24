@@ -9,12 +9,12 @@ class OthersSettings(AppFrame):
         super().__init__(master, *args, **kwargs)
 
         self.output_size = self.app_state.other_output_size
-        self.output_standard = self.app_state.other_output_standard
-        self.visibled_output1 = self.app_state.other_widget_visibled_output1
-        self.visibled_output2 = self.app_state.other_widget_visibled_output2
-        self.visibled_software_controller = self.app_state.other_widget_visibled_software_controller
-        self.software_controller_position = self.app_state.other_software_controller_position
-        self.confirm_dialogue_buttons_position = self.app_state.other_dialogue_confirm_buttons_position
+        self.output_stdout = self.app_state.other_output_stdout
+        self.output1_visibility = self.app_state.other_widget_output1_visibility
+        self.output2_visibility = self.app_state.other_widget_output2_visibility
+        self.software_controller_visibility = self.app_state.other_widget_software_controller_visibility
+        self.software_controller_position = self.app_state.other_widget_software_controller_position
+        self.confirm_dialogue_buttons_position = self.app_state.other_widget_dialogue_confirm_buttons_position
 
         self.build_ui()
 
@@ -51,7 +51,7 @@ class OthersSettings(AppFrame):
                                from_=0,
                                to=100,
                                variable=self.output_size,
-                               command=self.app_model.set_outputs_size)
+                               command=self.app_model.adjust_log_outputs_size)
 
         # Layout
         size_scale.pack(expand=True, fill=tk.X, side=tk.LEFT, anchor=tk.CENTER, padx=4, pady=(5, 12))
@@ -66,13 +66,13 @@ class OthersSettings(AppFrame):
             ttk.Radiobutton(labelframe,
                             text="Output#1",
                             value=1,
-                            variable=self.output_standard,
-                            command=self.app_model.set_output_destination),
+                            variable=self.output_stdout,
+                            command=self.app_model.apply_change_log_stdout),
             ttk.Radiobutton(labelframe,
                             text="Output#2",
                             value=2,
-                            variable=self.output_standard,
-                            command=self.app_model.set_output_destination),
+                            variable=self.output_stdout,
+                            command=self.app_model.apply_change_log_stdout),
         ]
 
         # Layout
@@ -88,10 +88,10 @@ class OthersSettings(AppFrame):
         buttons = [
             ttk.Button(labelframe,
                        text="Clear(#1)",
-                       command=lambda: self.app_model.clear_output(id=1)),
+                       command=lambda: self.app_model.clear_log_output(output_id=1)),
             ttk.Button(labelframe,
                        text="Clear(#2)",
-                       command=lambda: self.app_model.clear_output(id=2)),
+                       command=lambda: self.app_model.clear_log_output(output_id=2)),
         ]
 
         # Layout
@@ -107,16 +107,16 @@ class OthersSettings(AppFrame):
         checkbuttons = [
             ttk.Checkbutton(labelframe,
                             text="Output#1",
-                            variable=self.visibled_output1,
-                            command=self.app_model.set_visibled_output1),
+                            variable=self.output1_visibility,
+                            command=self.app_model.apply_outputs_visibility),
             ttk.Checkbutton(labelframe,
                             text="Output#2",
-                            variable=self.visibled_output2,
-                            command=self.app_model.set_visibled_output2),
+                            variable=self.output2_visibility,
+                            command=self.app_model.apply_outputs_visibility),
             ttk.Checkbutton(labelframe,
                             text="Software-Controller",
-                            variable=self.visibled_software_controller,
-                            command=self.app_model.set_visibled_software_controller),
+                            variable=self.software_controller_visibility,
+                            command=self.app_model.apply_software_controller_visibility),
         ]
 
         # Layout
@@ -134,12 +134,12 @@ class OthersSettings(AppFrame):
                             text="Top",
                             value="top",
                             variable=self.software_controller_position,
-                            command=self.app_model.set_software_controller_position),
+                            command=self.app_model.apply_software_controller_position),
             ttk.Radiobutton(labelframe,
                             text="Bottom",
                             value="bottom",
                             variable=self.software_controller_position,
-                            command=self.app_model.set_software_controller_position),
+                            command=self.app_model.apply_software_controller_position),
         ]
 
         # Layout
@@ -157,17 +157,17 @@ class OthersSettings(AppFrame):
                             text="Top",
                             value="top",
                             variable=self.confirm_dialogue_buttons_position,
-                            command=self.app_model.set_confirm_buttons_position),
+                            command=self.app_model.apply_confirm_buttons_position),
             ttk.Radiobutton(labelframe,
                             text="Bottom",
                             value="bottom",
                             variable=self.confirm_dialogue_buttons_position,
-                            command=self.app_model.set_confirm_buttons_position),
+                            command=self.app_model.apply_confirm_buttons_position),
             ttk.Radiobutton(labelframe,
                             text="Both",
                             value="both",
                             variable=self.confirm_dialogue_buttons_position,
-                            command=self.app_model.set_confirm_buttons_position),
+                            command=self.app_model.apply_confirm_buttons_position),
         ]
 
         # Layout

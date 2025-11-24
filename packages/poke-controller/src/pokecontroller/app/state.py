@@ -5,11 +5,14 @@ T = TypeVar("T")
 
 
 class Value(Generic[T]):
+    def __init__(self, value: T | None = None):
+        self._value = value
+
     def get(self) -> T | None:
-        return self._container.get()
+        return self._value
 
     def set(self, value: T | None) -> None:
-        self._container.set(value)
+        self._value = value
 
 
 @dataclass
@@ -22,7 +25,7 @@ class PokeControllerAppState:
     camera_fps: Value[int]
     camera_size: Value[str]
     camera_show_realtime: Value[bool]
-    camera_show_value: Value[bool]
+    camera_show_matched: Value[bool]
     camera_show_guide: Value[bool]
 
     # Serial Settings
@@ -47,16 +50,16 @@ class PokeControllerAppState:
     command_shortcuts: list[Value[str]]
 
     # Notification Settings
-    notification_enabled_windows_start: Value[bool]
-    notification_enabled_windows_end: Value[bool]
-    notification_enabled_discord_start: Value[bool]
-    notification_enabled_discord_end: Value[bool]
+    notification_enabled_notify_windows_when_command_started: Value[bool]
+    notification_enabled_notify_windows_when_command_ended: Value[bool]
+    notification_enabled_notify_discord_when_command_started: Value[bool]
+    notification_enabled_notify_discord_when_command_ended: Value[bool]
 
     # Other Settings
     other_output_size: Value[int]
-    other_output_standard: Value[int]
-    other_widget_visibled_output1: Value[bool]
-    other_widget_visibled_output2: Value[bool]
-    other_widget_visibled_software_controller: Value[bool]
-    other_software_controller_position: Value[str]
-    other_dialogue_confirm_buttons_position: Value[str]
+    other_output_stdout: Value[int]
+    other_widget_output1_visibility: Value[bool]
+    other_widget_output2_visibility: Value[bool]
+    other_widget_software_controller_visibility: Value[bool]
+    other_widget_software_controller_position: Value[str]
+    other_widget_dialogue_confirm_buttons_position: Value[str]
