@@ -202,31 +202,14 @@ class CommandsSettings(AppFrame):
             tk.StringVar(value=f"({i})")
             for i in range(1, 11)
         ]
-        self.shortcut_commands = [
-            lambda: self._on_shortcut_pushed(1),
-            lambda: self._on_shortcut_pushed(2),
-            lambda: self._on_shortcut_pushed(3),
-            lambda: self._on_shortcut_pushed(4),
-            lambda: self._on_shortcut_pushed(5),
-            lambda: self._on_shortcut_pushed(6),
-            lambda: self._on_shortcut_pushed(7),
-            lambda: self._on_shortcut_pushed(8),
-            lambda: self._on_shortcut_pushed(9),
-            lambda: self._on_shortcut_pushed(10),
-        ]
+        self.shortcut_commands = [lambda i=num: self._on_shortcut_pushed(i) for num in range(1, 11)]
         self.shortcut_buttons = [
-                                    ttk.Button(upper_frame,
-                                               width=7,
-                                               textvariable=self.shortcut_button_texts[i],
-                                               command=self.shortcut_commands[i])
-                                    for i in range(5)
-                                ] + [
-                                    ttk.Button(lower_frame,
-                                               width=7,
-                                               textvariable=self.shortcut_button_texts[i],
-                                               command=self.shortcut_commands[i])
-                                    for i in range(5, 10)
-                                ]
+            ttk.Button(upper_frame if i < 5 else lower_frame,
+                       width=7,
+                       textvariable=self.shortcut_button_texts[i],
+                       command=self.shortcut_commands[i])
+            for i in range(10)
+        ]
 
         # Layout
         for b in self.shortcut_buttons:
