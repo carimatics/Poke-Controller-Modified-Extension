@@ -9,19 +9,19 @@ class OthersSettings(AppFrame):
         super().__init__(master, *args, **kwargs)
 
         # noinspection PyTypeChecker
-        self.output_size: tk.IntVar = self.app_state.other_output_size
+        self._output_size: tk.IntVar = self.app_state.other_output_size
         # noinspection PyTypeChecker
-        self.output_stdout: tk.IntVar = self.app_state.other_output_stdout
+        self._output_stdout: tk.IntVar = self.app_state.other_output_stdout
         # noinspection PyTypeChecker
-        self.output1_visibility: tk.BooleanVar = self.app_state.other_widget_visible_output1
+        self._output1_visibility: tk.BooleanVar = self.app_state.other_widget_visible_output1
         # noinspection PyTypeChecker
-        self.output2_visibility: tk.BooleanVar = self.app_state.other_widget_visible_output2
+        self._output2_visibility: tk.BooleanVar = self.app_state.other_widget_visible_output2
         # noinspection PyTypeChecker
-        self.software_controller_visibility: tk.BooleanVar = self.app_state.other_widget_visible_software_controller
+        self._software_controller_visibility: tk.BooleanVar = self.app_state.other_widget_visible_software_controller
         # noinspection PyTypeChecker
-        self.software_controller_position: tk.StringVar = self.app_state.other_widget_software_controller_position
+        self._software_controller_position: tk.StringVar = self.app_state.other_widget_software_controller_position
         # noinspection PyTypeChecker
-        self.confirm_dialogue_buttons_position: tk.StringVar = self.app_state.other_widget_dialogue_confirm_buttons_position
+        self._confirm_dialogue_buttons_position: tk.StringVar = self.app_state.other_widget_dialogue_confirm_buttons_position
 
         self.build_ui()
 
@@ -57,7 +57,7 @@ class OthersSettings(AppFrame):
                                orient=tk.HORIZONTAL,
                                from_=0,
                                to=100,
-                               variable=self.output_size,
+                               variable=self._output_size,
                                command=self._on_size_adjuster_changed)
 
         # Layout
@@ -73,12 +73,12 @@ class OthersSettings(AppFrame):
             ttk.Radiobutton(labelframe,
                             text="Output#1",
                             value=1,
-                            variable=self.output_stdout,
+                            variable=self._output_stdout,
                             command=self._on_stdout_changed),
             ttk.Radiobutton(labelframe,
                             text="Output#2",
                             value=2,
-                            variable=self.output_stdout,
+                            variable=self._output_stdout,
                             command=self._on_stdout_changed),
         ]
 
@@ -114,15 +114,15 @@ class OthersSettings(AppFrame):
         checkbuttons = [
             ttk.Checkbutton(labelframe,
                             text="Output#1",
-                            variable=self.output1_visibility,
+                            variable=self._output1_visibility,
                             command=self._on_output_visibility_changed),
             ttk.Checkbutton(labelframe,
                             text="Output#2",
-                            variable=self.output2_visibility,
+                            variable=self._output2_visibility,
                             command=self._on_output_visibility_changed),
             ttk.Checkbutton(labelframe,
                             text="Software-Controller",
-                            variable=self.software_controller_visibility,
+                            variable=self._software_controller_visibility,
                             command=self._on_software_controller_visibility_changed),
         ]
 
@@ -140,12 +140,12 @@ class OthersSettings(AppFrame):
             ttk.Radiobutton(labelframe,
                             text="Top",
                             value="top",
-                            variable=self.software_controller_position,
+                            variable=self._software_controller_position,
                             command=self._on_software_controller_position_changed),
             ttk.Radiobutton(labelframe,
                             text="Bottom",
                             value="bottom",
-                            variable=self.software_controller_position,
+                            variable=self._software_controller_position,
                             command=self._on_software_controller_position_changed),
         ]
 
@@ -163,17 +163,17 @@ class OthersSettings(AppFrame):
             ttk.Radiobutton(labelframe,
                             text="Top",
                             value="top",
-                            variable=self.confirm_dialogue_buttons_position,
+                            variable=self._confirm_dialogue_buttons_position,
                             command=self._on_confirm_buttons_position_changed),
             ttk.Radiobutton(labelframe,
                             text="Bottom",
                             value="bottom",
-                            variable=self.confirm_dialogue_buttons_position,
+                            variable=self._confirm_dialogue_buttons_position,
                             command=self._on_confirm_buttons_position_changed),
             ttk.Radiobutton(labelframe,
                             text="Both",
                             value="both",
-                            variable=self.confirm_dialogue_buttons_position,
+                            variable=self._confirm_dialogue_buttons_position,
                             command=self._on_confirm_buttons_position_changed),
         ]
 
