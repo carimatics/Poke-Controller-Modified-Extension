@@ -33,14 +33,14 @@ class CameraSettings(AppFrame):
 
     def build_ui(self):
         # Create Labelframes
-        camera_settings = self.build_camera_settings()
-        display_settings = self.build_display_settings()
+        camera_settings = self._build_camera_settings()
+        display_settings = self._build_display_settings()
 
         # Layout
         camera_settings.pack(expand=False, fill=tk.BOTH, pady=4)
         display_settings.pack(expand=False, fill=tk.BOTH, pady=4)
 
-    def build_camera_settings(self) -> ttk.Labelframe:
+    def _build_camera_settings(self) -> ttk.Labelframe:
         labelframe = ttk.Labelframe(self, text="Camera Settings")
 
         # Upper Frame
@@ -120,7 +120,7 @@ class CameraSettings(AppFrame):
 
         return labelframe
 
-    def build_display_settings(self) -> ttk.Labelframe:
+    def _build_display_settings(self) -> ttk.Labelframe:
         labelframe = ttk.Labelframe(self, text="Display Settings")
 
         # Show Realtime

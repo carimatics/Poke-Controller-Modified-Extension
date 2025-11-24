@@ -29,14 +29,14 @@ class SerialSettings(AppFrame):
 
     def build_ui(self):
         # Create Labelframes
-        serial_settings = self.build_serial_settings()
-        data_settings = self.build_data_settings()
+        serial_settings = self._build_serial_settings()
+        data_settings = self._build_data_settings()
 
         # Layout
         serial_settings.pack(expand=False, fill=tk.X, anchor=tk.N, pady=4)
         data_settings.pack(expand=False, fill=tk.X, anchor=tk.N, pady=4)
 
-    def build_serial_settings(self) -> ttk.Labelframe:
+    def _build_serial_settings(self) -> ttk.Labelframe:
         labelframe = ttk.Labelframe(self, text="Port Settings")
 
         # Port
@@ -79,7 +79,7 @@ class SerialSettings(AppFrame):
 
         return labelframe
 
-    def build_data_settings(self) -> ttk.Labelframe:
+    def _build_data_settings(self) -> ttk.Labelframe:
         labelframe = ttk.Labelframe(self, text="Data")
 
         # Data Format

@@ -20,14 +20,14 @@ class NotificationSettings(AppFrame):
         self.build_ui()
 
     def build_ui(self):
-        windows_notification = self.build_windows_notification()
-        discord_notification = self.build_discord_notification()
+        windows_notification = self._build_windows_notification()
+        discord_notification = self._build_discord_notification()
 
         # Layout
         windows_notification.pack(expand=False, fill=tk.NONE, anchor=tk.NE, side=tk.LEFT, padx=4)
         discord_notification.pack(expand=False, fill=tk.NONE, anchor=tk.NE, side=tk.LEFT, padx=8)
 
-    def build_windows_notification(self) -> ttk.Labelframe:
+    def _build_windows_notification(self) -> ttk.Labelframe:
         labelframe = ttk.Labelframe(self, text="Windows Notification")
 
         # Start
@@ -54,7 +54,7 @@ class NotificationSettings(AppFrame):
 
         return labelframe
 
-    def build_discord_notification(self) -> ttk.Labelframe:
+    def _build_discord_notification(self) -> ttk.Labelframe:
         labelframe = ttk.Labelframe(self, text="Discord Notification")
 
         # Start

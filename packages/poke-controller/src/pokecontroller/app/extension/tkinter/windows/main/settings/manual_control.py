@@ -23,14 +23,14 @@ class ManualControlSettings(AppFrame):
 
     def build_ui(self):
         # Create Labelframes
-        software_settings = self.build_software_settings()
-        hardware_settings = self.build_hardware_settings()
+        software_settings = self._build_software_settings()
+        hardware_settings = self._build_hardware_settings()
 
         # Layout
         software_settings.pack(expand=False, fill=tk.X, anchor=tk.N, pady=4)
         hardware_settings.pack(expand=False, fill=tk.X, anchor=tk.N, pady=4)
 
-    def build_software_settings(self) -> ttk.Labelframe:
+    def _build_software_settings(self) -> ttk.Labelframe:
         labelframe = ttk.Labelframe(self, text="Software")
 
         upper_frame = ttk.Frame(labelframe)
@@ -70,7 +70,7 @@ class ManualControlSettings(AppFrame):
 
         return labelframe
 
-    def build_hardware_settings(self) -> ttk.Labelframe:
+    def _build_hardware_settings(self) -> ttk.Labelframe:
         labelframe = ttk.Labelframe(self, text="Hardware")
 
         # Use Pro Controller

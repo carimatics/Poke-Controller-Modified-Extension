@@ -52,7 +52,7 @@ class CommandsSettings(AppFrame):
         lower_frame = ttk.Frame(self)
 
         # Notebook
-        notebook = self.build_commands_notebook(upper_frame)
+        notebook = self._build_commands_notebook(upper_frame)
 
         # Open Commands Directory
         open_dir_button = ttk.Button(upper_frame,
@@ -97,13 +97,13 @@ class CommandsSettings(AppFrame):
         pause_button.pack(expand=False, fill=tk.X, side=tk.LEFT, padx=4)
         lower_frame.pack(expand=False, fill=tk.BOTH, side=tk.TOP, padx=4, pady=4)
 
-    def build_commands_notebook(self, master) -> ttk.Notebook:
+    def _build_commands_notebook(self, master) -> ttk.Notebook:
         notebook = ttk.Notebook(master)
 
         commands_frame_builders = [
-            self.build_python_commands_frame,
-            self.build_mcu_commands_frame,
-            self.build_shortcut_commands_frame,
+            self._build_python_commands_frame,
+            self._build_mcu_commands_frame,
+            self._build_shortcut_commands_frame,
         ]
         commands_builders: tuple[str, Callable[[ttk.Widget], ttk.Frame], str] = map(
             lambda f: (f[0][0], f[1], f[0][1]),
@@ -116,7 +116,7 @@ class CommandsSettings(AppFrame):
 
         return notebook
 
-    def build_python_commands_frame(self, notebook) -> ttk.Frame:
+    def _build_python_commands_frame(self, notebook) -> ttk.Frame:
         frame = ttk.Frame(notebook)
 
         upper_frame = ttk.Frame(frame)
@@ -154,7 +154,7 @@ class CommandsSettings(AppFrame):
 
         return frame
 
-    def build_mcu_commands_frame(self, notebook) -> ttk.Frame:
+    def _build_mcu_commands_frame(self, notebook) -> ttk.Frame:
         frame = ttk.Frame(notebook)
 
         upper_frame = ttk.Frame(frame)
@@ -192,7 +192,7 @@ class CommandsSettings(AppFrame):
 
         return frame
 
-    def build_shortcut_commands_frame(self, notebook) -> ttk.Frame:
+    def _build_shortcut_commands_frame(self, notebook) -> ttk.Frame:
         frame = ttk.Frame(notebook)
 
         upper_frame = ttk.Frame(frame)

@@ -27,14 +27,14 @@ class OthersSettings(AppFrame):
 
     def build_ui(self):
         upper_frame = ttk.Labelframe(self, text="Output Settings")
-        size_adjuster = self.build_size_adjuster(upper_frame)
-        standard_output_destination_settings = self.build_stdout_settings(upper_frame)
-        clear_outputs = self.build_clear_outputs(upper_frame)
+        size_adjuster = self._build_size_adjuster(upper_frame)
+        standard_output_destination_settings = self._build_stdout_settings(upper_frame)
+        clear_outputs = self._build_clear_outputs(upper_frame)
 
         lower_frame = ttk.Labelframe(self, text="Widget Settings")
-        widget_mode = self.build_widget_mode(lower_frame)
-        software_controller_position_settings = self.build_software_controller_position_settings(lower_frame)
-        dialogue_confirm_buttons_position_settings = self.build_dialogue_confirm_buttons_position_settings(lower_frame)
+        widget_mode = self._build_widget_mode(lower_frame)
+        software_controller_position_settings = self._build_software_controller_position_settings(lower_frame)
+        dialogue_confirm_buttons_position_settings = self._build_dialogue_confirm_buttons_position_settings(lower_frame)
 
         # Layout
         size_adjuster.pack(expand=True, fill=tk.X, side=tk.LEFT, padx=4, pady=4)
@@ -48,7 +48,7 @@ class OthersSettings(AppFrame):
         dialogue_confirm_buttons_position_settings.pack(expand=False, fill=tk.X, side=tk.LEFT, padx=4, pady=4)
         lower_frame.pack(expand=False, fill=tk.X, side=tk.TOP, padx=4, pady=4)
 
-    def build_size_adjuster(self, master) -> ttk.Labelframe:
+    def _build_size_adjuster(self, master) -> ttk.Labelframe:
         labelframe = ttk.Labelframe(master, text="Size Adjuster")
 
         # Size
@@ -65,7 +65,7 @@ class OthersSettings(AppFrame):
 
         return labelframe
 
-    def build_stdout_settings(self, master) -> ttk.Labelframe:
+    def _build_stdout_settings(self, master) -> ttk.Labelframe:
         labelframe = ttk.Labelframe(master, text="Standard Output")
 
         # Destination
@@ -88,7 +88,7 @@ class OthersSettings(AppFrame):
 
         return labelframe
 
-    def build_clear_outputs(self, master) -> ttk.Labelframe:
+    def _build_clear_outputs(self, master) -> ttk.Labelframe:
         labelframe = ttk.Labelframe(master, text="Clear")
 
         # Clear Outputs Buttons
@@ -107,7 +107,7 @@ class OthersSettings(AppFrame):
 
         return labelframe
 
-    def build_widget_mode(self, master) -> ttk.Labelframe:
+    def _build_widget_mode(self, master) -> ttk.Labelframe:
         labelframe = ttk.Labelframe(master, text="Display")
 
         # Widget Mode Checkbuttons
@@ -132,7 +132,7 @@ class OthersSettings(AppFrame):
 
         return labelframe
 
-    def build_software_controller_position_settings(self, master) -> ttk.Labelframe:
+    def _build_software_controller_position_settings(self, master) -> ttk.Labelframe:
         labelframe = ttk.Labelframe(master, text="Software-Controller Position")
 
         # Position
@@ -155,7 +155,7 @@ class OthersSettings(AppFrame):
 
         return labelframe
 
-    def build_dialogue_confirm_buttons_position_settings(self, master) -> ttk.Labelframe:
+    def _build_dialogue_confirm_buttons_position_settings(self, master) -> ttk.Labelframe:
         labelframe = ttk.Labelframe(master, text="Dialogue OK/Cancel Position")
 
         # Position

@@ -89,6 +89,11 @@ class MainWindow(AppFrame):
         self._layout_left_frame()
         self._layout_right_frame()
 
+    def destroy(self):
+        for var, callback_id in self._callback_ids:
+            var.trace_remove('write', callback_id)
+        super().destroy()
+
     def _layout_left_frame(self):
         self._panes[CAMERA].pack(expand=True, fill=tk.BOTH)
         self._panes[SETTINGS].pack(expand=False, fill=tk.BOTH, pady=(4, 0))
@@ -164,8 +169,3 @@ class MainWindow(AppFrame):
         output1, output2 = self._outputs_pane.outputs
         output1.text_area.configure(height=shareable_height * size_share_percentage)
         output2.text_area.configure(height=shareable_height * (1 - size_share_percentage))
-
-    def destroy(self):
-        for var, callback_id in self._callback_ids:
-            var.trace_remove('write', callback_id)
-        super().destroy()
