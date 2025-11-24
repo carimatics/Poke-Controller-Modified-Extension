@@ -1,6 +1,8 @@
 import tkinter as tk
 import tkinter.ttk as ttk
 
+import math
+
 from ...components import AppFrame
 
 from .camera import CameraPane
@@ -67,6 +69,10 @@ class MainWindow(AppFrame):
         return self._panes[CONTROLLER]
 
     @property
+    def _left_frame(self) -> ttk.Frame:
+        return self._frames[tk.LEFT]
+
+    @property
     def _right_frame(self) -> ttk.Frame:
         return self._frames[tk.RIGHT]
 
@@ -92,8 +98,7 @@ class MainWindow(AppFrame):
         # declare widgets
         right_frame = self._right_frame
         outputs_pane = self._outputs_pane
-        output1 = outputs_pane.outputs[0]
-        output2 = outputs_pane.outputs[1]
+        output1, output2 = outputs_pane.outputs
         controller_pane = self._controller_pane
 
         # packs forget
@@ -111,15 +116,14 @@ class MainWindow(AppFrame):
 
         # adjust outputs
         self.adjust_outputs_size()
-        if visible_outputs:
-            if visible_outputs_both:
+        if visible_outputs_both:
+            output1.pack(expand=True, fill=tk.BOTH)
+            output2.pack(expand=True, fill=tk.BOTH, pady=(0, 4))
+        else:
+            if visible_output1:
                 output1.pack(expand=True, fill=tk.BOTH)
-                output2.pack(expand=True, fill=tk.BOTH, pady=(0, 4))
-            else:
-                if visible_output1:
-                    output1.pack(expand=True, fill=tk.BOTH)
-                if visible_output2:
-                    output2.pack(expand=True, fill=tk.BOTH)
+            if visible_output2:
+                output2.pack(expand=True, fill=tk.BOTH)
 
         # pack panes
         visible_controller = self._visible_controller.get()
@@ -149,31 +153,16 @@ class MainWindow(AppFrame):
         self.adjust_outputs_size()
 
     def adjust_outputs_size(self):
-        # declare visibility
-        visible_output1 = self._visible_output1.get()
-        visible_output2 = self._visible_output2.get()
-        visible_outputs = visible_output1 or visible_output2
+        outputs_pane_height = self._left_frame.winfo_height()
+        if self._visible_controller.get():
+            outputs_pane_height -= 180
 
-        # skip if no outputs are visible
-        if not visible_outputs:
-            return
+        shareable_height = (outputs_pane_height / 13) - 8
+        size_share_percentage = math.ceil(self._outputs_size.get()) / 100
 
-        size_adjuster_value = int(self._outputs_size.get()) / 100
-        outputs_pane = self._outputs_pane
-        outputs_pane_height = outputs_pane.winfo_height() / 13
-        output1 = outputs_pane.outputs[0]
-        output2 = outputs_pane.outputs[1]
-        visible_outputs_both = visible_output1 and visible_output2
-        if visible_outputs_both:
-            shareable_height = outputs_pane_height - 8
-            output1.text_area.configure(height=shareable_height * size_adjuster_value)
-            output2.text_area.configure(height=shareable_height * (1 - size_adjuster_value))
-        else:
-            shareable_height = outputs_pane_height - 4
-            if visible_output1:
-                output1.text_area.configure(height=shareable_height)
-            if visible_output2:
-                output2.text_area.configure(height=shareable_height)
+        output1, output2 = self._outputs_pane.outputs
+        output1.text_area.configure(height=shareable_height * size_share_percentage)
+        output2.text_area.configure(height=shareable_height * (1 - size_share_percentage))
 
     def destroy(self):
         for var, callback_id in self._callback_ids:
