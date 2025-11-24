@@ -155,7 +155,8 @@ class MainWindow(AppFrame):
     def adjust_outputs_size(self):
         outputs_pane_height = self._left_frame.winfo_height()
         if self._visible_controller.get():
-            outputs_pane_height -= 180
+            controller_height = 180
+            outputs_pane_height -= controller_height
 
         shareable_height = (outputs_pane_height / 13) - 8
         size_share_percentage = math.ceil(self._outputs_size.get()) / 100
