@@ -1,5 +1,3 @@
-import tkinter as tk
-
 from ....components import AppFrame
 
 from .output import Output
@@ -10,12 +8,12 @@ class OutputsPane(AppFrame):
         super().__init__(master, *args, **kwargs)
 
         # noinspection PyTypeChecker
-        self.outputs: list[Output] = None
+        self.outputs: list[Output] = []
 
         self.build_ui()
 
     def build_ui(self):
-        self.outputs = [
+        self.outputs += [
             Output(self, id=1),
             Output(self, id=2),
         ]
