@@ -13,11 +13,11 @@ class OthersSettings(AppFrame):
         # noinspection PyTypeChecker
         self.output_stdout: tk.IntVar = self.app_state.other_output_stdout
         # noinspection PyTypeChecker
-        self.output1_visibility: tk.BooleanVar = self.app_state.other_widget_output1_visibility
+        self.output1_visibility: tk.BooleanVar = self.app_state.other_widget_visible_output1
         # noinspection PyTypeChecker
-        self.output2_visibility: tk.BooleanVar = self.app_state.other_widget_output2_visibility
+        self.output2_visibility: tk.BooleanVar = self.app_state.other_widget_visible_output2
         # noinspection PyTypeChecker
-        self.software_controller_visibility: tk.BooleanVar = self.app_state.other_widget_software_controller_visibility
+        self.software_controller_visibility: tk.BooleanVar = self.app_state.other_widget_visible_software_controller
         # noinspection PyTypeChecker
         self.software_controller_position: tk.StringVar = self.app_state.other_widget_software_controller_position
         # noinspection PyTypeChecker

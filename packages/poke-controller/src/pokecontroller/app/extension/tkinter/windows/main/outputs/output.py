@@ -19,7 +19,7 @@ class Output(AppFrame):
         # Text Area
         text_area = tk.Text(labelframe,
                             height=3,
-                            width=50,
+                            width=62,
                             blockcursor=True,
                             insertunfocussed=tk.NONE,
                             undo=False,

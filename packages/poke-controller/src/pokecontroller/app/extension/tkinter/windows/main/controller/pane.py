@@ -52,10 +52,7 @@ class ControllerPane(AppFrame):
         wrapper = ttk.Frame(labelframe)
 
         # Left
-        left_frame = tk.Frame(wrapper,
-                              bg="#56CCF2",
-                              width=200,
-                              height=200)
+        left_frame = tk.Frame(wrapper, bg="#56CCF2")
         left_buttons = [bs[:3] for bs in BUTTONS]
         for r, row in enumerate(left_buttons):
             for c, btn in enumerate(row):
@@ -71,10 +68,7 @@ class ControllerPane(AppFrame):
                     b.grid(row=r, column=c, padx=2, pady=2, sticky=tk.NSEW)
 
         # Right
-        right_frame = tk.Frame(wrapper,
-                               bg="#E9514E",
-                               width=200,
-                               height=200)
+        right_frame = tk.Frame(wrapper, bg="#E9514E")
         right_buttons = [bs[3:] for bs in BUTTONS]
         for r, row in enumerate(right_buttons):
             for c, btn in enumerate(row):

@@ -57,9 +57,9 @@ def load_state() -> PokeControllerAppState:
         # Other Settings
         other_output_size=tk.IntVar(value=50),
         other_output_stdout=tk.IntVar(value=1),
-        other_widget_output1_visibility=tk.BooleanVar(value=True),
-        other_widget_output2_visibility=tk.BooleanVar(value=True),
-        other_widget_software_controller_visibility=tk.BooleanVar(value=True),
+        other_widget_visible_output1=tk.BooleanVar(value=True),
+        other_widget_visible_output2=tk.BooleanVar(value=True),
+        other_widget_visible_software_controller=tk.BooleanVar(value=True),
         other_widget_software_controller_position=tk.StringVar(value="bottom"),
         other_widget_dialogue_confirm_buttons_position=tk.StringVar(value="bottom"),
     )

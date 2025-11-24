@@ -58,8 +58,8 @@ class PokeControllerAppState:
     # Other Settings
     other_output_size: Value[int]
     other_output_stdout: Value[int]
-    other_widget_output1_visibility: Value[bool]
-    other_widget_output2_visibility: Value[bool]
-    other_widget_software_controller_visibility: Value[bool]
+    other_widget_visible_output1: Value[bool]
+    other_widget_visible_output2: Value[bool]
+    other_widget_visible_software_controller: Value[bool]
     other_widget_software_controller_position: Value[str]
     other_widget_dialogue_confirm_buttons_position: Value[str]
