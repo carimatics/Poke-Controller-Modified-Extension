@@ -61,18 +61,14 @@ class OthersSettings(AppFrame):
     def _build_stdout_settings(self, master) -> ttk.Labelframe:
         labelframe = ttk.Labelframe(master, text="Standard Output")
 
-        # Destination
+        # Destinations
         stdout_radiobuttons = [
             ttk.Radiobutton(labelframe,
-                            text="Output#1",
-                            value=1,
+                            text=f"Output#{i}",
+                            value=i,
                             variable=self._output_stdout.container,
-                            command=self._on_stdout_changed),
-            ttk.Radiobutton(labelframe,
-                            text="Output#2",
-                            value=2,
-                            variable=self._output_stdout.container,
-                            command=self._on_stdout_changed),
+                            command=self._on_stdout_changed)
+            for i in range(1, 3)
         ]
 
         # Layout
@@ -87,11 +83,9 @@ class OthersSettings(AppFrame):
         # Outputs Clear Buttons
         buttons = [
             ttk.Button(labelframe,
-                       text="Clear(#1)",
-                       command=lambda: self._on_clear_pushed(output_id=1)),
-            ttk.Button(labelframe,
-                       text="Clear(#2)",
-                       command=lambda: self._on_clear_pushed(output_id=2)),
+                       text=f"Clear(#{i})",
+                       command=lambda i=i: self._on_clear_pushed(output_id=i))
+            for i in range(1, 3)
         ]
 
         # Layout
@@ -106,17 +100,18 @@ class OthersSettings(AppFrame):
         # Widget Mode Checkbuttons
         checkbuttons = [
             ttk.Checkbutton(labelframe,
-                            text="Output#1",
-                            variable=self._output1_visibility.container,
-                            command=self._on_output_visibility_changed),
-            ttk.Checkbutton(labelframe,
-                            text="Output#2",
-                            variable=self._output2_visibility.container,
-                            command=self._on_output_visibility_changed),
-            ttk.Checkbutton(labelframe,
-                            text="Software-Controller",
-                            variable=self._software_controller_visibility.container,
-                            command=self._on_software_controller_visibility_changed),
+                            text=text,
+                            variable=var.container,
+                            command=command)
+            for text, var, command in [
+                ("Output#1", self._output1_visibility, self._on_output_visibility_changed),
+                ("Output#2", self._output2_visibility, self._on_output_visibility_changed),
+                (
+                    "Software-Controller",
+                    self._software_controller_visibility,
+                    self._on_software_controller_visibility_changed
+                )
+            ]
         ]
 
         # Layout
@@ -128,18 +123,14 @@ class OthersSettings(AppFrame):
     def _build_software_controller_position_settings(self, master) -> ttk.Labelframe:
         labelframe = ttk.Labelframe(master, text="Software-Controller Position")
 
-        # Position
+        # Positions
         position_radiobuttons = [
             ttk.Radiobutton(labelframe,
-                            text="Top",
-                            value="top",
+                            text=value.capitalize(),
+                            value=value,
                             variable=self._software_controller_position.container,
-                            command=self._on_software_controller_position_changed),
-            ttk.Radiobutton(labelframe,
-                            text="Bottom",
-                            value="bottom",
-                            variable=self._software_controller_position.container,
-                            command=self._on_software_controller_position_changed),
+                            command=self._on_software_controller_position_changed)
+            for value in ["top", "bottom"]
         ]
 
         # Layout
@@ -151,23 +142,14 @@ class OthersSettings(AppFrame):
     def _build_dialogue_confirm_buttons_position_settings(self, master) -> ttk.Labelframe:
         labelframe = ttk.Labelframe(master, text="Dialogue OK/Cancel Position")
 
-        # Position
+        # Positions
         position_radiobuttons = [
             ttk.Radiobutton(labelframe,
-                            text="Top",
-                            value="top",
+                            text=value.capitalize(),
+                            value=value,
                             variable=self._confirm_dialogue_buttons_position.container,
-                            command=self._on_confirm_buttons_position_changed),
-            ttk.Radiobutton(labelframe,
-                            text="Bottom",
-                            value="bottom",
-                            variable=self._confirm_dialogue_buttons_position.container,
-                            command=self._on_confirm_buttons_position_changed),
-            ttk.Radiobutton(labelframe,
-                            text="Both",
-                            value="both",
-                            variable=self._confirm_dialogue_buttons_position.container,
-                            command=self._on_confirm_buttons_position_changed),
+                            command=self._on_confirm_buttons_position_changed)
+            for value in ["top", "bottom", "both"]
         ]
 
         # Layout

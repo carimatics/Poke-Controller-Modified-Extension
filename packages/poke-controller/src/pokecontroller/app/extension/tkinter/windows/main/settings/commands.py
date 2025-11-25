@@ -28,8 +28,6 @@ class CommandsSettings(AppFrame):
         self._mcu_commands_filter_list: list[str] = self._load_mcu_commands_filter_list()
         self._mcu_command_list: list[str] = self._load_mcu_command_list()
         self._shortcut_button_texts: list[tk.StringVar] = []
-        self._shortcut_commands: list[Callable[[], None]] = []
-        self._shortcut_buttons: list[ttk.Button] = []
 
         self._python_commands_filter = self.app_state.command_python_commands_filter
         self._python_command = self.app_state.command_python_command
@@ -93,71 +91,70 @@ class CommandsSettings(AppFrame):
     def _build_commands_notebook(self, master) -> ttk.Notebook:
         notebook = ttk.Notebook(master)
 
-        commands_frame_builders: list[Callable[[ttk.Notebook], ttk.Frame]] = [
-            *([
-                lambda n, k=kind: self._build_commands_frame(n, k)
-                for kind in [PYTHON, MCU]
-            ]),
-            self._build_shortcut_commands_frame,
+        command_frames: list[ttk.Frame] = [
+            self._build_python_commands_frame(notebook),
+            self._build_mcu_commands_frame(notebook),
+            self._build_shortcut_commands_frame(notebook),
         ]
 
         commands: dict[str, ttk.Frame] = {}
-        for ((name, tag_text), builder) in zip(COMMANDS, commands_frame_builders):
-            commands[name] = builder(notebook)
-            notebook.add(commands[name], text=tag_text, padding=5, sticky=l.NSEW)
+        for ((name, tag_text), frame) in zip(COMMANDS, command_frames):
+            commands[name] = frame
+            notebook.add(frame, text=tag_text, padding=5, sticky=l.NSEW)
 
         return notebook
 
-    def _build_commands_frame(self, notebook: ttk.Notebook, kind: str = PYTHON) -> ttk.Frame:
+    def _build_python_commands_frame(self, notebook: ttk.Notebook) -> ttk.Frame:
+        return self._build_commands_frame(notebook=notebook,
+                                          filter_list=self._python_commands_filter_list,
+                                          filter_var=self._python_commands_filter.container,
+                                          on_filter_selected=self._on_python_commands_filter_selected,
+                                          command_list=self._python_command_list,
+                                          command_var=self._python_command.container,
+                                          on_command_selected=self._on_python_command_selected)
+
+    def _build_mcu_commands_frame(self, notebook: ttk.Notebook) -> ttk.Frame:
+        return self._build_commands_frame(notebook=notebook,
+                                          filter_list=self._mcu_commands_filter_list,
+                                          filter_var=self._mcu_commands_filter.container,
+                                          on_filter_selected=self._on_mcu_commands_filter_selected,
+                                          command_list=self._mcu_command_list,
+                                          command_var=self._mcu_command.container,
+                                          on_command_selected=self._on_mcu_command_selected)
+
+    # noinspection PyMethodMayBeStatic
+    def _build_commands_frame(self,
+                              notebook: ttk.Notebook,
+                              filter_list: list[str],
+                              filter_var: tk.StringVar,
+                              on_filter_selected: Callable[[tk.Event], None],
+                              command_list: list[str],
+                              command_var: tk.StringVar,
+                              on_command_selected: Callable[[tk.Event], None]) -> ttk.Frame:
         frame = ttk.Frame(notebook)
 
-        upper_frame = ttk.Frame(frame)
-        lower_frame = ttk.Frame(frame)
+        def _combobox_frame(master: ttk.Frame,
+                            text: str,
+                            var: tk.StringVar,
+                            values: list[str],
+                            on_changed: Callable[[tk.Event], None]) -> ttk.Frame:
+            combobox_frame = ttk.Frame(master=master)
+            label = ttk.Label(combobox_frame, text=text, width=8)
+            combobox = ttk.Combobox(combobox_frame, state=l.READONLY, textvariable=var, values=values)
+            combobox.bind("<<ComboboxSelected>>", func=on_changed, add="")
+
+            # Layout
+            label.pack(expand=False, fill=l.X, side=l.LEFT)
+            combobox.pack(expand=True, fill=l.X, side=l.LEFT)
+
+            return combobox_frame
 
         # Filter
-        if kind == PYTHON:
-            filter_list = self._python_commands_filter_list
-            filter_var = self._python_commands_filter.container
-            on_filter_selected = self._on_python_commands_filter_selected
-        else:
-            filter_list = self._mcu_commands_filter_list
-            filter_var = self._mcu_commands_filter.container
-            on_filter_selected = self._on_mcu_commands_filter_selected
-        filter_label = ttk.Label(upper_frame,
-                                 text="Filter: ",
-                                 width=8)
-        filter_combobox = ttk.Combobox(upper_frame,
-                                       state=l.READONLY,
-                                       textvariable=filter_var,
-                                       values=filter_list)
-        filter_combobox.bind("<<ComboboxSelected>>", on_filter_selected, add="")
-
-        # Command
-        if kind == PYTHON:
-            command_list = self._python_command_list
-            command_var = self._python_command.container
-            on_command_selected = self._on_python_command_selected
-        else:
-            command_list = self._mcu_command_list
-            command_var = self._mcu_command.container
-            on_command_selected = self._on_mcu_command_selected
-        command_label = ttk.Label(lower_frame,
-                                  text="Command: ",
-                                  width=8)
-        command_combobox = ttk.Combobox(lower_frame,
-                                        state=l.READONLY,
-                                        textvariable=command_var,
-                                        values=command_list)
-        command_combobox.bind("<<ComboboxSelected>>", on_command_selected, add="")
-        command_combobox.current(0)
+        upper_frame = _combobox_frame(frame, "Filter:", filter_var, filter_list, on_filter_selected)
+        lower_frame = _combobox_frame(frame, "Command:", command_var, command_list, on_command_selected)
 
         # Layout
-        filter_label.pack(expand=False, fill=l.X, side=l.LEFT)
-        filter_combobox.pack(expand=True, fill=l.X, side=l.LEFT)
         upper_frame.pack(expand=False, fill=l.X, side=l.TOP, padx=4, pady=4)
-
-        command_label.pack(expand=False, fill=l.X, side=l.LEFT)
-        command_combobox.pack(expand=True, fill=l.X, side=l.LEFT)
         lower_frame.pack(expand=False, fill=l.X, side=l.TOP, padx=4, pady=4)
 
         return frame
@@ -165,24 +162,21 @@ class CommandsSettings(AppFrame):
     def _build_shortcut_commands_frame(self, notebook: ttk.Notebook) -> ttk.Frame:
         frame = ttk.Frame(notebook)
 
+        self._shortcut_button_texts = [tk.StringVar(value=f"({i})") for i in range(1, 11)]
+        shortcut_commands = [lambda num=i: self._on_shortcut_pushed(num) for i in range(1, 11)]
+
         upper_frame = ttk.Frame(frame)
         lower_frame = ttk.Frame(frame)
-
-        self._shortcut_button_texts = [
-            tk.StringVar(value=f"({i})")
-            for i in range(1, 11)
-        ]
-        self._shortcut_commands = [lambda i=num: self._on_shortcut_pushed(i) for num in range(1, 11)]
-        self._shortcut_buttons = [
+        shortcut_buttons = [
             ttk.Button(upper_frame if i < 5 else lower_frame,
                        width=7,
                        textvariable=self._shortcut_button_texts[i],
-                       command=self._shortcut_commands[i])
+                       command=shortcut_commands[i])
             for i in range(10)
         ]
 
         # Layout
-        for b in self._shortcut_buttons:
+        for b in shortcut_buttons:
             b.pack(expand=True, fill=l.X, side=l.LEFT, padx=4, pady=2)
         upper_frame.pack(expand=False, fill=l.X, side=l.TOP, padx=4)
         lower_frame.pack(expand=False, fill=l.X, side=l.TOP, padx=4)
