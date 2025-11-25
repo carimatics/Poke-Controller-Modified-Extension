@@ -2,6 +2,43 @@ from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from typing import Any, Callable, Literal
 
+DEFAULT_STATE = {
+    "theme": "default",
+    "camera_id": None,
+    "camera_name": None,
+    "camera_fps": 45,
+    "camera_size": "640x360",
+    "camera_show_realtime": True,
+    "camera_show_matched": False,
+    "camera_show_guide": False,
+    "serial_port": None,
+    "serial_baud_rate": 9600,
+    "serial_data_format": "Default",
+    "serial_show_data": False,
+    "manual_control_enabled_keyboard": False,
+    "manual_control_enabled_lstick_mouse": False,
+    "manual_control_enabled_rstick_mouse": False,
+    "manual_control_enabled_pro_controller": False,
+    "manual_control_enabled_record_pro_controller": False,
+    "command_python_commands_filter": "-",
+    "command_python_command": None,
+    "command_mcu_commands_filter": "-",
+    "command_mcu_command": None,
+    "command_shortcut_number": 1,
+    "command_shortcuts": [None for _ in range(10)],
+    "notification_enabled_notify_windows_when_command_started": False,
+    "notification_enabled_notify_windows_when_command_ended": False,
+    "notification_enabled_notify_discord_when_command_started": False,
+    "notification_enabled_notify_discord_when_command_ended": False,
+    "other_output_size": 50.0,
+    "other_output_stdout": 1,
+    "other_widget_visible_output1": True,
+    "other_widget_visible_output2": True,
+    "other_widget_visible_software_controller": True,
+    "other_widget_software_controller_position": "bottom",
+    "other_widget_dialogue_confirm_buttons_position": "bottom",
+}
+
 
 class Variable[T](ABC):
     @property
@@ -28,6 +65,7 @@ class Variable[T](ABC):
 
 @dataclass
 class PokeControllerAppState:
+    # Theme
     theme: Variable[str]
 
     # Camera Settings
@@ -67,7 +105,7 @@ class PokeControllerAppState:
     notification_enabled_notify_discord_when_command_ended: Variable[bool]
 
     # Other Settings
-    other_output_size: Variable[int]
+    other_output_size: Variable[float]
     other_output_stdout: Variable[int]
     other_widget_visible_output1: Variable[bool]
     other_widget_visible_output2: Variable[bool]

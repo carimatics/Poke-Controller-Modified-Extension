@@ -41,6 +41,7 @@ class SerialSettings(AppFrame):
                                   state=l.READONLY,
                                   textvariable=self._port.container,
                                   values=self._port_list)
+        port_entry.current(0)
 
         # Baud Rate
         baud_rate_label = ttk.Label(labelframe, text="Baud Rate: ")
