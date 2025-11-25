@@ -1,4 +1,5 @@
 import tkinter.ttk as ttk
+from typing import Literal
 
 import math
 
@@ -82,39 +83,38 @@ class MainWindow(AppFrame):
         self._frames[l.LEFT].pack(expand=True, fill=l.BOTH, side=l.LEFT, padx=4, pady=(0, 4))
 
     def _layout_right_frame(self):
-        # declare widgets
-        right_frame = self._right_frame
-        outputs_pane = self._outputs_pane
-        output1, output2 = outputs_pane.outputs
+        def pack(frame: ttk.Frame,
+                 visible: bool,
+                 *,
+                 side: Literal["top", "left"] = l.TOP,
+                 px: tuple[int, int] | int = 0,
+                 py: tuple[int, int] | int = 0):
+            frame.pack_forget()
+            if visible:
+                frame.pack(expand=True, fill=l.BOTH, side=side, padx=px, pady=py)
 
-        # packs forget
-        right_frame.pack_forget()
-        output1.pack_forget()
-        output2.pack_forget()
 
-        # declare visibility
+        # pack output frames
+        output1, output2 = self._outputs_pane.outputs
         visible_output1 = self._visible_output1.get()
         visible_output2 = self._visible_output2.get()
-
-        # pack outputs
-        if visible_output1:
-            output1.pack(expand=True, fill=l.BOTH)
-        if visible_output2:
-            output2.pack(expand=True, fill=l.BOTH, pady=(4, 0) if visible_output1 else (0, 0))
+        pack(output1, visible_output1)
+        pack(output2, visible_output2, py=(4, 0) if visible_output1 else 0)
 
         # pack panes
-        self._repack_right_frame_panes()
+        self._repack_right_panes()
 
         # pack right frame
-        if visible_output1 or visible_output2 or self._visible_controller.get():
-            right_frame.pack(expand=True, fill=l.BOTH, side=l.LEFT, padx=4, pady=(0, 4))
+        right_frame = self._right_frame
+        visible_right_frame = visible_output1 or visible_output2 or self._visible_controller.get()
+        pack(right_frame, visible_right_frame, side=l.LEFT, px=4, py=(0, 4))
 
-    def _repack_right_frame_panes(self):
+    def _repack_right_panes(self):
         self._adjust_outputs_size()
 
         outputs_pane, controller_pane = self._outputs_pane, self._controller_pane
-        controller_pane.pack_forget()
         outputs_pane.pack_forget()
+        controller_pane.pack_forget()
 
         visible_outputs = self._visible_output1.get() or self._visible_output2.get()
         visible_controller = self._visible_controller.get()
@@ -132,7 +132,7 @@ class MainWindow(AppFrame):
     def _adjust_outputs_size(self):
         outputs_pane_height = self._left_frame.winfo_height()
         if self._visible_controller.get():
-            controller_height = 180
+            controller_height = self._controller_pane.winfo_height()
             outputs_pane_height -= controller_height
 
         shareable_height = (outputs_pane_height / 13) - 8
@@ -140,7 +140,7 @@ class MainWindow(AppFrame):
 
         output1, output2 = self._outputs_pane.outputs
         output1.text_area.configure(height=shareable_height * size_share_percentage)
-        output2.text_area.configure(height=shareable_height * (1 - size_share_percentage))
+        output2.text_area.configure(height=shareable_height * (1.0 - size_share_percentage))
 
     def _on_widget_visibility_changed(self):
         self._layout_right_frame()
@@ -149,4 +149,4 @@ class MainWindow(AppFrame):
         self._adjust_outputs_size()
 
     def _on_controller_position_changed(self):
-        self._repack_right_frame_panes()
+        self._repack_right_panes()
