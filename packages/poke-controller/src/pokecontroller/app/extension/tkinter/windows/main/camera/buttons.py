@@ -30,25 +30,15 @@ class Buttons(AppFrame):
     def build_ui(self):
         # Create Buttons
         buttons: dict[str, ttk.Button] = {
-            START: ttk.Button(self,
-                              text="Start",
-                              command=self._on_start_pushed),
-            CONTROLLER: ttk.Button(self,
-                                   text="Controller",
-                                   command=self._on_controller_pushed),
-            CLEAR_OUTPUTS: ttk.Button(self,
-                                      text="Clear Outputs",
-                                      command=self._on_clear_outputs_pushed),
-            CAPTURE: ttk.Button(self,
-                                text="Capture",
-                                command=self._on_capture_pushed),
-            OPEN_CAPTURE_DIR: ttk.Button(self,
-                                         padding=1,
-                                         image=self._open_dir_button_image,
-                                         command=self._on_open_dir_pushed),
-            NOTIFY_DISCORD: ttk.Button(self,
-                                       text="Discord",
-                                       command=self._on_notify_discord_pushed)
+            button: ttk.Button(self, command=command, **kwargs)
+            for button, command, kwargs in [
+                (START, self._on_start_pushed, { "text": "Start" }),
+                (CONTROLLER, self._on_controller_pushed, { "text": "Controller" }),
+                (CLEAR_OUTPUTS, self._on_clear_outputs_pushed, { "text": "Clear Outputs" }),
+                (CAPTURE, self._on_capture_pushed, { "text": "Capture" }),
+                (OPEN_CAPTURE_DIR, self._on_open_dir_pushed, { "image": self._open_dir_button_image, "padding": 1 }),
+                (NOTIFY_DISCORD, self._on_notify_discord_pushed, { "text": "Discord" }),
+            ]
         }
 
         # Layout
