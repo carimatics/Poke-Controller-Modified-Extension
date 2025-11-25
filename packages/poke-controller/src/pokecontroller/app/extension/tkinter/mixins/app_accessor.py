@@ -1,13 +1,16 @@
+import tkinter as tk
+from typing import cast
+
 from ..app import PokeControllerExtensionApp as App
 from ..info import PokeControllerAppInfo as AppInfo
 from ..model import PokeControllerExtensionAppModel as AppModel
 from ..state import PokeControllerAppState as AppState
 
 
-class AppAccessor:
+class AppAccessorMixIn(tk.Misc):
     @property
     def app(self) -> App:
-        return self.winfo_toplevel()
+        return cast(App, self.winfo_toplevel())
 
     @property
     def app_info(self) -> AppInfo:
