@@ -11,7 +11,7 @@ from ...state import (
 class Variable[T](StateVariable[T]):
     def __init__(self, container: tk.Variable):
         super().__init__()
-        self._container = container
+        self._container: tk.Variable = container
 
     @property
     def container(self) -> tk.Variable:

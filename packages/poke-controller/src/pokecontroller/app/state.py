@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
-from typing import Any, Callable, Literal
+from typing import Callable, Literal
 
 DEFAULT_STATE = {
     "theme": "default",
@@ -43,7 +43,7 @@ DEFAULT_STATE = {
 class Variable[T](ABC):
     @property
     @abstractmethod
-    def container(self) -> Any:
+    def container[C](self) -> C:
         pass
 
     @abstractmethod
