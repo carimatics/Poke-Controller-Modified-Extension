@@ -1,6 +1,5 @@
-from ...model import (
-    PokeControllerAppModel,
-)
+from ...model import PokeControllerAppModel
+
 
 class PokeControllerExtensionAppModel(PokeControllerAppModel):
     def load_commands(self):
@@ -37,16 +36,16 @@ class PokeControllerExtensionAppModel(PokeControllerAppModel):
         pass
 
     def load_python_command_list(self) -> list[str]:
-        return ["Command 1", "Command 2", "Command 3"]
+        return ["Python Command 1", "Python Command 2", "Python Command 3"]
 
     def load_python_commands_filter_list(self) -> list[str]:
-        return ["-"]
+        return ["-", "Python 1", "Python 2"]
 
     def load_mcu_command_list(self) -> list[str]:
-        return ["Command 1", "Command 2", "Command 3"]
+        return ["MCU Command 1", "MCU Command 2", "MCU Command 3"]
 
     def load_mcu_commands_filter_list(self) -> list[str]:
-        return ["-"]
+        return ["-", "MCU 1", "MCU 2"]
 
     def open_commands_directory_window(self):
         pass

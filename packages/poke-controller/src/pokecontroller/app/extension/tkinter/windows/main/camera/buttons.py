@@ -2,6 +2,7 @@ import tkinter as tk
 import tkinter.ttk as ttk
 
 from ....components import AppFrame
+from ....values import literals as l
 
 START = 'start'
 CONTROLLER = 'controller'
@@ -52,7 +53,7 @@ class Buttons(AppFrame):
 
         # Layout
         for button in BUTTONS:
-            buttons[button].pack(expand=True, anchor=tk.CENTER, side=tk.LEFT, padx=4)
+            buttons[button].pack(expand=True, anchor=l.CENTER, side=l.LEFT, padx=4)
 
     def _on_start_pushed(self):
         self.app_model.start_command()

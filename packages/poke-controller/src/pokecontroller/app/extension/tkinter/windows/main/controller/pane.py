@@ -3,6 +3,7 @@ import tkinter as tk
 import tkinter.ttk as ttk
 
 from ....components import AppFrame
+from ....values import literals as l
 
 # 4字に揃えるためにアンダースコア(_)で名前をパディングしている
 A___ = 'A'
@@ -62,10 +63,10 @@ class ControllerPane(AppFrame):
         self._build_grid_frame(right_frame, right_buttons)
 
         # Layout
-        left_frame.pack(expand=False, fill=tk.BOTH, side=tk.LEFT)
-        right_frame.pack(expand=False, fill=tk.BOTH, side=tk.LEFT)
-        wrapper.pack(expand=False, fill=tk.Y, anchor=tk.CENTER)
-        labelframe.pack(expand=False, fill=tk.BOTH)
+        left_frame.pack(expand=False, fill=l.BOTH, side=l.LEFT)
+        right_frame.pack(expand=False, fill=l.BOTH, side=l.LEFT)
+        wrapper.pack(expand=False, fill=l.Y, anchor=l.CENTER)
+        labelframe.pack(expand=False, fill=l.BOTH)
 
     def _build_grid_frame(self, frame: tk.Frame, button_matrix: list[list[str]]):
         for buttons_i, buttons in enumerate(button_matrix):

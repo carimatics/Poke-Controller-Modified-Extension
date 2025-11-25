@@ -1,27 +1,20 @@
-import tkinter as tk
 import tkinter.ttk as ttk
 
 from ....components import AppFrame
+from ....values import literals as l
 
 
 class OthersSettings(AppFrame):
     def __init__(self, master, *args, **kwargs):
         super().__init__(master, *args, **kwargs)
 
-        # noinspection PyTypeChecker
-        self._output_size: tk.IntVar = self.app_state.other_output_size
-        # noinspection PyTypeChecker
-        self._output_stdout: tk.IntVar = self.app_state.other_output_stdout
-        # noinspection PyTypeChecker
-        self._output1_visibility: tk.BooleanVar = self.app_state.other_widget_visible_output1
-        # noinspection PyTypeChecker
-        self._output2_visibility: tk.BooleanVar = self.app_state.other_widget_visible_output2
-        # noinspection PyTypeChecker
-        self._software_controller_visibility: tk.BooleanVar = self.app_state.other_widget_visible_software_controller
-        # noinspection PyTypeChecker
-        self._software_controller_position: tk.StringVar = self.app_state.other_widget_software_controller_position
-        # noinspection PyTypeChecker
-        self._confirm_dialogue_buttons_position: tk.StringVar = self.app_state.other_widget_dialogue_confirm_buttons_position
+        self._output_size = self.app_state.other_output_size
+        self._output_stdout = self.app_state.other_output_stdout
+        self._output1_visibility = self.app_state.other_widget_visible_output1
+        self._output2_visibility = self.app_state.other_widget_visible_output2
+        self._software_controller_visibility = self.app_state.other_widget_visible_software_controller
+        self._software_controller_position = self.app_state.other_widget_software_controller_position
+        self._confirm_dialogue_buttons_position = self.app_state.other_widget_dialogue_confirm_buttons_position
 
         self.build_ui()
 
@@ -37,16 +30,16 @@ class OthersSettings(AppFrame):
         dialogue_confirm_buttons_position_settings = self._build_dialogue_confirm_buttons_position_settings(lower_frame)
 
         # Layout
-        size_adjuster.pack(expand=True, fill=tk.X, side=tk.LEFT, padx=4, pady=4)
-        standard_output_destination_settings.pack(expand=False, fill=tk.BOTH, side=tk.LEFT, padx=7, pady=4)
-        clear_outputs.pack(expand=False, fill=tk.X, side=tk.LEFT, padx=4, pady=4)
-        upper_frame.pack(expand=False, fill=tk.X, side=tk.TOP, padx=4, pady=4)
+        size_adjuster.pack(expand=True, fill=l.X, side=l.LEFT, padx=4, pady=4)
+        standard_output_destination_settings.pack(expand=False, fill=l.BOTH, side=l.LEFT, padx=7, pady=4)
+        clear_outputs.pack(expand=False, fill=l.X, side=l.LEFT, padx=4, pady=4)
+        upper_frame.pack(expand=False, fill=l.X, side=l.TOP, padx=4, pady=4)
 
-        widget_mode.pack(expand=False, fill=tk.X, side=tk.LEFT, anchor=tk.CENTER, padx=4, pady=4)
-        software_controller_position_settings.pack(expand=False, fill=tk.NONE, side=tk.LEFT, anchor=tk.CENTER, padx=7,
+        widget_mode.pack(expand=False, fill=l.X, side=l.LEFT, anchor=l.CENTER, padx=4, pady=4)
+        software_controller_position_settings.pack(expand=False, fill=l.NONE, side=l.LEFT, anchor=l.CENTER, padx=7,
                                                    pady=4)
-        dialogue_confirm_buttons_position_settings.pack(expand=False, fill=tk.X, side=tk.LEFT, padx=4, pady=4)
-        lower_frame.pack(expand=False, fill=tk.X, side=tk.TOP, padx=4, pady=4)
+        dialogue_confirm_buttons_position_settings.pack(expand=False, fill=l.X, side=l.LEFT, padx=4, pady=4)
+        lower_frame.pack(expand=False, fill=l.X, side=l.TOP, padx=4, pady=4)
 
     def _build_size_adjuster(self, master) -> ttk.Labelframe:
         labelframe = ttk.Labelframe(master, text="Size Adjuster")
@@ -54,14 +47,14 @@ class OthersSettings(AppFrame):
         # Size
         size_scale = ttk.Scale(labelframe,
                                length=200,
-                               orient=tk.HORIZONTAL,
+                               orient=l.HORIZONTAL,
                                from_=0,
                                to=100,
-                               variable=self._output_size,
+                               variable=self._output_size.container,
                                command=self._on_size_adjuster_changed)
 
         # Layout
-        size_scale.pack(expand=True, fill=tk.X, side=tk.LEFT, anchor=tk.CENTER, padx=4, pady=(5, 12))
+        size_scale.pack(expand=True, fill=l.X, side=l.LEFT, anchor=l.CENTER, padx=4, pady=(5, 12))
 
         return labelframe
 
@@ -73,25 +66,25 @@ class OthersSettings(AppFrame):
             ttk.Radiobutton(labelframe,
                             text="Output#1",
                             value=1,
-                            variable=self._output_stdout,
+                            variable=self._output_stdout.container,
                             command=self._on_stdout_changed),
             ttk.Radiobutton(labelframe,
                             text="Output#2",
                             value=2,
-                            variable=self._output_stdout,
+                            variable=self._output_stdout.container,
                             command=self._on_stdout_changed),
         ]
 
         # Layout
         for radiobutton in stdout_radiobuttons:
-            radiobutton.pack(expand=False, fill=tk.X, side=tk.LEFT, padx=4)
+            radiobutton.pack(expand=False, fill=l.X, side=l.LEFT, padx=4)
 
         return labelframe
 
     def _build_clear_outputs(self, master) -> ttk.Labelframe:
         labelframe = ttk.Labelframe(master, text="Clear")
 
-        # Clear Outputs Buttons
+        # Outputs Clear Buttons
         buttons = [
             ttk.Button(labelframe,
                        text="Clear(#1)",
@@ -103,7 +96,7 @@ class OthersSettings(AppFrame):
 
         # Layout
         for button in buttons:
-            button.pack(expand=False, fill=tk.X, side=tk.LEFT, padx=4, pady=(3, 5))
+            button.pack(expand=False, fill=l.X, side=l.LEFT, padx=4, pady=(3, 5))
 
         return labelframe
 
@@ -114,21 +107,21 @@ class OthersSettings(AppFrame):
         checkbuttons = [
             ttk.Checkbutton(labelframe,
                             text="Output#1",
-                            variable=self._output1_visibility,
+                            variable=self._output1_visibility.container,
                             command=self._on_output_visibility_changed),
             ttk.Checkbutton(labelframe,
                             text="Output#2",
-                            variable=self._output2_visibility,
+                            variable=self._output2_visibility.container,
                             command=self._on_output_visibility_changed),
             ttk.Checkbutton(labelframe,
                             text="Software-Controller",
-                            variable=self._software_controller_visibility,
+                            variable=self._software_controller_visibility.container,
                             command=self._on_software_controller_visibility_changed),
         ]
 
         # Layout
         for checkbutton in checkbuttons:
-            checkbutton.pack(expand=False, fill=tk.X, side=tk.LEFT, padx=4, pady=4)
+            checkbutton.pack(expand=False, fill=l.X, side=l.LEFT, padx=4, pady=4)
 
         return labelframe
 
@@ -140,18 +133,18 @@ class OthersSettings(AppFrame):
             ttk.Radiobutton(labelframe,
                             text="Top",
                             value="top",
-                            variable=self._software_controller_position,
+                            variable=self._software_controller_position.container,
                             command=self._on_software_controller_position_changed),
             ttk.Radiobutton(labelframe,
                             text="Bottom",
                             value="bottom",
-                            variable=self._software_controller_position,
+                            variable=self._software_controller_position.container,
                             command=self._on_software_controller_position_changed),
         ]
 
         # Layout
         for radiobutton in position_radiobuttons:
-            radiobutton.pack(expand=False, fill=tk.X, side=tk.LEFT, padx=4, pady=4)
+            radiobutton.pack(expand=False, fill=l.X, side=l.LEFT, padx=4, pady=4)
 
         return labelframe
 
@@ -163,23 +156,23 @@ class OthersSettings(AppFrame):
             ttk.Radiobutton(labelframe,
                             text="Top",
                             value="top",
-                            variable=self._confirm_dialogue_buttons_position,
+                            variable=self._confirm_dialogue_buttons_position.container,
                             command=self._on_confirm_buttons_position_changed),
             ttk.Radiobutton(labelframe,
                             text="Bottom",
                             value="bottom",
-                            variable=self._confirm_dialogue_buttons_position,
+                            variable=self._confirm_dialogue_buttons_position.container,
                             command=self._on_confirm_buttons_position_changed),
             ttk.Radiobutton(labelframe,
                             text="Both",
                             value="both",
-                            variable=self._confirm_dialogue_buttons_position,
+                            variable=self._confirm_dialogue_buttons_position.container,
                             command=self._on_confirm_buttons_position_changed),
         ]
 
         # Layout
         for radiobutton in position_radiobuttons:
-            radiobutton.pack(expand=False, fill=tk.X, side=tk.LEFT, padx=4, pady=4)
+            radiobutton.pack(expand=False, fill=l.X, side=l.LEFT, padx=4, pady=4)
 
         return labelframe
 

@@ -2,37 +2,36 @@ import tkinter as tk
 import tkinter.ttk as ttk
 
 from ....components import AppFrame
+from ....values import literals as l
 
 
-# FIXME
 class Output(AppFrame):
-    def __init__(self, master, id: int, *args, **kwargs):
+    def __init__(self, master, output_id: int, *args, **kwargs):
         super().__init__(master, *args, **kwargs)
 
-        self._id: int = id
-        # noinspection PyTypeChecker
-        self.text_area: tk.Text = None
+        self._id: int = output_id
+        self.text_area: tk.Text | None = None
 
         self.build_ui()
 
     def build_ui(self):
         labelframe = ttk.Labelframe(self,
                                     text=f"Output#{self._id}",
-                                    relief=tk.GROOVE)
+                                    relief=l.GROOVE)
 
         # Text Area
         self.text_area = tk.Text(labelframe,
-                            width=62,
-                            blockcursor=True,
-                            insertunfocussed=tk.NONE,
-                            undo=False,
-                            maxundo=0,
-                            relief=tk.FLAT,
-                            state=tk.DISABLED)
-        scroll = tk.Scrollbar(labelframe, orient=tk.VERTICAL, command=self.text_area.yview)
+                                 width=62,
+                                 blockcursor=True,
+                                 insertunfocussed=l.NONE,
+                                 undo=False,
+                                 maxundo=0,
+                                 relief=l.FLAT,
+                                 state=l.DISABLED)
+        scroll = tk.Scrollbar(labelframe, orient=l.VERTICAL, command=self.text_area.yview)
         self.text_area.configure(yscrollcommand=scroll.set)
 
         # Layout
-        self.text_area.pack(expand=True, fill=tk.BOTH, side=tk.LEFT, padx=(5, 0), pady=5)
-        scroll.pack(expand=False, fill=tk.Y, side=tk.LEFT, pady=5)
-        labelframe.pack(expand=True, fill=tk.BOTH)
+        self.text_area.pack(expand=True, fill=l.BOTH, side=l.LEFT, padx=(5, 0), pady=5)
+        scroll.pack(expand=False, fill=l.Y, side=l.LEFT, pady=5)
+        labelframe.pack(expand=True, fill=l.BOTH)

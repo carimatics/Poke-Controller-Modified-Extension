@@ -1,4 +1,4 @@
-from .runner import (
+from .tkinter import (
     run_app as run_app,
 )
 

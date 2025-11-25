@@ -1,10 +1,8 @@
-import tkinter as tk
 import tkinter.ttk as ttk
 
 from ....components import AppFrame
-from ....utils import (
-    separator,
-)
+from ....utils import separator
+from ....values import literals as l
 
 
 class CameraSettings(AppFrame):
@@ -14,20 +12,13 @@ class CameraSettings(AppFrame):
         self._name_list: list[str] = self._load_camera_list()
         self._size_list: list[str] = self._load_camera_size_list()
 
-        # noinspection PyTypeChecker
-        self._id: tk.StringVar = self.app_state.camera_id
-        # noinspection PyTypeChecker
-        self._camera_name: tk.StringVar = self.app_state.camera_name
-        # noinspection PyTypeChecker
-        self._fps: tk.IntVar = self.app_state.camera_fps
-        # noinspection PyTypeChecker
-        self._size: tk.StringVar = self.app_state.camera_size
-        # noinspection PyTypeChecker
-        self._show_realtime: tk.BooleanVar = self.app_state.camera_show_realtime
-        # noinspection PyTypeChecker
-        self._show_value: tk.BooleanVar = self.app_state.camera_show_matched
-        # noinspection PyTypeChecker
-        self._show_guide: tk.BooleanVar = self.app_state.camera_show_guide
+        self._id = self.app_state.camera_id
+        self._camera_name = self.app_state.camera_name
+        self._fps = self.app_state.camera_fps
+        self._size = self.app_state.camera_size
+        self._show_realtime = self.app_state.camera_show_realtime
+        self._show_value = self.app_state.camera_show_matched
+        self._show_guide = self.app_state.camera_show_guide
 
         self.build_ui()
 
@@ -37,8 +28,8 @@ class CameraSettings(AppFrame):
         display_settings = self._build_display_settings()
 
         # Layout
-        camera_settings.pack(expand=False, fill=tk.BOTH, pady=4)
-        display_settings.pack(expand=False, fill=tk.BOTH, pady=4)
+        camera_settings.pack(expand=False, fill=l.BOTH, pady=4)
+        display_settings.pack(expand=False, fill=l.BOTH, pady=4)
 
     def _build_camera_settings(self) -> ttk.Labelframe:
         labelframe = ttk.Labelframe(self, text="Camera Settings")
@@ -50,10 +41,10 @@ class CameraSettings(AppFrame):
         name_label = ttk.Label(upper_frame,
                                text="Camera Name: ",
                                width=11,
-                               anchor=tk.CENTER)
+                               anchor=l.CENTER)
         name_combobox = ttk.Combobox(upper_frame,
-                                     state="readonly",
-                                     textvariable=self._camera_name,
+                                     state=l.READONLY,
+                                     textvariable=self._camera_name.container,
                                      values=self._name_list)
         # FIXME: 必要か検証する
         name_combobox.bind("<<ComboboxSelected>>", self._on_camera_name_selected, add="")
@@ -67,20 +58,20 @@ class CameraSettings(AppFrame):
         id_label = ttk.Label(lower_frame,
                              text="Camera ID: ",
                              width=11,
-                             anchor=tk.W)
+                             anchor=l.W)
         id_entry = ttk.Entry(lower_frame,
                              width=3,
-                             state=tk.DISABLED,
-                             textvariable=self._id)
+                             state=l.DISABLED,
+                             textvariable=self._id.container)
 
         # FPS
         fps_list = [60, 45, 30, 15, 5]
         fps_label = ttk.Label(lower_frame, text="FPS: ")
         fps_combobox = ttk.Combobox(lower_frame,
                                     width=3,
-                                    justify=tk.LEFT,
-                                    state="readonly",
-                                    textvariable=self._fps,
+                                    justify=l.LEFT,
+                                    state=l.READONLY,
+                                    textvariable=self._fps.container,
                                     values=[str(f) for f in fps_list])
         # FIXME: 必要か検証する
         fps_combobox.bind("<<ComboboxSelected>>", self._on_camera_fps_selected, add="")
@@ -89,8 +80,8 @@ class CameraSettings(AppFrame):
         size_label = ttk.Label(lower_frame, text="Show Size: ")
         size_combobox = ttk.Combobox(lower_frame,
                                      width=8,
-                                     state="readonly",
-                                     textvariable=self._size,
+                                     state=l.READONLY,
+                                     textvariable=self._size.container,
                                      values=self._size_list)
         # FIXME: 必要か検証する
         size_combobox.bind("<<ComboboxSelected>>", self._on_camera_size_selected, add="")
@@ -102,21 +93,23 @@ class CameraSettings(AppFrame):
                                    command=self._on_reload_pushed)
 
         # Layout
-        name_label.pack(expand=False, fill=tk.X, side=tk.LEFT)
-        name_combobox.pack(expand=True, fill=tk.X, side=tk.LEFT)
-        upper_frame.pack(expand=True, fill=tk.X, side=tk.TOP, padx=4, pady=4)
+        name_label.pack(expand=False, fill=l.X, side=l.LEFT)
+        name_combobox.pack(expand=True, fill=l.X, side=l.LEFT)
+        upper_frame.pack(expand=True, fill=l.X, side=l.TOP, padx=4, pady=4)
 
-        id_label.pack(expand=False, fill=tk.X, side=tk.LEFT)
-        id_entry.pack(expand=True, fill=tk.X, side=tk.LEFT)
-        separator(lower_frame).pack(expand=False, fill=tk.Y, side=tk.LEFT, padx=5, pady=8)
-        fps_label.pack(expand=False, fill=tk.X, side=tk.LEFT)
-        fps_combobox.pack(expand=False, fill=tk.X, side=tk.LEFT)
-        separator(lower_frame).pack(expand=False, fill=tk.Y, side=tk.LEFT, padx=5, pady=8)
-        size_label.pack(expand=False, fill=tk.X, side=tk.LEFT)
-        size_combobox.pack(expand=False, fill=tk.X, side=tk.LEFT)
-        separator(lower_frame).pack(expand=False, fill=tk.Y, side=tk.LEFT, padx=5, pady=8)
-        reload_button.pack(expand=False, fill=tk.X, side=tk.LEFT, padx=4)
-        lower_frame.pack(expand=True, fill=tk.BOTH, side=tk.TOP, padx=4, pady=4)
+        id_label.pack(expand=False, fill=l.X, side=l.LEFT)
+        id_entry.pack(expand=True, fill=l.X, side=l.LEFT)
+        # noinspection DuplicatedCode
+        separator(lower_frame).pack(expand=False, fill=l.Y, side=l.LEFT, padx=5, pady=8)
+        fps_label.pack(expand=False, fill=l.X, side=l.LEFT)
+        fps_combobox.pack(expand=False, fill=l.X, side=l.LEFT)
+        # noinspection DuplicatedCode
+        separator(lower_frame).pack(expand=False, fill=l.Y, side=l.LEFT, padx=5, pady=8)
+        size_label.pack(expand=False, fill=l.X, side=l.LEFT)
+        size_combobox.pack(expand=False, fill=l.X, side=l.LEFT)
+        separator(lower_frame).pack(expand=False, fill=l.Y, side=l.LEFT, padx=5, pady=8)
+        reload_button.pack(expand=False, fill=l.X, side=l.LEFT, padx=4)
+        lower_frame.pack(expand=True, fill=l.BOTH, side=l.TOP, padx=4, pady=4)
 
         return labelframe
 
@@ -126,25 +119,25 @@ class CameraSettings(AppFrame):
         # Show Realtime
         show_realtime_checkbutton = ttk.Checkbutton(labelframe,
                                                     text="Show Realtime",
-                                                    variable=self._show_realtime,
+                                                    variable=self._show_realtime.container,
                                                     command=self._on_show_realtime_changed)
 
         # Show Value
         show_matched_checkbutton = ttk.Checkbutton(labelframe,
                                                    text="Show Matched",
-                                                   variable=self._show_value,
+                                                   variable=self._show_value.container,
                                                    command=self._on_show_matched_changed)
 
         # Show Guide
         show_guide_checkbutton = ttk.Checkbutton(labelframe,
                                                  text="Show Guide",
-                                                 variable=self._show_guide,
+                                                 variable=self._show_guide.container,
                                                  command=self._on_show_guide_changed)
 
         # Layout
-        show_realtime_checkbutton.pack(expand=False, fill=tk.X, side=tk.LEFT, padx=4, pady=4)
-        show_matched_checkbutton.pack(expand=False, fill=tk.X, side=tk.LEFT, padx=8, pady=4)
-        show_guide_checkbutton.pack(expand=False, fill=tk.X, side=tk.LEFT, padx=4, pady=4)
+        show_realtime_checkbutton.pack(expand=False, fill=l.X, side=l.LEFT, padx=4, pady=4)
+        show_matched_checkbutton.pack(expand=False, fill=l.X, side=l.LEFT, padx=8, pady=4)
+        show_guide_checkbutton.pack(expand=False, fill=l.X, side=l.LEFT, padx=4, pady=4)
 
         return labelframe
 

@@ -14,6 +14,6 @@ class OutputsPane(AppFrame):
 
     def build_ui(self):
         self.outputs += [
-            Output(self, id=1),
-            Output(self, id=2),
+            Output(self, output_id=1),
+            Output(self, output_id=2),
         ]

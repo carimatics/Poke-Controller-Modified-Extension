@@ -1,82 +1,67 @@
-import tkinter as tk
 import tkinter.ttk as ttk
 
 from ....components import AppFrame
+from ....values import literals as l
 
 
 class NotificationSettings(AppFrame):
     def __init__(self, master, *args, **kwargs):
         super().__init__(master, *args, **kwargs)
 
-        # noinspection PyTypeChecker
-        self._enabled_windows_started: tk.BooleanVar = self.app_state.notification_enabled_notify_windows_when_command_started
-        # noinspection PyTypeChecker
-        self._enabled_windows_ended: tk.BooleanVar = self.app_state.notification_enabled_notify_windows_when_command_ended
-        # noinspection PyTypeChecker
-        self._enabled_discord_started: tk.BooleanVar = self.app_state.notification_enabled_notify_discord_when_command_started
-        # noinspection PyTypeChecker
-        self._enabled_discord_ended: tk.BooleanVar = self.app_state.notification_enabled_notify_discord_when_command_ended
+        self._enabled_windows_started = self.app_state.notification_enabled_notify_windows_when_command_started
+        self._enabled_windows_ended = self.app_state.notification_enabled_notify_windows_when_command_ended
+        self._enabled_discord_started = self.app_state.notification_enabled_notify_discord_when_command_started
+        self._enabled_discord_ended = self.app_state.notification_enabled_notify_discord_when_command_ended
 
         self.build_ui()
 
     def build_ui(self):
-        windows_notification = self._build_windows_notification()
-        discord_notification = self._build_discord_notification()
+        windows_notification = self._build_notification(platform='windows')
+        discord_notification = self._build_notification(platform='discord')
 
         # Layout
-        windows_notification.pack(expand=False, fill=tk.NONE, anchor=tk.NE, side=tk.LEFT, padx=4)
-        discord_notification.pack(expand=False, fill=tk.NONE, anchor=tk.NE, side=tk.LEFT, padx=8)
+        windows_notification.pack(expand=False, fill=l.NONE, anchor=l.NE, side=l.LEFT, padx=4)
+        discord_notification.pack(expand=False, fill=l.NONE, anchor=l.NE, side=l.LEFT, padx=8)
 
-    def _build_windows_notification(self) -> ttk.Labelframe:
-        labelframe = ttk.Labelframe(self, text="Windows Notification")
+    def _build_notification(self, platform: str) -> ttk.Labelframe:
+        labelframe = ttk.Labelframe(self, text=f"{platform.capitalize()} Notification")
+
+        if platform == "windows":
+            enabled_started = self._enabled_windows_started.container
+            enabled_ended = self._enabled_windows_ended.container
+            on_enabled_started_changed = self._on_windows_start_changed
+            on_enabled_ended_changed = self._on_windows_end_changed
+            on_test_pushed = self._on_windows_test_pushed
+        elif platform == "discord":
+            enabled_started = self._enabled_discord_started.container
+            enabled_ended = self._enabled_discord_ended.container
+            on_enabled_started_changed = self._on_discord_start_changed
+            on_enabled_ended_changed = self._on_discord_end_changed
+            on_test_pushed = self._on_discord_test_pushed
+        else:
+            raise ValueError(f"Invalid platform: {platform}")
 
         # Start
         enable_start_checkbutton = ttk.Checkbutton(labelframe,
                                                    text="Start",
-                                                   variable=self._enabled_windows_started,
-                                                   command=self._on_windows_start_changed)
+                                                   variable=enabled_started,
+                                                   command=on_enabled_started_changed)
 
         # End
         enable_end_checkbutton = ttk.Checkbutton(labelframe,
                                                  text="End",
-                                                 variable=self._enabled_windows_ended,
-                                                 command=self._on_windows_end_changed)
+                                                 variable=enabled_ended,
+                                                 command=on_enabled_ended_changed)
 
         # Test
         test_button = ttk.Button(labelframe,
                                  text="Test",
-                                 command=self._on_windows_test_pushed)
+                                 command=on_test_pushed)
 
         # Layout
-        enable_start_checkbutton.pack(expand=False, fill=tk.NONE, side=tk.LEFT, padx=4)
-        enable_end_checkbutton.pack(expand=False, fill=tk.NONE, side=tk.LEFT, padx=8)
-        test_button.pack(expand=False, fill=tk.NONE, side=tk.LEFT, padx=4, pady=4)
-
-        return labelframe
-
-    def _build_discord_notification(self) -> ttk.Labelframe:
-        labelframe = ttk.Labelframe(self, text="Discord Notification")
-
-        # Start
-        enable_start_checkbutton = ttk.Checkbutton(labelframe,
-                                                   text="Start",
-                                                   variable=self._enabled_discord_started,
-                                                   command=self._on_discord_start_changed)
-
-        # End
-        enable_end_checkbutton = ttk.Checkbutton(labelframe,
-                                                 text="End",
-                                                 variable=self._enabled_discord_ended,
-                                                 command=self._on_discord_end_changed)
-
-        # Test
-        test_button = ttk.Button(labelframe,
-                                 text="Test",
-                                 command=self._on_discord_test_pushed)
-        # Layout
-        enable_start_checkbutton.pack(expand=False, fill=tk.NONE, side=tk.LEFT, padx=4)
-        enable_end_checkbutton.pack(expand=False, fill=tk.NONE, side=tk.LEFT, padx=8)
-        test_button.pack(expand=False, fill=tk.NONE, side=tk.LEFT, padx=4, pady=4)
+        enable_start_checkbutton.pack(expand=False, fill=l.NONE, side=l.LEFT, padx=4)
+        enable_end_checkbutton.pack(expand=False, fill=l.NONE, side=l.LEFT, padx=8)
+        test_button.pack(expand=False, fill=l.NONE, side=l.LEFT, padx=4, pady=4)
 
         return labelframe
 
