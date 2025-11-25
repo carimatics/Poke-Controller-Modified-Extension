@@ -88,7 +88,7 @@ class CommandsSettings(AppFrame):
         pause_button.pack(expand=False, fill=l.X, side=l.LEFT, padx=4)
         lower_frame.pack(expand=False, fill=l.BOTH, side=l.TOP, padx=4, pady=4)
 
-    def _build_commands_notebook(self, master) -> ttk.Notebook:
+    def _build_commands_notebook(self, master: ttk.Frame) -> ttk.Notebook:
         notebook = ttk.Notebook(master)
 
         command_frames: list[ttk.Frame] = [
