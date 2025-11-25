@@ -69,18 +69,20 @@ class ControllerPane(AppFrame):
         labelframe.pack(expand=False, fill=l.BOTH)
 
     def _build_grid_frame(self, frame: tk.Frame, button_matrix: list[list[str]]):
-        for buttons_i, buttons in enumerate(button_matrix):
-            for button_i, button in enumerate(buttons):
-                if button is not None:
-                    b = tk.Button(frame,
-                                  text=button,
-                                  width=4,
-                                  bg=BUTTON_COLORS['bg'],
-                                  highlightbackground=BUTTON_COLORS['bg'],
-                                  fg=BUTTON_COLORS['fg'])
-                    b.bind("<ButtonPress>", lambda _, btn=button: self._on_button_pushed(btn), add="")
-                    b.bind("<ButtonRelease>", lambda _, btn=button: self._on_button_released(btn), add="")
-                    b.grid(row=buttons_i, column=button_i, padx=2, pady=2, sticky=tk.NSEW)
+        for row, buttons in enumerate(button_matrix):
+            for column, button in enumerate(buttons):
+                if button is None:
+                    continue
+
+                b = tk.Button(frame,
+                              text=button,
+                              width=4,
+                              bg=BUTTON_COLORS['bg'],
+                              highlightbackground=BUTTON_COLORS['bg'],
+                              fg=BUTTON_COLORS['fg'])
+                b.bind("<ButtonPress>", lambda _, btn=button: self._on_button_pushed(btn), add="")
+                b.bind("<ButtonRelease>", lambda _, btn=button: self._on_button_released(btn), add="")
+                b.grid(row=row, column=column, padx=2, pady=2, sticky=tk.NSEW)
 
     def _on_button_pushed(self, button: str):
         self.app_model.push_controller_button(button)
