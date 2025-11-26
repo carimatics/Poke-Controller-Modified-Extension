@@ -21,5 +21,5 @@ from .template_matcher import (
     CpuTemplateMatcher as CpuTemplateMatcher,
     GpuTemplateMatcher as GpuTemplateMatcher,
     TemplateMatcher as TemplateMatcher,
-    TemplateMatcherGenerator as TemplateMatcherGenerator,
+    TemplateMatcherCreator as TemplateMatcherCreator,
 )

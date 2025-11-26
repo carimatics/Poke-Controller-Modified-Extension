@@ -15,7 +15,7 @@ from pokecontroller.core.image import (
     ImageBinarizeHsvArgs,
     ImageCropArgs,
     ImageReadMode,
-    TemplateMatcherGenerator,
+    TemplateMatcherCreator,
 )
 from pokecontroller.core.image.utils import (
     parse_crop,
@@ -145,11 +145,13 @@ class ImageProcessing:
             self.__logger.propagate = True
 
         matcher_mode = "gpu" if use_gpu else "cpu"
-        self.__matcher = TemplateMatcherGenerator.generate(preferred_mode=matcher_mode)
-        if self.__matcher.mode == "gpu":
+        cpu_matcher, gpu_matcher = TemplateMatcherCreator.create(preferred_mode=matcher_mode)
+        if gpu_matcher is not None:
+            self.__matcher = gpu_matcher
             print("template matching:mask is ignored.")
             self.__use_gpu = True
         else:
+            self.__matcher = cpu_matcher
             self.__use_gpu = False
 
     def imwrite(self, filename: str, image: ndarray, params: Sequence[int] = None) -> bool:

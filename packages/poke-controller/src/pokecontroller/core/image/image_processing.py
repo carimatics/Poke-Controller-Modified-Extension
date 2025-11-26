@@ -65,9 +65,9 @@ def binarize_by_interframe_diff(
     return cv2.medianBlur(th, 3)
 
 
-def write(src: RawImage, path: str, params: Sequence[int] = None) -> bool:
+def write(src: RawImage, path: str, *params: Sequence[int]) -> bool:
     ext = os.path.splitext(path)[1]
-    success, encoded = cv2.imencode(ext, src, params)
+    success, encoded = cv2.imencode(ext, src, *params)
 
     if not success:
         return False
@@ -86,8 +86,6 @@ def read(path: str, mode: ImageReadMode = ImageReadMode.COLOR) -> RawImage | Non
             return cv2.imread(path, cv2.IMREAD_GRAYSCALE)
         case ImageReadMode.COLOR:
             return cv2.imread(path, cv2.IMREAD_COLOR)
-        case _:
-            return None
 
 
 def match_template(
@@ -102,10 +100,10 @@ def match_template(
     return cv2.matchTemplate(image, template, method, mask=mask)
 
 
-def match_template_by_gpu(
+def match_template_by_gpu(  # type: ignore[no-untyped-def]
     matcher,
     image: cv2.cuda.GpuMat,
     template: cv2.cuda.GpuMat,
-) -> cv2.cuda.GpuMat:
+) -> RawImage:
     result = matcher.match(image, template)
-    return result.download()
+    return result.download()  # type: ignore[no-any-return]

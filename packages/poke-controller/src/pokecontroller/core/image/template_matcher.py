@@ -12,47 +12,36 @@ from .raw_image import (
 )
 
 
-class TemplateMatcher(ABC):
+class TemplateMatcher[I](ABC):
     def __init__(self, threshold: float = 0.8):
-        self._image: RawImage | None = None
-        self._template: RawImage | None = None
-        self._mask: RawImage | None = None
+        self._image: I | None = None
+        self._template: I | None = None
+        self._mask: I | None = None
         self._threshold: float = threshold
         self._last_result: TemplateMatchResult | None = None
 
     @property
     @abstractmethod
-    def mode(self) -> str:
-        pass
+    def mode(self) -> str: ...
 
     @property
     @abstractmethod
-    def initialized(self) -> bool:
-        return False
+    def initialized(self) -> bool: ...
 
     @property
     @abstractmethod
-    def is_ready(self) -> bool:
-        return False
-
-    @abstractmethod
-    def initialize(self) -> None:
-        pass
-
-    @abstractmethod
-    def match(self) -> TemplateMatchResult | None:
-        pass
+    def is_ready(self) -> bool: ...
 
     @property
-    def image(self) -> RawImage | None:
+    def image(self) -> I | None:
         return self._image
 
     @property
-    def template(self) -> RawImage | None:
+    def template(self) -> I | None:
         return self._template
 
     @property
-    def mask(self) -> RawImage | None:
+    def mask(self) -> I | None:
         return self._mask
 
     @property
@@ -63,47 +52,47 @@ class TemplateMatcher(ABC):
     def last_result(self) -> TemplateMatchResult | None:
         return self._last_result
 
-    def set_image(self, image: RawImage | None) -> "TemplateMatcher":
-        self._image = image
-        return self
+    @abstractmethod
+    def initialize(self) -> None: ...
 
-    def clear_image(self):
-        return self.set_image(None)
+    @abstractmethod
+    def match(self) -> TemplateMatchResult | None: ...
 
-    def set_template(self, template: RawImage | None) -> "TemplateMatcher":
-        self._template = template
-        return self
+    @abstractmethod
+    def set_image(self, image: RawImage | None) -> "TemplateMatcher[I]": ...
 
-    def clear_template(self):
-        return self.set_template(None)
+    @abstractmethod
+    def set_template(self, template: RawImage | None) -> "TemplateMatcher[I]": ...
 
-    def set_mask(self, mask: RawImage | None) -> "TemplateMatcher":
-        self._mask = mask
-        return self
+    @abstractmethod
+    def set_mask(self, mask: RawImage | None) -> "TemplateMatcher[I]": ...
 
-    def clear_mask(self) -> "TemplateMatcher":
-        return self.set_mask(None)
-
-    def set_threshold(self, threshold: float) -> "TemplateMatcher":
+    def set_threshold(self, threshold: float) -> "TemplateMatcher[I]":
         self._threshold = threshold
         return self
 
     def _match_result(self, matched: RawImage) -> TemplateMatchResult:
         _, max_val, _, max_loc = cv2.minMaxLoc(matched)
+
+        if (tmpl := self._template) is None:
+            # FIXME: define better exception
+            raise ValueError("Template is not set")
+
+        if isinstance(tmpl, cv2.cuda.GpuMat):
+            w, h = tmpl.size()
+        else:
+            h, w = tmpl.shape  # type: ignore[attr-defined]
         self._last_result = TemplateMatchResult(
             contains=max_val > self._threshold,
             location=(max_loc[0], max_loc[1]),
-            width=self._template.shape[1],
-            height=self._template.shape[0],
+            width=w,
+            height=h,
             value=max_val,
         )
         return self._last_result
 
 
-class CpuTemplateMatcher(TemplateMatcher):
-    def __init__(self, threshold: float = 0.8):
-        super().__init__(threshold)
-
+class CpuTemplateMatcher(TemplateMatcher[RawImage]):
     @property
     def mode(self) -> str:
         return "cpu"
@@ -116,26 +105,35 @@ class CpuTemplateMatcher(TemplateMatcher):
     def is_ready(self) -> bool:
         return self._image is not None and self._template is not None
 
+    def set_image(self, image: RawImage | None) -> TemplateMatcher[RawImage]:
+        self._image = image
+        return self
+
+    def set_template(self, template: RawImage | None) -> TemplateMatcher[RawImage]:
+        self._template = template
+        return self
+
+    def set_mask(self, mask: RawImage | None) -> TemplateMatcher[RawImage]:
+        self._mask = mask
+        return self
+
     def initialize(self) -> None:
         pass
 
     def match(self) -> TemplateMatchResult | None:
-        if not self.is_ready:
+        if (img := self._image) is None or (tmpl := self._template) is None:
             return None
 
-        result = match_template(self._image, self._template, self._mask)
+        result = match_template(img, tmpl, self._mask)
         return self._match_result(result)
 
 
-class GpuTemplateMatcher(TemplateMatcher):
+class GpuTemplateMatcher(TemplateMatcher[cv2.cuda.GpuMat]):
     def __init__(self, threshold: float = 0.8):
         super().__init__(threshold)
 
         self._initialized: bool = False
         self._gpu_matcher = None
-        self._gpu_image: cv2.cuda.GpuMat | None = None
-        self._gpu_template: cv2.cuda.GpuMat | None = None
-        self._gpu_result: cv2.cuda.GpuMat | None = None
         self.initialize()
 
     @property
@@ -147,15 +145,13 @@ class GpuTemplateMatcher(TemplateMatcher):
         return self._initialized
 
     @property
-    def mask(self) -> RawImage | None:
+    def mask(self) -> None:
         return None
 
     @property
     def is_ready(self) -> bool:
         return (
-            self._initialized
-            and self._gpu_image is not None
-            and self._gpu_template is not None
+            self._initialized and self._image is not None and self._template is not None
         )
 
     def initialize(self) -> None:
@@ -164,55 +160,64 @@ class GpuTemplateMatcher(TemplateMatcher):
 
         try:
             # noinspection PyUnresolvedReferences
-            self._gpu_matcher = cv2.cuda.createTemplateMatching(
+            self._gpu_matcher = cv2.cuda.createTemplateMatching(  # type: ignore[attr-defined]
                 cv2.CV_8UC1,
                 cv2.TM_CCOEFF_NORMED,
             )
-            self._gpu_image = cv2.cuda.GpuMat()
-            self._gpu_template = cv2.cuda.GpuMat()
+            self._image = cv2.cuda.GpuMat()
+            self._template = cv2.cuda.GpuMat()
             self._initialized = True
         except Exception:  # noqa
             self._gpu_matcher = None
-            self._gpu_image = None
-            self._gpu_template = None
+            self._image = None
+            self._template = None
             self._initialized = False
 
-    def set_image(self, image: RawImage) -> "GpuTemplateMatcher":
-        if self._initialized:
-            super().set_image(image)
-            self._gpu_image.upload(image)
+    def set_image(self, image: RawImage | None) -> TemplateMatcher[cv2.cuda.GpuMat]:
+        self._upload_image(self._image, image)
         return self
 
-    def set_template(self, template: RawImage) -> "GpuTemplateMatcher":
-        if self._initialized:
-            super().set_template(template)
-            self._gpu_template.upload(template)
+    def set_template(
+        self, template: RawImage | None
+    ) -> TemplateMatcher[cv2.cuda.GpuMat]:
+        self._upload_image(self._template, template)
         return self
 
-    def set_mask(self, mask: RawImage | None) -> "GpuTemplateMatcher":
+    def set_mask(self, mask: RawImage | None) -> TemplateMatcher[cv2.cuda.GpuMat]:
         return self
 
     def match(self) -> TemplateMatchResult | None:
-        if not self.is_ready:
+        if not self._initialized:
+            return None
+        if (matcher := self._gpu_matcher) is None:
+            return None
+        if (img := self._image) is None:  # type: ignore[unreachable]
+            return None
+        if (tmpl := self._template) is None:
             return None
 
-        result = match_template_by_gpu(
-            self._gpu_matcher,
-            self._gpu_image,
-            self._gpu_template,
-        )
+        result = match_template_by_gpu(matcher, img, tmpl)
         return self._match_result(result)
 
+    def _upload_image(self, var: cv2.cuda.GpuMat | None, val: RawImage | None) -> None:
+        if not self._initialized:
+            return
 
-class TemplateMatcherGenerator:
+        if var is not None and val is not None:
+            var.upload(val)
+
+
+class TemplateMatcherCreator:
     @staticmethod
-    def generate(preferred_mode: str = "cpu") -> TemplateMatcher:
-        match preferred_mode:
-            case "gpu":
-                try:
-                    matcher = GpuTemplateMatcher()
-                    return matcher if matcher.initialized else CpuTemplateMatcher()
-                except Exception:  # noqa
-                    return CpuTemplateMatcher()
-            case _:  # default to cpu
-                return CpuTemplateMatcher()
+    def create(
+        preferred_mode: str = "cpu",
+    ) -> tuple[CpuTemplateMatcher, None] | tuple[None, GpuTemplateMatcher]:
+        if preferred_mode == "gpu":
+            try:
+                gpu = GpuTemplateMatcher()
+                if gpu.initialized:
+                    return None, gpu
+            except Exception:  # noqa
+                pass
+        cpu = CpuTemplateMatcher()
+        return cpu, None

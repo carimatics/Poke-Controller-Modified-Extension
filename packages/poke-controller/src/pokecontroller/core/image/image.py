@@ -15,7 +15,10 @@ from .raw_image import RawImage
 
 class Image:
     def __init__(self, src: RawImage):
-        self.src = src
+        self._src: RawImage = src
+        h, w = src.shape
+        self._height: int = h
+        self._width: int = w
 
     @property
     def src(self) -> RawImage:
@@ -23,9 +26,8 @@ class Image:
 
     @src.setter
     def src(self, value: RawImage) -> None:
-        self._src: RawImage = value
-        self._width: int = self._src.shape[1]
-        self._height: int = self._src.shape[0]
+        self._src = value
+        self._height, self._width = value.shape
 
     @property
     def width(self) -> int:
