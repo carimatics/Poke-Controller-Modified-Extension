@@ -27,7 +27,6 @@ class PokeControllerExtensionApp(tk.Tk):
 
         # Theme
         style = ttk.Style(self)
-        print(self._state.theme.get())
         style.theme_use(self._state.theme.get())
 
         # FIXME
