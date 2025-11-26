@@ -11,10 +11,10 @@ from .controller import ControllerPane
 from .outputs import OutputsPane
 from .settings import SettingsPane
 
-CAMERA = 'camera'
-SETTINGS = 'settings'
-OUTPUTS = 'outputs'
-CONTROLLER = 'controller'
+CAMERA = "camera"
+SETTINGS = "settings"
+OUTPUTS = "outputs"
+CONTROLLER = "controller"
 
 PANES = [
     (CAMERA, CameraPane, l.LEFT),
@@ -31,8 +31,12 @@ class MainWindow(AppFrame):
         self._outputs_size = self.app_state.other_output_size
         self._visible_output1 = self.app_state.other_widget_visible_output1
         self._visible_output2 = self.app_state.other_widget_visible_output2
-        self._visible_controller = self.app_state.other_widget_visible_software_controller
-        self._controller_position = self.app_state.other_widget_software_controller_position
+        self._visible_controller = (
+            self.app_state.other_widget_visible_software_controller
+        )
+        self._controller_position = (
+            self.app_state.other_widget_software_controller_position
+        )
 
         self._panes: dict[str, ttk.Frame] = {}
         self._frames: dict[str, ttk.Frame] = {}
@@ -74,25 +78,36 @@ class MainWindow(AppFrame):
         self._outputs_size.register_hook("write", self._on_outputs_size_changed)
         self._visible_output1.register_hook("write", self._on_widget_visibility_changed)
         self._visible_output2.register_hook("write", self._on_widget_visibility_changed)
-        self._visible_controller.register_hook("write", self._on_widget_visibility_changed)
-        self._controller_position.register_hook("write", self._on_controller_position_changed)
+        self._visible_controller.register_hook(
+            "write", self._on_widget_visibility_changed
+        )
+        self._controller_position.register_hook(
+            "write", self._on_controller_position_changed
+        )
 
     def _layout_left_frame(self):
         self._panes[CAMERA].pack(expand=True, fill=l.BOTH)
         self._panes[SETTINGS].pack(expand=False, fill=l.BOTH, pady=(4, 0))
-        self._frames[l.LEFT].pack(expand=True, fill=l.BOTH, side=l.LEFT, padx=4, pady=(0, 4))
+        self._frames[l.LEFT].pack(
+            expand=True,
+            fill=l.BOTH,
+            side=l.LEFT,
+            padx=4,
+            pady=(0, 4),
+        )
 
     def _layout_right_frame(self):
-        def pack(frame: ttk.Frame,
-                 visible: bool,
-                 *,
-                 side: Literal["top", "left"] = l.TOP,
-                 px: tuple[int, int] | int = 0,
-                 py: tuple[int, int] | int = 0):
+        def pack(
+            frame: ttk.Frame,
+            visible: bool,
+            *,
+            side: Literal["top", "left"] = l.TOP,
+            px: tuple[int, int] | int = 0,
+            py: tuple[int, int] | int = 0,
+        ):
             frame.pack_forget()
             if visible:
                 frame.pack(expand=True, fill=l.BOTH, side=side, padx=px, pady=py)
-
 
         # pack output frames
         output1, output2 = self._outputs_pane.outputs
@@ -106,7 +121,9 @@ class MainWindow(AppFrame):
 
         # pack right frame
         right_frame = self._right_frame
-        visible_right_frame = visible_output1 or visible_output2 or self._visible_controller.get()
+        visible_right_frame = (
+            visible_output1 or visible_output2 or self._visible_controller.get()
+        )
         pack(right_frame, visible_right_frame, side=l.LEFT, px=4, py=(0, 4))
 
     def _repack_right_panes(self):
@@ -118,16 +135,24 @@ class MainWindow(AppFrame):
 
         visible_outputs = self._visible_output1.get() or self._visible_output2.get()
         visible_controller = self._visible_controller.get()
-        if self._controller_position.get() == 'bottom':
+        if self._controller_position.get() == "bottom":
             if visible_outputs:
                 outputs_pane.pack(expand=True, fill=l.BOTH)
             if visible_controller:
-                controller_pane.pack(expand=False, fill=l.BOTH, pady=(4, 0) if visible_outputs else (0, 0))
+                controller_pane.pack(
+                    expand=False,
+                    fill=l.BOTH,
+                    pady=(4, 0) if visible_outputs else (0, 0),
+                )
         else:
             if visible_controller:
                 controller_pane.pack(expand=False, fill=l.BOTH)
             if visible_outputs:
-                outputs_pane.pack(expand=True, fill=l.BOTH, pady=(4, 0) if visible_controller else (0, 0))
+                outputs_pane.pack(
+                    expand=True,
+                    fill=l.BOTH,
+                    pady=(4, 0) if visible_controller else (0, 0),
+                )
 
     def _adjust_outputs_size(self):
         outputs_pane_height = self._left_frame.winfo_height()
@@ -140,7 +165,9 @@ class MainWindow(AppFrame):
 
         output1, output2 = self._outputs_pane.outputs
         output1.text_area.configure(height=shareable_height * size_share_percentage)
-        output2.text_area.configure(height=shareable_height * (1.0 - size_share_percentage))
+        output2.text_area.configure(
+            height=shareable_height * (1.0 - size_share_percentage)
+        )
 
     def _on_widget_visibility_changed(self):
         self._layout_right_frame()

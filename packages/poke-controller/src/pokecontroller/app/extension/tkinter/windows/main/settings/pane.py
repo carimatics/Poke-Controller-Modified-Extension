@@ -10,20 +10,20 @@ from .notification import NotificationSettings
 from .others import OthersSettings
 from .serial import SerialSettings
 
-CAMERA = 'camera'
-SERIAL = 'serial'
-MANUAL_CONTROL = 'manual_control'
-COMMANDS = 'commands'
-NOTIFICATION = 'notification'
-OTHERS = 'others'
+CAMERA = "camera"
+SERIAL = "serial"
+MANUAL_CONTROL = "manual_control"
+COMMANDS = "commands"
+NOTIFICATION = "notification"
+OTHERS = "others"
 
 SETTINGS: list[tuple[str, type[ttk.Frame], str]] = [
-    (CAMERA, CameraSettings, 'Camera'),
-    (SERIAL, SerialSettings, 'Serial'),
-    (MANUAL_CONTROL, ManualControlSettings, 'Manual Control'),
-    (COMMANDS, CommandsSettings, 'Commands'),
-    (NOTIFICATION, NotificationSettings, 'Notification'),
-    (OTHERS, OthersSettings, 'Others'),
+    (CAMERA, CameraSettings, "Camera"),
+    (SERIAL, SerialSettings, "Serial"),
+    (MANUAL_CONTROL, ManualControlSettings, "Manual Control"),
+    (COMMANDS, CommandsSettings, "Commands"),
+    (NOTIFICATION, NotificationSettings, "Notification"),
+    (OTHERS, OthersSettings, "Others"),
 ]
 
 

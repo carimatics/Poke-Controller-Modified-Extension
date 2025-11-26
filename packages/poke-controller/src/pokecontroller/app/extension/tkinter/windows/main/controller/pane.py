@@ -5,39 +5,41 @@ import tkinter.ttk as ttk
 from ....components import AppFrame
 from ....values import literals as l
 
-# 4字に揃えるためにアンダースコア(_)で名前をパディングしている
-A___ = 'A'
-B___ = 'B'
-X___ = 'X'
-Y___ = 'Y'
-L___ = 'L'
-R___ = 'R'
-ZL__ = 'ZL'
-ZR__ = 'ZR'
-LC__ = 'L-C'
-RC__ = 'R-C'
-LSL_ = '←'
-LSU_ = '↑'
-LSR_ = '→'
-LSD_ = '↓'
-CAP_ = 'CAP'
-HOME = 'HOME'
-MIN_ = '-'
-PLUS = '+'
-
-# ボタンのレイアウト
-BUTTONS = [
-    [ZL__, None, None, None, None, ZR__],
-    [L___, LC__, MIN_, PLUS, X___, R___],
-    [None, LSU_, None, Y___, None, A___],
-    [LSL_, None, LSR_, None, B___, None],
-    [None, LSD_, CAP_, HOME, RC__, None],
+A = "A"
+B = "B"
+X = "X"
+Y = "Y"
+L = "L"
+R = "R"
+ZL = "ZL"
+ZR = "ZR"
+LC = "L-C"
+RC = "R-C"
+LSL = "←"
+LSU = "↑"
+LSR = "→"
+LSD = "↓"
+CAP = "CAP"
+HOME = "HOME"
+MIN = "-"
+PLUS = "+"
+# @formatter:off (for PyCharm)
+# fmt: off
+BUTTONS_LAYOUT = [
+    [ZL  , None, None, None, None, ZR  ],
+    [L   , LC  , MIN , PLUS, X   , R   ],
+    [None, LSU , None, Y   , None, A   ],
+    [LSL , None, LSR , None, B   , None],
+    [None, LSD , CAP , HOME, RC  , None],
 ]
+# fmt: on
+# @formatter:on
+LEFT_FRAME_COLUMNS = 3
 
 # ボタンの色
 BUTTON_COLORS = {
-    'bg': '#343434' if platform.system() == 'Windows' else None,
-    'fg': '#FFFFFF' if platform.system() == 'Windows' else None,
+    "bg": "#343434" if platform.system() == "Windows" else None,
+    "fg": "#FFFFFF" if platform.system() == "Windows" else None,
 }
 
 
@@ -54,12 +56,12 @@ class ControllerPane(AppFrame):
 
         # Left
         left_frame = tk.Frame(wrapper, bg="#56CCF2")
-        left_buttons = [bs[:3] for bs in BUTTONS]
+        left_buttons = [bs[:LEFT_FRAME_COLUMNS] for bs in BUTTONS_LAYOUT]
         self._build_grid_frame(left_frame, left_buttons)
 
         # Right
         right_frame = tk.Frame(wrapper, bg="#E9514E")
-        right_buttons = [bs[3:] for bs in BUTTONS]
+        right_buttons = [bs[LEFT_FRAME_COLUMNS:] for bs in BUTTONS_LAYOUT]
         self._build_grid_frame(right_frame, right_buttons)
 
         # Layout
@@ -74,14 +76,24 @@ class ControllerPane(AppFrame):
                 if button is None:
                     continue
 
-                b = tk.Button(frame,
-                              text=button,
-                              width=4,
-                              bg=BUTTON_COLORS['bg'],
-                              highlightbackground=BUTTON_COLORS['bg'],
-                              fg=BUTTON_COLORS['fg'])
-                b.bind("<ButtonPress>", lambda _, btn=button: self._on_button_pushed(btn), add="")
-                b.bind("<ButtonRelease>", lambda _, btn=button: self._on_button_released(btn), add="")
+                b = tk.Button(
+                    frame,
+                    text=button,
+                    width=4,
+                    bg=BUTTON_COLORS["bg"],
+                    highlightbackground=BUTTON_COLORS["bg"],
+                    fg=BUTTON_COLORS["fg"],
+                )
+                b.bind(
+                    "<ButtonPress>",
+                    lambda _, btn=button: self._on_button_pushed(btn),
+                    add="",
+                )
+                b.bind(
+                    "<ButtonRelease>",
+                    lambda _, btn=button: self._on_button_released(btn),
+                    add="",
+                )
                 b.grid(row=row, column=column, padx=2, pady=2, sticky=tk.NSEW)
 
     def _on_button_pushed(self, button: str):

@@ -9,7 +9,7 @@ def open(
     camera_id: int,
     *,
     frame_size: tuple[int, int] = (1280, 720),
-    fps: int = 45
+    fps: int = 45,
 ) -> Generator[Camera, None, None]:
     camera = Camera(frame_size=frame_size, fps=fps)
     try:

@@ -37,7 +37,7 @@ class TemplateMatchResult:
 
 
 def crop(src: RawImage, args: ImageCropArgs) -> RawImage:
-    return src[args.y:(args.y + args.height), args.x:(args.x + args.width)]
+    return src[args.y : (args.y + args.height), args.x : (args.x + args.width)]
 
 
 def grayscale(src: RawImage) -> RawImage:
@@ -81,7 +81,7 @@ def read(path: str, mode: ImageReadMode = ImageReadMode.COLOR) -> RawImage | Non
     if not path:
         return None
 
-    match (mode):
+    match mode:
         case ImageReadMode.GRAYSCALE:
             return cv2.imread(path, cv2.IMREAD_GRAYSCALE)
         case ImageReadMode.COLOR:

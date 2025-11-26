@@ -21,22 +21,18 @@ class CameraPane(AppFrame):
 
     @property
     def _camera_size(self) -> tuple[int, int]:
-        # noinspection PyTypeChecker
-        return tuple(map(int, self._size.get().split('x')))
+        width, height = map(int, self._size.get().split("x"))
+        return width, height
 
     def build_ui(self):
         # Create Labelframe
-        labelframe = ttk.Labelframe(self,
-                                    text="Main Panel")
+        labelframe = ttk.Labelframe(self, text="Main Panel")
 
         # Main Panel
         buttons = Buttons(labelframe)
 
         width, height = self._camera_size
-        self._canvas = Canvas(labelframe,
-                              width=width,
-                              height=height,
-                              relief=tk.GROOVE)
+        self._canvas = Canvas(labelframe, width=width, height=height, relief=tk.GROOVE)
 
         # Layout
         buttons.pack(expand=True, fill=l.NONE, anchor=l.CENTER)

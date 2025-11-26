@@ -34,33 +34,43 @@ class SerialSettings(AppFrame):
         labelframe = ttk.Labelframe(self, text="Port Settings")
 
         # Port
-        port_label = ttk.Label(labelframe,
-                               text="COM Port: " if platform.system() == "Windows" else "Port: ")
-        port_entry = ttk.Combobox(labelframe,
-                                  width=5,
-                                  state=l.READONLY,
-                                  textvariable=self._port.container,
-                                  values=self._port_list)
+        port_label = ttk.Label(
+            labelframe,
+            text="COM Port: " if platform.system() == "Windows" else "Port: ",
+        )
+        port_entry = ttk.Combobox(
+            labelframe,
+            width=5,
+            state=l.READONLY,
+            textvariable=self._port.container,
+            values=self._port_list,
+        )
         port_entry.current(0)
 
         # Baud Rate
         baud_rate_label = ttk.Label(labelframe, text="Baud Rate: ")
-        baud_rate_combobox = ttk.Combobox(labelframe,
-                                          width=6,
-                                          justify=l.RIGHT,
-                                          state=l.READONLY,
-                                          textvariable=self._baud_rate.container,
-                                          values=[str(i) for i in self._baud_rate_list])
+        baud_rate_combobox = ttk.Combobox(
+            labelframe,
+            width=6,
+            justify=l.RIGHT,
+            state=l.READONLY,
+            textvariable=self._baud_rate.container,
+            values=[str(i) for i in self._baud_rate_list],
+        )
 
         # Reconnect Button
-        reconnect_button = ttk.Button(labelframe,
-                                      text="Reconnect",
-                                      command=self._on_reconnect_pushed)
+        reconnect_button = ttk.Button(
+            labelframe,
+            text="Reconnect",
+            command=self._on_reconnect_pushed,
+        )
 
         # Disconnect Button
-        disconnect_button = ttk.Button(labelframe,
-                                       text="Disconnect",
-                                       command=self._on_disconnect_pushed)
+        disconnect_button = ttk.Button(
+            labelframe,
+            text="Disconnect",
+            command=self._on_disconnect_pushed,
+        )
 
         # Layout
         port_label.pack(expand=False, side=l.LEFT, padx=4)
@@ -78,19 +88,25 @@ class SerialSettings(AppFrame):
         labelframe = ttk.Labelframe(self, text="Data")
 
         # Data Format
-        data_format_label = ttk.Label(labelframe,
-                                      text="Data Format: ",
-                                      anchor=l.CENTER)
-        data_format_combobox = ttk.Combobox(labelframe,
-                                            state=l.NORMAL,
-                                            textvariable=self._data_format.container,
-                                            values=self._data_format_list)
-        data_format_combobox.bind("<<ComboboxSelected>>", self._on_data_format_selected, add="")
+        data_format_label = ttk.Label(labelframe, text="Data Format: ", anchor=l.CENTER)
+        data_format_combobox = ttk.Combobox(
+            labelframe,
+            state=l.NORMAL,
+            textvariable=self._data_format.container,
+            values=self._data_format_list,
+        )
+        data_format_combobox.bind(
+            "<<ComboboxSelected>>",
+            self._on_data_format_selected,
+            add="",
+        )
 
         # Show Serial
-        show_serial_checkbutton = ttk.Checkbutton(labelframe,
-                                                  text="Show Serial",
-                                                  variable=self._show_data.container)
+        show_serial_checkbutton = ttk.Checkbutton(
+            labelframe,
+            text="Show Serial",
+            variable=self._show_data.container,
+        )
 
         # Layout
         data_format_label.pack(expand=False, side=l.LEFT, padx=4, pady=(0, 4))

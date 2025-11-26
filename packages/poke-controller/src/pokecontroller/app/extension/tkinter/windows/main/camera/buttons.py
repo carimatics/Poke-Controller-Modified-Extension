@@ -4,12 +4,12 @@ import tkinter.ttk as ttk
 from ....components import AppFrame
 from ....values import literals as l
 
-START = 'start'
-CONTROLLER = 'controller'
-CLEAR_OUTPUTS = 'clear_outputs'
-CAPTURE = 'capture'
-OPEN_CAPTURE_DIR = 'open_capture_dir'
-NOTIFY_DISCORD = 'notify_discord'
+START = "start"
+CONTROLLER = "controller"
+CLEAR_OUTPUTS = "clear_outputs"
+CAPTURE = "capture"
+OPEN_CAPTURE_DIR = "open_capture_dir"
+NOTIFY_DISCORD = "notify_discord"
 
 BUTTONS = [
     START,
@@ -24,7 +24,9 @@ BUTTONS = [
 class Buttons(AppFrame):
     def __init__(self, master, *args, **kwargs):
         super().__init__(master, *args, **kwargs)
-        self._open_dir_button_image: tk.PhotoImage = tk.PhotoImage(file="../assets/icons8-OpenDir-16.png")
+        self._open_dir_button_image: tk.PhotoImage = tk.PhotoImage(
+            file="../assets/icons8-OpenDir-16.png"
+        )
         self.build_ui()
 
     def build_ui(self):
@@ -32,12 +34,20 @@ class Buttons(AppFrame):
         buttons: dict[str, ttk.Button] = {
             button: ttk.Button(self, command=command, **kwargs)
             for button, command, kwargs in [
-                (START, self._on_start_pushed, { "text": "Start" }),
-                (CONTROLLER, self._on_controller_pushed, { "text": "Controller" }),
-                (CLEAR_OUTPUTS, self._on_clear_outputs_pushed, { "text": "Clear Outputs" }),
-                (CAPTURE, self._on_capture_pushed, { "text": "Capture" }),
-                (OPEN_CAPTURE_DIR, self._on_open_dir_pushed, { "image": self._open_dir_button_image, "padding": 1 }),
-                (NOTIFY_DISCORD, self._on_notify_discord_pushed, { "text": "Discord" }),
+                (START, self._on_start_pushed, {"text": "Start"}),
+                (CONTROLLER, self._on_controller_pushed, {"text": "Controller"}),
+                (
+                    CLEAR_OUTPUTS,
+                    self._on_clear_outputs_pushed,
+                    {"text": "Clear Outputs"},
+                ),
+                (CAPTURE, self._on_capture_pushed, {"text": "Capture"}),
+                (
+                    OPEN_CAPTURE_DIR,
+                    self._on_open_dir_pushed,
+                    {"image": self._open_dir_button_image, "padding": 1},
+                ),
+                (NOTIFY_DISCORD, self._on_notify_discord_pushed, {"text": "Discord"}),
             ]
         }
 

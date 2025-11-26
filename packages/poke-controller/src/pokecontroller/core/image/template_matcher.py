@@ -93,8 +93,8 @@ class TemplateMatcher(ABC):
         self._last_result = TemplateMatchResult(
             contains=max_val > self._threshold,
             location=(max_loc[0], max_loc[1]),
-            width=self._template.width,
-            height=self._template.height,
+            width=self._template.shape[1],
+            height=self._template.shape[0],
             value=max_val,
         )
         return self._last_result
@@ -152,18 +152,26 @@ class GpuTemplateMatcher(TemplateMatcher):
 
     @property
     def is_ready(self) -> bool:
-        return self._initialized and self._gpu_image is not None and self._gpu_template is not None
+        return (
+            self._initialized
+            and self._gpu_image is not None
+            and self._gpu_template is not None
+        )
 
     def initialize(self) -> None:
         if self._initialized:
             return
 
         try:
-            self._gpu_matcher = cv2.cuda.createTemplateMatching(cv2.CV_8UC1, cv2.TM_CCOEFF_NORMED)
+            # noinspection PyUnresolvedReferences
+            self._gpu_matcher = cv2.cuda.createTemplateMatching(
+                cv2.CV_8UC1,
+                cv2.TM_CCOEFF_NORMED,
+            )
             self._gpu_image = cv2.cuda.GpuMat()
             self._gpu_template = cv2.cuda.GpuMat()
             self._initialized = True
-        except Exception:
+        except Exception:  # noqa
             self._gpu_matcher = None
             self._gpu_image = None
             self._gpu_template = None
@@ -188,19 +196,23 @@ class GpuTemplateMatcher(TemplateMatcher):
         if not self.is_ready:
             return None
 
-        result = match_template_by_gpu(self._gpu_matcher, self._gpu_image, self._gpu_template)
+        result = match_template_by_gpu(
+            self._gpu_matcher,
+            self._gpu_image,
+            self._gpu_template,
+        )
         return self._match_result(result)
 
 
 class TemplateMatcherGenerator:
     @staticmethod
     def generate(preferred_mode: str = "cpu") -> TemplateMatcher:
-        match (preferred_mode):
+        match preferred_mode:
             case "gpu":
                 try:
                     matcher = GpuTemplateMatcher()
                     return matcher if matcher.initialized else CpuTemplateMatcher()
-                except Exception:
+                except Exception:  # noqa
                     return CpuTemplateMatcher()
             case _:  # default to cpu
                 return CpuTemplateMatcher()

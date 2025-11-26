@@ -47,7 +47,7 @@ class Camera:
     def open(self, camera_id: int) -> None:
         self.close()
 
-        match (os.name):
+        match os.name:
             case "nt":  # Windows
                 self._video_capture = cv2.VideoCapture(camera_id, cv2.CAP_DSHOW)
             case _:

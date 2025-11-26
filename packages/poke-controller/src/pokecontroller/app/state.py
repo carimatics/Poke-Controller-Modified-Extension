@@ -55,7 +55,11 @@ class Variable[T](ABC):
         pass
 
     @abstractmethod
-    def register_hook(self, mode: Literal["read", "write"], callback: Callable[[], None]) -> str:
+    def register_hook(
+        self,
+        mode: Literal["read", "write"],
+        callback: Callable[[], None],
+    ) -> str:
         pass
 
     @abstractmethod

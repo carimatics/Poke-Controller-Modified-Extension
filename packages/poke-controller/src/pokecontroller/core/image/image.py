@@ -47,17 +47,21 @@ class Image:
     def binarize_by_threshold(self, threshold: float) -> "Image":
         return Image(binarize_by_threshold(self._src, threshold))
 
-    def binarize_by_interframe_diff(self, frame2: "Image", frame3: "Image", threshold: float) -> "Image":
-        return Image(binarize_by_interframe_diff(self._src, frame2.src, frame3.src, threshold))
+    def binarize_by_interframe_diff(
+        self,
+        frame2: "Image",
+        frame3: "Image",
+        threshold: float,
+    ) -> "Image":
+        return Image(
+            binarize_by_interframe_diff(self._src, frame2.src, frame3.src, threshold)
+        )
 
     def write(self, path: str) -> bool:
         return write(self._src, path)
 
     @staticmethod
-    def read(
-        path: str,
-        mode: ImageReadMode = ImageReadMode.COLOR
-    ) -> "Image | None":
+    def read(path: str, mode: ImageReadMode = ImageReadMode.COLOR) -> "Image | None":
         if (result := read(path, mode)) is None:
             return None
         return Image(result)

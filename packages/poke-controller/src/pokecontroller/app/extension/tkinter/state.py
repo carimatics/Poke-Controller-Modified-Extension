@@ -23,7 +23,11 @@ class Variable[T](StateVariable[T]):
     def set(self, value: T | None) -> None:
         self._container.set(value)
 
-    def register_hook(self, mode: Literal["read", "write"], callback: Callable[[], None]) -> str:
+    def register_hook(
+        self,
+        mode: Literal["read", "write"],
+        callback: Callable[[], None],
+    ) -> str:
         return self._container.trace_add(mode, lambda _n, _i, _m: callback())
 
     def unregister_hook(self, mode: Literal["read", "write"], callback_id: str):

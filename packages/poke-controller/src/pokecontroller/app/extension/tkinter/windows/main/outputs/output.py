@@ -15,20 +15,24 @@ class Output(AppFrame):
         self.build_ui()
 
     def build_ui(self):
-        labelframe = ttk.Labelframe(self,
-                                    text=f"Output#{self._id}",
-                                    relief=l.GROOVE)
+        labelframe = ttk.Labelframe(self, text=f"Output#{self._id}", relief=l.GROOVE)
 
         # Text Area
-        self.text_area = tk.Text(labelframe,
-                                 width=62,
-                                 blockcursor=True,
-                                 insertunfocussed=l.NONE,
-                                 undo=False,
-                                 maxundo=0,
-                                 relief=l.FLAT,
-                                 state=l.DISABLED)
-        scroll = tk.Scrollbar(labelframe, orient=l.VERTICAL, command=self.text_area.yview)
+        self.text_area = tk.Text(
+            labelframe,
+            width=62,
+            blockcursor=True,
+            insertunfocussed=l.NONE,
+            undo=False,
+            maxundo=0,
+            relief=l.FLAT,
+            state=l.DISABLED,
+        )
+        scroll = tk.Scrollbar(
+            labelframe,
+            orient=l.VERTICAL,
+            command=self.text_area.yview,
+        )
         self.text_area.configure(yscrollcommand=scroll.set)
 
         # Layout
