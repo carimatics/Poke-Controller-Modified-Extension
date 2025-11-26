@@ -32,16 +32,19 @@ class Command(ABC):
         self.socket0 = None
         self.mqtt0 = None
 
+    @classmethod
     @abstractmethod
-    def start(self):
+    def start(cls, ser, postProcess=None):
         pass
 
+    @classmethod
     @abstractmethod
-    def end(self, ser):
+    def end(cls, ser):
         pass
 
+    @classmethod
     @abstractmethod
-    def finish(self):
+    def finish(cls):
         pass
 
     @abstractmethod
