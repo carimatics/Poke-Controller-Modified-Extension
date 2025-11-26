@@ -29,13 +29,21 @@ dependencies = [
     "windows-capture-device-list>=1.1.0",
 ]
 
+[dependency-groups]
+dev = [
+    "ruff>=0.14.5",
+]
+
 [tool.uv.sources]
 poke-controller = { workspace = true }
 
 [tool.uv.workspace]
 members = ["packages/*"]
 
-[dependency-groups]
-dev = [
-    "ruff>=0.14.5",
+[tool.ruff]
+include = [
+    "packages/**/*.py",
+]
+exclude = [
+    "packages/poke-controller/src/pokecontroller/app/extension/tkinter/core/**/*.py"
 ]
