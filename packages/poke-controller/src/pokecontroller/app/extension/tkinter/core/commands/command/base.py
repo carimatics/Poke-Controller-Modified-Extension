@@ -32,56 +32,60 @@ class Command(ABC):
         self.socket0 = None
         self.mqtt0 = None
 
-    @classmethod
     @abstractmethod
-    def start(cls, ser, postProcess=None):
-        pass
-
-    @classmethod
-    @abstractmethod
-    def end(cls, ser):
-        pass
-
-    @classmethod
-    @abstractmethod
-    def finish(cls):
+    def start(
+        self,
+        ser, # FIXME: typing
+        postProcess=None,
+    ) -> None:
         pass
 
     @abstractmethod
-    def checkIfAlive(self):
+    def end(
+        self,
+        ser, # FIXME: typing
+    ) -> None:
+        pass
+
+    @abstractmethod
+    def finish(self) -> None:
+        pass
+
+    @abstractmethod
+    def checkIfAlive(self) -> None:
         pass
 
     ############### print functions ###############
-    def print_s(self, *objects: object, sep: str = " ", end: str = "\n"):
+    def print_s(self, *objects: object, sep: str = " ", end: str = "\n") -> None:
         print(*objects, sep=sep, end=end)
 
-    def print_t1(self, *objects: object, sep: str = " ", end: str = "\n"):
+    def print_t1(self, *objects: object, sep: str = " ", end: str = "\n") -> None:
         """
         上側のログ画面に文字列を出力する
         """
         self._print_t(self.text_area_1, "a", *objects, sep=sep, end=end)
 
-    def print_t2(self, *objects: object, sep: str = " ", end: str = "\n"):
+    def print_t2(self, *objects: object, sep: str = " ", end: str = "\n") -> None:
         """
         下側のログ画面に文字列を出力する
         """
         self._print_t(self.text_area_2, "a", *objects, sep=sep, end=end)
 
-    def print_t1b(self, mode, *objects: object, sep: str = " ", end: str = "\n"):
+    def print_t1b(self, mode, *objects: object, sep: str = " ", end: str = "\n") -> None:
         """
         上側のログ画面に文字列を出力する
         mode: ['w'/'a'/'d'] 'w'上書き, 'a'追記, 'd'削除
         """
         self._print_t(self.text_area_1, mode, *objects, sep=sep, end=end)
 
-    def print_t2b(self, mode, *objects: object, sep: str = " ", end: str = "\n"):
+    def print_t2b(self, mode, *objects: object, sep: str = " ", end: str = "\n") -> None:
         """
         下側のログ画面に文字列を出力する
         mode: ['w'/'a'/'d'] 'w'上書き, 'a'追記, 'd'削除
         """
         self._print_t(self.text_area_2, mode, *objects, sep=sep, end=end)
 
-    def print_tb(self, mode, *objects: object, sep: str = " ", end: str = "\n"):
+    def print_tb(self, mode, *objects: object, sep: str = " ", end: str = "\n") -> None:
         """
         標準出力先として割り当てられていない方のログ画面に文字列を出力する
         mode: ['w'/'a'/'d'] 'w'上書き, 'a'追記, 'd'削除
@@ -91,7 +95,7 @@ class Command(ABC):
         elif self.stdout_destination == "2":
             self.print_t1b(mode, *objects, sep=sep, end=end)
 
-    def print_tbs(self, mode, *objects: object, sep: str = " ", end: str = "\n"):
+    def print_tbs(self, mode, *objects: object, sep: str = " ", end: str = "\n") -> None:
         """
         標準出力先として割り当てられている方のログ画面に文字列を出力する
         mode: ['w'/'a'/'d'] 'w'上書き, 'a'追記, 'd'削除
@@ -277,10 +281,10 @@ class Command(ABC):
             return ret
 
     ############### Socket functions ###############
-    def socket_change_alive(self, flag: bool):
+    def socket_change_alive(self, flag: bool) -> None:
         self.socket0.alive = flag
 
-    def socket_change_ipaddr(self, addr: str):
+    def socket_change_ipaddr(self, addr: str) -> None:
         """
         IPアドレスを変更する
         return:なし
@@ -288,7 +292,7 @@ class Command(ABC):
         """
         self.socket0.change_ipaddr(addr)
 
-    def socket_change_port(self, port: int):
+    def socket_change_port(self, port: int) -> None:
         """
         ポート番号を変更する
         return:なし
@@ -296,21 +300,21 @@ class Command(ABC):
         """
         self.socket0.change_port(port)
 
-    def socket_connect(self):
+    def socket_connect(self) -> None:
         """
         socket通信用のserverと接続する
         return:なし
         """
         self.socket0.sock_connect()
 
-    def socket_disconnect(self):
+    def socket_disconnect(self) -> None:
         """
         socket通信用のserverから切断する
         return:なし
         """
         self.socket0.sock_disconnect()
 
-    def socket_receive_message(self, header: str, show_msg: bool = False):
+    def socket_receive_message(self, header: str, show_msg: bool = False) -> str:
         """
         socketを用いて先頭が特定の文字列であるメッセージを受信する
         return output|str:受信した文字列
@@ -321,7 +325,7 @@ class Command(ABC):
         self.checkIfAlive()
         return output
 
-    def socket_receive_message2(self, headerlist: list[str], show_msg: bool = False):
+    def socket_receive_message2(self, headerlist: list[str], show_msg: bool = False) -> str:
         """
         socketを用いて先頭が特定の文字列(複数設定可能)であるメッセージを受信する
         return output|str:受信した文字列
@@ -332,7 +336,7 @@ class Command(ABC):
         self.checkIfAlive()
         return output
 
-    def socket_transmit_message(self, message: str):
+    def socket_transmit_message(self, message: str) -> None:
         """
         socketを用いてメッセージを送信する
         return:なし
@@ -342,7 +346,7 @@ class Command(ABC):
         self.checkIfAlive()
 
     ############### MQTT functions ###############
-    def mqtt_change_broker_address(self, broker_address: str):
+    def mqtt_change_broker_address(self, broker_address: str) -> None:
         """
         brokerアドレスを変更する
         return:なし
@@ -350,7 +354,7 @@ class Command(ABC):
         """
         self.mqtt0.broker_address = broker_address
 
-    def mqtt_change_id(self, id: str):
+    def mqtt_change_id(self, id: str) -> None:
         """
         IDを変更する
         return:なし
@@ -358,7 +362,7 @@ class Command(ABC):
         """
         self.mqtt0.id = id
 
-    def mqtt_change_pub_token(self, pub_token: str):
+    def mqtt_change_pub_token(self, pub_token: str) -> None:
         """
         pub用tokenを変更する
         return:なし
@@ -366,7 +370,7 @@ class Command(ABC):
         """
         self.mqtt0.pub_token = pub_token
 
-    def mqtt_change_sub_token(self, sub_token: str):
+    def mqtt_change_sub_token(self, sub_token: str) -> None:
         """
         sub用tokenを変更する
         return:なし
@@ -374,7 +378,7 @@ class Command(ABC):
         """
         self.mqtt0.sub_token = sub_token
 
-    def mqtt_change_clientId(self, clientId: str):
+    def mqtt_change_clientId(self, clientId: str) -> None:
         """
         接続者名を変更する
         return:なし
@@ -382,7 +386,7 @@ class Command(ABC):
         """
         self.mqtt0.clientId = clientId
 
-    def mqtt_receive_message(self, roomid: str, header: str, show_msg: bool = False):
+    def mqtt_receive_message(self, roomid: str, header: str, show_msg: bool = False) -> str:
         """
         MQTTを用いて先頭が特定の文字列であるメッセージを受信する
         return output|str:受信した文字列
@@ -394,7 +398,7 @@ class Command(ABC):
         self.checkIfAlive()
         return output
 
-    def mqtt_receive_message2(self, roomid: str, headerlist: str, show_msg: bool = False):
+    def mqtt_receive_message2(self, roomid: str, headerlist: str, show_msg: bool = False) -> str:
         """
         MQTTを用いて先頭が特定の文字列(複数設定可能)であるメッセージを受信する
         return output|str:受信した文字列
@@ -406,7 +410,7 @@ class Command(ABC):
         self.checkIfAlive()
         return output
 
-    def mqtt_transmit_message(self, roomid: str, message: str):
+    def mqtt_transmit_message(self, roomid: str, message: str) -> None:
         """
         MQTTを用いてメッセージを送信する
         return:なし
@@ -417,7 +421,7 @@ class Command(ABC):
         self.checkIfAlive()
 
     ############### protected methods ###############
-    def _print_t(self, text_area, mode, *objects: object, sep: str = " ", end: str = "\n"):
+    def _print_t(self, text_area, mode, *objects: object, sep: str = " ", end: str = "\n") -> None:
         """
         text_area(ログ画面)に文字列を出力する
         mode: ['w'/'a'/'d'] 'w'上書き, 'a'追記, 'd'削除

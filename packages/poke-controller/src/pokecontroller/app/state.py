@@ -1,17 +1,17 @@
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
-from typing import Callable, Literal
+from typing import Any, Callable, Literal
 
 DEFAULT_STATE = {
     "theme": "default",
-    "camera_id": None,
-    "camera_name": None,
+    "camera_id": "",
+    "camera_name": "",
     "camera_fps": 45,
     "camera_size": "640x360",
     "camera_show_realtime": True,
     "camera_show_matched": False,
     "camera_show_guide": False,
-    "serial_port": None,
+    "serial_port": "",
     "serial_baud_rate": 9600,
     "serial_data_format": "Default",
     "serial_show_data": False,
@@ -21,11 +21,11 @@ DEFAULT_STATE = {
     "manual_control_enabled_pro_controller": False,
     "manual_control_enabled_record_pro_controller": False,
     "command_python_commands_filter": "-",
-    "command_python_command": None,
+    "command_python_command": "",
     "command_mcu_commands_filter": "-",
-    "command_mcu_command": None,
+    "command_mcu_command": "",
     "command_shortcut_number": 1,
-    "command_shortcuts": [None for _ in range(10)],
+    "command_shortcuts": ["" for _ in range(10)],
     "notification_enabled_notify_windows_when_command_started": False,
     "notification_enabled_notify_windows_when_command_ended": False,
     "notification_enabled_notify_discord_when_command_started": False,
@@ -43,28 +43,23 @@ DEFAULT_STATE = {
 class Variable[T](ABC):
     @property
     @abstractmethod
-    def container[C](self) -> C:
-        pass
+    def container(self) -> Any: ...
 
     @abstractmethod
-    def get(self) -> T | None:
-        pass
+    def get(self) -> T: ...
 
     @abstractmethod
-    def set(self, value: T | None) -> None:
-        pass
+    def set(self, value: T) -> None: ...
 
     @abstractmethod
     def register_hook(
         self,
         mode: Literal["read", "write"],
         callback: Callable[[], None],
-    ) -> str:
-        pass
+    ) -> str: ...
 
     @abstractmethod
-    def unregister_hook(self, mode: Literal["read", "write"], hook_id: str):
-        pass
+    def unregister_hook(self, mode: Literal["read", "write"], hook_id: str) -> None: ...
 
 
 @dataclass

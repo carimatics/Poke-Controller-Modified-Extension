@@ -1,5 +1,6 @@
 import tkinter as tk
 import tkinter.ttk as ttk
+from typing import Any
 
 from ....components import AppFrame
 from ....values import literals as l
@@ -22,17 +23,22 @@ BUTTONS = [
 
 
 class Buttons(AppFrame):
-    def __init__(self, master, *args, **kwargs):
+    def __init__(
+        self,
+        master: tk.Misc,
+        *args: tuple[Any, ...],
+        **kwargs: dict[str, Any],
+    ):
         super().__init__(master, *args, **kwargs)
         self._open_dir_button_image: tk.PhotoImage = tk.PhotoImage(
             file="../assets/icons8-OpenDir-16.png"
         )
         self.build_ui()
 
-    def build_ui(self):
+    def build_ui(self) -> None:
         # Create Buttons
         buttons: dict[str, ttk.Button] = {
-            button: ttk.Button(self, command=command, **kwargs)
+            button: ttk.Button(self, command=command, **kwargs)  # type: ignore[arg-type]
             for button, command, kwargs in [
                 (START, self._on_start_pushed, {"text": "Start"}),
                 (CONTROLLER, self._on_controller_pushed, {"text": "Controller"}),
@@ -55,20 +61,20 @@ class Buttons(AppFrame):
         for button in BUTTONS:
             buttons[button].pack(expand=True, anchor=l.CENTER, side=l.LEFT, padx=4)
 
-    def _on_start_pushed(self):
+    def _on_start_pushed(self) -> None:
         self.app_model.start_command()
 
-    def _on_controller_pushed(self):
+    def _on_controller_pushed(self) -> None:
         self.app_model.open_software_controller_window()
 
-    def _on_clear_outputs_pushed(self):
+    def _on_clear_outputs_pushed(self) -> None:
         self.app_model.clear_log_outputs()
 
-    def _on_capture_pushed(self):
+    def _on_capture_pushed(self) -> None:
         self.app_model.save_screencapture()
 
-    def _on_open_dir_pushed(self):
+    def _on_open_dir_pushed(self) -> None:
         self.app_model.open_screencapture_directory_window()
 
-    def _on_notify_discord_pushed(self):
+    def _on_notify_discord_pushed(self) -> None:
         self.app_model.notify_discord()

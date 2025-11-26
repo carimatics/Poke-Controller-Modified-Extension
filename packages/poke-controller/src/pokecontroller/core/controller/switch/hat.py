@@ -14,7 +14,7 @@ class SwitchHat(IntEnum):
 
 
 class SwitchHatState:
-    def __init__(self):
+    def __init__(self) -> None:
         self._state = SwitchHat.NEUTRAL
 
     @property

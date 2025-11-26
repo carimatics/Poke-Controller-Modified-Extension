@@ -1,12 +1,19 @@
 import tkinter as tk
 import tkinter.ttk as ttk
+from typing import Any
 
 from ....components import AppFrame
 from ....values import literals as l
 
 
 class Output(AppFrame):
-    def __init__(self, master, output_id: int, *args, **kwargs):
+    def __init__(
+        self,
+        master: tk.Misc,
+        output_id: int,
+        *args: tuple[Any, ...],
+        **kwargs: dict[str, Any],
+    ):
         super().__init__(master, *args, **kwargs)
 
         self._id: int = output_id
@@ -14,7 +21,7 @@ class Output(AppFrame):
 
         self.build_ui()
 
-    def build_ui(self):
+    def build_ui(self) -> None:
         labelframe = ttk.Labelframe(self, text=f"Output#{self._id}", relief=l.GROOVE)
 
         # Text Area

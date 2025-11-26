@@ -1,5 +1,6 @@
 from typing import Callable, Literal
 import tkinter as tk
+from typing import Any
 
 from ...state import (
     DEFAULT_STATE,
@@ -17,10 +18,10 @@ class Variable[T](StateVariable[T]):
     def container(self) -> tk.Variable:
         return self._container
 
-    def get(self) -> T | None:
-        return self._container.get()
+    def get(self) -> T:
+        return self._container.get()  # type: ignore[no-any-return]
 
-    def set(self, value: T | None) -> None:
+    def set(self, value: T) -> None:
         self._container.set(value)
 
     def register_hook(
@@ -30,23 +31,21 @@ class Variable[T](StateVariable[T]):
     ) -> str:
         return self._container.trace_add(mode, lambda _n, _i, _m: callback())
 
-    def unregister_hook(self, mode: Literal["read", "write"], callback_id: str):
+    def unregister_hook(self, mode: Literal["read", "write"], callback_id: str) -> None:
         self._container.trace_remove(mode, callback_id)
 
 
 def load_state() -> PokeControllerAppState:
     # FIXME: load from state file
-    raw_state = {}
+    raw_state: dict[str, Any] = {}
 
     # Fill missing keys with default values
     for k in DEFAULT_STATE.keys():
         raw_state.setdefault(k, DEFAULT_STATE[k])
 
-    kwargs = {}
+    kwargs: dict[str, Any] = {}
     for k, v in raw_state.items():
-        if v is None:
-            kwargs[k] = Variable[str](tk.StringVar())
-        elif isinstance(v, bool):
+        if isinstance(v, bool):
             kwargs[k] = Variable[bool](tk.BooleanVar(value=v))
         elif isinstance(v, int):
             kwargs[k] = Variable[int](tk.IntVar(value=v))
@@ -60,7 +59,7 @@ def load_state() -> PokeControllerAppState:
     return PokeControllerAppState(**kwargs)
 
 
-def save_state(state: PokeControllerAppState):
+def save_state(state: PokeControllerAppState) -> None:
     raw_state = {}
     for k in DEFAULT_STATE.keys():
         v = state.__dict__[k]

@@ -1,4 +1,6 @@
+import tkinter as tk
 import tkinter.ttk as ttk
+from typing import Any
 
 from ....components import AppFrame
 from ....utils import separator
@@ -6,7 +8,12 @@ from ....values import literals as l
 
 
 class CameraSettings(AppFrame):
-    def __init__(self, master, *args, **kwargs):
+    def __init__(
+        self,
+        master: tk.Misc,
+        *args: tuple[Any, ...],
+        **kwargs: dict[str, Any],
+    ):
         super().__init__(master, *args, **kwargs)
 
         self._name_list: list[str] = self._load_camera_list()
@@ -22,7 +29,7 @@ class CameraSettings(AppFrame):
 
         self.build_ui()
 
-    def build_ui(self):
+    def build_ui(self) -> None:
         # Create Labelframes
         camera_settings = self._build_camera_settings()
         display_settings = self._build_display_settings()
@@ -179,23 +186,23 @@ class CameraSettings(AppFrame):
     def _load_camera_size_list(self) -> list[str]:
         return self.app_model.load_camera_size_list()
 
-    def _on_camera_name_selected(self, _event):
+    def _on_camera_name_selected(self, _event: tk.Event) -> None:
         self.app_model.apply_camera_name()
 
-    def _on_camera_fps_selected(self, _event):
+    def _on_camera_fps_selected(self, _event: tk.Event) -> None:
         self.app_model.apply_camera_fps()
 
-    def _on_camera_size_selected(self, _event):
+    def _on_camera_size_selected(self, _event: tk.Event) -> None:
         self.app_model.apply_camera_size()
 
-    def _on_reload_pushed(self):
+    def _on_reload_pushed(self) -> None:
         self.app_model.connect_camera()
 
-    def _on_show_realtime_changed(self):
+    def _on_show_realtime_changed(self) -> None:
         self.app_model.apply_camera_show_realtime()
 
-    def _on_show_matched_changed(self):
+    def _on_show_matched_changed(self) -> None:
         self.app_model.apply_camera_show_matched()
 
-    def _on_show_guide_changed(self):
+    def _on_show_guide_changed(self) -> None:
         self.app_model.apply_camera_show_guide()

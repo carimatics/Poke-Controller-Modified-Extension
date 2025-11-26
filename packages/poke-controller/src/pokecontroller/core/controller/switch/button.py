@@ -19,7 +19,7 @@ class SwitchButton(IntFlag):
 
 
 class SwitchButtonState:
-    def __init__(self):
+    def __init__(self) -> None:
         self._value = 0
 
     @property

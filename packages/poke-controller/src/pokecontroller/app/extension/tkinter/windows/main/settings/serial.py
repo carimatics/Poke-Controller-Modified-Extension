@@ -1,5 +1,7 @@
 import platform
+import tkinter as tk
 import tkinter.ttk as ttk
+from typing import Any
 
 from ....components import AppFrame
 from ....utils import separator
@@ -7,7 +9,12 @@ from ....values import literals as l
 
 
 class SerialSettings(AppFrame):
-    def __init__(self, master, *args, **kwargs):
+    def __init__(
+        self,
+        master: tk.Misc,
+        *args: tuple[Any, ...],
+        **kwargs: dict[str, Any],
+    ):
         super().__init__(master, *args, **kwargs)
 
         self._port_list: list[str] = self._load_serial_port_list()
@@ -21,7 +28,7 @@ class SerialSettings(AppFrame):
 
         self.build_ui()
 
-    def build_ui(self):
+    def build_ui(self) -> None:
         # Create Labelframes
         serial_settings = self._build_serial_settings()
         data_settings = self._build_data_settings()
@@ -124,11 +131,11 @@ class SerialSettings(AppFrame):
     def _load_serial_data_format_list(self) -> list[str]:
         return self.app_model.load_serial_data_format_list()
 
-    def _on_reconnect_pushed(self):
+    def _on_reconnect_pushed(self) -> None:
         self.app_model.connect_serial_port()
 
-    def _on_disconnect_pushed(self):
+    def _on_disconnect_pushed(self) -> None:
         self.app_model.disconnect_serial_port()
 
-    def _on_data_format_selected(self, _event):
+    def _on_data_format_selected(self, _event: tk.Event) -> None:
         self.app_model.apply_controller_data_format()

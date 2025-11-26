@@ -3,7 +3,7 @@ from .values import literals as l
 from .windows import MainWindow
 
 
-def run_app():
+def run_app() -> None:
     app = PokeControllerExtensionApp()
     main_window = MainWindow(app)
     main_window.pack(expand=True, fill=l.BOTH)

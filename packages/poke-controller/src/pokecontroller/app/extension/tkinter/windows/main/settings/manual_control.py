@@ -1,11 +1,18 @@
+import tkinter as tk
 import tkinter.ttk as ttk
+from typing import Any
 
 from ....components import AppFrame
 from ....values import literals as l
 
 
 class ManualControlSettings(AppFrame):
-    def __init__(self, master, *args, **kwargs):
+    def __init__(
+        self,
+        master: tk.Misc,
+        *args: tuple[Any, ...],
+        **kwargs: dict[str, Any],
+    ):
         super().__init__(master, *args, **kwargs)
 
         self._enabled_keyboard = self.app_state.manual_control_enabled_keyboard
@@ -20,7 +27,7 @@ class ManualControlSettings(AppFrame):
 
         self.build_ui()
 
-    def build_ui(self):
+    def build_ui(self) -> None:
         # Create Labelframes
         software_settings = self._build_software_settings()
         hardware_settings = self._build_hardware_settings()
@@ -114,20 +121,20 @@ class ManualControlSettings(AppFrame):
 
         return labelframe
 
-    def _on_controller_pushed(self):
+    def _on_controller_pushed(self) -> None:
         self.app_model.open_software_controller_window()
 
-    def _on_enabled_keyboard_changed(self):
+    def _on_enabled_keyboard_changed(self) -> None:
         self.app_model.apply_enabled_keyboard()
 
-    def _on_enabled_lstick_mouse_changed(self):
+    def _on_enabled_lstick_mouse_changed(self) -> None:
         self.app_model.apply_enabled_lstick_mouse()
 
-    def _on_enabled_rstick_mouse_changed(self):
+    def _on_enabled_rstick_mouse_changed(self) -> None:
         self.app_model.apply_enabled_rstick_mouse()
 
-    def _on_enabled_pro_controller_changed(self):
+    def _on_enabled_pro_controller_changed(self) -> None:
         self.app_model.apply_enabled_pro_controller()
 
-    def _on_enabled_record_pro_controller_changed(self):
+    def _on_enabled_record_pro_controller_changed(self) -> None:
         self.app_model.apply_enabled_record_pro_controller()

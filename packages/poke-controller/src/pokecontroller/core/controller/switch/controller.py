@@ -5,7 +5,7 @@ from ...serial import Serial
 
 
 class SwitchControllerState:
-    def __init__(self):
+    def __init__(self) -> None:
         self._button = SwitchButtonState()
         self._hat = SwitchHatState()
         self._lstick = SwitchStickState()

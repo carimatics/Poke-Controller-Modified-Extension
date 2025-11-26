@@ -1,13 +1,18 @@
 import tkinter as tk
 import tkinter.ttk as ttk
-from typing import Callable
+from typing import Any, Callable
 
 from ....components import AppFrame
 from ....values import literals as l
 
 
 class NotificationSettings(AppFrame):
-    def __init__(self, master, *args, **kwargs):
+    def __init__(
+        self,
+        master: tk.Misc,
+        *args: tuple[Any, ...],
+        **kwargs: dict[str, Any],
+    ) -> None:
         super().__init__(master, *args, **kwargs)
 
         self._enabled_windows_started = (
@@ -25,7 +30,7 @@ class NotificationSettings(AppFrame):
 
         self.build_ui()
 
-    def build_ui(self):
+    def build_ui(self) -> None:
         windows_notification = self._build_windows_notification()
         discord_notification = self._build_discord_notification()
 
@@ -102,20 +107,20 @@ class NotificationSettings(AppFrame):
 
         return labelframe
 
-    def _on_windows_start_changed(self):
+    def _on_windows_start_changed(self) -> None:
         self.app_model.apply_enabled_notify_windows_when_command_started()
 
-    def _on_windows_end_changed(self):
+    def _on_windows_end_changed(self) -> None:
         self.app_model.apply_enabled_notify_windows_when_command_ended()
 
-    def _on_windows_test_pushed(self):
+    def _on_windows_test_pushed(self) -> None:
         self.app_model.notify_windows_force()
 
-    def _on_discord_start_changed(self):
+    def _on_discord_start_changed(self) -> None:
         self.app_model.apply_enabled_notify_discord_when_command_started()
 
-    def _on_discord_end_changed(self):
+    def _on_discord_end_changed(self) -> None:
         self.app_model.apply_enabled_notify_discord_when_command_ended()
 
-    def _on_discord_test_pushed(self):
+    def _on_discord_test_pushed(self) -> None:
         self.app_model.notify_discord_force()

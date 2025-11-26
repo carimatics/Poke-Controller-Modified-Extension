@@ -1,4 +1,6 @@
+import tkinter as tk
 import tkinter.ttk as ttk
+from typing import Any
 
 from ....components import AppFrame
 from ....values import literals as l
@@ -28,11 +30,16 @@ SETTINGS: list[tuple[str, type[ttk.Frame], str]] = [
 
 
 class SettingsPane(AppFrame):
-    def __init__(self, master, *args, **kwargs):
+    def __init__(
+        self,
+        master: tk.Misc,
+        *args: tuple[Any, ...],
+        **kwargs: dict[str, Any],
+    ) -> None:
         super().__init__(master, *args, **kwargs)
         self.build_ui()
 
-    def build_ui(self):
+    def build_ui(self) -> None:
         # Create Notebook
         notebook = ttk.Notebook(self)
 

@@ -2,37 +2,37 @@ from ...model import PokeControllerAppModel
 
 
 class PokeControllerExtensionAppModel(PokeControllerAppModel):
-    def load_commands(self):
+    def load_commands(self) -> list[str]:
+        return []
+
+    def start_command(self) -> None:
         pass
 
-    def start_command(self):
+    def stop_command(self) -> None:
         pass
 
-    def stop_command(self):
+    def pause_command(self) -> None:
         pass
 
-    def pause_command(self):
+    def set_command_shortcut_number(self) -> None:
         pass
 
-    def set_command_shortcut_number(self):
+    def register_command_shortcut(self) -> None:
         pass
 
-    def register_command_shortcut(self):
+    def start_shortcut_command(self, shortcut_number: int) -> None:
         pass
 
-    def start_shortcut_command(self, shortcut_number: int):
+    def apply_python_commands_filter(self) -> None:
         pass
 
-    def apply_python_commands_filter(self):
+    def set_python_command(self) -> None:
         pass
 
-    def set_python_command(self):
+    def apply_mcu_commands_filter(self) -> None:
         pass
 
-    def apply_mcu_commands_filter(self):
-        pass
-
-    def set_mcu_command(self):
+    def set_mcu_command(self) -> None:
         pass
 
     def load_python_command_list(self) -> list[str]:
@@ -47,7 +47,7 @@ class PokeControllerExtensionAppModel(PokeControllerAppModel):
     def load_mcu_commands_filter_list(self) -> list[str]:
         return ["-", "MCU 1", "MCU 2"]
 
-    def open_commands_directory_window(self):
+    def open_commands_directory_window(self) -> None:
         pass
 
     def load_camera_list(self) -> list[str]:
@@ -56,31 +56,31 @@ class PokeControllerExtensionAppModel(PokeControllerAppModel):
     def load_camera_size_list(self) -> list[str]:
         return [f"{320 * i}x{180 * i}" for i in range(1, 7)]
 
-    def connect_camera(self):
+    def connect_camera(self) -> None:
         pass
 
-    def apply_camera_name(self):
+    def apply_camera_name(self) -> None:
         pass
 
-    def apply_camera_fps(self):
+    def apply_camera_fps(self) -> None:
         pass
 
-    def apply_camera_size(self):
+    def apply_camera_size(self) -> None:
         pass
 
-    def apply_camera_show_realtime(self):
+    def apply_camera_show_realtime(self) -> None:
         pass
 
-    def apply_camera_show_matched(self):
+    def apply_camera_show_matched(self) -> None:
         pass
 
-    def apply_camera_show_guide(self):
+    def apply_camera_show_guide(self) -> None:
         pass
 
-    def save_screencapture(self):
+    def save_screencapture(self) -> None:
         pass
 
-    def open_screencapture_directory_window(self):
+    def open_screencapture_directory_window(self) -> None:
         pass
 
     def load_serial_port_list(self) -> list[str]:
@@ -92,87 +92,87 @@ class PokeControllerExtensionAppModel(PokeControllerAppModel):
     def load_serial_data_format_list(self) -> list[str]:
         return ["Default", "Qingpi", "3DS Controller"]
 
-    def connect_serial_port(self):
+    def connect_serial_port(self) -> None:
         pass
 
-    def disconnect_serial_port(self):
+    def disconnect_serial_port(self) -> None:
         pass
 
-    def push_controller_button(self, button: str):
+    def push_controller_button(self, button: str) -> None:
         pass
 
-    def release_controller_button(self, button: str):
+    def release_controller_button(self, button: str) -> None:
         pass
 
-    def apply_controller_data_format(self):
+    def apply_controller_data_format(self) -> None:
         pass
 
-    def open_software_controller_window(self):
+    def open_software_controller_window(self) -> None:
         pass
 
-    def apply_enabled_keyboard(self):
+    def apply_enabled_keyboard(self) -> None:
         pass
 
-    def apply_enabled_lstick_mouse(self):
+    def apply_enabled_lstick_mouse(self) -> None:
         pass
 
-    def apply_enabled_rstick_mouse(self):
+    def apply_enabled_rstick_mouse(self) -> None:
         pass
 
-    def apply_enabled_pro_controller(self):
+    def apply_enabled_pro_controller(self) -> None:
         pass
 
-    def apply_enabled_record_pro_controller(self):
+    def apply_enabled_record_pro_controller(self) -> None:
         pass
 
-    def clear_log_outputs(self):
+    def clear_log_outputs(self) -> None:
         self.clear_log_output(output_id=1)
         self.clear_log_output(output_id=2)
 
-    def clear_log_output(self, output_id: int):
+    def clear_log_output(self, output_id: int) -> None:
         pass
 
-    def apply_change_log_stdout(self):
+    def apply_change_log_stdout(self) -> None:
         pass
 
-    def adjust_log_outputs_size(self):
+    def adjust_log_outputs_size(self) -> None:
         pass
 
-    def notify_windows(self):
+    def notify_windows(self) -> None:
         pass
 
-    def notify_discord(self):
+    def notify_discord(self) -> None:
         pass
 
-    def notify_windows_force(self):
+    def notify_windows_force(self) -> None:
         pass
 
-    def notify_discord_force(self):
+    def notify_discord_force(self) -> None:
         pass
 
-    def apply_enabled_notify_windows_when_command_started(self):
+    def apply_enabled_notify_windows_when_command_started(self) -> None:
         pass
 
-    def apply_enabled_notify_windows_when_command_ended(self):
+    def apply_enabled_notify_windows_when_command_ended(self) -> None:
         pass
 
-    def apply_enabled_notify_discord_when_command_started(self):
+    def apply_enabled_notify_discord_when_command_started(self) -> None:
         pass
 
-    def apply_enabled_notify_discord_when_command_ended(self):
+    def apply_enabled_notify_discord_when_command_ended(self) -> None:
         pass
 
-    def apply_widget_layout(self):
+    def apply_widget_layout(self) -> None:
         pass
 
-    def apply_outputs_visibility(self):
+    def apply_outputs_visibility(self) -> None:
         pass
 
-    def apply_software_controller_visibility(self):
+    def apply_software_controller_visibility(self) -> None:
         pass
 
-    def apply_software_controller_position(self):
+    def apply_software_controller_position(self) -> None:
         pass
 
-    def apply_confirm_buttons_position(self):
+    def apply_confirm_buttons_position(self) -> None:
         pass

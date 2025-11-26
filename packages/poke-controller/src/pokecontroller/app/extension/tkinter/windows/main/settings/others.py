@@ -1,11 +1,19 @@
+import tkinter as tk
 import tkinter.ttk as ttk
+
+from typing import Any
 
 from ....components import AppFrame
 from ....values import literals as l
 
 
 class OthersSettings(AppFrame):
-    def __init__(self, master, *args, **kwargs):
+    def __init__(
+        self,
+        master: tk.Misc,
+        *args: tuple[Any, ...],
+        **kwargs: dict[str, Any],
+    ) -> None:
         super().__init__(master, *args, **kwargs)
 
         self._output_size = self.app_state.other_output_size
@@ -24,7 +32,7 @@ class OthersSettings(AppFrame):
 
         self.build_ui()
 
-    def build_ui(self):
+    def build_ui(self) -> None:
         upper_frame = ttk.Labelframe(self, text="Output Settings")
         size_adjuster = self._build_size_adjuster(upper_frame)
         standard_output_destination_settings = self._build_stdout_settings(upper_frame)
@@ -76,7 +84,7 @@ class OthersSettings(AppFrame):
         )
         lower_frame.pack(expand=False, fill=l.X, side=l.TOP, padx=4, pady=4)
 
-    def _build_size_adjuster(self, master) -> ttk.Labelframe:
+    def _build_size_adjuster(self, master: tk.Misc) -> ttk.Labelframe:
         labelframe = ttk.Labelframe(master, text="Size Adjuster")
 
         # Size
@@ -102,7 +110,7 @@ class OthersSettings(AppFrame):
 
         return labelframe
 
-    def _build_stdout_settings(self, master) -> ttk.Labelframe:
+    def _build_stdout_settings(self, master: tk.Misc) -> ttk.Labelframe:
         labelframe = ttk.Labelframe(master, text="Standard Output")
 
         # Destinations
@@ -123,7 +131,7 @@ class OthersSettings(AppFrame):
 
         return labelframe
 
-    def _build_clear_outputs(self, master) -> ttk.Labelframe:
+    def _build_clear_outputs(self, master: tk.Misc) -> ttk.Labelframe:
         labelframe = ttk.Labelframe(master, text="Clear")
 
         # Outputs Clear Buttons
@@ -131,7 +139,7 @@ class OthersSettings(AppFrame):
             ttk.Button(
                 labelframe,
                 text=f"Clear(#{i})",
-                command=lambda i=i: self._on_clear_pushed(output_id=i),
+                command=lambda i=i: self._on_clear_pushed(output_id=i),  # type: ignore[misc]
             )
             for i in range(1, 3)
         ]
@@ -142,7 +150,7 @@ class OthersSettings(AppFrame):
 
         return labelframe
 
-    def _build_widget_mode(self, master) -> ttk.Labelframe:
+    def _build_widget_mode(self, master: tk.Misc) -> ttk.Labelframe:
         labelframe = ttk.Labelframe(master, text="Display")
 
         # Widget Mode Checkbuttons
@@ -178,7 +186,10 @@ class OthersSettings(AppFrame):
 
         return labelframe
 
-    def _build_software_controller_position_settings(self, master) -> ttk.Labelframe:
+    def _build_software_controller_position_settings(
+        self,
+        master: tk.Misc,
+    ) -> ttk.Labelframe:
         labelframe = ttk.Labelframe(master, text="Software-Controller Position")
 
         # Positions
@@ -200,7 +211,8 @@ class OthersSettings(AppFrame):
         return labelframe
 
     def _build_dialogue_confirm_buttons_position_settings(
-        self, master
+        self,
+        master: tk.Misc,
     ) -> ttk.Labelframe:
         labelframe = ttk.Labelframe(master, text="Dialogue OK/Cancel Position")
 
@@ -222,23 +234,23 @@ class OthersSettings(AppFrame):
 
         return labelframe
 
-    def _on_size_adjuster_changed(self, _value: str):
+    def _on_size_adjuster_changed(self, _value: str) -> None:
         self.app_model.adjust_log_outputs_size()
 
-    def _on_stdout_changed(self):
+    def _on_stdout_changed(self) -> None:
         self.app_model.apply_change_log_stdout()
 
-    def _on_clear_pushed(self, output_id: int):
+    def _on_clear_pushed(self, output_id: int) -> None:
         self.app_model.clear_log_output(output_id)
 
-    def _on_output_visibility_changed(self):
+    def _on_output_visibility_changed(self) -> None:
         self.app_model.apply_outputs_visibility()
 
-    def _on_software_controller_visibility_changed(self):
+    def _on_software_controller_visibility_changed(self) -> None:
         self.app_model.apply_software_controller_visibility()
 
-    def _on_software_controller_position_changed(self):
+    def _on_software_controller_position_changed(self) -> None:
         self.app_model.apply_software_controller_position()
 
-    def _on_confirm_buttons_position_changed(self):
+    def _on_confirm_buttons_position_changed(self) -> None:
         self.app_model.apply_confirm_buttons_position()

@@ -82,12 +82,14 @@ def _generate_xy_presets() -> dict[int, tuple[int, int]]:
 
 
 class SwitchStickState:
-    def __init__(self):
+    def __init__(self) -> None:
         self._x: int = xy_range["center_x"]
         self._y: int = xy_range["center_y"]
         self._is_dirty: bool = False
 
-    def __eq__(self, other: "SwitchStickState"):
+    def __eq__(self, other: object) -> bool:
+        if not isinstance(other, SwitchStickState):
+            return NotImplemented
         return self._x == other.x and self._y == other.y
 
     @property
@@ -162,6 +164,6 @@ class SwitchStickState:
     @staticmethod
     def from_polar(r: float, degree: float) -> "SwitchStickState":
         x, y = _polar_to_xy(r, degree)
-        return SwitchStickState(x, y)
+        return SwitchStickState()
 
     _xy_presets: dict[int, tuple[int, int]] = _generate_xy_presets()

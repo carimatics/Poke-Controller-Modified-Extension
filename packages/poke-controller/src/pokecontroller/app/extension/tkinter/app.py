@@ -1,5 +1,6 @@
 import tkinter as tk
 from tkinter import ttk
+from typing import Any
 
 from .info import (
     PokeControllerAppInfo as Info,
@@ -13,8 +14,12 @@ from .state import (
 
 
 class PokeControllerExtensionApp(tk.Tk):
-    def __init__(self, *args, **kwargs):
-        tk.Tk.__init__(self, *args, **kwargs)
+    def __init__(
+        self,
+        *args: tuple[Any, ...],
+        **kwargs: dict[str, Any],
+    ):
+        super().__init__(*args, **kwargs)  # type: ignore[arg-type]
 
         self._state: State = load_state()
         self._model: Model = Model(self._state)
@@ -22,7 +27,8 @@ class PokeControllerExtensionApp(tk.Tk):
 
         # Theme
         style = ttk.Style(self)
-        style.theme_use(self._model.state.theme.get())
+        print(self._state.theme.get())
+        style.theme_use(self._state.theme.get())
 
         # FIXME
         self.title("PokeController Extension")
@@ -39,5 +45,5 @@ class PokeControllerExtensionApp(tk.Tk):
     def app_state(self) -> State:
         return self._state
 
-    def run(self):
+    def run(self) -> None:
         self.mainloop()
