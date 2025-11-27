@@ -1,9 +1,9 @@
-import datetime
 from typing import Any
 
 import requests
 
 from ..config import Config
+from ..datetime import from_timestamp
 from ..image import RawImage, to_bytes
 from .notifier import Notifier, RateLimit
 
@@ -96,13 +96,7 @@ class LineNotifier(Notifier):
                 remaining=response.headers.get("X-RateLimit-Remaining"),
                 image_limit=response.headers.get("X-RateLimit-ImageLimit"),
                 image_remaining=response.headers.get("X-RateLimit-ImageRemaining"),
-                # FIXME: この処理はどこかに切り出す
-                reset_time=repr(
-                    datetime.datetime.fromtimestamp(
-                        int(response.headers.get("X-RateLimit-Reset", 0)),
-                        datetime.timezone(datetime.timedelta(hours=9)),
-                    )
-                ),
+                reset_time=self._time(response.headers.get("X-RateLimit-Reset")),
             )
             for i, response in enumerate(self._statuses)
         ]
@@ -128,10 +122,6 @@ class LineNotifier(Notifier):
     def _make_status_jsons(self) -> list[Any]:
         return [response.json() for response in self._statuses]
 
-    def __str__(self) -> str:
-        for status in self._status_codes:
-            if status == 401:
-                return "LINE-Token Check FAILED."
-            elif status == 200:
-                return "LINE-Token Check OK!"
-        return "LINE-Token Check UNKNOWN."
+    # noinspection PyMethodMayBeStatic
+    def _time(self, timestamp: str | None) -> str | None:
+        return str(from_timestamp(int(timestamp), 9)) if timestamp else None
