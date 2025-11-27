@@ -10,8 +10,8 @@ from logging import getLogger, DEBUG, NullHandler
 from pokecontroller.core import (
     camera as lib_camera,
     image as lib_image,
+    path as lib_path,
 )
-from pokecontroller.utils import path
 
 if TYPE_CHECKING:
     import numpy
@@ -31,7 +31,7 @@ def imwrite(filename: str, img: numpy.ndarray, params: Sequence[int] = None):
         return False
 
 
-CAPTURE_DIR = path.join("Captures")
+CAPTURE_DIR = lib_path.join("Captures")
 
 
 def _get_save_filespec(filename: str) -> str:
@@ -46,10 +46,10 @@ def _get_save_filespec(filename: str) -> str:
     Returns:
         str: _description_
     """
-    if path.is_absolute(filename):
+    if lib_path.is_absolute(filename):
         return filename
     else:
-        return path.to_absolute(path.join(CAPTURE_DIR, filename))
+        return lib_path.to_absolute(lib_path.join(CAPTURE_DIR, filename))
 
 
 class Camera:
