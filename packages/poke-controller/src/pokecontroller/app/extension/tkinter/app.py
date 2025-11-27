@@ -14,12 +14,8 @@ from .state import (
 
 
 class PokeControllerExtensionApp(tk.Tk):
-    def __init__(
-        self,
-        *args: tuple[Any, ...],
-        **kwargs: dict[str, Any],
-    ) -> None:
-        super().__init__(*args, **kwargs)  # type: ignore[arg-type]
+    def __init__(self, *args: Any, **kwargs: Any) -> None:
+        super().__init__(*args, **kwargs)
 
         self._state: State = load_state()
         self._model: Model = Model(self._state)

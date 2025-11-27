@@ -6,13 +6,8 @@ from ... import PokeControllerExtensionApp as App
 
 
 class AppDialog(tk.Toplevel, AppAccessorMixIn):
-    def __init__(
-        self,
-        master: AppAccessorMixIn,
-        *args: tuple[Any, ...],
-        **kwargs: dict[str, Any],
-    ) -> None:
-        super().__init__(master, *args, **kwargs)  # type: ignore[arg-type]
+    def __init__(self, master: AppAccessorMixIn, *args: Any, **kwargs: Any) -> None:
+        super().__init__(master, *args, **kwargs)
         self._app: App = master.app
 
     @property

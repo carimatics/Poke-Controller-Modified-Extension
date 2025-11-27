@@ -8,11 +8,7 @@ from ....values import literals as l
 
 class Output(AppFrame):
     def __init__(
-        self,
-        master: tk.Misc,
-        output_id: int,
-        *args: tuple[Any, ...],
-        **kwargs: dict[str, Any],
+        self, master: tk.Misc, output_id: int, *args: Any, **kwargs: Any
     ) -> None:
         super().__init__(master, *args, **kwargs)
 

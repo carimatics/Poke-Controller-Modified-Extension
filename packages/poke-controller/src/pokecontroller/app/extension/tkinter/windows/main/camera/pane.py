@@ -10,12 +10,7 @@ from .canvas import Canvas
 
 
 class CameraPane(AppFrame):
-    def __init__(
-        self,
-        master: tk.Misc,
-        *args: tuple[Any, ...],
-        **kwargs: dict[str, Any],
-    ) -> None:
+    def __init__(self, master: tk.Misc, *args: Any, **kwargs: Any) -> None:
         super().__init__(master, *args, **kwargs)
 
         self._canvas: Canvas | None = None

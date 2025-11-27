@@ -7,12 +7,7 @@ from ....values import literals as l
 
 
 class ManualControlSettings(AppFrame):
-    def __init__(
-        self,
-        master: tk.Misc,
-        *args: tuple[Any, ...],
-        **kwargs: dict[str, Any],
-    ) -> None:
+    def __init__(self, master: tk.Misc, *args: Any, **kwargs: Any) -> None:
         super().__init__(master, *args, **kwargs)
 
         self._enabled_keyboard = self.app_state.manual_control_enabled_keyboard

@@ -30,12 +30,7 @@ SETTINGS: list[tuple[str, type[ttk.Frame], str]] = [
 
 
 class SettingsPane(AppFrame):
-    def __init__(
-        self,
-        master: tk.Misc,
-        *args: tuple[Any, ...],
-        **kwargs: dict[str, Any],
-    ) -> None:
+    def __init__(self, master: tk.Misc, *args: Any, **kwargs: Any) -> None:
         super().__init__(master, *args, **kwargs)
         self.build_ui()
 

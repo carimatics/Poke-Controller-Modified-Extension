@@ -6,10 +6,5 @@ from ..mixins import AppAccessorMixIn
 
 
 class AppFrame(ttk.Frame, AppAccessorMixIn):
-    def __init__(
-        self,
-        master: tk.Misc,
-        *args: tuple[Any, ...],
-        **kwargs: dict[str, Any],
-    ) -> None:
-        super().__init__(master, *args, **kwargs)  # type: ignore[arg-type]
+    def __init__(self, master: tk.Misc, *args: Any, **kwargs: Any) -> None:
+        super().__init__(master, *args, **kwargs)
