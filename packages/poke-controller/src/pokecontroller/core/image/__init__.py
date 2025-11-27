@@ -14,6 +14,7 @@ from .image_processing import (
     crop as crop,
     grayscale as grayscale,
     read as read,
+    to_bytes as to_bytes,
     write as write,
 )
 from .raw_image import (
