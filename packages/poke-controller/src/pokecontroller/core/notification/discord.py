@@ -17,11 +17,7 @@ DISCORD_WEBHOOK_SECTION_KEYWORD = "DISCORD_WEBHOOK"
 class DiscordConfig(Config):
     def __init__(self, path: str) -> None:
         super().__init__(path)
-        print(to_absolute(path))
         self._initialize()
-        print(self._config.sections())
-        print(self.read_dict(DISCORD_SECTION_DEFAULT))
-        print(self.read_dict(DISCORD_WEBHOOK_SECTION_DEFAULT))
 
     def _initialize(self) -> None:
         # load and create if not exists
