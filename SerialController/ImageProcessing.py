@@ -73,13 +73,7 @@ def getImage(path: str, mode: str = "color"):
     if not path:
         return None
 
-    if mode == "binary":
-        m = ImageReadMode.GRAYSCALE
-    elif mode == "gray":
-        m = ImageReadMode.GRAYSCALE
-    else:  # mode == "color"
-        m = ImageReadMode.COLOR
-
+    m: ImageReadMode = "color" if mode == "color" else "grayscale"
     try:
         return lib_image.read(path, m)
     except Exception:

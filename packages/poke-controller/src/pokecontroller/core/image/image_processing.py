@@ -1,16 +1,12 @@
 import os
 from dataclasses import dataclass
-from enum import Enum
-from typing import Protocol, Sequence
+from typing import Literal, Protocol, Sequence
 
 import cv2
 
 from .raw_image import RawImage
 
-
-class ImageReadMode(Enum):
-    GRAYSCALE = "grayscale"
-    COLOR = "color"
+ImageReadMode = Literal["grayscale", "color"]
 
 
 @dataclass
@@ -30,10 +26,10 @@ class ImageBinarizeHsvArgs:
 @dataclass
 class TemplateMatchResult:
     contains: bool
-    location: tuple[int, int]
+    location_max: tuple[int, int]
     width: int
     height: int
-    value: float
+    value_max: float
 
 
 class RawImageDownloadable(Protocol):
@@ -89,14 +85,14 @@ def write(src: RawImage, path: str, *params: Sequence[int]) -> bool:
     return True
 
 
-def read(path: str, mode: ImageReadMode = ImageReadMode.COLOR) -> RawImage | None:
+def read(path: str, mode: ImageReadMode = "color") -> RawImage | None:
     if not path:
         return None
 
     match mode:
-        case ImageReadMode.GRAYSCALE:
+        case "grayscale":
             return cv2.imread(path, cv2.IMREAD_GRAYSCALE)
-        case ImageReadMode.COLOR:
+        case "color":
             return cv2.imread(path, cv2.IMREAD_COLOR)
 
 

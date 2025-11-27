@@ -63,7 +63,7 @@ class Image:
         return write(self._src, path)
 
     @staticmethod
-    def read(path: str, mode: ImageReadMode = ImageReadMode.COLOR) -> "Image | None":
+    def read(path: str, mode: ImageReadMode = "color") -> "Image | None":
         if (result := read(path, mode)) is None:
             return None
         return Image(result)
