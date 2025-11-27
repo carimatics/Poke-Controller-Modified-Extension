@@ -96,6 +96,7 @@ class LineNotifier(Notifier):
                 remaining=response.headers.get("X-RateLimit-Remaining"),
                 image_limit=response.headers.get("X-RateLimit-ImageLimit"),
                 image_remaining=response.headers.get("X-RateLimit-ImageRemaining"),
+                # FIXME: この処理はどこかに切り出す
                 reset_time=repr(
                     datetime.datetime.fromtimestamp(
                         int(response.headers.get("X-RateLimit-Reset", 0)),
