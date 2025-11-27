@@ -15,7 +15,7 @@ def generateRandomCharactor(n: int):
     return "".join([random.choice(c) for _ in range(n)])
 
 
-def convertCv2Format(crop_fmt: int | str = "", crop: list[int] = None) -> tuple[list[int], list[int]]:  # type: ignore
+def convertCv2Format(crop_fmt: int | str = "", crop: list[int] = None) -> tuple[list[int], list[int]]:
     """
     リストをopencv/pillow形式に対応するよう変換する。
     ・Pillow形式

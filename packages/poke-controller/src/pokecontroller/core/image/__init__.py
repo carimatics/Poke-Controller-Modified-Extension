@@ -2,9 +2,11 @@ from .image import (
     Image as Image,
 )
 from .image_processing import (
+    GpuTemplateMatchable as GpuTemplateMatchable,
     ImageBinarizeHsvArgs as ImageBinarizeHsvArgs,
     ImageCropArgs as ImageCropArgs,
     ImageReadMode as ImageReadMode,
+    RawImageDownloadable as RawImageDownloadable,
     TemplateMatchResult as TemplateMatchResult,
     binarize_by_hsv as binarize_by_hsv,
     binarize_by_interframe_diff as binarize_by_interframe_diff,

@@ -1,7 +1,7 @@
 import os
 from dataclasses import dataclass
 from enum import Enum
-from typing import Sequence
+from typing import Protocol, Sequence
 
 import cv2
 
@@ -34,6 +34,18 @@ class TemplateMatchResult:
     width: int
     height: int
     value: float
+
+
+class RawImageDownloadable(Protocol):
+    def download(self) -> RawImage: ...
+
+
+class GpuTemplateMatchable(Protocol):
+    def match(
+        self,
+        image: cv2.cuda.GpuMat,
+        template: cv2.cuda.GpuMat,
+    ) -> RawImageDownloadable: ...
 
 
 def crop(src: RawImage, args: ImageCropArgs) -> RawImage:
@@ -100,10 +112,10 @@ def match_template(
     return cv2.matchTemplate(image, template, method, mask=mask)
 
 
-def match_template_by_gpu(  # type: ignore[no-untyped-def]
-    matcher,
+def match_template_by_gpu(
+    matcher: GpuTemplateMatchable,
     image: cv2.cuda.GpuMat,
     template: cv2.cuda.GpuMat,
 ) -> RawImage:
     result = matcher.match(image, template)
-    return result.download()  # type: ignore[no-any-return]
+    return result.download()

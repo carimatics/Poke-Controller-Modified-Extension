@@ -145,13 +145,11 @@ class ImageProcessing:
             self.__logger.propagate = True
 
         matcher_mode = "gpu" if use_gpu else "cpu"
-        cpu_matcher, gpu_matcher = TemplateMatcherCreator.create(preferred_mode=matcher_mode)
-        if gpu_matcher is not None:
-            self.__matcher = gpu_matcher
+        self.__matcher = TemplateMatcherCreator.create(preferred_mode=matcher_mode)
+        if self.__matcher.mode is "gpu":
             print("template matching:mask is ignored.")
             self.__use_gpu = True
         else:
-            self.__matcher = cpu_matcher
             self.__use_gpu = False
 
     def imwrite(self, filename: str, image: ndarray, params: Sequence[int] = None) -> bool:
@@ -172,11 +170,13 @@ class ImageProcessing:
         テンプレートマッチングをする
         画像は必要に応じて事前にグレースケール化やトリミングをしておく必要がある
         """
-        result = self.__matcher \
-            .set_image(Image(image)) \
-            .set_template(Image(template_image)) \
-            .set_mask(Image(mask_image) if mask_image is not None else None) \
+        result = (
+            self.__matcher
+            .set_image(Image(image))
+            .set_template(Image(template_image))
+            .set_mask(Image(mask_image) if mask_image is not None else None)
             .match()
+        )
         if result is None:
             return 0.0, (0.0, 0.0)
         else:
