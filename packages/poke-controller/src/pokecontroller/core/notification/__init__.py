@@ -1,3 +1,6 @@
+from .discord import (
+    DiscordNotifier as DiscordNotifier,
+)
 from .line import (
     LineNotifier as LineNotifier,
 )

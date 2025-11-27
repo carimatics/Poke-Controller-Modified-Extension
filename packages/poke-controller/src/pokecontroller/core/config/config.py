@@ -61,7 +61,14 @@ class Config:
         return value if value is not None else default
 
     def set(self, section: str, option: str, value: str) -> None:
-        self._config.set(section, option, value)
+        try:
+            self._config.set(section, option)
+        except configparser.NoSectionError:
+            self.add_section(section=section)
+            self._config.set(section, option, value)
+
+    def add_section(self, section: str) -> None:
+        self._config.add_section(section)
 
     def sections(self) -> list[str]:
         return list(self._config.keys())

@@ -10,6 +10,10 @@ def directory_name(path: str) -> str:
     return os.path.dirname(path)
 
 
+def basename(path: str) -> str:
+    return os.path.basename(path)
+
+
 def is_absolute(path: str) -> bool:
     return os.path.isabs(path)
 

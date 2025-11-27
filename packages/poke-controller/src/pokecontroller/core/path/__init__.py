@@ -1,4 +1,5 @@
 from .path import (
+    basename as basename,
     directory_name as directory_name,
     exists as exists,
     exists_directory as exists_directory,
