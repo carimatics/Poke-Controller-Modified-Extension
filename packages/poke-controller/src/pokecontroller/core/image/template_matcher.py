@@ -128,7 +128,7 @@ class CpuTemplateMatcher(TemplateMatcher):
 
 
 class GpuTemplateMatcher(TemplateMatcher):
-    def __init__(self, threshold: float = 0.8):
+    def __init__(self, threshold: float = 0.8) -> None:
         super().__init__(threshold)
 
         self._initialized: bool = False

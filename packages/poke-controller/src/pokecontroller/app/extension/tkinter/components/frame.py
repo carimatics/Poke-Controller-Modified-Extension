@@ -11,5 +11,5 @@ class AppFrame(ttk.Frame, AppAccessorMixIn):
         master: tk.Misc,
         *args: tuple[Any, ...],
         **kwargs: dict[str, Any],
-    ):
+    ) -> None:
         super().__init__(master, *args, **kwargs)  # type: ignore[arg-type]

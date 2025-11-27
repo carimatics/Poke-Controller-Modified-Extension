@@ -6,7 +6,12 @@ from ..image import RawImage
 
 
 class Camera:
-    def __init__(self, *, frame_size: tuple[int, int] = (1280, 720), fps: int = 45):
+    def __init__(
+        self,
+        *,
+        frame_size: tuple[int, int] = (1280, 720),
+        fps: int = 45,
+    ) -> None:
         self._video_capture: cv2.VideoCapture | None = None
         self._frame: RawImage | None = None
         self._frame_size = frame_size

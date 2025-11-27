@@ -14,7 +14,7 @@ class SerialSettings(AppFrame):
         master: tk.Misc,
         *args: tuple[Any, ...],
         **kwargs: dict[str, Any],
-    ):
+    ) -> None:
         super().__init__(master, *args, **kwargs)
 
         self._port_list: list[str] = self._load_serial_port_list()

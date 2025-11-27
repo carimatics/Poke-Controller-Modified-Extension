@@ -13,7 +13,7 @@ class Output(AppFrame):
         output_id: int,
         *args: tuple[Any, ...],
         **kwargs: dict[str, Any],
-    ):
+    ) -> None:
         super().__init__(master, *args, **kwargs)
 
         self._id: int = output_id

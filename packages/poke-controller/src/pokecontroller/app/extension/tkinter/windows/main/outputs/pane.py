@@ -11,7 +11,7 @@ class OutputsPane(AppFrame):
         master: tk.Misc,
         *args: tuple[Any, ...],
         **kwargs: dict[str, Any],
-    ):
+    ) -> None:
         super().__init__(master, *args, **kwargs)
 
         # noinspection PyTypeChecker

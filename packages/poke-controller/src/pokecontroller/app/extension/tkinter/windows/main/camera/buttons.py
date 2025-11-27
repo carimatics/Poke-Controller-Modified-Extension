@@ -28,7 +28,7 @@ class Buttons(AppFrame):
         master: tk.Misc,
         *args: tuple[Any, ...],
         **kwargs: dict[str, Any],
-    ):
+    ) -> None:
         super().__init__(master, *args, **kwargs)
         self._open_dir_button_image: tk.PhotoImage = tk.PhotoImage(
             file="../assets/icons8-OpenDir-16.png"

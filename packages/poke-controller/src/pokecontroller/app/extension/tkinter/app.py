@@ -18,7 +18,7 @@ class PokeControllerExtensionApp(tk.Tk):
         self,
         *args: tuple[Any, ...],
         **kwargs: dict[str, Any],
-    ):
+    ) -> None:
         super().__init__(*args, **kwargs)  # type: ignore[arg-type]
 
         self._state: State = load_state()

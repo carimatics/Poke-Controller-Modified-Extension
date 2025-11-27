@@ -51,7 +51,7 @@ class ControllerPane(AppFrame):
         master: tk.Misc,
         *args: tuple[Any, ...],
         **kwargs: dict[str, Any],
-    ):
+    ) -> None:
         super().__init__(master, *args, **kwargs)
         self.build_ui()
 

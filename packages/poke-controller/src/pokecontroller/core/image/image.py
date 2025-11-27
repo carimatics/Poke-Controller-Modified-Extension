@@ -14,7 +14,7 @@ from .raw_image import RawImage
 
 
 class Image:
-    def __init__(self, src: RawImage):
+    def __init__(self, src: RawImage) -> None:
         self._src: RawImage = src
         h, w = src.shape
         self._height: int = h
