@@ -1,0 +1,9 @@
+include = [
+    "packages/**/*.py",
+]
+exclude = [
+    "packages/poke-controller/src/pokecontroller/app/extension/tkinter/core/**/*.py"
+]
+
+[lint.isort]
+case-sensitive = true
