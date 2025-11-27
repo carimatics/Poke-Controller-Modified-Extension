@@ -1,6 +1,5 @@
 import tkinter as tk
 import tkinter.ttk as ttk
-
 from typing import Any
 
 from ....components import AppFrame

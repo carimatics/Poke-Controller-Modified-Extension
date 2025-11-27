@@ -4,7 +4,6 @@ from typing import Any
 
 from ....components import AppFrame
 from ....values import literals as l
-
 from .buttons import Buttons
 from .canvas import Canvas
 

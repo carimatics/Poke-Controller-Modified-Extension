@@ -1,5 +1,5 @@
-from typing import Any
 import tkinter as tk
+from typing import Any
 
 from ....components import AppFrame
 

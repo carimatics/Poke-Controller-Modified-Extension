@@ -1,12 +1,10 @@
+import math
 import tkinter as tk
 import tkinter.ttk as ttk
-from typing import Literal, Any
-
-import math
+from typing import Any, Literal
 
 from ...components import AppFrame
 from ...values import literals as l
-
 from .camera import CameraPane
 from .controller import ControllerPane
 from .outputs import OutputsPane

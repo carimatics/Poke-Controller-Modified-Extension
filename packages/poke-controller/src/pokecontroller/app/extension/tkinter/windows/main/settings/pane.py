@@ -4,7 +4,6 @@ from typing import Any
 
 from ....components import AppFrame
 from ....values import literals as l
-
 from .camera import CameraSettings
 from .commands import CommandsSettings
 from .manual_control import ManualControlSettings

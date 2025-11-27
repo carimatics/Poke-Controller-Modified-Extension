@@ -1,9 +1,8 @@
 from contextlib import contextmanager
 from typing import Generator
 
-from .controller import SwitchController
-
 from ...serial import Serial
+from .controller import SwitchController
 
 
 @contextmanager

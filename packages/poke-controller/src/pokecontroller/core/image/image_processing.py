@@ -1,8 +1,10 @@
+import io
 import os
 from dataclasses import dataclass
 from typing import Literal, Protocol, Sequence
 
 import cv2
+from PIL import Image
 
 from .raw_image import RawImage
 
@@ -94,6 +96,14 @@ def read(path: str, mode: ImageReadMode = "color") -> RawImage | None:
             return cv2.imread(path, cv2.IMREAD_GRAYSCALE)
         case "color":
             return cv2.imread(path, cv2.IMREAD_COLOR)
+
+
+def to_bytes(src: RawImage, fmt: str | None = "png") -> bytes:
+    rgb = cv2.cvtColor(src, cv2.COLOR_BGR2RGB)
+    image = Image.fromarray(rgb)
+    bio = io.BytesIO()
+    image.save(bio, format=fmt)
+    return bio.getvalue()
 
 
 def match_template(

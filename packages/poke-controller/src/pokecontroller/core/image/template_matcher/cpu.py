@@ -2,7 +2,7 @@ from typing import Literal
 
 from ..image import RawImage
 from ..image_processing import match_template
-from .template_matcher import TemplateMatcher, TemplateMatchResult
+from .template_matcher import TemplateMatchResult, TemplateMatcher
 
 
 class CpuTemplateMatcher(TemplateMatcher):

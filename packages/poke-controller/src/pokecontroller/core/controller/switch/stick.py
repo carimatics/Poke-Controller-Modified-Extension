@@ -1,5 +1,5 @@
-from enum import IntFlag, auto
 import math
+from enum import IntFlag, auto
 
 
 class SwitchStickTilt(IntFlag):

@@ -1,6 +1,6 @@
-from typing import Callable, Any
 import tkinter as tk
 import tkinter.ttk as ttk
+from typing import Any, Callable
 
 from ....components import AppFrame
 from ....utils import separator

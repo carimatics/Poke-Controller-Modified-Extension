@@ -1,8 +1,8 @@
 from typing import Literal
 
-from .template_matcher import TemplateMatcher
 from .cpu import CpuTemplateMatcher
 from .gpu import GpuTemplateMatcher
+from .template_matcher import TemplateMatcher
 
 TemplateMatcherPreferredMode = Literal["cpu", "gpu"]
 

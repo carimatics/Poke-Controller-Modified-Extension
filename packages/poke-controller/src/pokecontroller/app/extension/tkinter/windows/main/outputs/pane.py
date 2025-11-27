@@ -1,7 +1,7 @@
 import tkinter as tk
 from typing import Any
-from ....components import AppFrame
 
+from ....components import AppFrame
 from .output import Output
 
 

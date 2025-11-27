@@ -1,7 +1,7 @@
+from ...serial import Serial
 from .button import SwitchButtonState
 from .hat import SwitchHatState
 from .stick import SwitchStickState
-from ...serial import Serial
 
 
 class SwitchControllerState:

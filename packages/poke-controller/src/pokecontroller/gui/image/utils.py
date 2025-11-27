@@ -1,4 +1,5 @@
 import cv2
+
 from ...core.image import RawImage
 
 

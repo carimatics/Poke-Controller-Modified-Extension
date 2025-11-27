@@ -4,7 +4,7 @@ import cv2
 
 from ..image import RawImage
 from ..image_processing import GpuTemplateMatchable, match_template_by_gpu
-from .template_matcher import TemplateMatcher, TemplateMatchResult
+from .template_matcher import TemplateMatchResult, TemplateMatcher
 
 
 class GpuTemplateMatcher(TemplateMatcher):
