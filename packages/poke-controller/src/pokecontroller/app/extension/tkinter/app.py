@@ -3,8 +3,8 @@ from tkinter import ttk
 from typing import Any
 
 from .info import (
-    PokeControllerAppInfo as Info,
     INFO,
+    PokeControllerAppInfo as Info,
 )
 from .model import PokeControllerExtensionAppModel as Model
 from .state import (

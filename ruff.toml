@@ -5,5 +5,9 @@ exclude = [
     "packages/poke-controller/src/pokecontroller/app/extension/tkinter/core/**/*.py"
 ]
 
+[lint]
+extend-select = ["I"]
+
 [lint.isort]
 case-sensitive = true
+combine-as-imports = true

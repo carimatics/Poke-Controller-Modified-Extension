@@ -1,6 +1,5 @@
-from typing import Callable, Literal
 import tkinter as tk
-from typing import Any
+from typing import Any, Callable, Literal
 
 from ...state import (
     DEFAULT_STATE,
