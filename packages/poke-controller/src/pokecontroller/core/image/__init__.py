@@ -23,5 +23,6 @@ from .template_matcher import (
     CpuTemplateMatcher as CpuTemplateMatcher,
     GpuTemplateMatcher as GpuTemplateMatcher,
     TemplateMatcher as TemplateMatcher,
-    TemplateMatcherCreator as TemplateMatcherCreator,
+    TemplateMatcherPreferredMode as TemplateMatcherPreferredMode,
+    create_template_matcher as create_template_matcher,
 )
