@@ -1,5 +1,5 @@
 from .context_manager import (
-    open as open,
+    use_serial as use_serial,
 )
 from .serial import (
     Serial as Serial,

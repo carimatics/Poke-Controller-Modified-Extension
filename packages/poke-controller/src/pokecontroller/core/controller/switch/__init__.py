@@ -3,7 +3,7 @@ from .button import (
     SwitchButtonState as SwitchButtonState,
 )
 from .context_manager import (
-    open as open,
+    use_switch_controller as use_switch_controller,
 )
 from .controller import (
     SwitchController as SwitchController,

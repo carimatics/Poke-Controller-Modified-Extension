@@ -1,5 +1,5 @@
-from .state import AppState
 from .info import AppInfo
+from .state import AppState
 
 
 class AppModel:

@@ -1,4 +1,5 @@
 from pokecontroller.core.logging import setup_logging
+
 from .app import App
 from .values import literals as l
 from .windows import MainWindow

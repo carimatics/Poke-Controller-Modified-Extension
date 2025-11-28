@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from tkinter import Variable, StringVar, IntVar, BooleanVar, DoubleVar
+from tkinter import BooleanVar, DoubleVar, IntVar, StringVar, Variable
 from typing import Any
 
 DEFAULT_STATE = {

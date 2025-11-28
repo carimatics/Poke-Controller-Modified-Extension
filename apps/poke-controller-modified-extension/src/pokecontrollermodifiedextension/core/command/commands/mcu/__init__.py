@@ -1,3 +1,1 @@
-from .base import (
-    McuCommand as McuCommand,
-)
+from .base import McuCommand as McuCommand
