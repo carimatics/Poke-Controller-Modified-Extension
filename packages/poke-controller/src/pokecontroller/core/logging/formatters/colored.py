@@ -4,18 +4,21 @@ import sys
 
 from ...platform import is_windows
 
+RESET = "\033[0m"
+ESCAPED_LEVELS = {
+    level: f"{esc}{level}{RESET}"
+    for level, esc in [
+        ("DEBUG", "   \033[36m"),  # Cyan
+        ("INFO", "    \033[32m"),  # Green
+        ("WARNING", " \033[33m"),  # Yellow
+        ("ERROR", "   \033[31m"),  # Red
+        ("CRITICAL", "\033[37;41m"),  # White on Red
+    ]
+}
+
 
 class ColoredFormatter(logging.Formatter):
     """クロスプラットフォーム対応のカラーフォーマッター"""
-
-    COLORS = {
-        "DEBUG": "   \033[36m",  # Cyan
-        "INFO": "    \033[32m",  # Green
-        "WARNING": " \033[33m",  # Yellow
-        "ERROR": "   \033[31m",  # Red
-        "CRITICAL": "\033[37;41m",  # White on Red
-    }
-    MAPPING = {level: f"{esc}{level}\033[0m" for level, esc in COLORS.items()}
 
     def __init__(
         self,
@@ -71,10 +74,10 @@ class ColoredFormatter(logging.Formatter):
             return super().format(record)
 
         levelname_original = record.levelname
-        if levelname_original not in self.MAPPING:
+        if levelname_original not in ESCAPED_LEVELS:
             return super().format(record)
 
-        record.levelname = self.MAPPING[levelname_original]
+        record.levelname = ESCAPED_LEVELS[levelname_original]
         result = super().format(record)
         # 元に戻す(他のHandlerに影響を与えないため)
         record.levelname = levelname_original
