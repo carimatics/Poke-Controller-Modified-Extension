@@ -1,8 +1,7 @@
 [project]
-# name = "Poke-Controller-Modified-Extension"
-name = "pcme"
+name = "root"
 version = "0.1.0"
-description = "Add your description here"
+description = "Poke-Controller-Modified-Extension"
 readme = "README.md"
 authors = [
     { name = "KawaSwitch" },
