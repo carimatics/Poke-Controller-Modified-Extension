@@ -36,6 +36,22 @@ class ColoredFormatter(logging.Formatter):
         if self.use_colors and is_windows():
             self._enable_window_ansi()
 
+    def format(self, record: logging.LogRecord) -> str:
+        """ログレコードをフォーマット"""
+
+        if not self.use_colors:
+            return super().format(record)
+
+        levelname_original = record.levelname
+        if levelname_original not in ESCAPED_LEVELS:
+            return super().format(record)
+
+        record.levelname = ESCAPED_LEVELS[levelname_original]
+        result = super().format(record)
+        # 元に戻す(他のHandlerに影響を与えないため)
+        record.levelname = levelname_original
+        return result
+
     # noinspection PyMethodMayBeStatic
     def _should_use_colors(self) -> bool:
         """色を使用するべきか判定する"""
@@ -52,6 +68,7 @@ class ColoredFormatter(logging.Formatter):
 
     def _enable_window_ansi(self) -> None:
         """Windows 10以降でANSIエスケープシーケンスを有効化"""
+
         try:
             # Windows 10 バージョン1511以降で利用可能
             import ctypes
@@ -67,18 +84,3 @@ class ColoredFormatter(logging.Formatter):
         except Exception:  # noqa
             # 失敗しても続行(色なし)
             self.use_color = False
-
-    def format(self, record: logging.LogRecord) -> str:
-        """ログレコードをフォーマット"""
-        if not self.use_colors:
-            return super().format(record)
-
-        levelname_original = record.levelname
-        if levelname_original not in ESCAPED_LEVELS:
-            return super().format(record)
-
-        record.levelname = ESCAPED_LEVELS[levelname_original]
-        result = super().format(record)
-        # 元に戻す(他のHandlerに影響を与えないため)
-        record.levelname = levelname_original
-        return result
