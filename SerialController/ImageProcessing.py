@@ -141,7 +141,7 @@ class ImageProcessing:
 
         preferred: TemplateMatcherPreferredMode = "gpu" if use_gpu else "cpu"
         self.__matcher = create_template_matcher(preferred_mode=preferred)
-        if self.__matcher.mode is "gpu":
+        if self.__matcher.mode == "gpu":
             print("template matching:mask is ignored.")
             self.__use_gpu = True
         else:
