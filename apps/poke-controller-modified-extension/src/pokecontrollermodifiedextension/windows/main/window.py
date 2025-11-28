@@ -77,9 +77,7 @@ class MainWindow(AppFrame):
         self._outputs_size.trace_add("write", self._on_outputs_size_changed)
         self._visible_output1.trace_add("write", self._on_widget_visibility_changed)
         self._visible_output2.trace_add("write", self._on_widget_visibility_changed)
-        self._visible_controller.trace_add(
-            "write", self._on_widget_visibility_changed
-        )
+        self._visible_controller.trace_add("write", self._on_widget_visibility_changed)
         self._controller_position.trace_add(
             "write", self._on_controller_position_changed
         )

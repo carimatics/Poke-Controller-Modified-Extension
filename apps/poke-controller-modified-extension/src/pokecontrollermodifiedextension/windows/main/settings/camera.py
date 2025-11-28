@@ -123,14 +123,20 @@ class CameraSettings(AppFrame):
         id_label.pack(expand=False, fill=l.X, side=l.LEFT)
         id_entry.pack(expand=True, fill=l.X, side=l.LEFT)
         # noinspection DuplicatedCode
-        ttk.Separator(master=lower_frame, orient=l.VERTICAL).pack(expand=False, fill=l.Y, side=l.LEFT, padx=5, pady=8)
+        ttk.Separator(master=lower_frame, orient=l.VERTICAL).pack(
+            expand=False, fill=l.Y, side=l.LEFT, padx=5, pady=8
+        )
         fps_label.pack(expand=False, fill=l.X, side=l.LEFT)
         fps_combobox.pack(expand=False, fill=l.X, side=l.LEFT)
         # noinspection DuplicatedCode
-        ttk.Separator(master=lower_frame, orient=l.VERTICAL).pack(expand=False, fill=l.Y, side=l.LEFT, padx=5, pady=8)
+        ttk.Separator(master=lower_frame, orient=l.VERTICAL).pack(
+            expand=False, fill=l.Y, side=l.LEFT, padx=5, pady=8
+        )
         size_label.pack(expand=False, fill=l.X, side=l.LEFT)
         size_combobox.pack(expand=False, fill=l.X, side=l.LEFT)
-        ttk.Separator(master=lower_frame, orient=l.VERTICAL).pack(expand=False, fill=l.Y, side=l.LEFT, padx=5, pady=8)
+        ttk.Separator(master=lower_frame, orient=l.VERTICAL).pack(
+            expand=False, fill=l.Y, side=l.LEFT, padx=5, pady=8
+        )
         reload_button.pack(expand=False, fill=l.X, side=l.LEFT, padx=4)
         lower_frame.pack(expand=True, fill=l.BOTH, side=l.TOP, padx=4, pady=4)
 

@@ -98,7 +98,9 @@ class CommandsSettings(AppFrame):
         shortcut_label.pack(expand=False, fill=l.X, side=l.LEFT)
         shortcut_spinbox.pack(expand=False, fill=l.X, side=l.LEFT)
         shortcut_set_button.pack(expand=False, fill=l.X, side=l.LEFT, padx=4)
-        ttk.Separator(master=lower_frame, orient=l.VERTICAL).pack(expand=False, fill=l.Y, side=l.LEFT, padx=5, pady=8)
+        ttk.Separator(master=lower_frame, orient=l.VERTICAL).pack(
+            expand=False, fill=l.Y, side=l.LEFT, padx=5, pady=8
+        )
         command_reload_button.pack(expand=False, fill=l.X, side=l.LEFT, padx=4)
         start_button.pack(expand=False, fill=l.X, side=l.LEFT, padx=4)
         pause_button.pack(expand=False, fill=l.X, side=l.LEFT, padx=4)

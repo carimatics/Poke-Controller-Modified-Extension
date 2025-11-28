@@ -76,10 +76,14 @@ class SerialSettings(AppFrame):
         # Layout
         port_label.pack(expand=False, side=l.LEFT, padx=4)
         port_entry.pack(expand=True, fill=l.X, side=l.LEFT)
-        ttk.Separator(master=labelframe, orient=l.VERTICAL).pack(expand=False, fill=l.Y, side=l.LEFT, padx=5, pady=8)
+        ttk.Separator(master=labelframe, orient=l.VERTICAL).pack(
+            expand=False, fill=l.Y, side=l.LEFT, padx=5, pady=8
+        )
         baud_rate_label.pack(expand=False, side=l.LEFT)
         baud_rate_combobox.pack(expand=False, fill=l.X, side=l.LEFT)
-        ttk.Separator(master=labelframe, orient=l.VERTICAL).pack(expand=False, fill=l.Y, side=l.LEFT, padx=5, pady=8)
+        ttk.Separator(master=labelframe, orient=l.VERTICAL).pack(
+            expand=False, fill=l.Y, side=l.LEFT, padx=5, pady=8
+        )
         reconnect_button.pack(expand=False, fill=l.X, side=l.LEFT, padx=4, pady=4)
         disconnect_button.pack(expand=False, fill=l.X, side=l.LEFT, padx=4, pady=4)
 

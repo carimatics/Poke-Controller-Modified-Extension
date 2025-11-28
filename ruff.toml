@@ -1,8 +1,10 @@
 include = [
     "packages/**/*.py",
+    "apps/**/*.py"
 ]
 exclude = [
-    "packages/poke-controller/src/pokecontroller/app/extension/tkinter/core/**/*.py"
+    "packages/poke-controller-modified-extension/src/pokecontrollermodifiedextension/components/**/*.py",
+    "packages/poke-controller-modified-extension/src/pokecontrollermodifiedextension/core/**/*.py",
 ]
 
 [lint]
