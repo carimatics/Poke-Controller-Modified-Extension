@@ -9,17 +9,23 @@ from .. import path
 DEFAULT_TOML: str = """# See: https://docs.python.org/ja/3.12/howto/logging.html
 
 version = 1
+disable_existing_loggers = false
 
 # formatters
 [formatters.pokecontroller]
+format = "%(asctime)s [%(levelname)8s] %(name)s#%(funcName)s: %(message)s"
+datefmt = "%Y-%m-%d %H:%M:%S"
+
+[formatters.pokecontrollerColored]
 class = "pokecontroller.core.logging.ColoredFormatter"
-format = "%(asctime)s [%(levelname)7s] %(name)s#%(funcName)s: %(message)s"
+format = "%(asctime)s [%(levelname)8s] %(name)s#%(funcName)s: %(message)s"
+datefmt = "%Y-%m-%d %H:%M:%S"
 
 # handlers
 [handlers.pokecontrollerConsole]
 class = "logging.StreamHandler"
 level = "DEBUG"
-formatter = "pokecontroller"
+formatter = "pokecontrollerColored"
 stream = "ext://sys.stdout"
 
 [handlers.pokecontrollerFileWarning]
