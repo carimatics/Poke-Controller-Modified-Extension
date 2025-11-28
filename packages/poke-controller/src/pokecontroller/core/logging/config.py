@@ -12,6 +12,7 @@ version = 1
 
 # formatters
 [formatters.pokecontroller]
+class = "pokecontroller.core.logging.ColoredFormatter"
 format = "%(asctime)s [%(levelname)7s] %(name)s#%(funcName)s: %(message)s"
 
 # handlers
