@@ -17,6 +17,15 @@ class LineConfig(Config):
         super().__init__(path)
         self._initialize()
 
+    def get_token(self, option: str) -> str | None:
+        return self["LINE"][option]
+
+    def set_token(self, option: str, value: str) -> None:
+        self["LINE"][option] = value
+
+    def get_tokens(self) -> dict[str, str]:
+        return self.options("LINE")
+
     def _initialize(self) -> None:
         # load and create if not exists
         try:
@@ -29,26 +38,14 @@ class LineConfig(Config):
         self.set_token("token", "")
         self.save(chmod=0o777, create_directory=True)
 
-    def get_token(self, key: str) -> str | None:
-        return self.get("LINE", key)
-
-    def set_token(self, key: str, value: str) -> None:
-        self.set("LINE", key, value)
-
-    def get_tokens(self) -> dict[str, str]:
-        return self.read_dict("LINE")
-
 
 class LineNotifier(Notifier):
-    def __init__(self, config_path: str):
-        self._config = LineConfig(config_path)
+    def __init__(self, config: LineConfig):
+        self._config = config
         self._tokens = self._config.get_tokens()
         self._token_keys = list(self._tokens.keys())
         self._headers_list = self._make_headers_list()
-        self._statuses = self._fetch_statuses()
-        self._status_codes = self._make_status_codes()
-        self._status_jsons = self._make_status_jsons()
-        self._last_response: requests.Response | None = None
+        self._last_responses = self._fetch_statuses()
 
     def notify(
         self,
@@ -56,50 +53,45 @@ class LineNotifier(Notifier):
         image: RawImage | None = None,
         keys: list[str] | None = None,
     ) -> None:
-        token = self._config.get_token(keys[0] if keys else "token")
-        if token is None:
+        if not (targets := keys if keys is not None else self._token_keys):
             # FIXME: logging
-            print("[LINE]tokenが存在しません。")
+            print("[LINE]有効なkeysを指定してください")
             return
 
-        params = {"Message": message}
-        files = {"imageFile": to_bytes(image)} if image is not None else None
+        for response_index, key in enumerate(self._token_keys):
+            if key not in targets:
+                continue
 
-        if files:
-            send_data_type = "テキスト・画像"
-            _send_data_type_eng = "Text & Image"
-            response = requests.post(
-                LINE_NOTIFY_API_URL,
-                headers=self._make_headers(token),
-                params=params,
-                files=files,
-            )
-        else:
-            send_data_type = "テキスト"
-            _send_data_type_eng = "Text"
-            response = requests.post(
-                LINE_NOTIFY_API_URL, headers=self._make_headers(token), params=params
-            )
-        self._last_response = response
-        if response.status_code == 200:
-            # FIXME: logging
-            print(f"[LINE]{send_data_type}を送信しました。")
-        else:
-            # FIXME: logging
-            print(f"[LINE]{send_data_type}の送信に失敗しました。")
+            try:
+                self._notify(
+                    response_index=response_index,
+                    key=key,
+                    message=message,
+                    image=image,
+                )
+            except Exception:
+                # FIXME: logging
+                print(f"[Discord({key})]webhook_urlを確認してください。")
 
     def get_late_limits(self) -> list[RateLimit]:
         return [
             RateLimit(
-                key=self._token_keys[i],
+                key=key,
                 limit=response.headers.get("X-RateLimit-Limit"),
                 remaining=response.headers.get("X-RateLimit-Remaining"),
                 image_limit=response.headers.get("X-RateLimit-ImageLimit"),
                 image_remaining=response.headers.get("X-RateLimit-ImageRemaining"),
                 reset_time=self._time(response.headers.get("X-RateLimit-Reset")),
             )
-            for i, response in enumerate(self._statuses)
+            for key, response in zip(self._token_keys, self._last_responses)
+            if response is not None
         ]
+
+    def apply_config(self) -> None:
+        self._tokens = self._config.get_tokens()
+        self._token_keys = list(self._tokens.keys())
+        self._headers_list = self._make_headers_list()
+        self._last_responses = self._fetch_statuses()
 
     def _make_headers_list(self) -> list[dict[str, str]]:
         return [
@@ -116,11 +108,66 @@ class LineNotifier(Notifier):
             for headers in self._headers_list
         ]
 
-    def _make_status_codes(self) -> list[int]:
-        return [response.status_code for response in self._statuses]
+    def _notify(
+        self,
+        response_index: int,
+        key: str,
+        message: str | None = None,
+        image: RawImage | None = None,
+    ) -> None:
+        params = self._make_params(message=message)
+        files = self._make_files(image=image)
+        headers = self._make_headers(token=key)
+        self._last_responses[response_index] = response = requests.post(
+            url=LINE_NOTIFY_API_URL,
+            headers=headers,
+            params=params,
+            files=files,
+        )
+        self._log_response(
+            key=key,
+            response=response,
+            message=message,
+            image=image,
+        )
 
-    def _make_status_jsons(self) -> list[Any]:
-        return [response.json() for response in self._statuses]
+    # noinspection PyMethodMayBeStatic
+    def _make_params(self, message: str | None) -> dict[str, Any]:
+        return {"message": message if message is not None else ""}
+
+    # noinspection PyMethodMayBeStatic
+    def _make_files(self, image: RawImage | None) -> dict[str, Any] | None:
+        return {"imageFile": to_bytes(image)} if image is not None else None
+
+    def _log_response(
+        self,
+        key: str,
+        response: requests.Response,
+        message: str | None,
+        image: RawImage | None,
+    ) -> None:
+        data_type, data_type_jpn = self._make_send_data_type(message, image)
+        if (status_code := response.status_code) in [200, 204]:
+            # FIXME: logging
+            print(f"[LINE({key})]{data_type_jpn}を送信しました。")
+        else:
+            # FIXME: logging
+            print(f"[LINE({key})]{data_type_jpn}の送信に失敗しました。({status_code})")
+
+    # noinspection PyMethodMayBeStatic
+    def _make_send_data_type(
+        self,
+        message: str | None,
+        image: RawImage | None,
+    ) -> tuple[str, str]:
+        if message is not None and image is not None:
+            return "テキスト・画像", "Text & Image"
+        elif message is not None:
+            return "テキスト", "Text"
+        elif image is not None:
+            return "画像", "Image"
+        else:
+            return "(empty)", "empty"
 
     # noinspection PyMethodMayBeStatic
     def _time(self, timestamp: str | None) -> str | None:

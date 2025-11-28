@@ -11,6 +11,12 @@ class Config:
             allow_no_value=True
         )
 
+    def __getitem__(self, section: str) -> configparser.SectionProxy:
+        return self._config[section]
+
+    def __setitem__(self, section: str, value: dict[str, str]) -> None:
+        self._config[section] = value
+
     def load(self, encoding: str | None = "utf-8-sig") -> None:
         if not libpath.exists_file(self._path):
             raise FileNotFoundError(self._path)
@@ -23,14 +29,17 @@ class Config:
         chmod: int | None = None,
         create_directory: bool = True,
     ) -> None:
-        self._check_exists_directory(create_directory)
+        if not self._exists_directory() and create_directory:
+            self._create_directories()
+
         with open(self._path, mode="w", encoding=encoding) as file:
             self._config.write(file)
+
         if chmod is not None:
             os.chmod(path=self._path, mode=chmod)
 
     def get(self, section: str, option: str, default: str | None = None) -> str | None:
-        value = self._config.get(section, option)
+        value = self._config[section][option]
         return value if value is not None else default
 
     def get_boolean(
@@ -62,22 +71,22 @@ class Config:
 
     def set(self, section: str, option: str, value: str) -> None:
         try:
-            self._config.set(section, option)
+            self._config[section][option] = value
         except configparser.NoSectionError:
-            self.add_section(section=section)
-            self._config.set(section, option, value)
+            self._config[section] = {}
+            self._config[section][option] = value
+
+    def sections(self) -> list[str]:
+        return self._config.sections()
 
     def add_section(self, section: str) -> None:
         self._config.add_section(section)
 
-    def sections(self) -> list[str]:
-        return list(self._config.keys())
+    def options(self, section: str) -> dict[str, str]:
+        return dict(self._config[section])
 
     def keys(self, section: str) -> list[str]:
         return list(self._config[section].keys())
-
-    def read_dict(self, section: str) -> dict[str, str]:
-        return dict(self._config[section])
 
     def _check_exists_directory(self, should_create: bool) -> None:
         directory = libpath.directory_name(self._path)
@@ -85,4 +94,12 @@ class Config:
         if not exists_dir and not should_create:
             # FIXME: declare better error
             raise FileNotFoundError(directory)
+        libpath.make_directory(directory)
+
+    def _exists_directory(self) -> bool:
+        directory = libpath.directory_name(self._path)
+        return libpath.exists_directory(directory)
+
+    def _create_directories(self) -> None:
+        directory = libpath.directory_name(self._path)
         libpath.make_directory(directory)

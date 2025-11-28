@@ -25,3 +25,6 @@ class Notifier(ABC):
 
     @abstractmethod
     def get_late_limits(self) -> list[RateLimit]: ...
+
+    @abstractmethod
+    def apply_config(self) -> None: ...
