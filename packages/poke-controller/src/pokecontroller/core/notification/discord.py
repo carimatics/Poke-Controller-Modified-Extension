@@ -96,9 +96,9 @@ class DiscordConfig(Config):
                 ["webhook_url", "username", "avatar_url"],
             ),
         ]
-        for section, keys in options:
+        for section, ops in options:
             self.add_section(section)
-            self[section] = {k: "" for k in keys}
+            self[section] = {o: "" for o in ops}
         self.save(chmod=0o777, create_directory=True)
 
 
