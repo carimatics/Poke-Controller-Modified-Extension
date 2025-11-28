@@ -6,6 +6,8 @@ from ...platform import is_windows
 
 
 class ColoredFormatter(logging.Formatter):
+    """クロスプラットフォーム対応のカラーフォーマッター"""
+
     COLORS = {
         "DEBUG": "   \033[36m",  # Cyan
         "INFO": "    \033[32m",  # Green
