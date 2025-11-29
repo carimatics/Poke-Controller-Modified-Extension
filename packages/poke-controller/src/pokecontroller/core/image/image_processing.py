@@ -11,21 +11,21 @@ from .raw_image import RawImage
 ImageReadMode = Literal["grayscale", "color"]
 
 
-@dataclass
+@dataclass(kw_only=True, frozen=True)
 class ImageCropArgs:
-    x: int
-    y: int
-    width: int
-    height: int
+    xs: int
+    xe: int
+    ys: int
+    ye: int
 
 
-@dataclass
+@dataclass(kw_only=True, frozen=True)
 class ImageBinarizeHsvArgs:
     lower: RawImage
     upper: RawImage
 
 
-@dataclass
+@dataclass(kw_only=True, frozen=True)
 class TemplateMatchResult:
     contains: bool
     location_max: tuple[int, int]
@@ -47,7 +47,7 @@ class GpuTemplateMatchable(Protocol):
 
 
 def crop(src: RawImage, args: ImageCropArgs) -> RawImage:
-    return src[args.y : (args.y + args.height), args.x : (args.x + args.width)]
+    return src[args.ys : args.ye, args.xs : args.xs]
 
 
 def grayscale(src: RawImage) -> RawImage:

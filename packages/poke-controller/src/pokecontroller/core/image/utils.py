@@ -27,8 +27,7 @@ def convert_crop_format(
         dst_format: 変換後のフォーマット
 
     Returns:
-        変換後のcropタプル。
-        src_formatかdst_formatが無効な場合は受け取ったcropをそのまま返します。
+        変換後のcropタプル
 
     Raises:
         ValueError: 不正なフォーマットが指定された場合
@@ -43,58 +42,116 @@ def convert_crop_format(
     if src_format not in VALID_CROP_FORMATS or dst_format not in VALID_CROP_FORMATS:
         raise ValueError("invalid crop format")
 
-    return _convert_output(_convert_input(crop, src_format), dst_format)
+    default = convert_to_default(crop, src_format)
+    return convert_from_default(default, dst_format)
 
 
-def _convert_input(
+def convert_to_default(
     crop: tuple[int, int, int, int],
     src_format: int,
 ) -> tuple[int, int, int, int]:
-    """convert crop to format 1"""
+    """cropをsrc_fmt形式からformat=13に変換するユーティリティ関数
+
+    formatは以下の形式をサポートしています。
+
+    * Pillow形式
+        * format=1: [x-start, y-start, x-end, y-end]
+        * format=2: [x-start, y-start, width, height]
+        * format=3: [x-start, x-end, y-start, y-end]
+        * format=4: [x-start, width, y-start, height]
+    * OpenCV形式
+        * format=11: [y-start, x-start, y-end, x-end]
+        * format=12: [y-start, x-start, height, width]
+        * format=13: [y-start, y-end, x-start, x-end]
+        * format=14: [y-start, height, x-start, width]
+
+    Args:
+        crop: 変換したいcropのタプル
+        src_format: 変換前のフォーマット
+
+    Returns:
+        変換後のcropタプル
+
+    Raises:
+        ValueError: 不正なフォーマットが指定された場合
+
+    Example:
+        >>> convert_to_default(crop=(10, 20, 30, 40), src_format=1)
+        (20, 40, 10, 30)
+    """
     if src_format < 10:
         if src_format == 1:
-            return crop
+            return crop[1], crop[3], crop[0], crop[2]
         if src_format == 2:
-            return crop[0], crop[1], crop[0] + crop[2], crop[1] + crop[3]
+            return crop[1], crop[1] + crop[3], crop[0], crop[0] + crop[2]
         if src_format == 3:
-            return crop[0], crop[2], crop[1], crop[3]
+            return crop[2], crop[3], crop[0], crop[1]
         if src_format == 4:
-            return crop[0], crop[2], crop[0] + crop[1], crop[2] + crop[3]
+            return crop[2], crop[2] + crop[3], crop[0], crop[0] + crop[1]
         raise ValueError("invalid crop format")
     else:
+        #
         if src_format == 11:
-            return crop[1], crop[0], crop[3], crop[2]
+            return crop[0], crop[2], crop[1], crop[3]
         if src_format == 12:
-            return crop[1], crop[0], crop[1] + crop[3], crop[0] + crop[2]
+            return crop[0], crop[0] + crop[2], crop[1], crop[1] + crop[3]
         if src_format == 13:
-            return crop[2], crop[0], crop[3], crop[1]
+            return crop
         if src_format == 14:
-            return crop[2], crop[0], crop[2] + crop[3], crop[0] + crop[1]
+            return crop[0], crop[0] + crop[1], crop[2], crop[2] + crop[3]
         raise ValueError("invalid crop format")
 
 
-def _convert_output(
+def convert_from_default(
     crop: tuple[int, int, int, int],
     dst_format: int,
 ) -> tuple[int, int, int, int]:
-    """convert crop from format 1"""
+    """cropをformat=13形式からdst_formatに変換するユーティリティ関数
+
+    formatは以下の形式をサポートしています。
+
+    * Pillow形式
+        * format=1: [x-start, y-start, x-end, y-end]
+        * format=2: [x-start, y-start, width, height]
+        * format=3: [x-start, x-end, y-start, y-end]
+        * format=4: [x-start, width, y-start, height]
+    * OpenCV形式
+        * format=11: [y-start, x-start, y-end, x-end]
+        * format=12: [y-start, x-start, height, width]
+        * format=13: [y-start, y-end, x-start, x-end]
+        * format=14: [y-start, height, x-start, width]
+
+    Args:
+        crop: 変換したいcropのタプル
+        dst_format: 変換後のフォーマット
+
+    Returns:
+        変換後のcropタプル
+
+    Raises:
+        ValueError: 不正なフォーマットが指定された場合
+
+    Example:
+        >>> convert_from_default(crop=(10, 20, 30, 40), dst_format=1)
+        (30, 10, 40, 20)
+    """
     if dst_format < 10:
         if dst_format == 1:
-            return crop
+            return crop[2], crop[0], crop[3], crop[1]
         if dst_format == 2:
-            return crop[0], crop[1], crop[2] - crop[0], crop[3] - crop[1]
+            return crop[2], crop[0], crop[3] - crop[2], crop[1] - crop[0]
         if dst_format == 3:
-            return crop[0], crop[2], crop[1], crop[3]
+            return crop[2], crop[3], crop[0], crop[1]
         if dst_format == 4:
-            return crop[0], crop[2] - crop[0], crop[1], crop[3] - crop[1]
+            return crop[2], crop[3] - crop[2], crop[0], crop[1] - crop[0]
         raise ValueError("invalid crop format")
     else:
         if dst_format == 11:
-            return crop[1], crop[0], crop[3], crop[2]
+            return crop[0], crop[2], crop[1], crop[3]
         if dst_format == 12:
-            return crop[1], crop[0], crop[3] - crop[1], crop[2] - crop[0]
+            return crop[0], crop[2], crop[1] - crop[0], crop[3] - crop[2]
         if dst_format == 13:
-            return crop[1], crop[3], crop[0], crop[2]
+            return crop
         if dst_format == 14:
-            return crop[1], crop[3] - crop[1], crop[0], crop[2] - crop[0]
+            return crop[0], crop[1] - crop[0], crop[2], crop[3] - crop[2]
         raise ValueError("invalid crop format")
