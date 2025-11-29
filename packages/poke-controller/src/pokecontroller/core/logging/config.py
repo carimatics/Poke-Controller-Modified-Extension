@@ -114,7 +114,9 @@ def generate_default_config(output_path: str, force: bool = False) -> None:
 
 def _load_from_file(config_path: str, encoding: str | None = "utf-8-sig") -> None:
     """設定ファイルから設定を読み込む"""
-    logging.config.fileConfig(config_path, encoding=encoding)
+    with open(config_path, mode="rb", encoding=encoding) as f:
+        config = tomllib.load(f)
+        logging.config.dictConfig(config)
 
 
 # FIXME: 後回し
@@ -144,15 +146,15 @@ def _should_enable_debug(debug: bool | None = None) -> bool:
     return False
 
 
-def _enable_debug_mode() -> None:
+def _enable_debug_mode(base_logger_name: str | None = "pokecontroller") -> None:
     """すべてのロガーをDEBUGレベルに設定"""
 
-    # root logger
-    root_logger = logging.getLogger()
-    root_logger.setLevel(logging.DEBUG)
+    # base logger
+    base_logger = logging.getLogger(name=base_logger_name)
+    base_logger.setLevel(logging.DEBUG)
 
     # all handers
-    for handler in root_logger.handlers:
+    for handler in base_logger.handlers:
         handler.setLevel(logging.DEBUG)
 
     # all loggers
