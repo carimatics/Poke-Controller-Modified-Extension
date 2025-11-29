@@ -3,7 +3,7 @@ import tkinter as tk
 import tkinter.ttk as ttk
 from typing import Any
 
-from ....components import AppFrame
+from ....widgets import AppFrame
 from ....values import literals as l
 
 A = "A"
