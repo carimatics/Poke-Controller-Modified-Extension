@@ -1,5 +1,37 @@
 [tools]
 uv = "0.8.24"
 
-[tasks]
-run = "uv run main.py"
+[tasks.sync]
+run = "uv sync"
+
+[tasks.app_sandbox]
+depends = ["sync"]
+dir = "{{cwd}}/SerialControllerSandbox"
+run = "uv run python -X dev main.py"
+
+[tasks.app_extension]
+depends = ["sync"]
+dir = "{{cwd}}/SerialController"
+run = "uv run python -X dev Window.py"
+
+[tasks.lint]
+run = "uv run ruff check --fix"
+
+[tasks.lint_fix]
+run = "mise run lint --fix"
+
+[tasks.format]
+run = "uv run ruff format"
+
+[tasks.typecheck]
+run = "uv run mypy"
+
+[tasks.check]
+run = [
+    "mise run format",
+    "mise run lint",
+    "mise run typecheck",
+]
+
+[tasks.ci]
+depends = ["lint", "format", "typecheck"]
