@@ -8,6 +8,7 @@ from typing import Any
 from .. import path
 
 # FIXME: PR出す前にロギングの調整する
+# language=TOML
 DEFAULT_TOML: str = """
 # 注意:
 # Python標準のloggingモジュールにおけるロギング設定を理解している場合のみ編集してください。
