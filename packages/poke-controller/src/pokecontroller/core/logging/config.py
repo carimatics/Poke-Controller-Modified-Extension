@@ -146,35 +146,20 @@ def _should_enable_debug(debug: bool | None = None) -> bool:
 def _enable_debug_mode() -> None:
     """すべてのロガーをDEBUGレベルに設定"""
 
-    func_logger = logging.getLogger(__name__)
-    func_logger.setLevel(logging.DEBUG)
-
-    def _log_logger(target: logging.Logger) -> None:
-        func_logger.debug(f"Logger: '{target.name}' to DEBUG level.")
-
-    def _log_handler(target_logger: logging.Logger, target: logging.Handler) -> None:
-        func_logger.debug(
-            f"Handler: '{target_logger.name}#{target.name}' to DEBUG leve."
-        )
-
     # root logger
     root_logger = logging.getLogger()
     root_logger.setLevel(logging.DEBUG)
-    _log_logger(root_logger)
 
     # all handers
     for handler in root_logger.handlers:
         handler.setLevel(logging.DEBUG)
-        _log_handler(root_logger, handler)
 
     # all loggers
     for logger_name in logging.Logger.manager.loggerDict:
         logger = logging.getLogger(logger_name)
         logger.setLevel(logging.DEBUG)
-        _log_logger(logger)
         for handler in logger.handlers:
             handler.setLevel(logging.DEBUG)
-            _log_handler(logger, handler)
 
     logging.getLogger(__name__).debug(
         "Debug mode enabled: All loggers set to DEBUG level."
