@@ -16,6 +16,9 @@ def imwrite(
     filename: str,
     img: imagelib.RawImage,
     params: Sequence[int] = None) -> bool:
+    """
+    画像を書き込む
+    """
     try:
         return imagelib.write(img, filename, params)
     except Exception as e:
