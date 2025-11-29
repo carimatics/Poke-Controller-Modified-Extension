@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 import tkinter as tk
 import os
 
-from ...components import dialogue as cd
+from .... import components
 
 
 class Command(ABC):
@@ -116,7 +116,7 @@ class Command(ABC):
         """
         # ダイアログ呼び出し
         self.message_dialogue = tk.Toplevel()
-        ret = cd.PokeConDialogue(
+        ret = components.PokeConDialogue(
             self.message_dialogue, title, message, desc=desc, pos=int(self.pos_dialogue_buttons)
         ).ret_value(need)
         self.message_dialogue = None
@@ -135,7 +135,7 @@ class Command(ABC):
         need: 出力する形式
         """
         # ウィジェット名重複チェック
-        if cd.check_widget_name(dialogue_list):
+        if components.check_widget_name(dialogue_list):
             pass
         else:
             print("ウィジェット名に重複があります。重複しない名称を設定してください。")
@@ -143,7 +143,7 @@ class Command(ABC):
 
         # ダイアログ呼び出し
         self.message_dialogue = tk.Toplevel()
-        ret = cd.PokeConDialogue(
+        ret = components.PokeConDialogue(
             self.message_dialogue, title, dialogue_list, desc=desc, mode=1, pos=int(self.pos_dialogue_buttons)
         ).ret_value(need)
         self.message_dialogue = None
@@ -167,7 +167,7 @@ class Command(ABC):
 
         reserved_name = ["[PokeCon]設定ファイル名", "[PokeCon]設定を保存"]
         # ウィジェット名重複チェック
-        if cd.check_widget_name(dialogue_list, except_name=reserved_name):
+        if components.check_widget_name(dialogue_list, except_name=reserved_name):
             pass
         else:
             print(
@@ -176,7 +176,7 @@ class Command(ABC):
             )
             self.finish()
 
-        if cd.check_widget_name(dialogue_list):
+        if components.check_widget_name(dialogue_list):
             pass
         else:
             print("ウィジェット名に重複があります。重複しない名称を設定してください。")
@@ -188,11 +188,11 @@ class Command(ABC):
             print("設定ファイル保存用ディレクトリを作成しました。")
 
         # 過去の履歴を初期値に反映
-        new_dialogue_list = cd.generate_new_dialogue_list(dialogue_list, filename)
+        new_dialogue_list = components.generate_new_dialogue_list(dialogue_list, filename)
 
         # ダイアログ呼び出し
         self.message_dialogue = tk.Toplevel()
-        ret = cd.PokeConDialogue(
+        ret = components.PokeConDialogue(
             self.message_dialogue, title, new_dialogue_list, desc=desc, mode=1, pos=int(self.pos_dialogue_buttons)
         ).ret_value(need)
         self.message_dialogue = None
@@ -201,7 +201,7 @@ class Command(ABC):
             self.finish()
         else:
             # [ok]選択時に入力履歴を保存
-            cd.save_dialogue_settings(new_dialogue_list, ret, filename)
+            components.save_dialogue_settings(new_dialogue_list, ret, filename)
             return ret
 
     def dialogue6widget_select_settings(
@@ -217,7 +217,7 @@ class Command(ABC):
         """
         reserved_name = ["[PokeCon]設定ファイル名", "[PokeCon]設定を保存"]
         # ウィジェット名重複チェック
-        if cd.check_widget_name(dialogue_list, except_name=reserved_name):
+        if components.check_widget_name(dialogue_list, except_name=reserved_name):
             pass
         else:
             print(
@@ -227,7 +227,7 @@ class Command(ABC):
             self.finish()
 
         # 設定ファイル名リスト生成
-        settings_list = cd.get_settings_list(dirname)
+        settings_list = components.get_settings_list(dirname)
 
         # GUI画面表示
         ret = self.dialogue6widget(
@@ -245,7 +245,7 @@ class Command(ABC):
             filename = None
 
         # 過去の履歴を初期値に反映
-        new_dialogue_list = cd.generate_new_dialogue_list(dialogue_list, filename)
+        new_dialogue_list = components.generate_new_dialogue_list(dialogue_list, filename)
 
         # 設定保存用のウィジェットを追加
         new_dialogue_list.append(["Entry", "[PokeCon]設定ファイル名", ""])
@@ -253,7 +253,7 @@ class Command(ABC):
 
         # ダイアログ呼び出し
         self.message_dialogue = tk.Toplevel()
-        ret = cd.PokeConDialogue(
+        ret = components.PokeConDialogue(
             self.message_dialogue, title, new_dialogue_list, desc=desc, mode=1, pos=int(self.pos_dialogue_buttons)
         ).ret_value(need)
         self.message_dialogue = None
@@ -275,9 +275,9 @@ class Command(ABC):
             # [ok]選択時に入力履歴を保存
             if save_preset and preset_name != "":
                 filename = os.path.join(dirname, f"{preset_name}.json")
-                cd.save_dialogue_settings(new_dialogue_list[:-2], ret, filename)
+                components.save_dialogue_settings(new_dialogue_list[:-2], ret, filename)
             filename = os.path.join(dirname, "前回の設定.json")
-            cd.save_dialogue_settings(new_dialogue_list[:-2], ret, filename)
+            components.save_dialogue_settings(new_dialogue_list[:-2], ret, filename)
             return ret
 
     ############### Socket functions ###############

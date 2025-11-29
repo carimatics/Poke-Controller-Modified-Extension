@@ -1,0 +1,9 @@
+from .dialogue import (
+    PokeConDialogue as PokeConDialogue,
+    check_widget_name as check_widget_name,
+    generate_new_dialogue_list as generate_new_dialogue_list,
+    get_setting as get_setting,
+    get_settings_list as get_settings_list,
+    save_dialogue_settings as save_dialogue_settings,
+    save_setting as save_setting,
+)
