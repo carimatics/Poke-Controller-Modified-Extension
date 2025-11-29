@@ -27,7 +27,7 @@ class CommandLoader[T]:
         current_module_names = set(current_modules.keys())
         renewed_module_names = set(get_module_names(self.path))
 
-        # Load only not loaded modules
+        # Load only unloaded modules
         unloaded_module_names = list(renewed_module_names - current_module_names)
         if unloaded_module_names:
             self.modules.extend(get_all_modules(self.path, unloaded_module_names))
