@@ -5,6 +5,9 @@ from .commands import (
     PythonCommand as PythonCommand,
     StopThread as StopThread,
     convertCv2Format as convertCv2Format,
-    generateRandomCharactor as generateRandomCharactor,
+    generateRandomCharacter as generateRandomCharacter,
     pausable as pausable,
+)
+from .loader import (
+    CommandLoader as CommandLoader,
 )

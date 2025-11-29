@@ -6,7 +6,7 @@ from .base import PythonCommand
 from .decorators import pausable
 
 
-def generateRandomCharactor(n: int):
+def generateRandomCharacter(n: int):
     """
     指定数のランダムな文字列を生成する
     Contributor: kochan (敬称略)
