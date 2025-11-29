@@ -1,0 +1,2 @@
+class CommandLoader:
+    pass
