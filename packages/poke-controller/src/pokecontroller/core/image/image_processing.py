@@ -47,7 +47,7 @@ class GpuTemplateMatchable(Protocol):
 
 
 def crop(src: RawImage, args: ImageCropArgs) -> RawImage:
-    return src[args.ys : args.ye, args.xs : args.xs]
+    return src[args.ys: args.ye, args.xs: args.xs]
 
 
 def grayscale(src: RawImage) -> RawImage:
