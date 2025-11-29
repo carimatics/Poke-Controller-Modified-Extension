@@ -1,3 +1,5 @@
+from typing import Sequence
+
 from .image_processing import (
     ImageBinarizeHsvArgs,
     ImageCropArgs,
@@ -59,8 +61,8 @@ class Image:
             binarize_by_interframe_diff(self._src, frame2.src, frame3.src, threshold)
         )
 
-    def write(self, path: str) -> bool:
-        return write(self._src, path)
+    def write(self, path: str, params: Sequence[int]) -> bool:
+        return write(self._src, path, params)
 
     @staticmethod
     def read(path: str, mode: ImageReadMode = "color") -> "Image | None":

@@ -47,7 +47,7 @@ class GpuTemplateMatchable(Protocol):
 
 
 def crop(src: RawImage, args: ImageCropArgs) -> RawImage:
-    return src[args.ys: args.ye, args.xs: args.xs]
+    return src[args.ys : args.ye, args.xs : args.xs]
 
 
 def grayscale(src: RawImage) -> RawImage:
@@ -75,9 +75,9 @@ def binarize_by_interframe_diff(
     return cv2.medianBlur(th, 3)
 
 
-def write(src: RawImage, path: str, *params: Sequence[int]) -> bool:
+def write(src: RawImage, path: str, params: Sequence[int]) -> bool:
     ext = os.path.splitext(path)[1]
-    success, encoded = cv2.imencode(ext, src, *params)
+    success, encoded = cv2.imencode(ext, src, params)
 
     if not success:
         return False
