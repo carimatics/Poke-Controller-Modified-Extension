@@ -1,51 +1,26 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-from __future__ import annotations
-
-import importlib
-import inspect
-import os
-from glob import glob
-from os.path import join, relpath
-from logging import getLogger, DEBUG, NullHandler
-
-logger = getLogger(__name__)
-logger.addHandler(NullHandler())
-logger.setLevel(DEBUG)
-logger.propagate = True
+from pokecontrollermodifiedextension.core import utils
 
 
-def ospath(path):
-    return path.replace("/", os.sep)
+# for compatibility
+def ospath(path):  # noqa
+    return utils.ospath(path=path)
 
 
-# Show all file names under the directory
-def browseFileNames(path=".", ext="", recursive=True, name_only=True):
-    search_path = join(path, "**") if recursive else path
-    search_path = join(search_path, "*" + ext)
-
-    if name_only:
-        return [relpath(f, path) for f in glob(search_path, recursive=recursive)]
-    else:
-        return glob(search_path, recursive=recursive)
+# for compatibility
+def browseFileNames(path=".", ext="", recursive=True, name_only=True):  # noqa
+    return utils.browse_file_names(path=path, ext=ext, recursive=recursive, name_only=name_only)
 
 
-def getClassesInModule(module):
-    classes = []
-    for members in inspect.getmembers(module, inspect.isclass):
-        classes.append(members[1])
-    return classes
+# for compatibility
+def getClassesInModule(module):  # noqa
+    return utils.get_classes_in_module(module=module)
 
 
-def getModuleNames(base_path):
-    filenames = browseFileNames(path=base_path, ext=".py", name_only=False)
-    return [name[:-3].replace(os.sep, ".") for name in filenames]
+# for compatibility
+def getModuleNames(base_path):  # noqa
+    return utils.get_module_names(base_path=base_path)
 
 
-def importAllModules(base_path, mod_names=None):
-    modules = []
-    for name in getModuleNames(base_path) if mod_names is None else mod_names:
-        logger.debug(f"Import module: {name}")
-        modules.append(importlib.import_module(name))
-
-    return modules
+# for compatibility
+def importAllModules(base_path, mod_names=None):  # noqa
+    return utils.get_all_modules(base_path=base_path, mod_names=mod_names)
