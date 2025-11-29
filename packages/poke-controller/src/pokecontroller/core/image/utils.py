@@ -2,7 +2,7 @@ VALID_CROP_FORMATS = [1, 2, 3, 4, 11, 12, 13, 14]
 
 
 def convert_crop_format(
-    crop: tuple[int, int, int, int],
+    crop: list[int] | tuple[int, int, int, int],
     src_format: int,
     dst_format: int,
 ) -> tuple[int, int, int, int]:
@@ -47,7 +47,7 @@ def convert_crop_format(
 
 
 def convert_to_default(
-    crop: tuple[int, int, int, int],
+    crop: list[int] | tuple[int, int, int, int],
     src_format: int,
 ) -> tuple[int, int, int, int]:
     """cropをsrc_fmt形式からformat=13に変換するユーティリティ関数
@@ -103,7 +103,7 @@ def convert_to_default(
 
 
 def convert_from_default(
-    crop: tuple[int, int, int, int],
+    crop: list[int] | tuple[int, int, int, int],
     dst_format: int,
 ) -> tuple[int, int, int, int]:
     """cropをformat=13形式からdst_formatに変換するユーティリティ関数
