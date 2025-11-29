@@ -13,9 +13,10 @@ def from_timestamp(
         tz=tz,
     )
 
+
 def format_datetime(
     dt: datetime.datetime | None = None,
-    fmt: str | None = "%Y-%m-%d_%H-%M-%S",
+    fmt: str = "%Y-%m-%d_%H-%M-%S",
 ) -> str:
     if dt is None:
         return datetime.datetime.now().strftime(fmt)

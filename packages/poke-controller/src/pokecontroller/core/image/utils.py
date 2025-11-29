@@ -5,7 +5,7 @@ def convert_crop_format(
     crop: list[int] | tuple[int, int, int, int],
     src_format: int,
     dst_format: int,
-) -> tuple[int, int, int, int]:
+) -> list[int] | tuple[int, int, int, int]:
     """cropをsrc_fmt形式からdst_formatに変換するユーティリティ関数
 
     formatは以下の形式をサポートしています。
@@ -49,7 +49,7 @@ def convert_crop_format(
 def convert_to_default(
     crop: list[int] | tuple[int, int, int, int],
     src_format: int,
-) -> tuple[int, int, int, int]:
+) -> list[int] | tuple[int, int, int, int]:
     """cropをsrc_fmt形式からformat=13に変換するユーティリティ関数
 
     formatは以下の形式をサポートしています。
@@ -81,31 +81,31 @@ def convert_to_default(
     """
     if src_format < 10:
         if src_format == 1:
-            return crop[1], crop[3], crop[0], crop[2]
+            return [crop[1], crop[3], crop[0], crop[2]]
         if src_format == 2:
-            return crop[1], crop[1] + crop[3], crop[0], crop[0] + crop[2]
+            return [crop[1], crop[1] + crop[3], crop[0], crop[0] + crop[2]]
         if src_format == 3:
-            return crop[2], crop[3], crop[0], crop[1]
+            return [crop[2], crop[3], crop[0], crop[1]]
         if src_format == 4:
-            return crop[2], crop[2] + crop[3], crop[0], crop[0] + crop[1]
+            return [crop[2], crop[2] + crop[3], crop[0], crop[0] + crop[1]]
         raise ValueError("invalid crop format")
     else:
         #
         if src_format == 11:
-            return crop[0], crop[2], crop[1], crop[3]
+            return [crop[0], crop[2], crop[1], crop[3]]
         if src_format == 12:
-            return crop[0], crop[0] + crop[2], crop[1], crop[1] + crop[3]
+            return [crop[0], crop[0] + crop[2], crop[1], crop[1] + crop[3]]
         if src_format == 13:
             return crop
         if src_format == 14:
-            return crop[0], crop[0] + crop[1], crop[2], crop[2] + crop[3]
+            return [crop[0], crop[0] + crop[1], crop[2], crop[2] + crop[3]]
         raise ValueError("invalid crop format")
 
 
 def convert_from_default(
     crop: list[int] | tuple[int, int, int, int],
     dst_format: int,
-) -> tuple[int, int, int, int]:
+) -> list[int] | tuple[int, int, int, int]:
     """cropをformat=13形式からdst_formatに変換するユーティリティ関数
 
     formatは以下の形式をサポートしています。
@@ -137,21 +137,21 @@ def convert_from_default(
     """
     if dst_format < 10:
         if dst_format == 1:
-            return crop[2], crop[0], crop[3], crop[1]
+            return [crop[2], crop[0], crop[3], crop[1]]
         if dst_format == 2:
-            return crop[2], crop[0], crop[3] - crop[2], crop[1] - crop[0]
+            return [crop[2], crop[0], crop[3] - crop[2], crop[1] - crop[0]]
         if dst_format == 3:
-            return crop[2], crop[3], crop[0], crop[1]
+            return [crop[2], crop[3], crop[0], crop[1]]
         if dst_format == 4:
-            return crop[2], crop[3] - crop[2], crop[0], crop[1] - crop[0]
+            return [crop[2], crop[3] - crop[2], crop[0], crop[1] - crop[0]]
         raise ValueError("invalid crop format")
     else:
         if dst_format == 11:
-            return crop[0], crop[2], crop[1], crop[3]
+            return [crop[0], crop[2], crop[1], crop[3]]
         if dst_format == 12:
-            return crop[0], crop[2], crop[1] - crop[0], crop[3] - crop[2]
+            return [crop[0], crop[2], crop[1] - crop[0], crop[3] - crop[2]]
         if dst_format == 13:
             return crop
         if dst_format == 14:
-            return crop[0], crop[1] - crop[0], crop[2], crop[3] - crop[2]
+            return [crop[0], crop[1] - crop[0], crop[2], crop[3] - crop[2]]
         raise ValueError("invalid crop format")
