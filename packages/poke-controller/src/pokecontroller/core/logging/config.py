@@ -3,6 +3,7 @@ import logging.config
 import os
 import sys
 import tomllib
+from typing import Any
 
 from .. import path
 
@@ -152,7 +153,9 @@ def _enable_debug_mode() -> None:
         func_logger.debug(f"Logger: '{target.name}' to DEBUG level.")
 
     def _log_handler(target_logger: logging.Logger, target: logging.Handler) -> None:
-        func_logger.debug(f"Handler: '{target_logger.name}#{target.name}' to DEBUG leve.")
+        func_logger.debug(
+            f"Handler: '{target_logger.name}#{target.name}' to DEBUG leve."
+        )
 
     # root logger
     root_logger = logging.getLogger()
@@ -186,7 +189,7 @@ def _show_current_config() -> None:
 
     # Root logger
     root_logger = logging.getLogger()
-    print(f"\n[Root Logger]")
+    print("\n[Root Logger]")
     print(f"  Level: {logging.getLevelName(root_logger.level)}")
     print(f"  Handlers: {len(root_logger.handlers)}")
     print(f"  Filters: {len(root_logger.filters)}")
@@ -203,7 +206,8 @@ def _show_current_config() -> None:
     # Registered loggers
     logger_dict = logging.Logger.manager.loggerDict
     actual_loggers = {
-        name: obj for name, obj in logger_dict.items()
+        name: obj
+        for name, obj in logger_dict.items()
         if isinstance(obj, logging.Logger)
     }
 
@@ -237,13 +241,13 @@ def _print_handler(handler: logging.Handler, index: int, indent: int = 0) -> Non
     print(f"{prefix}    Level: {logging.getLevelName(handler.level)}")
 
     # ファイルハンドラーの場合はファイル名も表示
-    if hasattr(handler, 'baseFilename'):
+    if hasattr(handler, "baseFilename"):
         print(f"{prefix}    File: {handler.baseFilename}")
 
     # ストリームハンドラーの場合はストリーム情報
-    if hasattr(handler, 'stream'):
+    if hasattr(handler, "stream"):
         stream = handler.stream
-        if hasattr(stream, 'name'):
+        if hasattr(stream, "name"):
             print(f"{prefix}    Stream: {stream.name}")
         else:
             print(f"{prefix}    Stream: {type(stream).__name__}")
@@ -269,7 +273,7 @@ def _print_formatter(formatter: logging.Formatter, indent: int = 0) -> None:
     print(f"{prefix}Formatter: {formatter.__class__.__name__}")
 
     # フォーマット文字列
-    if hasattr(formatter, '_fmt'):
+    if hasattr(formatter, "_fmt"):
         fmt = formatter._fmt
     else:
         fmt = None
@@ -282,11 +286,11 @@ def _print_formatter(formatter: logging.Formatter, indent: int = 0) -> None:
         print(f"{prefix}  DateFormat: {formatter.datefmt}")
 
     # カスタムフォーマッターの追加属性（ColoredFormatterなど）
-    if hasattr(formatter, 'use_colors'):
+    if hasattr(formatter, "use_colors"):
         print(f"{prefix}  UseColors: {formatter.use_colors}")
 
 
-def _print_filter(filter_obj: logging.Filter, index: int, indent: int = 0) -> None:
+def _print_filter(filter_obj: Any, index: int, indent: int = 0) -> None:
     """フィルター情報を表示"""
     prefix = " " * indent
 
@@ -295,15 +299,16 @@ def _print_filter(filter_obj: logging.Filter, index: int, indent: int = 0) -> No
     print(f"{prefix}[{index}] {filter_class}")
 
     # 標準のFilterの場合はnameを表示
-    if isinstance(filter_obj, logging.Filter) and hasattr(filter_obj, 'name'):
+    if isinstance(filter_obj, logging.Filter) and hasattr(filter_obj, "name"):
         if filter_obj.name:
             print(f"{prefix}    Name: {filter_obj.name}")
 
     # カスタムフィルターの場合、主要な属性を表示
     # __dict__から内部属性(_で始まるもの)を除外して表示
     custom_attrs = {
-        k: v for k, v in filter_obj.__dict__.items()
-        if not k.startswith('_') and k != 'name'
+        k: v
+        for k, v in filter_obj.__dict__.items()
+        if not k.startswith("_") and k != "name"
     }
     if custom_attrs:
         for key, value in custom_attrs.items():
