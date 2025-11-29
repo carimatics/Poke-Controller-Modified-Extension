@@ -7,7 +7,8 @@ from .model import AppModel
 from .state import AppState, load_state
 
 INFO = AppInfo(
-    name="PokeController Modified Extension",
+    name="Poke-Controller Modified Extension",
+    version="0.1.8",
 )
 
 

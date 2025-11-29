@@ -1,7 +1,4 @@
-from pokecontroller.app.extension import (
-    NAME as APP_NAME,
-    VERSION as APP_VERSION,
-)
+from pokecontrollermodifiedextension.app import INFO
 
-NAME = APP_NAME
-VERSION = APP_VERSION
+NAME = INFO.name
+VERSION = INFO.version
