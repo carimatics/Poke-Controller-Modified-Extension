@@ -1,4 +1,5 @@
 import json
+import logging
 from dataclasses import dataclass
 from typing import Any
 
@@ -9,6 +10,8 @@ from ..datetime import from_timestamp
 from ..image import RawImage, to_bytes
 from ..path import basename, directory_name
 from .notifier import Notifier, RateLimit
+
+logger = logging.getLogger(__name__)
 
 DISCORD_SECTION_DEFAULT = "DISCORD"
 DISCORD_WEBHOOK_SECTION_DEFAULT = "DISCORD_WEBHOOK"
@@ -110,6 +113,18 @@ class DiscordNotifier(Notifier):
         self._options = self._config.get_webhook_options()
         self._last_responses = self._fetch_statuses()
 
+    @property
+    def keys(self) -> list[str]:
+        return self._sections
+
+    @property
+    def has_error(self) -> bool:
+        return any(
+            400 <= response.status_code < 500
+            for response in self._last_responses
+            if response is not None
+        )
+
     def notify(
         self,
         message: str | None = None,
@@ -117,13 +132,12 @@ class DiscordNotifier(Notifier):
         keys: list[str] | None = None,
     ) -> None:
         if not (targets := keys if keys is not None else self._sections):
-            # FIXME: logging
-            print(f"[Discord]有効なkeysを指定してください。(keys={keys})")
+            logger.error(f"有効なkeysを指定してください。(keys={keys})")
             return
 
         for response_index, section in enumerate(self._sections):
             if section not in targets:
-                print(f"[Discord]無効なkey({section})")
+                logger.warning(f"[Discord]無効なkey({section})")
                 continue
 
             try:
@@ -134,8 +148,7 @@ class DiscordNotifier(Notifier):
                     image=image,
                 )
             except Exception:
-                # FIXME: logging
-                print(f"[Discord({section})]webhook_urlを確認してください。")
+                logger.error("webhook_urlを確認してください。")
 
     def get_late_limits(self) -> list[RateLimit]:
         return [
@@ -176,7 +189,6 @@ class DiscordNotifier(Notifier):
             files=files,
         )
         self._log_response(
-            key=key,
             response=response,
             message=message,
             image=image,
@@ -205,20 +217,15 @@ class DiscordNotifier(Notifier):
 
     def _log_response(
         self,
-        key: str,
         response: requests.Response,
         message: str | None,
         image: RawImage | None,
     ) -> None:
         data_type, data_type_jpn = self._make_send_data_type(message, image)
         if (status_code := response.status_code) in [200, 204]:
-            # FIXME: logging
-            print(f"[Discord({key})]{data_type_jpn}を送信しました。")
+            logger.info(f"{data_type_jpn}を送信しました。")
         else:
-            # FIXME: logging
-            print(
-                f"[Discord({key})]{data_type_jpn}の送信に失敗しました。({status_code})"
-            )
+            logger.info(f"{data_type_jpn}の送信に失敗しました。({status_code})")
 
     # noinspection PyMethodMayBeStatic
     def _make_send_data_type(

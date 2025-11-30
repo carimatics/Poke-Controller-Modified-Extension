@@ -51,7 +51,7 @@ class LineNotifier(Notifier):
         self._last_responses = self._fetch_statuses()
 
     @property
-    def token_keys(self) -> list[str]:
+    def keys(self) -> list[str]:
         return list(self._tokens.keys())
 
     @property
@@ -84,7 +84,7 @@ class LineNotifier(Notifier):
                     image=image,
                 )
             except Exception:
-                logger.error("webhook_urlを確認してください。")
+                logger.error("tokenを確認してください。")
 
     def get_late_limits(self) -> list[RateLimit]:
         return [
@@ -138,7 +138,6 @@ class LineNotifier(Notifier):
             files=files,
         )
         self._log_response(
-            key=key,
             response=response,
             message=message,
             image=image,
@@ -154,7 +153,6 @@ class LineNotifier(Notifier):
 
     def _log_response(
         self,
-        key: str,
         response: requests.Response,
         message: str | None,
         image: RawImage | None,

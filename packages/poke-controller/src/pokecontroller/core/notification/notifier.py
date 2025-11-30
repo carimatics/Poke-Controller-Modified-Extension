@@ -16,6 +16,14 @@ class RateLimit:
 
 class Notifier(ABC):
     @abstractmethod
+    @property
+    def keys(self) -> list[str]: ...
+
+    @abstractmethod
+    @property
+    def has_error(self) -> bool: ...
+
+    @abstractmethod
     def notify(
         self,
         message: str | None = None,

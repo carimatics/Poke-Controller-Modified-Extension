@@ -1,11 +1,10 @@
-from pokecontroller.core.image import to_bytes
-
+from pokecontroller.core.image import RawImage, to_bytes
 # for compatibility
 from pokecontrollermodifiedextension.core.notification import Line_Notify as Line_Notify  # noqa
 
 
 # for compatibility
-def convert_bgr_to_bytes(image_bgr):
+def convert_bgr_to_bytes(image_bgr: RawImage):
     """
     BGRの画像をbyte形式に変換する
     """
