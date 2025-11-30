@@ -56,21 +56,15 @@ encoding = "utf-8"
 # loggers
 [loggers.pokecontroller]
 level = "INFO"
-handlers = [
-    "pokeconExtensionFile",
-]
+handlers = ["pokeconExtensionFile"]
 
 [loggers.pokecontrollermodifiedextension]
 level = "INFO"
-handlers = [
-    "pokeconExtensionFile",
-]
+handlers = ["pokeconExtensionFile"]
 
 [loggers.Commands]
 level = "INFO"
-handlers = [
-    "pokeconExtensionCommandsFile",
-]
+handlers = ["pokeconExtensionCommandsFile"]
 
 [root]
 level = "WARNING"
