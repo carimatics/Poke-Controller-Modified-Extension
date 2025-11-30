@@ -1,3 +1,4 @@
+import logging
 from typing import Any
 
 import requests
@@ -6,6 +7,8 @@ from ..config import Config
 from ..datetime import from_timestamp
 from ..image import RawImage, to_bytes
 from .notifier import Notifier, RateLimit
+
+logger = logging.getLogger(__name__)
 
 LINE_API_URL_BASE = "https://notify-api.line.me/api"
 LINE_STATUS_API_URL = f"{LINE_API_URL_BASE}/status"
@@ -47,6 +50,18 @@ class LineNotifier(Notifier):
         self._headers_list = self._make_headers_list()
         self._last_responses = self._fetch_statuses()
 
+    @property
+    def token_keys(self) -> list[str]:
+        return list(self._tokens.keys())
+
+    @property
+    def has_error(self) -> bool:
+        return any(
+            400 <= response.status_code < 500
+            for response in self._last_responses
+            if response is not None
+        )
+
     def notify(
         self,
         message: str | None = None,
@@ -54,8 +69,7 @@ class LineNotifier(Notifier):
         keys: list[str] | None = None,
     ) -> None:
         if not (targets := keys if keys is not None else self._token_keys):
-            # FIXME: logging
-            print("[LINE]有効なkeysを指定してください")
+            logger.error("有効なkeysを指定してください")
             return
 
         for response_index, key in enumerate(self._token_keys):
@@ -70,8 +84,7 @@ class LineNotifier(Notifier):
                     image=image,
                 )
             except Exception:
-                # FIXME: logging
-                print(f"[Discord({key})]webhook_urlを確認してください。")
+                logger.error("webhook_urlを確認してください。")
 
     def get_late_limits(self) -> list[RateLimit]:
         return [
@@ -148,11 +161,9 @@ class LineNotifier(Notifier):
     ) -> None:
         data_type, data_type_jpn = self._make_send_data_type(message, image)
         if (status_code := response.status_code) in [200, 204]:
-            # FIXME: logging
-            print(f"[LINE({key})]{data_type_jpn}を送信しました。")
+            logger.info(f"{data_type_jpn}を送信しました。")
         else:
-            # FIXME: logging
-            print(f"[LINE({key})]{data_type_jpn}の送信に失敗しました。({status_code})")
+            logger.error(f"{data_type_jpn}の送信に失敗しました。({status_code})")
 
     # noinspection PyMethodMayBeStatic
     def _make_send_data_type(
