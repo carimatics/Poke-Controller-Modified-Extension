@@ -129,6 +129,23 @@ def _clamp(
 
 # This class handle L stick and R stick at any angles
 class Direction:
+    UP: "Direction | None" = None
+    RIGHT: "Direction | None" = None
+    DOWN: "Direction | None" = None
+    LEFT: "Direction | None" = None
+    UP_RIGHT: "Direction | None" = None
+    DOWN_RIGHT: "Direction | None" = None
+    DOWN_LEFT: "Direction | None" = None
+    UP_LEFT: "Direction | None" = None
+    R_UP: "Direction | None" = None
+    R_RIGHT: "Direction | None" = None
+    R_DOWN: "Direction | None" = None
+    R_LEFT: "Direction | None" = None
+    R_UP_RIGHT: "Direction | None" = None
+    R_DOWN_RIGHT: "Direction | None" = None
+    R_DOWN_LEFT: "Direction | None" = None
+    R_UP_LEFT: "Direction | None" = None
+
     def __init__(
         self,
         stick: Stick,
@@ -200,23 +217,23 @@ NEUTRAL = (128, 127)
 """
 
 # Left stick for ease of use
-Direction.UP = Direction(Stick.LEFT, 90, showName="UP")  # type: ignore[attr-defined]
-Direction.RIGHT = Direction(Stick.LEFT, 0, showName="RIGHT")  # type: ignore[attr-defined]
-Direction.DOWN = Direction(Stick.LEFT, -90, showName="DOWN")  # type: ignore[attr-defined]
-Direction.LEFT = Direction(Stick.LEFT, -180, showName="LEFT")  # type: ignore[attr-defined]
-Direction.UP_RIGHT = Direction(Stick.LEFT, 45, showName="UP_RIGHT")  # type: ignore[attr-defined]
-Direction.DOWN_RIGHT = Direction(Stick.LEFT, -45, showName="DOWN_RIGHT")  # type: ignore[attr-defined]
-Direction.DOWN_LEFT = Direction(Stick.LEFT, -135, showName="DOWN_LEFT")  # type: ignore[attr-defined]
-Direction.UP_LEFT = Direction(Stick.LEFT, 135, showName="UP_LEFT")  # type: ignore[attr-defined]
+Direction.UP = Direction(Stick.LEFT, 90, showName="UP")
+Direction.RIGHT = Direction(Stick.LEFT, 0, showName="RIGHT")
+Direction.DOWN = Direction(Stick.LEFT, -90, showName="DOWN")
+Direction.LEFT = Direction(Stick.LEFT, -180, showName="LEFT")
+Direction.UP_RIGHT = Direction(Stick.LEFT, 45, showName="UP_RIGHT")
+Direction.DOWN_RIGHT = Direction(Stick.LEFT, -45, showName="DOWN_RIGHT")
+Direction.DOWN_LEFT = Direction(Stick.LEFT, -135, showName="DOWN_LEFT")
+Direction.UP_LEFT = Direction(Stick.LEFT, 135, showName="UP_LEFT")
 # Right stick for ease of use
-Direction.R_UP = Direction(Stick.RIGHT, 90, showName="UP")  # type: ignore[attr-defined]
-Direction.R_RIGHT = Direction(Stick.RIGHT, 0, showName="RIGHT")  # type: ignore[attr-defined]
-Direction.R_DOWN = Direction(Stick.RIGHT, -90, showName="DOWN")  # type: ignore[attr-defined]
-Direction.R_LEFT = Direction(Stick.RIGHT, -180, showName="LEFT")  # type: ignore[attr-defined]
-Direction.R_UP_RIGHT = Direction(Stick.RIGHT, 45, showName="UP_RIGHT")  # type: ignore[attr-defined]
-Direction.R_DOWN_RIGHT = Direction(Stick.RIGHT, -45, showName="DOWN_RIGHT")  # type: ignore[attr-defined]
-Direction.R_DOWN_LEFT = Direction(Stick.RIGHT, -135, showName="DOWN_LEFT")  # type: ignore[attr-defined]
-Direction.R_UP_LEFT = Direction(Stick.RIGHT, 135, showName="UP_LEFT")  # type: ignore[attr-defined]
+Direction.R_UP = Direction(Stick.RIGHT, 90, showName="UP")
+Direction.R_RIGHT = Direction(Stick.RIGHT, 0, showName="RIGHT")
+Direction.R_DOWN = Direction(Stick.RIGHT, -90, showName="DOWN")
+Direction.R_LEFT = Direction(Stick.RIGHT, -180, showName="LEFT")
+Direction.R_UP_RIGHT = Direction(Stick.RIGHT, 45, showName="UP_RIGHT")
+Direction.R_DOWN_RIGHT = Direction(Stick.RIGHT, -45, showName="DOWN_RIGHT")
+Direction.R_DOWN_LEFT = Direction(Stick.RIGHT, -135, showName="DOWN_LEFT")
+Direction.R_UP_LEFT = Direction(Stick.RIGHT, 135, showName="UP_LEFT")
 
 
 @dataclass
