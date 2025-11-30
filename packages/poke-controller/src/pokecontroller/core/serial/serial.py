@@ -1,4 +1,4 @@
-from typing import Any
+from collections.abc import Buffer
 
 import serial
 
@@ -25,7 +25,7 @@ class Serial:
             s.close()
         self._serial = None
 
-    def write(self, data: Any) -> None:
+    def write(self, data: Buffer) -> None:
         if (s := self._serial) is None:
             return
 
