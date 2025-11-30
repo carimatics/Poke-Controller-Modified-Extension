@@ -126,7 +126,7 @@ class Sender:
 
         # Show sending serial data
         if self.is_show_serial.get():
-            print(row)
+            logger.debug(row)
 
     def writeList(  # noqa
         self,
@@ -148,13 +148,12 @@ class Sender:
         except serial.serialutil.SerialException as e:
             logger.error(f"Error : {e}")
         except AttributeError as e:
-            print("Using a port that is not open.")
             logger.error("Maybe Using a port that is not open.")
             logger.error(e)
 
         # Show sending serial data
         if self.is_show_serial.get():
-            print(values)
+            logger.debug(values)
 
     def writeRow_wo_perf_counter(  # noqa
         self,
