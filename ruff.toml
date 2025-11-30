@@ -3,7 +3,7 @@ include = [
     "apps/**/*.py"
 ]
 exclude = [
-    "apps/poke-controller-modified-extension/src/pokecontrollermodifiedextension/components/**/*.py",
+    "apps/poke-controller-modified-extension/src/pokecontrollermodifiedextension/components/dialogue.py",
     "apps/poke-controller-modified-extension/src/pokecontrollermodifiedextension/core/command/commands/mcu/base.py",
     "apps/poke-controller-modified-extension/src/pokecontrollermodifiedextension/core/command/commands/python/base.py",
     "apps/poke-controller-modified-extension/src/pokecontrollermodifiedextension/core/command/commands/python/decorators.py",
