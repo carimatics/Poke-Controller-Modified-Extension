@@ -11,3 +11,6 @@ from .commands import (
 from .loader import (
     CommandLoader as CommandLoader,
 )
+from .sender import (
+    Sender as Sender,
+)
