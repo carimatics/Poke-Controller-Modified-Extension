@@ -4,6 +4,7 @@ uv = "0.8.24"
 [tasks.sync]
 run = "uv sync"
 
+# FIXME: PRを出す前に消す
 [tasks.app_sandbox]
 depends = ["sync"]
 dir = "{{cwd}}/SerialControllerSandbox"
