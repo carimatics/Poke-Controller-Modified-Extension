@@ -157,7 +157,9 @@ class Sender:
             print(values)
 
     def writeRow_wo_perf_counter(  # noqa
-        self, row: str, is_show: bool = False
+        self,
+        row: str,
+        is_show: bool = False,
     ) -> None:
         if (s := self.ser) is None:
             logger.error("Serial is not open")
