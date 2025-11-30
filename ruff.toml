@@ -4,7 +4,7 @@ include = [
 ]
 exclude = [
     "apps/poke-controller-modified-extension/src/pokecontrollermodifiedextension/components/**/*.py",
-    "apps/poke-controller-modified-extension/src/pokecontrollermodifiedextension/core/**/*.py",
+    "apps/poke-controller-modified-extension/src/pokecontrollermodifiedextension/core/command/commands/**/*.py",
 ]
 
 [lint]

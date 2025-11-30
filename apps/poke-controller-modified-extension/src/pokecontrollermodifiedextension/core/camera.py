@@ -1,11 +1,12 @@
 import logging
 from contextlib import contextmanager
-from typing import Sequence, Generator
+from typing import Generator, Sequence
+
 from pokecontroller.core import (
-    image as imagelib,
     camera as cameralib,
-    path as pathlib,
     datetime as datetimelib,
+    image as imagelib,
+    path as pathlib,
 )
 from pokecontroller.core.image import utils as imagelib_utils
 
@@ -15,7 +16,8 @@ logger = logging.getLogger(__name__)
 def imwrite(
     filename: str,
     img: imagelib.RawImage,
-    params: Sequence[int] = None) -> bool:
+    params: Sequence[int],
+) -> bool:
     """
     画像を書き込む
     """
@@ -50,30 +52,30 @@ def _get_save_filespec(filename: str) -> str:
 class Camera:
     def __init__(self, fps: int = 45):
         self.camera = cameralib.Camera(fps=fps, frame_size=(1280, 720))
-        self.image_bgr = None
+        self.image_bgr: imagelib.RawImage | None = None
         # self.capture_size = (1920, 1080)
         self.capture_dir = "Captures"
 
     @property
-    def fps(self):
+    def fps(self) -> int:
         return self.camera.fps
 
     @fps.setter
-    def fps(self, fps: int):
+    def fps(self, fps: int) -> None:
         self.camera.fps = fps
 
     @property
-    def capture_size(self):
+    def capture_size(self) -> tuple[int, int]:
         return self.camera.frame_size
 
     @capture_size.setter
-    def capture_size(self, size: tuple[int, int]):
+    def capture_size(self, size: tuple[int, int]) -> None:
         self.camera.frame_size = size
 
-    def openCamera(self, cameraId: int):  # noqa
+    def openCamera(self, cameraId: int) -> None:  # noqa
         self.camera.open(camera_id=cameraId)
 
-    def isOpened(self):  # noqa
+    def isOpened(self) -> bool:  # noqa
         return self.camera.is_opened
 
     def readFrame(self) -> imagelib.RawImage | None:  # noqa
@@ -82,20 +84,29 @@ class Camera:
 
     def saveCapture(  # noqa
         self,
-        filename: str = None,
-        crop: int = None,
-        crop_ax: list[int] = None,
-        img: imagelib.RawImage = None,
-    ):
+        filename: str | None = None,
+        crop: int | None = None,
+        crop_ax: list[int] | None = None,
+        img: imagelib.RawImage | None = None,
+    ) -> None:
         if crop_ax is None:
             c = [0, 0, self.capture_size[0], self.capture_size[1]]
         else:
             c = crop_ax
 
+        if img is not None:
+            src = img
+        elif self.image_bgr is not None:
+            src = self.image_bgr
+        else:
+            # 保存するべきものが何もないのでここで処理を終える
+            logger.warning("No image to save")
+            return
+
         crop_fmt = int(crop) if crop is not None else None
         if crop_fmt is None:
-            image = self.image_bgr
-        elif crop_fmt:
+            image = src
+        else:
             imagelib_utils.convert_to_default(c, crop_fmt)
             args = imagelib.ImageCropArgs(
                 ys=c[0],
@@ -103,11 +114,7 @@ class Camera:
                 xs=c[2],
                 xe=c[3],
             )
-            image = imagelib.crop(self.image_bgr, args)
-        elif img is not None:
-            image = img
-        else:
-            image = self.image_bgr
+            image = imagelib.crop(src, args)
 
         if not filename:
             fn = f"{datetimelib.format_datetime()}.png"
@@ -115,18 +122,20 @@ class Camera:
             fn = filename + ".png"
         save_path = _get_save_filespec(fn)
 
-        if not pathlib.exists_directory((save_dir := pathlib.directory_name(save_path))):
+        if not pathlib.exists_directory(
+            (save_dir := pathlib.directory_name(save_path))
+        ):
             # 保存先ディレクトリが存在しないか、同名のファイルが存在する場合（existsはファイルとフォルダを区別しない）
             pathlib.make_directory(save_dir)
             logger.debug("Created Capture folder")
 
         try:
-            imwrite(save_path, image)
+            imwrite(save_path, image, [])
             logger.debug(f"Capture succeeded: {save_path}")
         except Exception as e:
             logger.error(f"Capture Failed :{e}")
 
-    def destroy(self):
+    def destroy(self) -> None:
         self.camera.close()
 
 

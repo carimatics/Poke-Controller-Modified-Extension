@@ -1,28 +1,27 @@
-import os
-from typing import Sequence, Literal
 import logging
-
-from numpy import array, argmax
+import os
+from typing import Literal, Sequence
 
 import pokecontroller.core.image as imagelib
+import pokecontroller.gui.image as gui
+from numpy import argmax, array
 from pokecontroller.core.image import (
-    RawImage,
-    ImageCropArgs,
     ImageBinarizeHsvArgs,
+    ImageCropArgs,
+    RawImage,
     TemplateMatcherPreferredMode,
     create_template_matcher,
 )
 from pokecontroller.core.image.utils import (
     convert_to_default,
 )
-import pokecontroller.gui.image as gui
 
 logger = logging.getLogger(__name__)
 
 
 def crop_image(
     image: RawImage,
-    crop: list[int] = None,
+    crop: list[int] | None = None,
 ) -> RawImage:
     """
     画像をトリミングする
@@ -31,10 +30,10 @@ def crop_image(
     return crop_image_extend(image, crop_fmt=13, crop=crop)
 
 
-def crop_image_extend( # noqa
+def crop_image_extend(  # noqa
     image: RawImage,
-    crop_fmt: int | str = None,
-    crop: list[int] = None,
+    crop_fmt: int | str | None = None,
+    crop: list[int] | None = None,
 ) -> RawImage:
     """
     画像をトリミングする
@@ -63,7 +62,7 @@ def crop_image_extend( # noqa
         return image
 
 
-def getInterframeDiff( # noqa
+def getInterframeDiff(  # noqa
     frame1: RawImage,
     frame2: RawImage,
     frame3: RawImage,
@@ -76,7 +75,7 @@ def getInterframeDiff( # noqa
     return imagelib.binarize_by_interframe_diff(frame1, frame2, frame3, threshold)
 
 
-def getImage( # noqa
+def getImage(  # noqa
     path: str,
     mode: str = "color",
 ) -> RawImage | None:
@@ -89,14 +88,16 @@ def getImage( # noqa
     try:
         return imagelib.read(path, "color" if mode == "color" else "grayscale")
     except Exception:
-        logger.error(f"{path}が開けませんでした。ファイル名およびファイルの格納場所を確認してください。")
+        logger.error(
+            f"{path}が開けませんでした。ファイル名およびファイルの格納場所を確認してください。"
+        )
         return None
 
 
-def doPreprocessImage( # noqa
+def doPreprocessImage(  # noqa
     image: RawImage,
     use_gray: bool = True,
-    crop: list[int] = None,
+    crop: list[int] | None = None,
     BGR_range: dict[Literal["lower", "upper"], RawImage] | None = None,  # noqa
     threshold_binary: int | None = None,
 ) -> tuple[RawImage, int, int]:
@@ -116,12 +117,12 @@ def doPreprocessImage( # noqa
     if threshold_binary is not None:
         img = imagelib.binarize_by_threshold(img, threshold_binary)
 
-    return img, img.width, img.height
+    return img, img.shape[1], img.shape[0]
 
 
-def openImage( # noqa
+def openImage(  # noqa
     image: RawImage,
-    crop: list[int] = None,
+    crop: list[int] | None = None,
     title: str = "image",
 ) -> None:  # noqa
     """
@@ -155,7 +156,7 @@ class ImageProcessing:
         self,
         filename: str,
         image: RawImage,
-        params: Sequence[int] = None
+        params: Sequence[int],
     ) -> bool:
         """
         画像を書き込む
@@ -166,19 +167,18 @@ class ImageProcessing:
             logger.error(f"Image Write Error: {e}")
             return False
 
-    def doTemplateMatch( # noqa
+    def doTemplateMatch(  # noqa
         self,
         image: RawImage,
         template_image: RawImage,
-        mask_image: RawImage = None
+        mask_image: RawImage | None = None,
     ) -> tuple[float, tuple]:
         """
         テンプレートマッチングをする
         画像は必要に応じて事前にグレースケール化やトリミングをしておく必要がある
         """
         result = (
-            self.__matcher
-            .set_image(image)
+            self.__matcher.set_image(image)
             .set_template(template_image)
             .set_mask(mask_image)
             .match()
@@ -188,17 +188,17 @@ class ImageProcessing:
         else:
             return result.value_max, result.location_max
 
-    def isContainTemplate( # noqa
+    def isContainTemplate(  # noqa
         self,
         image: RawImage,
         template_image: RawImage,
-        mask_image: RawImage = None,
+        mask_image: RawImage | None = None,
         threshold: float = 0.7,
         use_gray: bool = True,
-        crop: list[int] = None,
-        BGR_range: dict[Literal["lower", "upper"]] | None = None,  # noqa
+        crop: list[int] | None = None,
+        BGR_range: dict[Literal["lower", "upper"], RawImage] | None = None,  # noqa
         threshold_binary: int | None = None,
-        crop_template: list[int] = None,
+        crop_template: list[int] | None = None,
         show_image: bool = False,
     ) -> tuple[bool, tuple, int, int, float]:
         """
@@ -232,17 +232,17 @@ class ImageProcessing:
         # 類似度が閾値を超えたかを戻り値として返す(合わせて位置とテンプレート画像のサイズも返す)
         return max_val > threshold, max_loc, width, height, max_val
 
-    def isContainTemplate_max( # noqa
+    def isContainTemplate_max(  # noqa
         self,
         image: RawImage,
         template_image_list: list[RawImage],
-        mask_image_list: list[RawImage] = None,
+        mask_image_list: list[RawImage] | None = None,
         threshold: float = 0.7,
         use_gray: bool = True,
-        crop: list[int] = None,
-        BGR_range: dict[Literal["lower", "upper"]] | None = None,  # noqa
+        crop: list[int] | None = None,
+        BGR_range: dict[Literal["lower", "upper"], RawImage] | None = None,  # noqa
         threshold_binary: int | None = None,
-        crop_template: list[int] = None,
+        crop_template: list[int] | None = None,
         show_image: bool = False,
     ) -> tuple[int, list[float], list[tuple[int]], list[int], list[int], list[bool]]:
         """
@@ -250,6 +250,7 @@ class ImageProcessing:
         """
         # パラメータチェックを行う
         masks = mask_image_list if mask_image_list is not None else []
+        mask_image_list_temp: Sequence[RawImage | None] = []
         if len(template_image_list) == len(masks):
             mask_image_list_temp = masks
         elif len(masks) == 0:
@@ -278,7 +279,9 @@ class ImageProcessing:
         if show_image:
             gui.show(src, "image")
 
-        for template_image, mask_image in zip(template_image_list, mask_image_list_temp):
+        for template_image, mask_image in zip(
+            template_image_list, mask_image_list_temp
+        ):
             # テンプレート画像を加工する
             template, width, height = doPreprocessImage(
                 template_image,
@@ -287,21 +290,30 @@ class ImageProcessing:
                 BGR_range=BGR_range,
                 threshold_binary=threshold_binary,
             )
-            max_val, max_loc = self.doTemplateMatch(src, template, mask_image=mask_image)
+            max_val, max_loc = self.doTemplateMatch(
+                src, template, mask_image=mask_image
+            )
             max_val_list.append(max_val)
             max_loc_list.append(max_loc)
             width_list.append(width)
             height_list.append(height)
             judge_threshold_list.append(max_val > threshold)
 
-        return int(argmax(max_val_list)), max_val_list, max_loc_list, width_list, height_list, judge_threshold_list
+        return (
+            int(argmax(max_val_list)),
+            max_val_list,
+            max_loc_list,
+            width_list,
+            height_list,
+            judge_threshold_list,
+        )
 
-    def saveImage( # noqa
+    def saveImage(  # noqa
         self,
         image: RawImage,
-        filename: str = None,
-        crop: list[int] = None,
-    ):
+        filename: str,
+        crop: list[int] | None = None,
+    ) -> None:
         """
         画像を保存する。
         """
@@ -317,7 +329,7 @@ class ImageProcessing:
 
         # 画像を保存する
         try:
-            self.imwrite(cropped_image, filename)
+            self.imwrite(filename, cropped_image, [])
             logger.debug(f"Capture succeeded: {filename}")
         except Exception as e:
             logger.error(f"Capture Failed :{e}")

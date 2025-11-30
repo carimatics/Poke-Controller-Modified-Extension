@@ -1,16 +1,15 @@
 import importlib
 import logging
 import sys
-from os import PathLike
 from types import ModuleType
 
-from ..utils import get_all_modules, get_module_names, get_classes_in_module
+from ..utils import get_all_modules, get_classes_in_module, get_module_names
 
 logger = logging.getLogger(__name__)
 
 
 class CommandLoader[T]:
-    def __init__(self, base_path: str | PathLike[T], base_class: type[T]) -> None:
+    def __init__(self, base_path: str, base_class: type[T]) -> None:
         self.path: str = base_path
         self.base_type: type[T] = base_class
         self.modules: list[ModuleType] = []
@@ -48,7 +47,7 @@ class CommandLoader[T]:
         return self._get_command_classes()
 
     # for compatibility
-    def getCommandClasses(self): # noqa
+    def getCommandClasses(self) -> list[type[T]]:  # noqa
         return self._get_command_classes()
 
     def _get_command_classes(self) -> list[type[T]]:
@@ -56,11 +55,13 @@ class CommandLoader[T]:
         classes = []
         for mod in self.modules:
             class_list = [
-                c for c in get_classes_in_module(mod)
+                c
+                for c in get_classes_in_module(mod)
                 if (
-                    issubclass(c, self.base_type) and
-                    c is not self.base_type and
-                    hasattr(c, "NAME") and c.NAME
+                    issubclass(c, self.base_type)
+                    and c is not self.base_type
+                    and hasattr(c, "NAME")
+                    and c.NAME
                 )
             ]
 
@@ -78,7 +79,9 @@ class CommandLoader[T]:
                         logger.debug(f"TAGS name add: {dir_tags}")
                         c.TAGS = [c.TAGS] + dir_tags
                     else:
-                        logger.debug(f"TAGS Type error: {mod.__name__} {c.NAME} {type(c.TAGS)}")
+                        logger.debug(
+                            f"TAGS Type error: {mod.__name__} {c.NAME} {type(c.TAGS)}"
+                        )
                 else:
                     logger.debug(f"TAGS do not exist: {mod.__name__} {c.NAME}")
                     c.TAGS = dir_tags
