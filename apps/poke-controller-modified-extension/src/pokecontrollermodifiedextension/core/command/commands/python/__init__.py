@@ -7,6 +7,6 @@ from .decorators import (
 )
 from .image_processing import (
     ImageProcPythonCommand as ImageProcPythonCommand,
-    generateRandomCharacter as generateRandomCharacter,
     convertCv2Format as convertCv2Format,
+    generateRandomCharacter as generateRandomCharacter,
 )
