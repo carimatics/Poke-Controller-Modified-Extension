@@ -149,7 +149,7 @@ class LineNotifier(Notifier):
 
     # noinspection PyMethodMayBeStatic
     def _make_files(self, image: RawImage | None) -> dict[str, Any] | None:
-        return {"imageFile": to_bytes(image)} if image is not None else None
+        return {"imageFile": to_bytes(image, fmt="png")} if image is not None else None
 
     def _log_response(
         self,

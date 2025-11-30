@@ -98,7 +98,7 @@ def read(path: str, mode: ImageReadMode = "color") -> RawImage | None:
             return cv2.imread(path, cv2.IMREAD_COLOR)
 
 
-def to_bytes(src: RawImage, fmt: str | None = "png") -> bytes:
+def to_bytes(src: RawImage, fmt: str | None = None) -> bytes:
     rgb = cv2.cvtColor(src, cv2.COLOR_BGR2RGB)
     image = Image.fromarray(rgb)
     bio = io.BytesIO()

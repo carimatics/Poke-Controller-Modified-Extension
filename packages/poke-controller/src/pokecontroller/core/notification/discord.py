@@ -203,7 +203,7 @@ class DiscordNotifier(Notifier):
         payload = self._make_payload(key=key, message=message)
         files: dict[str, Any] = {"payload_json": (None, json.dumps(payload))}
         if image is not None:
-            files["media"] = ("pokecon_image.png", to_bytes(image))
+            files["media"] = ("pokecon_image.png", to_bytes(image, fmt="png"))
         return files
 
     def _make_payload(self, key: str, message: str | None) -> dict[str, str]:
