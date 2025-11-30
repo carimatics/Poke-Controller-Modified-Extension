@@ -7,12 +7,24 @@ run = "uv sync"
 [tasks.app_sandbox]
 depends = ["sync"]
 dir = "{{cwd}}/SerialControllerSandbox"
-run = "uv run python -X dev main.py"
+run = '''
+if [ '{{flag(name='dev')}}' = 'true' ]; then
+    uv run python -X dev main.py
+else
+    uv run python main.py
+fi
+'''
 
 [tasks.app_extension]
 depends = ["sync"]
 dir = "{{cwd}}/SerialController"
-run = "uv run python -X dev Window.py"
+run = '''
+if [ '{{flag(name='dev')}}' = 'true' ]; then
+    uv run python -X dev Window.py
+else
+    uv run python Window.py
+fi
+'''
 
 [tasks.lint]
 run = "uv run ruff check --fix"
