@@ -4,6 +4,7 @@ import serial
 
 LINESEP = "\r\n"
 
+
 class Serial:
     def __init__(self) -> None:
         self._serial: serial.Serial | None = None
