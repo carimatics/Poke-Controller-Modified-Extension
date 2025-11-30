@@ -98,7 +98,7 @@ class Config:
 
     def _exists_directory(self) -> bool:
         directory = libpath.directory_name(self._path)
-        return libpath.exists_directory(directory)
+        return libpath.exists_directory(directory) and libpath.exists(directory)
 
     def _create_directories(self) -> None:
         directory = libpath.directory_name(self._path)
