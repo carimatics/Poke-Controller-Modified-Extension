@@ -2,6 +2,7 @@ from collections.abc import Buffer
 
 import serial
 
+LINESEP = "\r\n"
 
 class Serial:
     def __init__(self) -> None:
@@ -33,4 +34,4 @@ class Serial:
             s.write(data)
 
     def write_line(self, line: str) -> None:
-        self.write((line + "\r\n").encode("utf-8"))
+        self.write(f"{line}{LINESEP}".encode("utf-8"))
