@@ -84,7 +84,7 @@ def setup_logging(
     config_path: str | None = None,
     *,
     debug: bool | None = None,
-    show_config: bool | None = False,
+    show_config: bool = False,
 ) -> None:
     """
     Python標準のloggingモジュールを設定する
