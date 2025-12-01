@@ -6,7 +6,6 @@ import time
 from functools import wraps
 from typing import Callable
 
-from paho.mqtt.enums import CallbackAPIVersion
 from pokecontroller.core.config import Config
 
 try:
@@ -331,7 +330,7 @@ class MQTTCommunications:
 
     def __init__(
         self,
-        clientId: CallbackAPIVersion,  # noqa
+        clientId: str,  # noqa
     ) -> None:
         """
         初期設定
@@ -353,7 +352,7 @@ class MQTTCommunications:
         elif readonly_token != "":
             self.sub_token = readonly_token
 
-        self.clientId: CallbackAPIVersion = clientId
+        self.clientId: str = clientId
         self.client: mqtt.Client | None = None
         self.receive_msg = -1
 
@@ -402,7 +401,7 @@ class MQTTCommunications:
 
     def change_clientId(  # noqa
         self,
-        clientId: CallbackAPIVersion,  # noqa
+        clientId: str,  # noqa
     ) -> None:
         """
         接続者名を変更する
@@ -446,7 +445,7 @@ class MQTTCommunications:
         header_date = int(datetime.datetime.today().strftime("%Y%m%d%H%M%S%f"))
 
         # brokerと接続する
-        self.client = mqtt.Client(self.clientId)
+        self.client = mqtt.Client(client_id=self.clientId)
         self.client.username_pw_set(self.id, self.sub_token)
         self.client.connect(self.broker_address, 1883)
         self.client.subscribe(roomid)
@@ -482,7 +481,10 @@ class MQTTCommunications:
 
     @exceptiondecorator
     def receive_message2(
-        self, roomid: str, headerlist: list[str], show_msg: bool = False
+        self,
+        roomid: str,
+        headerlist: list[str],
+        show_msg: bool = False,
     ) -> str | None:
         """
         MQTTを用いて先頭が特定の文字列(複数設定可能)であるメッセージを受信する
@@ -502,7 +504,7 @@ class MQTTCommunications:
         header_date = int(datetime.datetime.today().strftime("%Y%m%d%H%M%S%f"))
 
         # brokerと接続する
-        self.client = mqtt.Client(self.clientId)
+        self.client = mqtt.Client(client_id=self.clientId)
         self.client.username_pw_set(self.id, self.sub_token)
         self.client.connect(self.broker_address, 1883)
         self.client.subscribe(roomid)
@@ -549,7 +551,7 @@ class MQTTCommunications:
         # メッセージ更新判定に日時情報を使用する
         header_date = datetime.datetime.today().strftime("[%Y%m%d%H%M%S%f]")
         if self.pub_token:
-            self.client = mqtt.Client(self.clientId)
+            self.client = mqtt.Client(client_id=self.clientId)
             self.client.username_pw_set(self.id, self.pub_token)
             self.client.connect(self.broker_address, 1883)
             message0 = header_date + message

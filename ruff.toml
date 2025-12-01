@@ -10,7 +10,6 @@ exclude = [
     "apps/poke-controller-modified-extension/src/pokecontrollermodifiedextension/core/command/commands/python/base.py",
     "apps/poke-controller-modified-extension/src/pokecontrollermodifiedextension/core/command/commands/python/decorators.py",
     "apps/poke-controller-modified-extension/src/pokecontrollermodifiedextension/core/command/commands/python/image_processing.py",
-    "apps/poke-controller-modified-extension/src/pokecontrollermodifiedextension/core/command/commands/base.py",
 ]
 
 [lint]

@@ -3,42 +3,44 @@ import json
 import os
 import tkinter as tk
 import tkinter.ttk as ttk
-from typing import Annotated, Any, Literal, TypeGuard
+from typing import Annotated, Any, Literal, TypeGuard, get_origin, overload
 
 MessageMode0 = int | str | list[str]
-CheckWidgetTypeName = Annotated[Literal["check"], "check"]
+CheckWidgetTypeName = Annotated[str, "check"]
 CheckWidget = Annotated[
     list[CheckWidgetTypeName | str | bool],
     '["check", subtitle: str, init: bool]',
 ]
-ComboWidgetTypeName = Annotated[Literal["combo"], "combo"]
+ComboWidgetTypeName = Annotated[str, "combo"]
 ComboWidget = Annotated[
     list[ComboWidgetTypeName | str | list[str]],
     '["combo", subtitle: str, selectlist: list[str], init: str]',
 ]
-EntryWidgetTypeName = Annotated[Literal["entry"], "entry"]
+EntryWidgetTypeName = Annotated[str, "entry"]
 EntryWidget = Annotated[
     list[EntryWidgetTypeName | str],
     '["entry", subtitle: str, init: str]',
 ]
-RadioWidgetTypeName = Annotated[Literal["radio"], "radio"]
+RadioWidgetTypeName = Annotated[str, "radio"]
 RadioWidget = Annotated[
     list[RadioWidgetTypeName | str | list[str]],
     '["radio", subtitle: str, selectlist: list[str], init: str]',
 ]
-SpinWidgetTypeName = Annotated[Literal["spin"], "spin"]
+SpinWidgetTypeName = Annotated[str, "spin"]
 SpinWidget = Annotated[
     list[SpinWidgetTypeName | str | list[str]],
     '["spin", subtitle: str, selectlist: list[str], init: str]',
 ]
-ScaleWidgetTypeName = Annotated[Literal["scale"], "scale"]
+ScaleWidgetTypeName = Annotated[str, "scale"]
 ScaleWidget = Annotated[
     list[ScaleWidgetTypeName | str | int | float],
     '["scale", subtitle: str, min: int | float, max: int | float, init: int | float, digit: int]',
 ]
-NextWidgetTypeName = Annotated[Literal["next"], "next"]
-NextWidget = Annotated[NextWidgetTypeName, '["next"]']
-WidgetTypeName = Literal["check", "combo", "entry", "radio", "spin", "scale", "next"]
+NextWidgetTypeName = Annotated[str, "next"]
+NextWidget = Annotated[list[NextWidgetTypeName], '["next"]']
+WidgetTypeName = (
+    str  # Literal["check", "combo", "entry", "radio", "spin", "scale", "next"]
+)
 Widget = (
     CheckWidget
     | ComboWidget
@@ -52,17 +54,11 @@ MessageMode1 = list[Widget]
 Message = MessageMode0 | MessageMode1
 
 
-def is_message_mode0(message: Message) -> TypeGuard[MessageMode0]:
-    if isinstance(message, int):
-        return True
-    if isinstance(message, str):
-        return True
-    return isinstance(message, list) and all(isinstance(m, str) for m in message)
-
-
-def is_message_mode1(message: Message) -> TypeGuard[MessageMode1]:
+def is_widget(value: Any) -> TypeGuard[Widget]:
+    if isinstance(value, list):
+        return False
     return any(
-        check(message)
+        check(value)
         for check in (
             is_check_widget,
             is_combo_widget,
@@ -73,6 +69,21 @@ def is_message_mode1(message: Message) -> TypeGuard[MessageMode1]:
             is_next_widget,
         )
     )
+
+
+def is_message_mode0(message: Message) -> TypeGuard[MessageMode0]:
+    if isinstance(message, int):
+        return True
+    if isinstance(message, str):
+        return True
+    return isinstance(message, list) and all(isinstance(m, str) for m in message)
+
+
+def is_message_mode1(message: Message) -> TypeGuard[MessageMode1]:
+    if not isinstance(message, list):
+        return False
+
+    return any(is_widget(widget) for widget in message)
 
 
 def is_widget_type(
@@ -481,11 +492,32 @@ class PokeConDialogue:
                 else:
                     pass
 
-    def ret_value(self, need: type) -> list | dict | bool | None:
+    @overload
+    def ret_value(
+        self,
+        need: type[list],
+    ) -> list[bool | int | float | str] | Literal[False] | None: ...
+
+    @overload
+    def ret_value(
+        self,
+        need: type[dict],
+    ) -> dict[str, bool | int | float | str] | Literal[False]: ...
+
+    def ret_value(
+        self,
+        need: type[list] | type[dict],
+    ) -> (
+        list[bool | int | float | str]
+        | dict[str, bool | int | float | str]
+        | Literal[False]
+        | None
+    ):
         if self.isOK:
-            if need is dict:  # needは型なのでisinstanceは使えない
+            origin = get_origin(need) or need
+            if origin is dict:  # needは型なのでisinstanceは使えない
                 return {k: v.get() for k, v in self.dialogue_ls.items()}
-            elif need is list:  # needは型なのでisinstanceは使えない
+            elif origin is list:  # needは型なのでisinstanceは使えない
                 return self._ls
             else:
                 print("Wrong arg. Try Return list.")
@@ -526,10 +558,12 @@ def check_widget_name(dialogue_list: list, except_name: list | None = None) -> b
     return len(input_name) == len(output_name)
 
 
-def get_setting(filename: str) -> Any:
+def get_setting(filename: str | None) -> Any:
     """
     保存した設定値を読み込む
     """
+    if filename is None:
+        return None
     try:
         with open(filename, encoding="utf-8") as f:
             file = json.load(f)
@@ -546,16 +580,17 @@ def save_setting(filename: str, settings: dict) -> None:
         json.dump(settings, f, indent=4, ensure_ascii=False)
 
 
-def generate_new_dialogue_list(dialogue_list: list, filename: str) -> list:
+def generate_new_dialogue_list(
+    dialogue_list: MessageMode1,
+    filename: str | None,
+) -> MessageMode1:
     settings = get_setting(filename)
     if not settings:
         return dialogue_list
     else:
-        new_dialogue_list = []
+        new_dialogue_list: MessageMode1 = []
         for setting in dialogue_list:
-            if len(setting) < 2:
-                pass
-            else:
+            if is_widget(setting):
                 try:
                     setting[-1] = settings[setting[1]]
                 except Exception:
@@ -565,18 +600,16 @@ def generate_new_dialogue_list(dialogue_list: list, filename: str) -> list:
 
 
 def save_dialogue_settings(
-    new_dialogue_list: list, ret: list | dict, filename: str
+    new_dialogue_list: MessageMode1,
+    ret: list[bool | int | float | str] | dict[str, bool | int | float | str],
+    filename: str,
 ) -> None:
     try:
         settings = {}
         if isinstance(ret, list):
-            cnt = 0
-            for setting in new_dialogue_list:
-                if len(setting) < 2:
-                    pass
-                else:
-                    settings[setting[1]] = ret[cnt]
-                    cnt += 1
+            for n, setting in enumerate(new_dialogue_list):
+                if not is_next_widget(setting):
+                    settings[setting[1]] = ret[n]
             save_setting(filename, settings)
         else:
             save_setting(filename, ret)
