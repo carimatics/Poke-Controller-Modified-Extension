@@ -1,9 +1,12 @@
 import glob
 import json
+import logging
 import os
 import tkinter as tk
 import tkinter.ttk as ttk
 from typing import Annotated, Any, Literal, TypeGuard, get_origin, overload
+
+logger = logging.getLogger(__name__)
 
 MessageMode0 = int | str | list[str]
 CheckWidgetTypeName = Annotated[str, "check"]
@@ -520,7 +523,7 @@ class PokeConDialogue:
             elif origin is list:  # needは型なのでisinstanceは使えない
                 return self._ls
             else:
-                print("Wrong arg. Try Return list.")
+                logger.warning("Wrong arg. Try Return list.")
                 return self._ls
         else:
             return False
@@ -614,7 +617,7 @@ def save_dialogue_settings(
         else:
             save_setting(filename, ret)
     except Exception:
-        print("Error: Configuration dump failed.")
+        logger.error("Error: Configuration dump failed.")
 
 
 def get_settings_list(dirname: str) -> list:
