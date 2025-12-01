@@ -466,14 +466,7 @@ class SendFormat:
         return state
 
 
-Buttons = (
-    Button
-    | Hat
-    | Stick
-    | Direction
-    | Touchscreen
-    | list[Button | Hat | Stick | Direction | Touchscreen]
-)
+ButtonLike = Button | Hat | Stick | Direction | Touchscreen
 
 
 # handles serial input to Joystick.c
@@ -510,7 +503,7 @@ class KeyPress:
 
     def input(
         self,
-        btns: Buttons,
+        btns: ButtonLike | list[ButtonLike],
         ifPrint: bool = True,  # noqa
     ) -> None:
         self._pushing = dict(self.format.format)
@@ -543,7 +536,7 @@ class KeyPress:
 
     def inputEnd(  # noqa
         self,
-        btns: Buttons,
+        btns: ButtonLike | list[ButtonLike],
         ifPrint: bool = True,  # noqa
         unset_hat: bool = True,
         unset_Touchscreen: bool = True,  # noqa
@@ -582,7 +575,7 @@ class KeyPress:
             else:
                 self.ser.writeRow(self.format.convert2str())
 
-    def hold(self, btns: Buttons) -> None:
+    def hold(self, btns: ButtonLike | list[ButtonLike]) -> None:
         if not isinstance(btns, list):
             btns = [btns]
 
@@ -600,7 +593,7 @@ class KeyPress:
 
     def holdEnd(  # noqa
         self,
-        btns: Buttons,
+        btns: ButtonLike | list[ButtonLike],
     ) -> None:
         if not isinstance(btns, list):
             btns = [btns]
@@ -611,7 +604,7 @@ class KeyPress:
                     b for b in self.holdButton if type(b) is Touchscreen
                 ]:
                     self.holdButton.remove(touchscreen)
-            else:
+            elif btn in self.holdButton:
                 self.holdButton.remove(btn)
 
         self.inputEnd(btns)
