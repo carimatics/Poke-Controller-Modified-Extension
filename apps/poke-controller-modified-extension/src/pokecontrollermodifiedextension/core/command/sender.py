@@ -177,43 +177,56 @@ class Sender:
         if not self.is_print:
             return
 
-        # collect sender states
-        (_, using_rstick), (_, using_lstick), *buttons_state = [
-            (button, bool(int(output[0], 16) >> i & 1))
-            for i, button in enumerate(self.Buttons)
-        ]
-        if (hat := self.Hat[int(output[1])]) != "CENTER":
-            buttons_state.append(("Hat." + str(hat), True))
-        lstick_state = [int(x, 16) for x in output[2:4]]
-        rstick_state = [int(x, 16) for x in output[4:6]]
-        lstick_deg = math.degrees(
-            math.atan2(128 - lstick_state[1], lstick_state[0] - 128)
-        )
-        rstick_deg = math.degrees(
-            math.atan2(128 - rstick_state[1], rstick_state[0] - 128)
-        )
+        lstick, rstick, buttons = self._parse_output(output=output)
 
-        # stringify buttons state
-        buttons_str: str | None = None
-        if buttons := [button for button, using in buttons_state if using]:
-            buttons_str = f"{', '.join(buttons)}"
-
-        # stringify stick state
+        # stringify buttons and stick
+        buttons_str = ", ".join(buttons) if buttons else None
         lstick_str: str | None = None
+        if lstick is not None:
+            lstick_str = f"Direction(Stick.LEFT, degree={lstick[0]:.0f}, magnification={lstick[1]:.2f})"
         rstick_str: str | None = None
-        if using_lstick and lstick_state != [128, 128]:
-            lstick_str = f"Direction(Stick.LEFT, {lstick_deg:.0f})"
-        if using_rstick and rstick_state != [128, 128]:
-            rstick_str = f"Direction(Stick.RIGHT, {rstick_deg:.0f})"
+        if rstick is not None:
+            rstick_str = f"Direction(Stick.RIGHT, degree={rstick[0]:.0f}, magnification={rstick[1]:.2f})"
 
         # check has loggable states
-        state_strs = [s for s in [buttons_str, lstick_str, rstick_str] if s is not None]
+        state_strs = tuple(
+            s for s in (buttons_str, lstick_str, rstick_str) if s is not None
+        )
         if not state_strs:
             return
 
         # log
         duration = self.time_aft - self.time_bef
-        args_str = (
+        arg_str = (
             state_strs[0] if len(state_strs) == 1 else f"[{', '.join(state_strs)}]"
         )
-        logger.debug(f"self.press({args_str}, duration={duration:.2f})")
+        logger.debug(f"self.press({arg_str}, duration={duration:.2f})")
+
+    def _parse_output(
+        self,
+        output: list[str],
+    ) -> tuple[
+        tuple[float, float] | None,  # lstick
+        tuple[float, float] | None,  # rstick
+        tuple[str, ...],  # buttons
+    ]:
+        overview = output[0]
+        hat_raw = output[1]
+        (_, using_rstick), (_, using_lstick), *buttons = tuple(
+            (button, bool(int(overview, 16) >> i & 1))
+            for i, button in enumerate(self.Buttons)
+        )
+        if (hat := self.Hat[int(hat_raw)]) != "CENTER":
+            buttons.append((f"Hat.{str(hat)}", True))
+
+        lstick = self._calc_output_stick(output[2:4]) if using_lstick else None
+        rstick = self._calc_output_stick(output[4:6]) if using_rstick else None
+
+        return lstick, rstick, tuple(button for (button, using) in buttons if using)
+
+    # noinspection PyMethodMayBeStatic
+    def _calc_output_stick(self, output_stick: list[str]) -> tuple[float, float] | None:
+        x, y = [int(a, 16) for a in output_stick]
+        if x == 128 and y == 128:
+            return None
+        return math.degrees(math.atan2(128 - y, x - 128)), math.sqrt(x**2 + y**2)
