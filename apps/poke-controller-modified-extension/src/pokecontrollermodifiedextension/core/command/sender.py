@@ -192,7 +192,6 @@ class Sender:
         rstick_deg = math.degrees(
             math.atan2(128 - rstick_state[1], rstick_state[0] - 128)
         )
-        duration = self.time_aft - self.time_bef
 
         # stringify buttons state
         buttons_str: str | None = None
@@ -213,5 +212,8 @@ class Sender:
             return
 
         # log
-        s = state_strs[0] if len(state_strs) == 1 else f"[{', '.join(state_strs)}]"
-        logger.debug(f"self.press({s}, duration={duration:.2f})")
+        duration = self.time_aft - self.time_bef
+        args_str = (
+            state_strs[0] if len(state_strs) == 1 else f"[{', '.join(state_strs)}]"
+        )
+        logger.debug(f"self.press({args_str}, duration={duration:.2f})")
