@@ -95,7 +95,7 @@ def is_check_widget(widget: Any) -> TypeGuard[CheckWidget]:
 
 
 def parse_check_widget(widget: CheckWidget) -> tuple[str, str, bool]:
-    return widget[0], widget[1], widget[2]  # type: ignore[return-value]
+    return tuple(widget)  # type: ignore[return-value]
 
 
 def is_combo_widget(widget: Any) -> TypeGuard[ComboWidget]:
@@ -115,7 +115,7 @@ def is_combo_widget(widget: Any) -> TypeGuard[ComboWidget]:
 
 
 def parse_combo_widget(widget: ComboWidget) -> tuple[str, str, list[str], str]:
-    return widget[0], widget[1], widget[2], widget[3]  # type: ignore[return-value]
+    return tuple(widget)  # type: ignore[return-value]
 
 
 def is_entry_widget(widget: Any) -> TypeGuard[EntryWidget]:
@@ -131,7 +131,7 @@ def is_entry_widget(widget: Any) -> TypeGuard[EntryWidget]:
 
 
 def parse_entry_widget(widget: EntryWidget) -> tuple[str, str, str]:
-    return widget[0], widget[1], widget[2]
+    return tuple(widget)  # type: ignore[return-value]
 
 
 def is_radio_widget(widget: Any) -> TypeGuard[RadioWidget]:
@@ -151,7 +151,7 @@ def is_radio_widget(widget: Any) -> TypeGuard[RadioWidget]:
 
 
 def parse_radio_widget(widget: RadioWidget) -> tuple[str, str, list[str], str]:
-    return widget[0], widget[1], widget[2], widget[3]  # type: ignore[return-value]
+    return tuple(widget)  # type: ignore[return-value]
 
 
 def is_spin_widget(widget: Any) -> TypeGuard[SpinWidget]:
@@ -171,7 +171,7 @@ def is_spin_widget(widget: Any) -> TypeGuard[SpinWidget]:
 
 
 def parse_spin_widget(widget: SpinWidget) -> tuple[str, str, list[str], str]:
-    return widget[0], widget[1], widget[2], widget[3]  # type: ignore[return-value]
+    return tuple(widget)  # type: ignore[return-value]
 
 
 def is_scale_widget(widget: Any) -> TypeGuard[ScaleWidget]:
@@ -195,7 +195,7 @@ def is_scale_widget(widget: Any) -> TypeGuard[ScaleWidget]:
 def parse_scale_widget(
     widget: ScaleWidget,
 ) -> tuple[str, str, int | float, int | float, int | float, int]:
-    return widget[0], widget[1], widget[2], widget[3], widget[4], widget[5]  # type: ignore[return-value]
+    return tuple(widget)  # type: ignore[return-value]
 
 
 def is_next_widget(widget: Any) -> TypeGuard[NextWidget]:
