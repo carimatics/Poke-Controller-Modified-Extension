@@ -2,7 +2,6 @@ import configparser
 import logging
 import os
 import tkinter as tk
-from configparser import ConfigParser
 
 logger = logging.getLogger(__name__)
 
@@ -112,8 +111,8 @@ class GuiSettings:
     )
 
     def __init__(self) -> None:
-        self.setting = self._initialize_setting()
-        self.setting.optionxform = str  # type: ignore[method-assign, assignment]
+        self.setting = configparser.ConfigParser()
+        self._initialize_setting()
 
         general_setting = self.setting["General Setting"]
         self.camera_id = tk.IntVar(
@@ -206,7 +205,7 @@ class GuiSettings:
 
     def generate(self) -> None:
         for section, options in DEFAULT_SETTING.items():
-            self.setting[section] = {k: str(v) for k, v in options.items()}
+            self.setting[section] = dict(options)
         with open(self.SETTING_PATH, "w", encoding="utf-8") as file:
             self.setting.write(file)
         os.chmod(path=self.SETTING_PATH, mode=0o777)
@@ -224,9 +223,8 @@ class GuiSettings:
         os.chmod(path=self.SETTING_PATH, mode=0o777)
         logger.debug("Settings file has been saved.")
 
-    def _initialize_setting(self) -> ConfigParser:
-        setting = configparser.ConfigParser()
-        setting.optionxform = str  # type: ignore[method-assign, assignment]
+    def _initialize_setting(self) -> None:
+        self.setting.optionxform = str  # type: ignore[method-assign, assignment]
 
         # generate setting file
         if not os.path.exists(self.SETTING_PATH):
@@ -241,14 +239,12 @@ class GuiSettings:
         logger.debug("Settings file has been loaded.")
 
         # fill by default values if not exist
-        sections = setting.sections()
+        sections = self.setting.sections()
         for section, options in DEFAULT_SETTING.items():
             if section not in sections:
                 self.setting[section] = {}
             for option, val in options.items():
                 self.setting[section].setdefault(option, val)
-
-        return setting
 
     def _general_setting_to_config(self) -> None:
         self.setting["General Setting"] = {
