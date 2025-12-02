@@ -89,7 +89,7 @@ class DiscordConfig(Config):
             self._create()
 
     def _create(self) -> None:
-        options = [
+        options = (
             (
                 DISCORD_SECTION_DEFAULT,
                 ["channel_id", "token"],
@@ -98,7 +98,7 @@ class DiscordConfig(Config):
                 DISCORD_WEBHOOK_SECTION_DEFAULT,
                 ["webhook_url", "username", "avatar_url"],
             ),
-        ]
+        )
         for section, ops in options:
             self.add_section(section)
             self[section] = {o: "" for o in ops}
