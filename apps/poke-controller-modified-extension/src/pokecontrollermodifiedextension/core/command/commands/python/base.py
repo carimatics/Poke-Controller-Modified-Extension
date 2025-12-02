@@ -1,10 +1,21 @@
-from abc import ABC, abstractmethod
-from time import sleep
+import logging
 import threading
 import time
+from abc import ABC, abstractmethod
+from time import sleep
+from typing import Callable, Never
 
+from pokecontrollermodifiedextension.core.notification import (
+    Discord_Notify,
+    Line_Notify,
+)
+
+from ... import Sender
+from ...keys import ButtonLike, KeyPress
 from ..base import Command
 from .decorators import pausable
+
+logger = logging.getLogger(__name__)
 
 
 class StopThread(Exception):
@@ -12,27 +23,21 @@ class StopThread(Exception):
 
 
 class PythonCommand(Command, ABC):
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
 
-        # FIXME: logging
-        # self._logger = getLogger(__name__)
-        # self._logger.addHandler(NullHandler())
-        # self._logger.setLevel(DEBUG)
-        # self._logger.propagate = True
-
         # FIXME: typing
-        self.keys = None
-        self.thread = None
+        self.keys: KeyPress | None = None
+        self.thread: threading.Thread | None = None
         self.alive = True
-        self.postProcess = None
+        self.isPause = False
+        self.postProcess: Callable[[], None] | None = None
+        self.Line: Line_Notify | None = None
         try:
-            # FIXME: Line_Notify()
-            self.Line = None
+            self.Line = Line_Notify()
         except Exception:
-            self.Line = None
-        # FIXME: Discord_Notify()
-        self.Discord = None
+            pass
+        self.Discord = Discord_Notify()
 
     @abstractmethod
     def do(self) -> None:
@@ -41,67 +46,87 @@ class PythonCommand(Command, ABC):
         """
         pass
 
-    def do_safe(self, ser) -> None:
+    def do_safe(self, ser: Sender) -> None:
         """
         自動化スクリプト実行準備→実行→終了処理を順番に行います。
         """
         # FIXME: 後回し
         pass
 
-    def start(self, ser, postProcess=None) -> None:
+    def start(
+        self,
+        ser: Sender,
+        postProcess: Callable[[], None] | None = None,
+    ) -> None:
         """
         自動化スクリプトをスレッドに割り当てて実行します。
         """
         self.alive = True
-        self.socket0.alive = True
-        self.mqtt0.alive = True
+        if (socket := self.socket0) is not None:
+            socket.alive = True
+        if (mqtt := self.mqtt0) is not None:
+            mqtt.alive = True
         self.postProcess = postProcess
-        if not self.thread:
-            self.thread = threading.Thread(target=self.do_safe, args=(ser,))
-            self.thread.start()
+        if self.thread is None:
+            self.thread = thread = threading.Thread(
+                target=self.do_safe,
+                args=(ser,),
+            )
+            thread.start()
 
-    def end(self, ser) -> None:
-        self.socket0.alive = False
-        self.mqtt0.alive = False
-        self.sendStopRequest()
+    def end(self, ser: Sender) -> Never:
+        self.finish()
 
-    def finish(self) -> None:
+    def finish(self) -> Never:
         """
         自動化スクリプトを終了します。(自動化スクリプト内で意図的に終了したい場合に使用。)
         """
-        self.alive = False
-        self.socket0.alive = False
-        self.mqtt0.alive = False
-        self.end(self.keys.ser)
+        if (socket := self.socket0) is not None:
+            socket.alive = False
+        if (mqtt := self.mqtt0) is not None:
+            mqtt.alive = False
+        self.sendStopRequest()
+        if (keys := self.keys) is not None:
+            if keys.ser.isOpened():
+                keys.ser.closeSerial()
 
-    def checkIfAlive(self):
+        logger.info("Exit from command successfully")
+        raise StopThread("exit successfully")
+
+    def checkIfAlive(self) -> bool:
         """
         Aliveフラグの状態を確認する。
         AliveフラグがFalseなら終了処理を行う。
         """
-        if not self.alive:
-            self.keys.end()
-            self.keys = None
-            self.thread = None
-
-            if self.postProcess is not None:
-                self.postProcess()
-                self.postProcess = None
-
-            # FIXME: logging
-            # raise exception for exit working thread
-            # self._logger.info("Exit from command successfully")
-            raise StopThread("exit successfully")
-        else:
+        if self.alive:
             return True
+
+        if (keys := self.keys) is None:
+            logger.warning("keys is None")
+        else:
+            keys.end()
+            self.keys = None
+
+        self.thread = None
+
+        if (pp := self.postProcess) is not None:
+            pp()
+            self.postProcess = None
+        else:
+            logger.info("postProcess is None")
+
+        # raise exception for exit working thread
+        logger.info("Exit from command successfully")
+        raise StopThread("exit successfully")
 
     def sendStopRequest(self) -> None:
         if self.checkIfAlive():  # try if we can stop now
             self.alive = False
             print("-- sent a stop request. --")
-            # FIXME: logging
-            # self._logger.info("Sending stop request")
-        if self.socket0.flag_socket:
+            logger.info("Sending stop request")
+        if (socket := self.socket0) is None:
+            logger.warning("socket0 client is not initialized.")
+        elif socket.flag_socket:
             self.socket_disconnect()
 
     def show_var(self) -> None:
@@ -135,22 +160,25 @@ class PythonCommand(Command, ABC):
     @pausable
     def press(
         self,
-        buttons,  # FIXME: typing
+        buttons: ButtonLike | list[ButtonLike],
         duration: float = 0.1,
         wait: float = 0.1,
     ) -> None:
         """
         ボタンを押す。
         """
-        self.keys.input(buttons)
-        self.wait(duration)
-        self.keys.inputEnd(buttons)
-        self.wait(wait)
+        if (keys := self.keys) is None:
+            logger.warning("keys is None")
+        else:
+            keys.input(buttons)
+            self.wait(duration)
+            keys.inputEnd(buttons)
+            self.wait(wait)
         self.checkIfAlive()
 
     def pressRep(
         self,
-        buttons,  # FIXME: typing
+        buttons: ButtonLike | list[ButtonLike],
         repeat: int,
         duration: float = 0.1,
         interval: float = 0.1,
@@ -166,23 +194,29 @@ class PythonCommand(Command, ABC):
     @pausable
     def hold(
         self,
-        buttons,  # FIXME: typing
-        wait: float = 0.1
+        buttons: ButtonLike | list[ButtonLike],
+        wait: float = 0.1,
     ) -> None:
         """
         ボタンを押したままの状態にする。
         """
-        self.keys.hold(buttons)
+        if (keys := self.keys) is None:
+            logger.warning("keys is None")
+        else:
+            keys.hold(buttons)
         self.wait(wait)
 
     def holdEnd(
         self,
-        buttons,  # FIXME: typing
+        buttons: ButtonLike | list[ButtonLike],
     ) -> None:
         """
         ボタンを離した状態にする。
         """
-        self.keys.holdEnd(buttons)
+        if (keys := self.keys) is None:
+            logger.warning("keys is None")
+        else:
+            keys.holdEnd(buttons)
         self.checkIfAlive()
 
     @pausable
@@ -209,11 +243,15 @@ class PythonCommand(Command, ABC):
         self.checkIfAlive()
 
     def direct_serial(self, serialcommands: list, waittime: list) -> None:
+        if (keys := self.keys) is None:
+            logger.warning("keys is None")
+            return
+
         # 余計なものが付いている可能性があるので確認して削除する
-        checkedcommands = []
-        for row in serialcommands:
-            checkedcommands.append(row.replace("\r", "").replace("\n", ""))
-        self.keys.serialcommand_direct_send(checkedcommands, waittime)
+        checkedcommands = [
+            row.replace("\r", "").replace("\n", "") for row in serialcommands
+        ]
+        keys.serialcommand_direct_send(checkedcommands, waittime)
 
     # temporary function
     def reload_com_port(self) -> None:
@@ -222,12 +260,18 @@ class PythonCommand(Command, ABC):
 
     def LINE_text(self, txt: str, token: str = "token") -> None:
         # 送信
+        if (line := self.Line) is None:
+            logger.warning("Line is not initialized.")
+            return
         try:
-            self.Line.send_message(txt, token=token)
+            line.send_message(txt, token=token)
         except Exception:
+            logger.error("failed to send LINE message.")
             pass
 
-    def discord_text(self, content: str = "", index: int = 0, keys: str = "DISCORD_WEBHOOK") -> None:
+    def discord_text(
+        self, content: str = "", index: int = 0, keys: str = "DISCORD_WEBHOOK"
+    ) -> None:
         # webhook_urlのindex指定とkey設定
         if index != 0 and keys == "DISCORD_WEBHOOK":
             keys = f"DISCORD_WEBHOOK{index}"

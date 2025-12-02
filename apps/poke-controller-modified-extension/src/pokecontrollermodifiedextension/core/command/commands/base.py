@@ -67,7 +67,7 @@ class Command(ABC):
         pass
 
     @abstractmethod
-    def checkIfAlive(self) -> None:
+    def checkIfAlive(self) -> bool:
         pass
 
     ############### print functions ###############

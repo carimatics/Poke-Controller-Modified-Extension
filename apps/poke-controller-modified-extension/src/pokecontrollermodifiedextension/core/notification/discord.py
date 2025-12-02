@@ -31,14 +31,21 @@ class Discord_Notify:  # noqa
         self,
         notification_message: str,
         image: RawImage | None = None,
-        token: str = "token",
+        keys: str | list[str] = "DISCORD_WEBHOOK",
     ) -> None:
         """
         DISCORDにテキスト/画像を通知する
         imageが設定されていなければテキストのみ、設定されていればテキストと画像を通知する
         imageはBGRを想定する
         """
-        self._notifier.notify(message=notification_message, image=image, keys=[token])
+        if isinstance(keys, str):
+            if keys == "ALL":
+                ks = None
+            else:
+                ks = [keys]
+        else:
+            ks = keys
+        self._notifier.notify(message=notification_message, image=image, keys=ks)
 
     def getRateLimit(self) -> None:  # noqa
         keys = self._notifier.keys
