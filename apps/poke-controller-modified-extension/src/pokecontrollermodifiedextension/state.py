@@ -96,8 +96,8 @@ def load_state() -> AppState:
     raw_state: dict[str, Any] = {}
 
     # Fill missing keys with default values
-    for k in DEFAULT_STATE.keys():
-        raw_state.setdefault(k, DEFAULT_STATE[k])
+    for k, v in DEFAULT_STATE.items():
+        raw_state.setdefault(k, v)
 
     kwargs: dict[str, Any] = {}
     for k, v in raw_state.items():
