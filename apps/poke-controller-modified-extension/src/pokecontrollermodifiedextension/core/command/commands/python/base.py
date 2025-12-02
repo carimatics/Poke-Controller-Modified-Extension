@@ -9,6 +9,7 @@ from pokecontrollermodifiedextension.core.notification import (
     Discord_Notify,
     Line_Notify,
 )
+from pokecontrollermodifiedextension.settings import GuiSettings
 
 from ... import Sender
 from ...keys import ButtonLike, KeyPress
@@ -323,13 +324,10 @@ class PythonCommand(Command, ABC):
             # self.keyPress = None (ここでNoneはNGなはず)
             self.reload_com_port()
         else:
-            # FIXME: 後回し
-            # port = GuiSettings().com_port.get()
-            # port_name = GuiSettings().com_port_name.get()
-            # baud_rate = GuiSettings().baud_rate.get()
-            port = 0
-            port_name = "FIXME"
-            baud_rate = 9600
+            settings = GuiSettings()
+            port = settings.com_port.get()
+            port_name = settings.com_port_name.get()
+            baud_rate = settings.baud_rate.get()
             if (keys := self.keys) and keys.ser.openSerial(
                 port,
                 port_name,

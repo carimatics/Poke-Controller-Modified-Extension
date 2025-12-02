@@ -22,5 +22,5 @@ class McuCommand(Command, ABC):
     def end(self, ser: Sender) -> None:
         ser.writeRow("end")
         self.isRunning = False
-        if (p := self.postProcess) is not None:
-            p()
+        if (pp := self.postProcess) is not None:
+            pp()
