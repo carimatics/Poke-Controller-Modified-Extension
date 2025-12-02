@@ -3,12 +3,6 @@ include = [
     "apps/**/*.py"
 ]
 
-# FIXME: PRを出すまでに直す
-# ============================ 1つずつ対応するためにglobを使わずに個別ファイル指定している ===========================
-exclude = [
-    "apps/poke-controller-modified-extension/src/pokecontrollermodifiedextension/core/command/commands/python/decorators.py",
-]
-
 [lint]
 extend-select = ["I"]
 
