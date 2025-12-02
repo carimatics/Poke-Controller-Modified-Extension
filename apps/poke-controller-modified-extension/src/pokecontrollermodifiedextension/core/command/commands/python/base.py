@@ -15,6 +15,13 @@ from ...keys import ButtonLike, KeyPress
 from ..base import Command
 from .decorators import pausable
 
+try:
+    from plyer import notification
+
+    flag_import_plyer = True
+except ImportError:
+    flag_import_plyer = False
+
 logger = logging.getLogger(__name__)
 
 
@@ -26,7 +33,6 @@ class PythonCommand(Command, ABC):
     def __init__(self) -> None:
         super().__init__()
 
-        # FIXME: typing
         self.keys: KeyPress | None = None
         self.thread: threading.Thread | None = None
         self.alive = True
@@ -50,8 +56,64 @@ class PythonCommand(Command, ABC):
         """
         自動化スクリプト実行準備→実行→終了処理を順番に行います。
         """
-        # FIXME: 後回し
-        pass
+        if self.keys is None:
+            self.keys = keys = KeyPress(ser)
+            keys.init_hat()
+
+        global flag_import_plyer
+        try:
+            if self.alive:
+                if self.isWinNotStart:
+                    if flag_import_plyer:
+                        notification.notify(
+                            title=f"{self.app_name} (profile:{self.profilename})",
+                            message=f"{self.cur_command_name} started.",
+                            timeout=5,
+                        )
+                    else:
+                        print('"plyer" is not installed.')
+                if self.isLineNotStart:
+                    self.LINE_text(
+                        f"{self.app_name} (profile:{self.profilename})\n{self.cur_command_name} started."
+                    )
+                if self.isDiscordNotStart:
+                    self.discord_text(
+                        f"{self.app_name} (profile:{self.profilename})\n{self.cur_command_name} started."
+                    )
+                self.do()
+                self.finish()
+        except StopThread:
+            print("-- finished successfully. --")
+            logger.info("Command finished successfully")
+            if self.isWinNotEnd:
+                if flag_import_plyer:
+                    notification.notify(
+                        title=f"{self.app_name} (profile:{self.profilename})",
+                        message=f"{self.cur_command_name} finished.",
+                        timeout=5,
+                    )
+                else:
+                    print('"plyer" is not installed.')
+            if self.isLineNotEnd:
+                self.LINE_text(
+                    f"{self.app_name} (profile:{self.profilename})\n{self.cur_command_name} finished."
+                )
+            if self.isDiscordNotEnd:
+                self.discord_text(
+                    f"{self.app_name} (profile:{self.profilename})\n{self.cur_command_name} finished."
+                )
+        except Exception as e:
+            if self.keys is None:
+                self.keys = keys = KeyPress(ser)  # type: ignore[unreachable]
+                keys.init_hat()
+            logger.warning("Interrupt:cmd(黒い画面)を確認してください。")
+            logger.warning(e)
+            logger.warning("Command stopped unexpectedly")
+            import traceback
+
+            traceback.print_exc()
+            self.keys.end()
+            self.alive = False
 
     def start(
         self,
@@ -255,8 +317,27 @@ class PythonCommand(Command, ABC):
 
     # temporary function
     def reload_com_port(self) -> None:
-        # FIXME: 後回し
-        pass
+        if (keys := self.keys) and keys.ser.isOpened():
+            logger.info("Port is already opened and being closed.")
+            keys.ser.closeSerial()
+            # self.keyPress = None (ここでNoneはNGなはず)
+            self.reload_com_port()
+        else:
+            # FIXME: 後回し
+            # port = GuiSettings().com_port.get()
+            # port_name = GuiSettings().com_port_name.get()
+            # baud_rate = GuiSettings().baud_rate.get()
+            port = 0
+            port_name = "FIXME"
+            baud_rate = 9600
+            if (keys := self.keys) and keys.ser.openSerial(
+                port,
+                port_name,
+                baud_rate,
+            ):
+                print(f"COM Port {port} connected successfully")
+                logger.debug(f"COM Port {port} connected successfully")
+                # self.keyPress = None (ここでNoneはNGなはず)
 
     def LINE_text(self, txt: str, token: str = "token") -> None:
         # 送信
