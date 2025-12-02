@@ -1,12 +1,24 @@
+import datetime
+import logging
 import os
 import random
 import string
+import time
+from typing import Any, Callable
 
+from pokecontroller.core.image import RawImage
+
+from pokecontrollermodifiedextension.core.camera import Camera
+
+from .....core.image_processing import ImageProcessing, crop_image, getImage, openImage
+from ... import Sender
 from .base import PythonCommand
 from .decorators import pausable
 
+logger = logging.getLogger(__name__)
 
-def generateRandomCharacter(n: int):
+
+def generateRandomCharacter(n: int) -> str:
     """
     指定数のランダムな文字列を生成する
     Contributor: kochan (敬称略)
@@ -15,7 +27,9 @@ def generateRandomCharacter(n: int):
     return "".join([random.choice(c) for _ in range(n)])
 
 
-def convertCv2Format(crop_fmt: int | str = "", crop: list[int] = None) -> tuple[list[int], list[int]]:
+def convertCv2Format(
+    crop_fmt: int | str = "", crop: list[int] | None = None
+) -> tuple[list[int], list[int]]:
     """
     リストをopencv/pillow形式に対応するよう変換する。
     ・Pillow形式
@@ -68,26 +82,20 @@ class ImageProcPythonCommand(PythonCommand):
 
     def __init__(
         self,
-        cam,  # FIXME: typing
-        gui=None,  # FIXME: typing
-    ):
+        cam: Camera,
+        gui: Any | None = None,  # FIXME: ちゃんとした型をつける
+    ) -> None:
         super().__init__()
 
-        # FIXME: logging
-        # self._logger = getLogger(__name__)
-        # self._logger.addHandler(NullHandler())
-        # self._logger.setLevel(DEBUG)
-        # self._logger.propagate = True
-
         self.camera = cam
-        self.gui = gui
+        self.gui: Any | None = gui  # FIXME: ちゃんとした型をつける
 
     def start(
         self,
-        ser,  # FIXME: typing
-        postProcess=None,
+        ser: Sender,
+        postProcess: Callable[[], None] | None = None,
     ) -> None:
-        ImageProcPythonCommand.template_path_name = './Template'
+        ImageProcPythonCommand.template_path_name = "./Template"
         super().start(ser, postProcess)
 
     def get_filespec(self, filename: str, mode: str = "t") -> str:
@@ -118,8 +126,8 @@ class ImageProcPythonCommand(PythonCommand):
     def getCameraImage(
         self,
         crop_fmt: int | str = "",
-        crop: list[int] = None,
-    ):  # FIXME: typing
+        crop: list[int] | None = None,
+    ) -> RawImage | None:
         """
         カメラから画像データを取得する
         """
@@ -129,34 +137,28 @@ class ImageProcPythonCommand(PythonCommand):
         # crop_fmtに応じてcropの中身を並び替える
         crop_cv2, _ = convertCv2Format(crop_fmt=crop_fmt, crop=crop)
 
-        # FIXME: 後回し
         # カメラの画像を取得
-        # src = self.camera.readFrame()
+        if (src := self.camera.readFrame()) is None:
+            logger.warning("getCameraImage: camera is not initialized.")
+            return None
 
-        # FIXME: 後回し
         # トリミング
-        # cropped_image = crop_image(src, crop=crop_cv2)
-        #
-        # return cropped_image
-        return None
+        return crop_image(src, crop=crop_cv2)
 
     def openImage(
         self,
         filename: str,
         mode: str = "t",
-    ):  # FIXME: typing
+    ) -> RawImage | None:
         """
         指定されたパスの画像データを取得する
         """
-        # FIXME: 後回し
-        # image = getImage(self.get_filespec(filename, mode=mode), mode="color")
-        # return image
-        pass
+        return getImage(self.get_filespec(filename, mode=mode), mode="color")
 
     @pausable
     def isContainTemplate(
         self,
-        template_path: str,
+        template_path: str | RawImage,
         threshold: float = 0.7,
         use_gray: bool = True,
         show_value: bool = False,
@@ -165,7 +167,7 @@ class ImageProcPythonCommand(PythonCommand):
         ms: float = 2000,
         crop_fmt: int | str = "",
         crop: list[int] | None = None,
-        mask_path: str = None,
+        mask_path: str | RawImage | None = None,
         use_gpu: bool = False,
         BGR_range: dict | None = None,
         threshold_binary: int | None = None,
@@ -184,68 +186,92 @@ class ImageProcPythonCommand(PythonCommand):
         if color is None:
             color = ["blue", "red", "orange"]
 
-        # FIXME: 後回し
-        # # crop_fmtに応じてcropの中身を並び替える
-        # crop_cv2, crop_pillow = convertCv2Format(crop_fmt=crop_fmt, crop=crop)
-        # crop_template_cv2, _ = convertCv2Format(crop_fmt=crop_fmt, crop=crop_template)
+        # crop_fmtに応じてcropの中身を並び替える
+        crop_cv2, crop_pillow = convertCv2Format(crop_fmt=crop_fmt, crop=crop)
+        crop_template_cv2, _ = convertCv2Format(crop_fmt=crop_fmt, crop=crop_template)
 
-        # # カメラの画像を取得
-        # src = self.camera.readFrame()
+        # カメラの画像を取得
+        if (src := self.camera.readFrame()) is None:
+            logger.warning("isContainTemplate: camera is not initialized.")
+            return False
 
-        # # テンプレート画像を取得
-        # if isinstance(template_path, ImageProcessing.image_type):
-        #     template_image = template_path
-        # else:
-        #     template_image = getImage(self.get_filespec(template_path, mode="t"), mode="color")
+        # テンプレート画像を取得
+        if not isinstance(template_path, str):
+            template_image = template_path
+        else:
+            if (
+                t := getImage(self.get_filespec(template_path, mode="t"), mode="color")
+            ) is None:
+                logger.warning(f"isContainTemplate: {template_path} is not found.")
+                return False
+            template_image = t
 
-        # # マスク画像を取得
-        # if isinstance(mask_path, ImageProcessing.image_type):
-        #     mask_image = mask_path
-        # else:
-        #     mask_image = (
-        #         getImage(self.get_filespec(mask_path, mode="t"), mode="binary") if mask_path is not None else None
-        #     )
+        # マスク画像を取得
+        if not isinstance(mask_path, str):
+            mask_image = mask_path
+        else:
+            mask_image = (
+                getImage(self.get_filespec(mask_path, mode="t"), mode="binary")
+                if mask_path is not None
+                else None
+            )
 
-        # # テンプレートマッチング
-        # res, max_loc, width, height, max_val = ImageProcessing(use_gpu=use_gpu).isContainTemplate(
-        #     src,
-        #     template_image,
-        #     mask_image=mask_image,
-        #     threshold=threshold,
-        #     use_gray=use_gray,
-        #     crop=crop_cv2,
-        #     BGR_range=BGR_range,
-        #     threshold_binary=threshold_binary,
-        #     crop_template=crop_template_cv2,
-        #     show_image=show_image,
-        # )
+        # テンプレートマッチング
+        res, max_loc, width, height, max_val = ImageProcessing(
+            use_gpu=use_gpu
+        ).isContainTemplate(
+            src,
+            template_image,
+            mask_image=mask_image,
+            threshold=threshold,
+            use_gray=use_gray,
+            crop=crop_cv2,
+            BGR_range=BGR_range,
+            threshold_binary=threshold_binary,
+            crop_template=crop_template_cv2,
+            show_image=show_image,
+        )
 
-        # # テンプレートマッチングの結果(類似度)を表示する
-        # if show_value or self.isSimilarity:
-        #     tm_mode = "NCC" if mask_path is not None else "ZNCC"
-        #     print(f"{template_path} {tm_mode} value: {max_val}")
+        # テンプレートマッチングの結果(類似度)を表示する
+        if show_value or self.isSimilarity:
+            tm_mode = "NCC" if mask_path is not None else "ZNCC"
+            print(f"{template_path} {tm_mode} value: {max_val}")
 
-        # # canvasに検出位置を表示
-        # if show_position:
-        #     if crop_pillow != []:
-        #         max_loc = list(max_loc)
-        #         max_loc[0] += crop_pillow[0]
-        #         max_loc[1] += crop_pillow[1]
-        #     tag = str(time.perf_counter()) + str(random.random())
-        #     if res:
-        #         self.displayRectangle(max_loc, width, height, tag, ms, color=[color[0], color[2]], crop=crop_pillow)
-        #     elif not show_only_true_rect:
-        #         self.displayRectangle(max_loc, width, height, tag, ms, color=[color[1], color[2]], crop=crop_pillow)
-        #     else:
-        #         pass
+        # canvasに検出位置を表示
+        if show_position:
+            ml = (
+                (max_loc[0] + crop_pillow[0], max_loc[1] + crop_pillow[1])
+                if crop_pillow
+                else max_loc
+            )
+            tag = str(time.perf_counter()) + str(random.random())
+            if res:
+                self.displayRectangle(
+                    ml,
+                    width,
+                    height,
+                    tag,
+                    ms,
+                    color=[color[0], color[2]],
+                    crop=crop_pillow,
+                )
+            elif not show_only_true_rect:
+                self.displayRectangle(
+                    ml,
+                    width,
+                    height,
+                    tag,
+                    ms,
+                    color=[color[1], color[2]],
+                    crop=crop_pillow,
+                )
 
-        # return res
-        pass
+        return res
 
     @pausable
     def isContainTemplate_max(
         self,
-        template_path_list: list[str],
+        template_path_list: list[str | RawImage],
         threshold: float = 0.7,
         use_gray: bool = True,
         show_value: bool = False,
@@ -254,7 +280,7 @@ class ImageProcPythonCommand(PythonCommand):
         ms: float = 2000,
         crop_fmt: int | str = "",
         crop: list[int] | None = None,
-        mask_path_list: list[str] | None = None,
+        mask_path_list: list[str | RawImage] | None = None,
         BGR_range: dict | None = None,
         threshold_binary: int | None = None,
         crop_template: list[int] | None = None,
@@ -275,85 +301,95 @@ class ImageProcPythonCommand(PythonCommand):
         if color is None:
             color = ["blue", "red", "orange"]
 
-        # FIXME: 後回し
-        # # crop_fmtに応じてcropの中身を並び替える
-        # crop_cv2, crop_pillow = convertCv2Format(crop_fmt=crop_fmt, crop=crop)
-        # crop_template_cv2, _ = convertCv2Format(crop_fmt=crop_fmt, crop=crop_template)
+        # crop_fmtに応じてcropの中身を並び替える
+        crop_cv2, crop_pillow = convertCv2Format(crop_fmt=crop_fmt, crop=crop)
+        crop_template_cv2, _ = convertCv2Format(crop_fmt=crop_fmt, crop=crop_template)
 
-        # # カメラの画像を取得
-        # src = self.camera.readFrame()
+        # カメラの画像を取得
+        if (src := self.camera.readFrame()) is None:
+            logger.warning("isContainTemplate_max: camera is not initialized.")
+            return -1, [], []
 
-        # # テンプレート画像を取得
-        # template_image_list = []
-        # for i in template_path_list:
-        #     if isinstance(i, ImageProcessing.image_type):
-        #         template_image_list.append(i)
-        #     else:
-        #         template_image_list.append(getImage(self.get_filespec(i, mode="t"), mode="color"))
+        # テンプレート画像を取得
+        template_image_list = []
+        for i in template_path_list:
+            if not isinstance(i, str):
+                template_image_list.append(i)
+            else:
+                if (
+                    t := getImage(self.get_filespec(i, mode="t"), mode="color")
+                ) is not None:
+                    template_image_list.append(t)
 
-        # # マスク画像を取得
-        # mask_image_list = []
-        # if mask_path_list is not None:
-        #     for i in mask_path_list:
-        #         if isinstance(i, ImageProcessing.image_type):
-        #             mask_image_list.append(i)
-        #         else:
-        #             mask_image_list.append(getImage(self.get_filespec(i, mode="t"), mode="binary"))
+        # マスク画像を取得
+        mask_image_list: list[RawImage] = []
+        if mask_path_list is not None:
+            for i in mask_path_list:
+                if not isinstance(i, str):
+                    mask_image_list.append(i)
+                else:
+                    if (
+                        m := getImage(self.get_filespec(i, mode="t"), mode="binary")
+                    ) is not None:
+                        mask_image_list.append(m)
 
-        # # テンプレートマッチング
-        # max_idx, max_val_list, max_loc_list, width_list, height_list, judge_list = ImageProcessing(
-        #     use_gpu=False
-        # ).isContainTemplate_max(
-        #     src,
-        #     template_image_list,
-        #     mask_image_list=mask_image_list,
-        #     threshold=threshold,
-        #     use_gray=use_gray,
-        #     crop=crop_cv2,
-        #     BGR_range=BGR_range,
-        #     threshold_binary=threshold_binary,
-        #     crop_template=crop_template_cv2,
-        #     show_image=show_image,
-        # )
+        # テンプレートマッチング
+        max_idx, max_val_list, max_loc_list, width_list, height_list, judge_list = (
+            ImageProcessing(use_gpu=False).isContainTemplate_max(
+                src,
+                template_image_list,
+                mask_image_list=mask_image_list,
+                threshold=threshold,
+                use_gray=use_gray,
+                crop=crop_cv2,
+                BGR_range=BGR_range,
+                threshold_binary=threshold_binary,
+                crop_template=crop_template_cv2,
+                show_image=show_image,
+            )
+        )
 
-        # # テンプレートマッチングの結果(類似度)を表示する
-        # if show_value or self.isSimilarity:
-        #     tm_mode = "ZNCC" if (mask_path_list == [] or mask_path_list is None) else "NCC"
-        #     for template_path, max_val in zip(template_path_list, max_val_list):
-        #         print(f"{template_path} {tm_mode} value: {max_val}")
+        # テンプレートマッチングの結果(類似度)を表示する
+        if show_value or self.isSimilarity:
+            tm_mode = (
+                "ZNCC" if (mask_path_list == [] or mask_path_list is None) else "NCC"
+            )
+            for template_path, max_val in zip(template_path_list, max_val_list):
+                print(f"{template_path} {tm_mode} value: {max_val}")
 
-        # # canvasに検出位置を表示
-        # if show_position:
-        #     if crop_pillow != []:
-        #         max_loc_list[max_idx] = list(max_loc_list[max_idx])
-        #         max_loc_list[max_idx][0] += crop_pillow[0]
-        #         max_loc_list[max_idx][1] += crop_pillow[1]
-        #     tag = str(time.perf_counter()) + str(random.random())
-        #     if True in judge_list:
-        #         self.displayRectangle(
-        #             max_loc_list[max_idx],
-        #             width_list[max_idx],
-        #             height_list[max_idx],
-        #             tag,
-        #             ms,
-        #             color=[color[0], color[2]],
-        #             crop=crop_pillow,
-        #         )
-        #     elif not show_only_true_rect:
-        #         self.displayRectangle(
-        #             max_loc_list[max_idx],
-        #             width_list[max_idx],
-        #             height_list[max_idx],
-        #             tag,
-        #             ms,
-        #             color=[color[1], color[2]],
-        #             crop=crop_pillow,
-        #         )
-        #     else:
-        #         pass
+        # canvasに検出位置を表示
+        if show_position:
+            max_loc = max_loc_list[max_idx]
+            ml = (
+                (max_loc[0] + crop_pillow[0], max_loc[1] + crop_pillow[1])
+                if crop_pillow
+                else max_loc
+            )
+            tag = str(time.perf_counter()) + str(random.random())
+            if True in judge_list:
+                self.displayRectangle(
+                    ml,
+                    width_list[max_idx],
+                    height_list[max_idx],
+                    tag,
+                    ms,
+                    color=[color[0], color[2]],
+                    crop=crop_pillow,
+                )
+            elif not show_only_true_rect:
+                self.displayRectangle(
+                    ml,
+                    width_list[max_idx],
+                    height_list[max_idx],
+                    tag,
+                    ms,
+                    color=[color[1], color[2]],
+                    crop=crop_pillow,
+                )
+            else:
+                pass
 
-        # return max_idx, max_val_list, judge_list
-        pass
+        return max_idx, max_val_list, judge_list
 
     @pausable
     def isContainTemplateGPU(
@@ -367,7 +403,7 @@ class ImageProcPythonCommand(PythonCommand):
         ms: float = 2000,
         crop_fmt: int | str = "",
         crop: list[int] | None = None,
-        mask_path: str = None,
+        mask_path: str | RawImage | None = None,
         BGR_range: dict | None = None,
         threshold_binary: int | None = None,
         crop_template: list[int] | None = None,
@@ -411,7 +447,7 @@ class ImageProcPythonCommand(PythonCommand):
     @pausable
     def isContainedImage(
         self,
-        image_path: str,
+        image_path: str | RawImage,
         threshold: float = 0.7,
         use_gray: bool = True,
         show_value: bool = False,
@@ -420,7 +456,7 @@ class ImageProcPythonCommand(PythonCommand):
         ms: float = 2000,
         crop_fmt: int | str = "",
         crop: list[int] | None = None,
-        mask_path: str = None,
+        mask_path: str | RawImage | None = None,
         use_gpu: bool = False,
         BGR_range: dict | None = None,
         threshold_binary: int | None = None,
@@ -440,70 +476,92 @@ class ImageProcPythonCommand(PythonCommand):
         if color is None:
             color = ["blue", "red", "orange"]
 
-        # FIXME: 後回し
-        # # crop_fmtに応じてcropの中身を並び替える
-        # crop_cv2, crop_pillow = convertCv2Format(crop_fmt=crop_fmt, crop=crop)
-        # crop_template_cv2, crop_template_pillow = convertCv2Format(crop_fmt=crop_fmt, crop=crop_template)
+        # crop_fmtに応じてcropの中身を並び替える
+        crop_cv2, crop_pillow = convertCv2Format(crop_fmt=crop_fmt, crop=crop)
+        crop_template_cv2, crop_template_pillow = convertCv2Format(
+            crop_fmt=crop_fmt, crop=crop_template
+        )
 
-        # # カメラの画像を取得
-        # template_image = self.camera.readFrame()
+        # カメラの画像を取得
+        if (template_image := self.camera.readFrame()) is None:
+            return False
 
-        # # テンプレートマッチング対象画像を取得
-        # if isinstance(image_path, ImageProcessing.image_type):
-        #     image = image_path
-        # else:
-        #     image = getImage(self.get_filespec(image_path, mode="t"), mode="color")
+        # テンプレートマッチング対象画像を取得
+        if not isinstance(image_path, str):
+            image = image_path
+        elif (
+            i := getImage(self.get_filespec(image_path, mode="t"), mode="color")
+        ) is not None:
+            image = i
+        else:
+            logger.warning(f"{image_path} is not found.")
+            return False
 
-        # # マスク画像を取得
-        # if isinstance(mask_path, ImageProcessing.image_type):
-        #     mask_image = mask_path
-        # else:
-        #     mask_image = (
-        #         getImage(self.get_filespec(mask_path, mode="t"), mode="binary") if mask_path is not None else None
-        #     )
+        # マスク画像を取得
+        if not isinstance(mask_path, str):
+            mask_image = mask_path
+        else:
+            mask_image = (
+                getImage(self.get_filespec(mask_path, mode="t"), mode="binary")
+                if mask_path is not None
+                else None
+            )
 
-        # # テンプレートマッチング
-        # res, _, width, height, max_val = ImageProcessing(use_gpu=use_gpu).isContainTemplate(
-        #     image,
-        #     template_image,
-        #     mask_image=mask_image,
-        #     threshold=threshold,
-        #     use_gray=use_gray,
-        #     crop=crop_cv2,
-        #     BGR_range=BGR_range,
-        #     threshold_binary=threshold_binary,
-        #     crop_template=crop_template_cv2,
-        #     show_image=show_image,
-        # )
+        # テンプレートマッチング
+        res, _, width, height, max_val = ImageProcessing(
+            use_gpu=use_gpu
+        ).isContainTemplate(
+            image,
+            template_image,
+            mask_image=mask_image,
+            threshold=threshold,
+            use_gray=use_gray,
+            crop=crop_cv2,
+            BGR_range=BGR_range,
+            threshold_binary=threshold_binary,
+            crop_template=crop_template_cv2,
+            show_image=show_image,
+        )
 
-        # # テンプレートマッチングの結果(類似度)を表示する
-        # if show_value or self.isSimilarity:
-        #     tm_mode = "NCC" if mask_path is not None else "ZNCC"
-        #     print(f"capture_image {tm_mode} value: {max_val}")
+        # テンプレートマッチングの結果(類似度)を表示する
+        if show_value or self.isSimilarity:
+            tm_mode = "NCC" if mask_path is not None else "ZNCC"
+            print(f"capture_image {tm_mode} value: {max_val}")
 
-        # # canvasに検出位置を表示
-        # if show_position:
-        #     tag = str(time.perf_counter()) + str(random.random())
-        #     if res:
-        #         self.displayRectangle(
-        #             crop_template_pillow[0:2], width, height, tag, ms, color=[color[0], color[2]], crop=[]
-        #         )
-        #     elif not show_only_true_rect:
-        #         self.displayRectangle(
-        #             crop_template_pillow[0:2], width, height, tag, ms, color=[color[1], color[2]], crop=[]
-        #         )
-        #     else:
-        #         pass
+        # canvasに検出位置を表示
+        if show_position:
+            tag = str(time.perf_counter()) + str(random.random())
+            if res:
+                self.displayRectangle(
+                    tuple(crop_template_pillow[0:2]),
+                    width,
+                    height,
+                    tag,
+                    ms,
+                    color=[color[0], color[2]],
+                    crop=[],
+                )
+            elif not show_only_true_rect:
+                self.displayRectangle(
+                    tuple(crop_template_pillow[0:2]),
+                    width,
+                    height,
+                    tag,
+                    ms,
+                    color=[color[1], color[2]],
+                    crop=[],
+                )
+            else:
+                pass
 
-        # return res
-        pass
+        return res
 
     def displayRectangle(
         self,
         max_loc: tuple,
         width: int,
         height: int,
-        tag: str = None,
+        tag: str | None = None,
         ms: float = 2000,
         color: list[str] | None = None,
         crop_fmt: int | str = "",
@@ -518,58 +576,67 @@ class ImageProcPythonCommand(PythonCommand):
         if crop is None:
             crop = []
 
-        # FIXME: 後回し
-        # # crop_fmtに応じてcropの中身を並び替える
-        # _, crop_pillow = convertCv2Format(crop_fmt=crop_fmt, crop=crop)
+        # crop_fmtに応じてcropの中身を並び替える
+        _, crop_pillow = convertCv2Format(crop_fmt=crop_fmt, crop=crop)
 
-        # top_left = max_loc
-        # bottom_right = (top_left[0] + width + 1, top_left[1] + height + 1)
-        # if self.gui is not None:
-        #     canvas = self.gui
-        # else:
-        #     canvas = self.canvas
+        top_left = max_loc
+        bottom_right = (top_left[0] + width + 1, top_left[1] + height + 1)
+        if self.gui is not None:
+            canvas = self.gui
+        else:
+            canvas = self.canvas
 
-        # if tag is None:
-        #     tag = generateRandomCharacter(10)
+        if tag is None:
+            tag = generateRandomCharacter(10)
 
-        # if self.gui is not None or self.isGuide:
-        #     if crop_pillow != []:
-        #         canvas.ImgRect(*crop_pillow[0:2], *crop_pillow[2:4], outline=color[1], tag=tag, ms=int(ms), flag=False)
-        #     canvas.ImgRect(*top_left, *bottom_right, outline=color[0], tag=tag, ms=int(ms))
-        # else:
-        #     pass
-        pass
+        if self.gui is not None or self.isGuide:
+            if crop_pillow != []:
+                canvas.ImgRect(
+                    *crop_pillow[0:2],
+                    *crop_pillow[2:4],
+                    outline=color[1],
+                    tag=tag,
+                    ms=int(ms),
+                    flag=False,
+                )
+            canvas.ImgRect(
+                *top_left, *bottom_right, outline=color[0], tag=tag, ms=int(ms)
+            )
 
     def displayText(
         self,
         position: tuple,
         txt: str,
-        tag: str = None,
+        tag: str | None = None,
         ms: int = 2000,
         font: str = "UD デジタル 教科書体 NP-B",
         fontsize: int = 20,
         color: str = "black",
     ) -> None:
-        # FIXME: 後回し
-        # if self.gui is not None:
-        #     canvas = self.gui
-        # else:
-        #     canvas = self.canvas
+        if self.gui is not None:
+            canvas = self.gui
+        else:
+            canvas = self.canvas
 
-        # ft = (font, fontsize)
+        ft = (font, fontsize)
 
-        # if tag is None:
-        #     tag = generateRandomCharacter(10)
+        if tag is None:
+            tag = generateRandomCharacter(10)
 
-        # if self.gui is not None or self.isGuide:
-        #     canvas.ImgText(position[0], position[1], txt=txt, tag=tag, ms=int(ms), ft=ft, color=color)
-        # else:
-        #     pass
-        pass
+        if self.gui is not None or self.isGuide:
+            canvas.ImgText(
+                position[0],
+                position[1],
+                txt=txt,
+                tag=tag,
+                ms=int(ms),
+                ft=ft,
+                color=color,
+            )
 
     def saveCapture(
         self,
-        filename: str = None,
+        filename: str | None = None,
         crop_fmt: int | str = "",
         crop: list[int] | None = None,
         mode: bool = True,
@@ -581,33 +648,33 @@ class ImageProcPythonCommand(PythonCommand):
         if crop is None:
             crop = []
 
-        # FIXME: 後回し
-        # # crop_fmtに応じてcropの中身を並び替える
-        # crop_cv2, _ = convertCv2Format(crop_fmt=crop_fmt, crop=crop)
+        # crop_fmtに応じてcropの中身を並び替える
+        crop_cv2, _ = convertCv2Format(crop_fmt=crop_fmt, crop=crop)
 
-        # # カメラの画像を取得
-        # src = self.camera.readFrame()
+        # カメラの画像を取得
+        if (src := self.camera.readFrame()) is None:
+            logger.warning("saveCapture: camera is not initialized.")
+            return
 
-        # # ファイル名を設定する
-        # if filename is None or filename == "":
-        #     dt_now = datetime.datetime.now()
-        #     filename = dt_now.strftime("%Y-%m-%d_%H-%M-%S") + ".png"
-        # else:
-        #     filename = filename + ".png"
-        # if mode:
-        #     save_path = self.get_filespec(filename, mode="c")
-        # else:
-        #     save_path = self.get_filespec(filename, mode="n")
+        # ファイル名を設定する
+        if filename is None or filename == "":
+            dt_now = datetime.datetime.now()
+            filename = dt_now.strftime("%Y-%m-%d_%H-%M-%S") + ".png"
+        else:
+            filename = filename + ".png"
+        if mode:
+            save_path = self.get_filespec(filename, mode="c")
+        else:
+            save_path = self.get_filespec(filename, mode="n")
 
-        # # 画像を保存する
-        # ImageProcessing().saveImage(src, filename=save_path, crop=crop_cv2)
-        pass
+        # 画像を保存する
+        ImageProcessing().saveImage(src, filename=save_path, crop=crop_cv2)
 
     def popupImage(
         self,
         crop_fmt: int | str = "",
         crop: list[int] | None = None,
-        title: str = "image"
+        title: str = "image",
     ) -> None:
         """
         popupで画像を表示する
@@ -615,14 +682,15 @@ class ImageProcPythonCommand(PythonCommand):
         if crop is None:
             crop = []
 
-        # FIXME: 後回し
-        # # crop_fmtに応じてcropの中身を並び替える
-        # crop_cv2, _ = convertCv2Format(crop_fmt=crop_fmt, crop=crop)
+        # crop_fmtに応じてcropの中身を並び替える
+        crop_cv2, _ = convertCv2Format(crop_fmt=crop_fmt, crop=crop)
 
-        # # カメラの画像を取得
-        # src = self.camera.readFrame()
+        # カメラの画像を取得
+        if (src := self.camera.readFrame()) is None:
+            logger.warning("popupImage: camera is not initialized.")
+            return
 
-        # opneImage(src, crop=crop_cv2, title=title)
+        openImage(src, crop=crop_cv2, title=title)
 
     def LINE_image(
         self,
@@ -637,22 +705,25 @@ class ImageProcPythonCommand(PythonCommand):
         if crop is None:
             crop = []
 
-        # FIXME: 後回し
-        # # crop_fmtに応じてcropの中身を並び替える
-        # crop_cv2, _ = convertCv2Format(crop_fmt=crop_fmt, crop=crop)
+        # crop_fmtに応じてcropの中身を並び替える
+        crop_cv2, _ = convertCv2Format(crop_fmt=crop_fmt, crop=crop)
 
-        # # カメラの画像を取得
-        # src = self.camera.readFrame()
+        # カメラの画像を取得
+        if (src := self.camera.readFrame()) is None:
+            logger.warning("LINE_image: camera is not initialized.")
+            return
 
-        # # トリミング
-        # cropped_image = crop_image(src, crop=crop_cv2)
+        # トリミング
+        cropped_image = crop_image(src, crop=crop_cv2)
 
-        # # 送信
-        # try:
-        #     self.Line.send_message(txt, cropped_image, token)
-        # except Exception:
-        #     pass
-        pass
+        # 送信
+        try:
+            if (line := self.Line) is not None:
+                line.send_message(txt, cropped_image, token)
+            else:
+                logger.warning("LINE_image: LINE is not initialized.")
+        except Exception:
+            pass
 
     def discord_image(
         self,
@@ -668,30 +739,28 @@ class ImageProcPythonCommand(PythonCommand):
         if crop is None:
             crop = []
 
-        # FIXME: 後回し
-        # # crop_fmtに応じてcropの中身を並び替える
-        # crop_cv2, _ = convertCv2Format(crop_fmt=crop_fmt, crop=crop)
+        # crop_fmtに応じてcropの中身を並び替える
+        crop_cv2, _ = convertCv2Format(crop_fmt=crop_fmt, crop=crop)
 
-        # # カメラの画像を取得
-        # src = self.camera.readFrame()
+        if (src := self.camera.readFrame()) is None:
+            logger.error("Camera image is None. Cannot send Discord notification.")
+            return
 
-        # # トリミング
-        # cropped_image = crop_image(src, crop=crop_cv2)
+        # トリミング
+        cropped_image = crop_image(src, crop=crop_cv2)
 
-        # # webhook_urlのindex指定とkey設定
-        # if index != 0 and keys == "DISCORD_WEBHOOK":
-        #     keys = f"DISCORD_WEBHOOK{index}"
-        # elif index == 0 and keys != "DISCORD_WEBHOOK":
-        #     pass
-        # elif index != 0 and keys != "DISCORD_WEBHOOK":
-        #     keys = f"DISCORD_WEBHOOK{index}"
-        # else:
-        #     pass
+        # webhook_urlのindex指定とkey設定
+        if index != 0 and keys == "DISCORD_WEBHOOK":
+            keys = f"DISCORD_WEBHOOK{index}"
+        elif index == 0 and keys != "DISCORD_WEBHOOK":
+            pass
+        elif index != 0 and keys != "DISCORD_WEBHOOK":
+            keys = f"DISCORD_WEBHOOK{index}"
 
-        # # 送信
-        # try:
-        #     self.Discord.send_message(notification_message=content, image=cropped_image, keys=keys)
-        # except Exception:
-        #     pass
-
-        pass
+        # 送信
+        try:
+            self.Discord.send_message(
+                notification_message=content, image=cropped_image, keys=keys
+            )
+        except Exception:
+            pass

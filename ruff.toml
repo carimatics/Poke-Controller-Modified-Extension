@@ -7,7 +7,6 @@ include = [
 # ============================ 1つずつ対応するためにglobを使わずに個別ファイル指定している ===========================
 exclude = [
     "apps/poke-controller-modified-extension/src/pokecontrollermodifiedextension/core/command/commands/python/decorators.py",
-    "apps/poke-controller-modified-extension/src/pokecontrollermodifiedextension/core/command/commands/python/image_processing.py",
 ]
 
 [lint]

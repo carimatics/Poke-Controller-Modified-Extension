@@ -172,7 +172,7 @@ class ImageProcessing:
         image: RawImage,
         template_image: RawImage,
         mask_image: RawImage | None = None,
-    ) -> tuple[float, tuple]:
+    ) -> tuple[float, tuple[int, int]]:
         """
         テンプレートマッチングをする
         画像は必要に応じて事前にグレースケール化やトリミングをしておく必要がある
@@ -184,7 +184,7 @@ class ImageProcessing:
             .match()
         )
         if result is None:
-            return 0.0, (0.0, 0.0)
+            return 0.0, (0, 0)
         else:
             return result.value_max, result.location_max
 
@@ -200,7 +200,7 @@ class ImageProcessing:
         threshold_binary: int | None = None,
         crop_template: list[int] | None = None,
         show_image: bool = False,
-    ) -> tuple[bool, tuple, int, int, float]:
+    ) -> tuple[bool, tuple[int, int], int, int, float]:
         """
         テンプレートマッチングを行い類似度が閾値を超えているかを確認する
         """
@@ -244,7 +244,9 @@ class ImageProcessing:
         threshold_binary: int | None = None,
         crop_template: list[int] | None = None,
         show_image: bool = False,
-    ) -> tuple[int, list[float], list[tuple[int]], list[int], list[int], list[bool]]:
+    ) -> tuple[
+        int, list[float], list[tuple[int, int]], list[int], list[int], list[bool]
+    ]:
         """
         複数のテンプレート画像を用いてそれぞれテンプレートマッチングを行い類似度が最も大きい画像のindexを返す
         """
@@ -261,7 +263,7 @@ class ImageProcessing:
 
         # ループをまわしてテンプレート画像数分テンプレートマッチングを行う
         max_val_list: list[float] = []
-        max_loc_list: list[tuple[int]] = []
+        max_loc_list: list[tuple[int, int]] = []
         width_list: list[int] = []
         height_list: list[int] = []
         judge_threshold_list: list[bool] = []
