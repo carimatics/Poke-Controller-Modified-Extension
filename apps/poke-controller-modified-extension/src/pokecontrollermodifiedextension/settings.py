@@ -161,8 +161,8 @@ class GuiSettings:
 
         # Shortcut用の設定
         shortcut = self.setting["Shortcut"]
-        self.command_class_dict = {}
-        self.command_name_dict = {}
+        self.command_class_dict: dict[str, str] = {}
+        self.command_name_dict: dict[str, tk.StringVar] = {}
         for i in range(1, 11):
             key = str(i)
             self.command_class_dict[key] = shortcut[f"command_class_{key}"]
