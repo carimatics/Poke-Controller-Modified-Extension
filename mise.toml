@@ -1,50 +1,77 @@
 [tools]
 uv = "0.8.24"
 
+[settings]
+python.uv_venv_auto = true
+
+
+########## Tasks ##########
 [tasks.sync]
-run = "uv sync"
+run = [
+    # "git pull",
+    "mise sync python --uv",
+    "uv sync",
+]
 
 # FIXME: PRを出す前に消す
 [tasks.app_sandbox]
+description = "Launch Poke-Controller Modified Extension Sandbox"
+usage = '''
+arg "<profile>" help="Profile name to use" env="POKECON_PROFILE" default="default"
+flag "-d --dev" help="Launch in development mode" env="POKECON_DEV" default=#false
+'''
 depends = ["sync"]
 dir = "{{cwd}}/SerialControllerSandbox"
 run = '''
-if [ '{{flag(name='dev')}}' = 'true' ]; then
-    uv run python -X dev main.py
+echo "The application running with --dev=${usage_dev} --profile=${usage_profile}"
+if ${usage_dev}; then
+    uv run python -X dev -- main.py --profile ${usage_profile}
 else
-    uv run python main.py
+    uv run python -- main.py --profile ${usage_profile}
 fi
 '''
 
 [tasks.app_extension]
+description = "Launch Poke-Controller Modified Extension"
+usage = '''
+arg "<profile>" help="Profile name to use" env="POKECON_PROFILE" default="default"
+flag "-d --dev" help="Launch in development mode" env="POKECON_DEV" default=#false
+'''
 depends = ["sync"]
 dir = "{{cwd}}/SerialController"
 run = '''
-if [ '{{flag(name='dev')}}' = 'true' ]; then
-    uv run python -X dev Window.py
+echo "The application running with --dev=${usage_dev} --profile=${usage_profile}"
+if ${usage_dev}; then
+    uv run python -X dev -- Window.py --profile ${usage_profile}
 else
-    uv run python Window.py
+    uv run python -- Window.py --profile ${usage_profile}
 fi
 '''
 
 [tasks.lint]
-run = "uv run ruff check --fix"
+description = "Lint the codebase"
+run = "uv run ruff check"
 
 [tasks.lint_fix]
-run = "mise run lint --fix"
+description = "Lint the codebase and auto fix issues"
+run = "uv run ruff check --fix"
 
 [tasks.format]
+description = "Format the codebase"
 run = "uv run ruff format"
 
 [tasks.typecheck]
+description = "Typecheck the codebase"
 run = "uv run mypy"
 
 [tasks.check]
+description = "Run all checks in series"
 run = [
+    "mise run lint_fix",
     "mise run format",
-    "mise run lint",
     "mise run typecheck",
 ]
 
 [tasks.ci]
+description = "Run all checks in parallel for CI(no auto fix)"
 depends = ["lint", "format", "typecheck"]
