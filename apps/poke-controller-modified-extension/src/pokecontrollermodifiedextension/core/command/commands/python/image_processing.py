@@ -4,7 +4,7 @@ import os
 import random
 import string
 import time
-from typing import Any, Callable
+from typing import Any
 
 from pokecontroller.core.image import RawImage
 
@@ -12,6 +12,7 @@ from pokecontrollermodifiedextension.core.camera import Camera
 
 from .....core.image_processing import ImageProcessing, crop_image, getImage, openImage
 from ... import Sender
+from ..base import PostProcess
 from .base import PythonCommand
 from .decorators import pausable
 
@@ -93,7 +94,7 @@ class ImageProcPythonCommand(PythonCommand):
     def start(
         self,
         ser: Sender,
-        postProcess: Callable[[], None] | None = None,
+        postProcess: PostProcess | None = None,
     ) -> None:
         ImageProcPythonCommand.template_path_name = "./Template"
         super().start(ser, postProcess)

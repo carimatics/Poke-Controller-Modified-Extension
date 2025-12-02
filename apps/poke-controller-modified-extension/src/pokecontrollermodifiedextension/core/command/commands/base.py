@@ -17,6 +17,8 @@ from ....widgets.components.dialogue import (
 from ...external_tools import MQTTCommunications, SocketCommunications
 from .. import Sender
 
+PostProcess = Callable[[], None]
+
 logger = logging.getLogger(__name__)
 
 
@@ -51,7 +53,7 @@ class Command(ABC):
     def start(
         self,
         ser: Sender,
-        postProcess: Callable[[], None] | None = None,
+        postProcess: PostProcess | None = None,
     ) -> None:
         pass
 

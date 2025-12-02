@@ -3,7 +3,7 @@ import threading
 import time
 from abc import ABC, abstractmethod
 from time import sleep
-from typing import Callable, Never
+from typing import Never
 
 from pokecontrollermodifiedextension.core.notification import (
     Discord_Notify,
@@ -12,7 +12,7 @@ from pokecontrollermodifiedextension.core.notification import (
 
 from ... import Sender
 from ...keys import ButtonLike, KeyPress
-from ..base import Command
+from ..base import Command, PostProcess
 from .decorators import pausable
 
 try:
@@ -37,7 +37,7 @@ class PythonCommand(Command, ABC):
         self.thread: threading.Thread | None = None
         self.alive = True
         self.isPause = False
-        self.postProcess: Callable[[], None] | None = None
+        self.postProcess: PostProcess | None = None
         self.Line: Line_Notify | None = None
         try:
             self.Line = Line_Notify()
@@ -118,7 +118,7 @@ class PythonCommand(Command, ABC):
     def start(
         self,
         ser: Sender,
-        postProcess: Callable[[], None] | None = None,
+        postProcess: PostProcess | None = None,
     ) -> None:
         """
         自動化スクリプトをスレッドに割り当てて実行します。
