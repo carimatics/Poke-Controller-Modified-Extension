@@ -5,6 +5,10 @@ include = [
 
 [lint]
 extend-select = ["I"]
+# FIXME: PR出す前に有効にする
+# extend-select = ["ALL"]
+# FIXME: PR出す前に有効にする
+# pydocstyle.convention = "google"
 
 [lint.isort]
 case-sensitive = true
