@@ -10,10 +10,13 @@ def run_app() -> None:
 
     app = App()
 
+    # config menubar
     menu = AppMenu(app)
     app.config(menu=menu)
 
+    # create main window
     main_window = MainWindow(app)
     main_window.pack(expand=True, fill=l.BOTH)
 
+    # run app
     app.mainloop()
