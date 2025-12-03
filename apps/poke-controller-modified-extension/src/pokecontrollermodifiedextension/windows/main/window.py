@@ -3,6 +3,7 @@ import tkinter as tk
 import tkinter.ttk as ttk
 from typing import Any, Literal
 
+from ...state import AppState
 from ...values import literals as l
 from ...widgets import AppFrame
 from .camera import CameraPane
@@ -41,6 +42,10 @@ class MainWindow(AppFrame):
         self._frames: dict[str, ttk.Frame] = {}
         self._register_hooks()
         self.build_ui()
+
+    @property
+    def app_state(self) -> AppState:
+        return self.app.app_state
 
     @property
     def _outputs_pane(self) -> OutputsPane:

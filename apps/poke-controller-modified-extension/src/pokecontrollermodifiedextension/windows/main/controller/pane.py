@@ -3,6 +3,7 @@ import tkinter as tk
 import tkinter.ttk as ttk
 from typing import Any
 
+from ....model import AppModel
 from ....values import literals as l
 from ....widgets import AppFrame
 
@@ -70,6 +71,10 @@ class ControllerPane(AppFrame):
         right_frame.pack(expand=False, fill=l.BOTH, side=l.LEFT)
         wrapper.pack(expand=False, fill=l.Y, anchor=l.CENTER)
         labelframe.pack(expand=False, fill=l.BOTH)
+
+    @property
+    def app_model(self) -> AppModel:
+        return self.app.app_model
 
     def _build_grid_frame(
         self,

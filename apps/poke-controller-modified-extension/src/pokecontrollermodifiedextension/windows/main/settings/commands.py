@@ -2,6 +2,8 @@ import tkinter as tk
 import tkinter.ttk as ttk
 from typing import Any, Callable
 
+from ....model import AppModel
+from ....state import AppState
 from ....values import literals as l
 from ....widgets import AppFrame
 
@@ -42,6 +44,14 @@ class CommandsSettings(AppFrame):
         self._shortcuts = self.app_state.command_shortcuts
 
         self.build_ui()
+
+    @property
+    def app_state(self) -> AppState:
+        return self.app.app_state
+
+    @property
+    def app_model(self) -> AppModel:
+        return self.app.app_model
 
     def build_ui(self) -> None:
         upper_frame = ttk.Frame(self)

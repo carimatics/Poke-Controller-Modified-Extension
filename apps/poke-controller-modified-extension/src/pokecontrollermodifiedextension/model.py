@@ -1,5 +1,9 @@
+import logging
+
 from .info import AppInfo
 from .state import AppState
+
+logger = logging.getLogger(__name__)
 
 
 class AppModel:
@@ -19,7 +23,7 @@ class AppModel:
         return []
 
     def start_command(self) -> None:
-        pass
+        logger.info("start_command")
 
     def stop_command(self) -> None:
         pass

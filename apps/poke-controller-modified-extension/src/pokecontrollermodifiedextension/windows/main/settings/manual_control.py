@@ -2,6 +2,8 @@ import tkinter as tk
 import tkinter.ttk as ttk
 from typing import Any
 
+from ....model import AppModel
+from ....state import AppState
 from ....values import literals as l
 from ....widgets import AppFrame
 
@@ -21,6 +23,14 @@ class ManualControlSettings(AppFrame):
         )
 
         self.build_ui()
+
+    @property
+    def app_state(self) -> AppState:
+        return self.app.app_state
+
+    @property
+    def app_model(self) -> AppModel:
+        return self.app.app_model
 
     def build_ui(self) -> None:
         # Create Labelframes

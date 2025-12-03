@@ -2,6 +2,7 @@ import tkinter as tk
 import tkinter.ttk as ttk
 from typing import Any
 
+from ....state import AppState
 from ....values import literals as l
 from ....widgets import AppFrame
 from .buttons import Buttons
@@ -18,6 +19,10 @@ class CameraPane(AppFrame):
         self._register_hooks()
 
         self.build_ui()
+
+    @property
+    def app_state(self) -> AppState:
+        return self.app.app_state
 
     @property
     def _camera_size(self) -> tuple[int, int]:

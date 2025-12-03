@@ -21,7 +21,8 @@ if __name__ == '__main__':
 
     # Run the command
     for command in commands:
-        _ = CrossPlatformCommand().run(
+        result = CrossPlatformCommand().run(
             command=command,
             cwd=project_root,
         )
+        result.check_returncode()
