@@ -1,0 +1,27 @@
+#!/usr/bin/env -S uv run --script
+# @formatter:off
+#MISE description="Sync mise and project dependencies"
+#MISE dir="{{cwd}}"
+#MISE sources=["pyproject.toml", "uv.lock", ".python-version", "ruff.toml", "mypy.ini", "packages/**/*", "apps/**/*"]
+# @formatter:on
+
+from pathlib import Path
+import sys
+
+project_root = Path(__file__).parent.parent
+sys.path.append(str(project_root))
+
+from scripts.utils.command import CrossPlatformCommand, get_usage_envs
+
+if __name__ == '__main__':
+    commands = [
+        ["mise", "sync", "python", "--uv"],
+        ["uv", "sync"],
+    ]
+
+    # Run the command
+    for command in commands:
+        _ = CrossPlatformCommand().run(
+            command=command,
+            cwd=project_root,
+        )

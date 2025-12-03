@@ -1,0 +1,28 @@
+#!/usr/bin/env -S uv run --script
+# @formatter:off
+#MISE description="Run all checks in series"
+#MISE dir="{{cwd}}"
+#MISE sources=["pyproject.toml", "ruff.toml", "mypy.ini", "packages/**/*.py", "apps/**/*.py"]
+# @formatter:on
+
+from pathlib import Path
+import sys
+
+project_root = Path(__file__).parent.parent
+sys.path.append(str(project_root))
+
+from scripts.utils.command import CrossPlatformCommand, get_usage_envs
+
+if __name__ == '__main__':
+    commands = [
+        ["mise", "run", "lint", "--fix"],
+        ["mise", "run", "format"],
+        ["mise", "run", "typecheck"],
+    ]
+
+    # Run the command
+    for command in commands:
+        _ = CrossPlatformCommand().run(
+            command=command,
+            cwd=project_root,
+        )

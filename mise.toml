@@ -7,37 +7,3 @@ python.uv_venv_auto = true
 
 ########## Tasks ##########
 # See: mise-tasks/*
-[tasks.sync]
-run = [
-    # "git pull",
-    "mise sync python --uv",
-    "uv sync",
-]
-
-[tasks.lint]
-description = "Lint the codebase"
-run = "uv run ruff check"
-
-[tasks.lint_fix]
-description = "Lint the codebase and auto fix issues"
-run = "uv run ruff check --fix"
-
-[tasks.format]
-description = "Format the codebase"
-run = "uv run ruff format"
-
-[tasks.typecheck]
-description = "Typecheck the codebase"
-run = "uv run mypy"
-
-[tasks.check]
-description = "Run all checks in series"
-run = [
-    "mise run lint_fix",
-    "mise run format",
-    "mise run typecheck",
-]
-
-[tasks.ci]
-description = "Run all checks in parallel for CI(no auto fix)"
-depends = ["lint", "format", "typecheck"]
