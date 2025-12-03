@@ -6,47 +6,13 @@ python.uv_venv_auto = true
 
 
 ########## Tasks ##########
+# See: mise-tasks/*
 [tasks.sync]
 run = [
     # "git pull",
     "mise sync python --uv",
     "uv sync",
 ]
-
-# FIXME: PRを出す前に消す
-[tasks.app_sandbox]
-description = "Launch Poke-Controller Modified Extension Sandbox"
-usage = '''
-arg "<profile>" help="Profile name to use" env="POKECON_PROFILE" default="default"
-flag "-d --dev" help="Launch in development mode" env="POKECON_DEV" default=#false
-'''
-depends = ["sync"]
-dir = "{{cwd}}/SerialControllerSandbox"
-run = '''
-echo "The application running with --dev=${usage_dev} --profile=${usage_profile}"
-if ${usage_dev}; then
-    uv run python -X dev -- main.py --profile ${usage_profile}
-else
-    uv run python -- main.py --profile ${usage_profile}
-fi
-'''
-
-[tasks.app_extension]
-description = "Launch Poke-Controller Modified Extension"
-usage = '''
-arg "<profile>" help="Profile name to use" env="POKECON_PROFILE" default="default"
-flag "-d --dev" help="Launch in development mode" env="POKECON_DEV" default=#false
-'''
-depends = ["sync"]
-dir = "{{cwd}}/SerialController"
-run = '''
-echo "The application running with --dev=${usage_dev} --profile=${usage_profile}"
-if ${usage_dev}; then
-    uv run python -X dev -- Window.py --profile ${usage_profile}
-else
-    uv run python -- Window.py --profile ${usage_profile}
-fi
-'''
 
 [tasks.lint]
 description = "Lint the codebase"

@@ -1,0 +1,41 @@
+#!/usr/bin/env -S uv run --script
+# @formatter:off
+#MISE description="Launch Poke-Controller Modified Extension Sandbox"
+#MISE depends=["sync"]
+#MISE dir="{{cwd}}"
+#USAGE arg "<name>" help="App name to launch" env="POKECON_APP_NAME" {
+#USAGE   choices "sandbox" "extension"
+#USAGE }
+#USAGE flag "-p --profile <profile>" help="Profile name to use" default="default" env="POKECON_PROFILE"
+#USAGE flag "-d --dev" help="Launch in development mode" default=#false env="POKECON_DEV"
+# @formatter:on
+
+from pathlib import Path
+import sys
+
+project_root = Path(__file__).parent.parent
+sys.path.append(str(project_root))
+
+from scripts.utils.command import CrossPlatformCommand, get_usage_envs
+
+if __name__ == '__main__':
+    # Get the profile and dev flags from the environment
+    env: dict[str, str] = get_usage_envs(("name", "profile", "dev"))
+
+    # Construct the command to run
+    dev_flag: list[str] = ["-X", "dev"] if env["dev"] == "true" else []
+
+    match name:
+        case "extension":
+            wd = "SerialController"
+            entry_point = "Window.py"
+        case _:
+            wd = "SerialControllerSandbox"
+            entry_point = "main.py"
+
+    # Run the command
+    result = CrossPlatformCommand().run(
+        command=["uv", "run", "python", *dev_flag, "--", entry_point, "--profile", env["profile"]],
+        cwd=project_root / wd,
+    )
+    print(result.stdout)
