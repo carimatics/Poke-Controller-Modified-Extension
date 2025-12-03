@@ -34,8 +34,7 @@ if __name__ == '__main__':
             entry_point = "main.py"
 
     # Run the command
-    result = CrossPlatformCommand().run(
+    _ = CrossPlatformCommand().run(
         command=["uv", "run", "python", *dev_flag, "--", entry_point, "--profile", env["profile"]],
         cwd=project_root / wd,
     )
-    print(result.stdout)

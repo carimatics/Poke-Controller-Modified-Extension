@@ -15,7 +15,7 @@ class CrossPlatformCommand:
         cwd: Path | None = None,
         env: dict[str, str] | None = None,
         timeout: float | None = None,
-        capture: bool = True,
+        capture: bool = False,
     ) -> subprocess.CompletedProcess:
         kwargs = {
             "check": True,
