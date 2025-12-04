@@ -25,4 +25,5 @@ if __name__ == '__main__':
             command=command,
             cwd=project_root,
         )
-        result.check_returncode()
+        if code := result.returncode:
+            exit(code)
