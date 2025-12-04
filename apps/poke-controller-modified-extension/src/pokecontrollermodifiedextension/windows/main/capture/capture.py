@@ -2,18 +2,18 @@ import logging
 import tkinter as tk
 from typing import Any
 
+from PIL import Image, ImageTk
 from pokecontroller.core import image
-from PIL import ImageTk, Image
 
-from ....widgets import AppFrame
 from ....values import literals as l
+from ....widgets import AppFrame
 
 logger = logging.getLogger(__name__)
 
 
 class Capture(AppFrame):
     _canvas: tk.Canvas
-    _image: tk.PhotoImage
+    _image: ImageTk.PhotoImage
     _image_tag: int
 
     def __init__(self, master: tk.Misc, *args: Any, **kwargs: Any) -> None:
@@ -39,7 +39,9 @@ class Capture(AppFrame):
     def build_ui(self) -> None:
         self._canvas = tk.Canvas(self, width=self._width, height=self._height)
         self._image = ImageTk.PhotoImage(file="../Images/disabled.png")
-        self._image_tag = self._canvas.create_image(0, 0, anchor=l.NW, image=self._image)
+        self._image_tag = self._canvas.create_image(
+            0, 0, anchor=l.NW, image=self._image
+        )
         self._canvas.pack(expand=True, fill=l.BOTH)
 
     def _update_frame(self) -> None:
@@ -51,7 +53,7 @@ class Capture(AppFrame):
     def _load_frame(self) -> None:
         success, frame = self._camera.read()
 
-        if not success:
+        if not success or frame is None:
             return
 
         frame_rgb = image.bgr_to_rgb(frame)

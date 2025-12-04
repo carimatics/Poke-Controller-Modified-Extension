@@ -1,7 +1,7 @@
 from typing import Literal
 
-from ..raw_image import RawImage
 from ..image_processing import match_template
+from ..raw_image import RawImage
 from .template_matcher import TemplateMatchResult, TemplateMatcher
 
 

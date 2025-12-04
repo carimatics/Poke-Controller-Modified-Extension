@@ -1,9 +1,10 @@
+from pokecontroller.core.camera import use_camera
+
 from .app import App
 from .core.logging import setup_logging
 from .values import literals as l
 from .widgets.menu import AppMenu
 from .windows import MainWindow
-from pokecontroller.core.camera import use_camera
 
 
 def run_app(*, base_dir: str, profile: str) -> None:

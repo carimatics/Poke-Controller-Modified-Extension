@@ -2,8 +2,8 @@ from typing import Literal
 
 import cv2
 
-from ..raw_image import RawImage
 from ..image_processing import GpuTemplateMatchable, match_template_by_gpu
+from ..raw_image import RawImage
 from .template_matcher import TemplateMatchResult, TemplateMatcher
 
 

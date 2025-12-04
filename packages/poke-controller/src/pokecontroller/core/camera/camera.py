@@ -1,12 +1,13 @@
 import logging
+from typing import overload
 
 import cv2
-from typing import overload
 
 from ..image import RawImage
 from ..platform import is_windows
 
 logger = logging.getLogger(__name__)
+
 
 class PokeControllerCameraException(Exception):
     pass
@@ -56,12 +57,10 @@ class Camera:
         return self._frame
 
     @overload
-    def open(self, *, camera_id: int) -> None:
-        ...
+    def open(self, *, camera_id: int) -> None: ...
 
     @overload
-    def open(self, *, camera_path: str) -> None:
-        ...
+    def open(self, *, camera_path: str) -> None: ...
 
     def open(
         self,
@@ -74,11 +73,17 @@ class Camera:
         if is_windows():
             logger.debug("NT OS")
             if camera_id is not None:
-                self._video_capture = cv2.VideoCapture(index=camera_id, apiPreference=cv2.CAP_DSHOW)
+                self._video_capture = cv2.VideoCapture(
+                    index=camera_id, apiPreference=cv2.CAP_DSHOW
+                )
             elif camera_path is not None:
-                self._video_capture = cv2.VideoCapture(filename=camera_path, apiPreference=cv2.CAP_DSHOW)
+                self._video_capture = cv2.VideoCapture(
+                    filename=camera_path, apiPreference=cv2.CAP_DSHOW
+                )
             else:
-                raise PokeControllerCameraException("Camera ID or Name is not specified.")
+                raise PokeControllerCameraException(
+                    "Camera ID or Name is not specified."
+                )
         else:
             logger.debug("Not NT OS")
             if camera_id is not None:
@@ -86,7 +91,9 @@ class Camera:
             elif camera_path is not None:
                 self._video_capture = cv2.VideoCapture(filename=camera_path)
             else:
-                raise PokeControllerCameraException("Camera ID or Name is not specified.")
+                raise PokeControllerCameraException(
+                    "Camera ID or Name is not specified."
+                )
 
         if not self.is_opened:
             logger.error(f"Camera ID {camera_id} cannot open.")

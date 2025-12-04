@@ -103,5 +103,5 @@ class App(tk.Tk):
         self._camera.open(camera_id=int(self._camera_id.get()))
 
     def _parse_camera_size(self) -> tuple[int, int]:
-        width, height =  self._camera_size.get().split("x")
+        width, height = self._camera_size.get().split("x")
         return int(width), int(height)
