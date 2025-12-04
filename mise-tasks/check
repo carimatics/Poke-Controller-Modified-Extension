@@ -2,7 +2,6 @@
 # @formatter:off
 #MISE description="Run all checks in series"
 #MISE dir="{{cwd}}"
-#MISE sources=["pyproject.toml", "ruff.toml", "mypy.ini", "packages/**/*.py", "apps/**/*.py"]
 # @formatter:on
 
 from pathlib import Path

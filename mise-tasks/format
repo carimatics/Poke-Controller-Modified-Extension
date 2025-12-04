@@ -2,7 +2,6 @@
 # @formatter:off
 #MISE description="Format the codebase"
 #MISE dir="{{cwd}}"
-#MISE sources=["pyproject.toml", "ruff.toml", "packages/**/*.py", "apps/**/*.py"]
 #USAGE flag "--check" help="Check only" default=#false
 # @formatter:on
 

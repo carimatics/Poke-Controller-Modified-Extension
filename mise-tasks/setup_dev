@@ -2,7 +2,6 @@
 # @formatter:off
 #MISE description="Setup development environment"
 #MISE dir="{{cwd}}"
-#MISE sources=["pyproject.toml", "ruff.toml", "mypy.ini", "packages/**/*.py", "apps/**/*.py"]
 #MISE depends=["sync"]
 # @formatter:on
 

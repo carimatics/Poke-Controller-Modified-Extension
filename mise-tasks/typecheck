@@ -2,7 +2,6 @@
 # @formatter:off
 #MISE description="Typecheck the codebase"
 #MISE dir="{{cwd}}"
-#MISE sources=["pyproject.toml", "mypy.ini", "packages/**/*.py", "apps/**/*.py"]
 # @formatter:on
 
 from pathlib import Path

@@ -2,7 +2,6 @@
 # @formatter:off
 #MISE description="Sync mise and project dependencies"
 #MISE dir="{{cwd}}"
-#MISE sources=["pyproject.toml", "uv.lock", ".python-version", "ruff.toml", "mypy.ini", "packages/**/*", "apps/**/*"]
 # @formatter:on
 
 from pathlib import Path

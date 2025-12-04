@@ -2,7 +2,6 @@
 # @formatter:off
 #MISE description="Lint the codebase"
 #MISE dir="{{cwd}}"
-#MISE sources=["pyproject.toml", "ruff.toml", "packages/**/*.py", "apps/**/*.py"]
 #USAGE flag "--fix" help="Auto fix issues" default=#false
 # @formatter:on
 
