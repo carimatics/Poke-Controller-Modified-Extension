@@ -3,7 +3,7 @@ import tkinter as tk
 import tkinter.ttk as ttk
 from typing import Any, Literal
 
-from ...state import AppState
+from ...state import AppGuiState
 from ...values import literals as l
 from ...widgets import AppFrame
 from .camera import CameraPane
@@ -28,15 +28,11 @@ class MainWindow(AppFrame):
     def __init__(self, master: tk.Misc, *args: Any, **kwargs: Any) -> None:
         super().__init__(master, *args, **kwargs)
 
-        self._outputs_size = self.app_state.other_output_size
-        self._visible_output1 = self.app_state.other_widget_visible_output1
-        self._visible_output2 = self.app_state.other_widget_visible_output2
-        self._visible_controller = (
-            self.app_state.other_widget_visible_software_controller
-        )
-        self._controller_position = (
-            self.app_state.other_widget_software_controller_position
-        )
+        self._outputs_size = self.app_state.widget.outputs.size_balance
+        self._visible_output1 = self.app_state.widget.outputs.visible_output1
+        self._visible_output2 = self.app_state.widget.outputs.visible_output2
+        self._visible_controller = self.app_state.widget.software_controller.visible
+        self._controller_position = self.app_state.widget.software_controller.position
 
         self._panes: dict[str, ttk.Frame] = {}
         self._frames: dict[str, ttk.Frame] = {}
@@ -44,7 +40,7 @@ class MainWindow(AppFrame):
         self.build_ui()
 
     @property
-    def app_state(self) -> AppState:
+    def app_state(self) -> AppGuiState:
         return self.app.app_state
 
     @property

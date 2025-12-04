@@ -3,7 +3,7 @@ import tkinter.ttk as ttk
 from typing import Any
 
 from ....model import AppModel
-from ....state import AppState
+from ....state import AppGuiState
 from ....values import literals as l
 from ....widgets import AppFrame
 
@@ -15,18 +15,18 @@ class CameraSettings(AppFrame):
         self._name_list: list[str] = self._load_camera_list()
         self._size_list: list[str] = self._load_camera_size_list()
 
-        self._id = self.app_state.camera_id
-        self._camera_name = self.app_state.camera_name
-        self._fps = self.app_state.camera_fps
-        self._size = self.app_state.camera_size
-        self._show_realtime = self.app_state.camera_show_realtime
-        self._show_value = self.app_state.camera_show_matched
-        self._show_guide = self.app_state.camera_show_guide
+        self._camera_id = self.app_state.capture.camera_id
+        self._camera_name = self.app_state.capture.camera_name
+        self._fps = self.app_state.capture.fps
+        self._size = self.app_state.capture.size
+        self._show_realtime = self.app_state.capture.show_realtime
+        self._show_matched = self.app_state.capture.show_matched
+        self._show_guide = self.app_state.capture.show_guide
 
         self.build_ui()
 
     @property
-    def app_state(self) -> AppState:
+    def app_state(self) -> AppGuiState:
         return self.app.app_state
 
     @property
@@ -68,7 +68,7 @@ class CameraSettings(AppFrame):
             add="",
         )
         name_combobox.current(0)
-        self._id.set(self._name_list[0])
+        self._camera_id.set(self._name_list[0])
 
         # Lower Frame
         lower_frame = ttk.Frame(labelframe)
@@ -84,7 +84,7 @@ class CameraSettings(AppFrame):
             lower_frame,
             width=3,
             state=l.DISABLED,
-            textvariable=self._id,
+            textvariable=self._camera_id,
         )
 
         # FPS
@@ -167,7 +167,7 @@ class CameraSettings(AppFrame):
         show_matched_checkbutton = ttk.Checkbutton(
             labelframe,
             text="Show Matched",
-            variable=self._show_value,
+            variable=self._show_matched,
             command=self._on_show_matched_changed,
         )
 

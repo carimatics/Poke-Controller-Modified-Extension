@@ -4,7 +4,7 @@ import tkinter.ttk as ttk
 from typing import Any
 
 from ....model import AppModel
-from ....state import AppState
+from ....state import AppGuiState
 from ....values import literals as l
 from ....widgets import AppFrame
 
@@ -17,15 +17,15 @@ class SerialSettings(AppFrame):
         self._baud_rate_list: list[int] = self._load_serial_baud_rate_list()
         self._data_format_list: list[str] = self._load_serial_data_format_list()
 
-        self._port = self.app_state.serial_port
-        self._baud_rate = self.app_state.serial_baud_rate
-        self._data_format = self.app_state.serial_data_format
-        self._show_data = self.app_state.serial_show_data
+        self._port = self.app_state.serial.port
+        self._baud_rate = self.app_state.serial.baud_rate
+        self._data_format = self.app_state.serial.data_format
+        self._show_data = self.app_state.serial.show_data
 
         self.build_ui()
 
     @property
-    def app_state(self) -> AppState:
+    def app_state(self) -> AppGuiState:
         return self.app.app_state
 
     @property

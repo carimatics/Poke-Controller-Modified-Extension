@@ -3,7 +3,7 @@ import tkinter.ttk as ttk
 from typing import Any, Callable
 
 from ....model import AppModel
-from ....state import AppState
+from ....state import AppGuiState
 from ....values import literals as l
 from ....widgets import AppFrame
 
@@ -36,17 +36,17 @@ class CommandsSettings(AppFrame):
         self._mcu_command_list: list[str] = self._load_mcu_command_list()
         self._shortcut_button_texts: list[tk.StringVar] = []
 
-        self._python_commands_filter = self.app_state.command_python_commands_filter
-        self._python_command = self.app_state.command_python_command
-        self._mcu_commands_filter = self.app_state.command_mcu_commands_filter
-        self._mcu_command = self.app_state.command_mcu_command
-        self._shortcut_number = self.app_state.command_shortcut_number
-        self._shortcuts = self.app_state.command_shortcuts
+        self._python_commands_filter = self.app_state.command.python_commands_filter
+        self._python_command = self.app_state.command.python_command
+        self._mcu_commands_filter = self.app_state.command.mcu_commands_filter
+        self._mcu_command = self.app_state.command.mcu_command
+        self._shortcut_number = self.app_state.command.shortcut.number
+        self._registered_commands = self.app_state.command.shortcut.registered_commands
 
         self.build_ui()
 
     @property
-    def app_state(self) -> AppState:
+    def app_state(self) -> AppGuiState:
         return self.app.app_state
 
     @property

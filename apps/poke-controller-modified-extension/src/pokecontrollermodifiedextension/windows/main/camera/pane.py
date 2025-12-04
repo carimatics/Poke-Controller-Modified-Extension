@@ -2,7 +2,7 @@ import tkinter as tk
 import tkinter.ttk as ttk
 from typing import Any
 
-from ....state import AppState
+from ....state import AppGuiState
 from ....values import literals as l
 from ....widgets import AppFrame
 from .buttons import Buttons
@@ -15,13 +15,13 @@ class CameraPane(AppFrame):
     def __init__(self, master: tk.Misc, *args: Any, **kwargs: Any) -> None:
         super().__init__(master, *args, **kwargs)
 
-        self._size = self.app_state.camera_size
+        self._size = self.app_state.capture.size
 
         self.build_ui()
         self._register_hooks()
 
     @property
-    def app_state(self) -> AppState:
+    def app_state(self) -> AppGuiState:
         return self.app.app_state
 
     @property

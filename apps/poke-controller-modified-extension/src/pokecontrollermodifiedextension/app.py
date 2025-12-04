@@ -4,7 +4,7 @@ from typing import Any
 
 from .info import AppInfo
 from .model import AppModel
-from .state import AppState, load_state
+from .state import AppGuiState, load_state
 
 INFO = AppInfo(
     name="Poke-Controller Modified Extension",
@@ -30,7 +30,7 @@ class App(tk.Tk):
 
         # Theme
         style = ttk.Style(self)
-        style.theme_use(self._app_state.theme.get())
+        style.theme_use(self._app_state.general.theme.get())
 
         self.title(f"{INFO.name}(v{INFO.version})")
 
@@ -51,7 +51,7 @@ class App(tk.Tk):
         return self._app_model
 
     @property
-    def app_state(self) -> AppState:
+    def app_state(self) -> AppGuiState:
         return self._app_state
 
     def run(self) -> None:

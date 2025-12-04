@@ -1,23 +1,23 @@
 import logging
 
 from .info import AppInfo
-from .state import AppState
+from .state import AppGuiState
 
 logger = logging.getLogger(__name__)
 
 
 class AppModel:
-    def __init__(self, info: AppInfo, state: AppState):
-        self._info = info
-        self._state = state
+    def __init__(self, app_info: AppInfo, gui_state: AppGuiState):
+        self._app_info = app_info
+        self._gui_state = gui_state
 
     @property
-    def info(self) -> AppInfo:
-        return self._info
+    def app_info(self) -> AppInfo:
+        return self._app_info
 
     @property
-    def state(self) -> AppState:
-        return self._state
+    def gui_state(self) -> AppGuiState:
+        return self._gui_state
 
     def load_commands(self) -> list[str]:
         return []

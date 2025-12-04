@@ -3,7 +3,7 @@ import tkinter.ttk as ttk
 from typing import Any, Callable
 
 from ....model import AppModel
-from ....state import AppState
+from ....state import AppGuiState
 from ....values import literals as l
 from ....widgets import AppFrame
 
@@ -12,23 +12,17 @@ class NotificationSettings(AppFrame):
     def __init__(self, master: tk.Misc, *args: Any, **kwargs: Any) -> None:
         super().__init__(master, *args, **kwargs)
 
-        self._enabled_windows_started = (
-            self.app_state.notification_enabled_notify_windows_when_command_started
-        )
-        self._enabled_windows_ended = (
-            self.app_state.notification_enabled_notify_windows_when_command_ended
-        )
+        self._enabled_windows_started = self.app_state.notification.line.enabled_started
+        self._enabled_windows_ended = self.app_state.notification.line.enabled_ended
         self._enabled_discord_started = (
-            self.app_state.notification_enabled_notify_discord_when_command_started
+            self.app_state.notification.discord.enabled_started
         )
-        self._enabled_discord_ended = (
-            self.app_state.notification_enabled_notify_discord_when_command_ended
-        )
+        self._enabled_discord_ended = self.app_state.notification.discord.enabled_ended
 
         self.build_ui()
 
     @property
-    def app_state(self) -> AppState:
+    def app_state(self) -> AppGuiState:
         return self.app.app_state
 
     @property

@@ -3,7 +3,7 @@ import tkinter.ttk as ttk
 from typing import Any
 
 from ....model import AppModel
-from ....state import AppState
+from ....state import AppGuiState
 from ....values import literals as l
 from ....widgets import AppFrame
 
@@ -12,20 +12,20 @@ class ManualControlSettings(AppFrame):
     def __init__(self, master: tk.Misc, *args: Any, **kwargs: Any) -> None:
         super().__init__(master, *args, **kwargs)
 
-        self._enabled_keyboard = self.app_state.manual_control_enabled_keyboard
-        self._enabled_lstick_mouse = self.app_state.manual_control_enabled_lstick_mouse
-        self._enabled_rstick_mouse = self.app_state.manual_control_enabled_rstick_mouse
+        self._enabled_keyboard = self.app_state.device_input.enabled_keyboard
+        self._enabled_lstick_mouse = self.app_state.device_input.enabled_lstick_mouse
+        self._enabled_rstick_mouse = self.app_state.device_input.enabled_rstick_mouse
         self._enabled_pro_controller = (
-            self.app_state.manual_control_enabled_pro_controller
+            self.app_state.device_input.enabled_pro_controller
         )
         self._enabled_record_pro_controller = (
-            self.app_state.manual_control_enabled_record_pro_controller
+            self.app_state.device_input.enabled_record_pro_controller
         )
 
         self.build_ui()
 
     @property
-    def app_state(self) -> AppState:
+    def app_state(self) -> AppGuiState:
         return self.app.app_state
 
     @property
