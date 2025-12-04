@@ -6,18 +6,18 @@ from typing import Any, Literal
 from ...state import AppGuiState
 from ...values import literals as l
 from ...widgets import AppFrame
-from .camera import CameraPane
+from .capture import CapturePane
 from .controller import ControllerPane
 from .outputs import OutputsPane
 from .settings import SettingsPane
 
-CAMERA = "camera"
+CAPTURE = "capture"
 SETTINGS = "settings"
 OUTPUTS = "outputs"
 CONTROLLER = "controller"
 
 PANES = [
-    (CAMERA, CameraPane, l.LEFT),
+    (CAPTURE, CapturePane, l.LEFT),
     (SETTINGS, SettingsPane, l.LEFT),
     (OUTPUTS, OutputsPane, l.RIGHT),
     (CONTROLLER, ControllerPane, l.RIGHT),
@@ -41,7 +41,7 @@ class MainWindow(AppFrame):
 
     @property
     def app_state(self) -> AppGuiState:
-        return self.app.app_state
+        return self.app.gui_state
 
     @property
     def _outputs_pane(self) -> OutputsPane:
@@ -84,7 +84,7 @@ class MainWindow(AppFrame):
         )
 
     def _layout_left_frame(self) -> None:
-        self._panes[CAMERA].pack(expand=True, fill=l.BOTH)
+        self._panes[CAPTURE].pack(expand=True, fill=l.BOTH)
         self._panes[SETTINGS].pack(expand=False, fill=l.BOTH, pady=(4, 0))
         self._frames[l.LEFT].pack(
             expand=True,

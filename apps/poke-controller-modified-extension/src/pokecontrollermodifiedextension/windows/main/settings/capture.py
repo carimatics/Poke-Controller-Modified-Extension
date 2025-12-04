@@ -27,7 +27,7 @@ class CameraSettings(AppFrame):
 
     @property
     def app_state(self) -> AppGuiState:
-        return self.app.app_state
+        return self.app.gui_state
 
     @property
     def app_model(self) -> AppModel:
@@ -67,7 +67,6 @@ class CameraSettings(AppFrame):
             self._on_camera_name_selected,
             add="",
         )
-        name_combobox.current(0)
         self._camera_id.set(self._name_list[0])
 
         # Lower Frame

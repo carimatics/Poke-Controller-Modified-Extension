@@ -68,7 +68,7 @@ class AppModel:
         pass
 
     def load_camera_list(self) -> list[str]:
-        return ["Camera 1", "Camera 2", "Camera 3"]
+        return ["0"]
 
     def load_camera_size_list(self) -> list[str]:
         return [f"{320 * i}x{180 * i}" for i in range(1, 7)]

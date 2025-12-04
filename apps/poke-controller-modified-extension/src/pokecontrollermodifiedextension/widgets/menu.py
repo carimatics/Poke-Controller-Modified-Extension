@@ -5,7 +5,7 @@ from typing import Any
 
 from ..app import App
 from ..mixins import AppAccessorMixIn
-from ..state import DEFAULT_STATE
+from ..state import DEFAULT_GUI_STATE
 
 logger = logging.getLogger(__name__)
 
@@ -110,8 +110,8 @@ class AppMenu(tk.Menu, AppAccessorMixIn):
 
     def _on_menu_reset_window_size_pushed(self) -> None:
         logger.debug("Reset window size")
-        default_size = str(DEFAULT_STATE["camera_size"])
-        self.app.app_state.camera_size.set(default_size)
+        default_size = DEFAULT_GUI_STATE["capture"]["size"]
+        self.app.gui_state.capture.size.set(default_size)
 
     def _on_command_line_settings_pushed(self) -> None:
         pass

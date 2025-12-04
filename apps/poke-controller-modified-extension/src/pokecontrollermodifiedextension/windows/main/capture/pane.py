@@ -9,20 +9,17 @@ from .buttons import Buttons
 from .capture import Capture
 
 
-class CameraPane(AppFrame):
-    _capture: Capture
-
+class CapturePane(AppFrame):
     def __init__(self, master: tk.Misc, *args: Any, **kwargs: Any) -> None:
         super().__init__(master, *args, **kwargs)
 
         self._size = self.app_state.capture.size
 
         self.build_ui()
-        self._register_hooks()
 
     @property
     def app_state(self) -> AppGuiState:
-        return self.app.app_state
+        return self.app.gui_state
 
     @property
     def _camera_size(self) -> tuple[int, int]:
@@ -36,18 +33,12 @@ class CameraPane(AppFrame):
         # Main Panel
         buttons = Buttons(labelframe)
 
+        # Capture Area
         width, height = self._camera_size
-        self._capture = Capture(labelframe)
-        self._capture.configure(width=width, height=height, relief=l.GROOVE)
+        capture = Capture(labelframe)
+        capture.configure(width=width, height=height, relief=l.GROOVE)
 
         # Layout
         buttons.pack(expand=True, fill=l.NONE, anchor=l.CENTER)
-        self._capture.pack(expand=True, fill=l.NONE, anchor=l.CENTER, pady=4)
+        capture.pack(expand=True, fill=l.NONE, anchor=l.CENTER, pady=4)
         labelframe.pack(expand=True, fill=l.BOTH)
-
-    def _register_hooks(self) -> None:
-        self._size.trace_add("write", self._on_camera_size_changed)
-
-    def _on_camera_size_changed(self, *_: Any) -> None:
-        width, height = self._camera_size
-        self._capture.configure(width=width, height=height)

@@ -50,8 +50,16 @@ def crop(src: RawImage, args: ImageCropArgs) -> RawImage:
     return src[args.ys : args.ye, args.xs : args.xs]
 
 
+def resize(src: RawImage, size: tuple[int, int]) -> RawImage:
+    return cv2.resize(src, size, interpolation=cv2.INTER_LINEAR)
+
+
 def grayscale(src: RawImage) -> RawImage:
     return cv2.cvtColor(src, cv2.COLOR_BGR2GRAY)
+
+
+def bgr_to_rgb(src: RawImage) -> RawImage:
+    return cv2.cvtColor(src, cv2.COLOR_BGR2RGB)
 
 
 def binarize_by_hsv(src: RawImage, args: ImageBinarizeHsvArgs) -> RawImage:

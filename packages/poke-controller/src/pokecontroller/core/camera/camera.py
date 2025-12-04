@@ -1,11 +1,15 @@
 import logging
 
 import cv2
+from typing import overload
 
 from ..image import RawImage
 from ..platform import is_windows
 
 logger = logging.getLogger(__name__)
+
+class PokeControllerCameraException(Exception):
+    pass
 
 
 class Camera:
@@ -51,15 +55,38 @@ class Camera:
     def frame(self) -> RawImage | None:
         return self._frame
 
-    def open(self, camera_id: int) -> None:
+    @overload
+    def open(self, *, camera_id: int) -> None:
+        ...
+
+    @overload
+    def open(self, *, camera_path: str) -> None:
+        ...
+
+    def open(
+        self,
+        *,
+        camera_id: int | None = None,
+        camera_path: str | None = None,
+    ) -> None:
         self.close()
 
         if is_windows():
             logger.debug("NT OS")
-            self._video_capture = cv2.VideoCapture(camera_id, cv2.CAP_DSHOW)
+            if camera_id is not None:
+                self._video_capture = cv2.VideoCapture(index=camera_id, apiPreference=cv2.CAP_DSHOW)
+            elif camera_path is not None:
+                self._video_capture = cv2.VideoCapture(filename=camera_path, apiPreference=cv2.CAP_DSHOW)
+            else:
+                raise PokeControllerCameraException("Camera ID or Name is not specified.")
         else:
             logger.debug("Not NT OS")
-            self._video_capture = cv2.VideoCapture(camera_id)
+            if camera_id is not None:
+                self._video_capture = cv2.VideoCapture(index=camera_id)
+            elif camera_path is not None:
+                self._video_capture = cv2.VideoCapture(filename=camera_path)
+            else:
+                raise PokeControllerCameraException("Camera ID or Name is not specified.")
 
         if not self.is_opened:
             logger.error(f"Camera ID {camera_id} cannot open.")

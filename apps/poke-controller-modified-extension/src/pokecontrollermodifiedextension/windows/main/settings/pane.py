@@ -4,14 +4,14 @@ from typing import Any
 
 from ....values import literals as l
 from ....widgets import AppFrame
-from .camera import CameraSettings
+from .capture import CameraSettings
 from .commands import CommandsSettings
 from .manual_control import ManualControlSettings
 from .notification import NotificationSettings
 from .others import OthersSettings
 from .serial import SerialSettings
 
-CAMERA = "camera"
+CAPTURE = "capture"
 SERIAL = "serial"
 MANUAL_CONTROL = "manual_control"
 COMMANDS = "commands"
@@ -19,7 +19,7 @@ NOTIFICATION = "notification"
 OTHERS = "others"
 
 SETTINGS: list[tuple[str, type[ttk.Frame], str]] = [
-    (CAMERA, CameraSettings, "Camera"),
+    (CAPTURE, CameraSettings, "Capture"),
     (SERIAL, SerialSettings, "Serial"),
     (MANUAL_CONTROL, ManualControlSettings, "Manual Control"),
     (COMMANDS, CommandsSettings, "Commands"),

@@ -1,6 +1,6 @@
 from typing import Literal
 
-from ..image import RawImage
+from ..raw_image import RawImage
 from ..image_processing import match_template
 from .template_matcher import TemplateMatchResult, TemplateMatcher
 

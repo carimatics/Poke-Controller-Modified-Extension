@@ -1,6 +1,3 @@
-from .image import (
-    Image as Image,
-)
 from .image_processing import (
     GpuTemplateMatchable as GpuTemplateMatchable,
     ImageBinarizeHsvArgs as ImageBinarizeHsvArgs,
@@ -11,6 +8,8 @@ from .image_processing import (
     binarize_by_hsv as binarize_by_hsv,
     binarize_by_interframe_diff as binarize_by_interframe_diff,
     binarize_by_threshold as binarize_by_threshold,
+    resize as resize,
+    bgr_to_rgb as bgr_to_rgb,
     crop as crop,
     grayscale as grayscale,
     read as read,

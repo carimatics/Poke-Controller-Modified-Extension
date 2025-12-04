@@ -7,8 +7,8 @@ DEFAULT_GUI_STATE: dict[str, Any] = {
         "theme": "default",
     },
     "capture": {
-        "camera_id": "",
-        "camera_name": "",
+        "camera_id": "0",
+        "camera_name": "0",
         "fps": "45",
         "size": "640x360",
         "show_realtime": "True",

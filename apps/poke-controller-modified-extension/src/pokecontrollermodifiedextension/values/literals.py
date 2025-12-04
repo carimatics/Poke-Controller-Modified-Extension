@@ -17,6 +17,7 @@ CENTER: Literal["center"] = "center"
 W: Literal["w"] = "w"
 N: Literal["n"] = "n"
 NE: Literal["ne"] = "ne"
+NW: Literal["nw"] = "nw"
 NSEW: Literal["nsew"] = "nsew"
 
 NORMAL: Literal["normal"] = "normal"

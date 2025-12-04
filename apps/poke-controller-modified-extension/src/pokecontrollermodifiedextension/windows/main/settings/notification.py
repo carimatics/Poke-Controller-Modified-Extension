@@ -23,7 +23,7 @@ class NotificationSettings(AppFrame):
 
     @property
     def app_state(self) -> AppGuiState:
-        return self.app.app_state
+        return self.app.gui_state
 
     @property
     def app_model(self) -> AppModel:
