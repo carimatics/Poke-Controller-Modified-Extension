@@ -12,16 +12,18 @@ class CrossPlatformCommand:
     def run(
         self,
         command: list[str],
+        *,
         cwd: Path | None = None,
         env: dict[str, str] | None = None,
-        timeout: float | None = None,
+        check: bool = False,
         capture: bool = False,
+        timeout: float | None = None,
     ) -> subprocess.CompletedProcess:
         kwargs = {
-            "check": True,
             "text": True,
             "cwd": cwd,
             "env": env,
+            "check": check,
             "timeout": timeout,
         }
         if capture:
