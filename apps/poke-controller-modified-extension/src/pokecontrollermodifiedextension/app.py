@@ -24,8 +24,7 @@ class App(tk.Tk):
         style = ttk.Style(self)
         style.theme_use(self._app_state.theme.get())
 
-        # FIXME
-        self.title("PokeController Extension")
+        self.title(f"{INFO.name}(v{INFO.version})")
 
     @property
     def app_info(self) -> AppInfo:
