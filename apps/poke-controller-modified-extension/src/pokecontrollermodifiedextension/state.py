@@ -91,7 +91,11 @@ class AppState:
     other_widget_dialogue_confirm_buttons_position: StringVar
 
 
-def load_state() -> AppState:
+def load_state(
+    *,
+    base_dir: str,
+    profile: str,
+) -> AppState:
     # FIXME: load from state file
     raw_state: dict[str, Any] = {}
 
@@ -115,7 +119,12 @@ def load_state() -> AppState:
     return AppState(**kwargs)
 
 
-def save_state(state: AppState) -> None:
+def save_state(
+    state: AppState,
+    *,
+    base_dir: str,
+    profile: str,
+) -> None:
     raw_state = {}
     for k in DEFAULT_STATE.keys():
         v = state.__dict__[k]

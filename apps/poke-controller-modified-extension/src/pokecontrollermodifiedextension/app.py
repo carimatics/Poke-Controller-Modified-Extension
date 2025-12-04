@@ -13,11 +13,19 @@ INFO = AppInfo(
 
 
 class App(tk.Tk):
-    def __init__(self, *args: Any, **kwargs: Any) -> None:
+    def __init__(
+        self,
+        base_dir: str,
+        profile: str,
+        *args: Any,
+        **kwargs: Any,
+    ) -> None:
         super().__init__(*args, **kwargs)
+        self._base_dir = base_dir
+        self._profile = profile
 
         self._app_info = INFO
-        self._app_state = load_state()
+        self._app_state = load_state(base_dir=base_dir, profile=profile)
         self._app_model = AppModel(self._app_info, self._app_state)
 
         # Theme
@@ -25,6 +33,14 @@ class App(tk.Tk):
         style.theme_use(self._app_state.theme.get())
 
         self.title(f"{INFO.name}(v{INFO.version})")
+
+    @property
+    def base_dir(self) -> str:
+        return self._base_dir
+
+    @property
+    def profile(self) -> str:
+        return self._profile
 
     @property
     def app_info(self) -> AppInfo:

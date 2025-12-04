@@ -1,3 +1,4 @@
+import logging
 import tkinter as tk
 import tkinter.ttk as ttk
 from typing import Any
@@ -5,6 +6,8 @@ from typing import Any
 from ....model import AppModel
 from ....values import literals as l
 from ....widgets import AppFrame
+
+logger = logging.getLogger(__name__)
 
 START = "start"
 CONTROLLER = "controller"
@@ -62,6 +65,9 @@ class Buttons(AppFrame):
             buttons[button].pack(expand=True, anchor=l.CENTER, side=l.LEFT, padx=4)
 
     def _on_start_pushed(self) -> None:
+        # FIXME: あとで消す
+        logger.info(f"profile={self.app.profile} base_dir={self.app.base_dir}")
+
         self.app_model.start_command()
 
     def _on_controller_pushed(self) -> None:

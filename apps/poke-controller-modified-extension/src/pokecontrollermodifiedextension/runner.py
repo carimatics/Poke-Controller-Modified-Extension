@@ -5,10 +5,10 @@ from .widgets.menu import AppMenu
 from .windows import MainWindow
 
 
-def run_app() -> None:
+def run_app(*, base_dir: str, profile: str) -> None:
     setup_logging()
 
-    app = App()
+    app = App(base_dir=base_dir, profile=profile)
 
     # config menubar
     menu = AppMenu(app)
