@@ -47,7 +47,6 @@ class Capture(AppFrame):
         self._is_resizing = False
         self._is_disabled = True
         self._is_show_disabled = False
-        self._pending_resize: tuple[int, int] | None = None
 
         self._register_hooks()
         self.build_ui()
