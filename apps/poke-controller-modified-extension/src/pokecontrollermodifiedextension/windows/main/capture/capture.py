@@ -34,11 +34,14 @@ class Capture(AppFrame):
         self._next_frame_time = int(1000 / self._fps.get())
         self._width, self._height = self._parse_size()
 
-        self._disabled_image = ImageTk.PhotoImage(
-            image=Image.fromarray(
-                image.resize(self._disabled_raw_image, self._parse_size())
-            ),
-        )
+        if (disabled_raw_image := self._disabled_raw_image) is not None:
+            self._disabled_image = ImageTk.PhotoImage(
+                image=Image.fromarray(
+                    image.resize(disabled_raw_image, self._parse_size())
+                ),
+            )
+        else:
+            self._disabled_image = ImageTk.PhotoImage()
 
         self._after_id: str | None = None
         self._is_resizing = False
@@ -54,7 +57,7 @@ class Capture(AppFrame):
     def build_ui(self) -> None:
         self._create_new_canvas()
 
-    def _create_new_canvas(self):
+    def _create_new_canvas(self) -> None:
         logger.info(f"Creating new canvas: {self._width}x{self._height}")
         self._canvas = tk.Canvas(self, width=self._width, height=self._height)
         self._image = self._disabled_image
@@ -97,7 +100,7 @@ class Capture(AppFrame):
         self._update_canvas()
         self._is_show_disabled = True
 
-    def _show_captured_image(self, frame: image.RawImage):
+    def _show_captured_image(self, frame: image.RawImage) -> None:
         self._is_disabled = False
         frame_rgb = image.bgr_to_rgb(frame)
         frame_resized = image.resize(frame_rgb, (self._width, self._height))
@@ -134,9 +137,12 @@ class Capture(AppFrame):
         self._pending_resize = None
 
         # resize disabled image
-        self._disabled_image = ImageTk.PhotoImage(
-            image=Image.fromarray(image.resize(self._disabled_raw_image, new_size)),
-        )
+        if (disabled_raw_image := self._disabled_raw_image) is not None:
+            self._disabled_image = ImageTk.PhotoImage(
+                image=Image.fromarray(image.resize(disabled_raw_image, new_size)),
+            )
+        else:
+            self._disabled_image = ImageTk.PhotoImage()
         self._is_show_disabled = False
 
         # recreate canvas
