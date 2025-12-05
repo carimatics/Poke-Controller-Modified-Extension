@@ -94,8 +94,8 @@ class Camera:
         if vc.isOpened():
             logger.debug("Closing camera")
             vc.release()
+            logging.debug("Camera closed")
         self._video_capture = None
-        logging.debug("Camera closed")
 
     def read(self) -> tuple[bool, RawImage | None]:
         if (vc := self._video_capture) is None:

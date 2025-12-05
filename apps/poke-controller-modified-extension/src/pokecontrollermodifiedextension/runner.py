@@ -1,4 +1,5 @@
 from pokecontroller.core.camera import use_camera
+from pokecontroller.core.serial import use_serial
 
 from .app import App
 from .core.logging import setup_logging
@@ -10,11 +11,15 @@ from .windows import MainWindow
 def run_app(*, base_dir: str, profile: str) -> None:
     setup_logging()
 
-    with use_camera() as camera:
+    with (
+        use_camera() as camera,
+        use_serial() as serial,
+    ):
         app = App(
             base_dir=base_dir,
             profile=profile,
             camera=camera,
+            serial=serial,
         )
 
         # config menubar

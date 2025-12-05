@@ -1,7 +1,9 @@
 import tkinter as tk
+from pathlib import Path
 from typing import Any
 
 from pokecontroller.core.camera import Camera
+from pokecontroller.core.serial import Serial
 
 from .info import AppInfo
 from .model import AppModel
@@ -19,14 +21,16 @@ class App(tk.Tk):
         base_dir: str,
         profile: str,
         camera: Camera,
+        serial: Serial,
         *args: Any,
         **kwargs: Any,
     ) -> None:
         super().__init__(*args, **kwargs)
-        self._base_dir = base_dir
+        self._base_dir = Path(base_dir)
         self._profile = profile
 
         self._camera = camera
+        self._serial = serial
 
         self._app_info = INFO
         self._gui_state = load_state(base_dir=base_dir, profile=profile)
@@ -46,7 +50,7 @@ class App(tk.Tk):
         self._register_hooks()
 
     @property
-    def base_dir(self) -> str:
+    def base_dir(self) -> Path:
         return self._base_dir
 
     @property
@@ -56,6 +60,10 @@ class App(tk.Tk):
     @property
     def camera(self) -> Camera:
         return self._camera
+
+    @property
+    def serial(self) -> Serial:
+        return self._serial
 
     @property
     def app_info(self) -> AppInfo:

@@ -1,10 +1,7 @@
-import logging
 from contextlib import contextmanager
 from typing import Generator
 
 from .camera import Camera
-
-logger = logging.getLogger(__name__)
 
 
 @contextmanager
@@ -15,5 +12,4 @@ def use_camera(
     try:
         yield camera
     finally:
-        logger.info("closing camera")
         camera.close()

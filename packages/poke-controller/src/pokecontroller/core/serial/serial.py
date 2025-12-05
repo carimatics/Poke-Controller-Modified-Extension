@@ -1,6 +1,9 @@
+import logging
 from collections.abc import Buffer
 
 import serial
+
+logger = logging.getLogger(__name__)
 
 LINESEP = "\r\n"
 
@@ -21,10 +24,12 @@ class Serial:
 
     def close(self) -> None:
         if (s := self._serial) is None:
+            logger.debug("Serial port is not opened")
             return
-
         if s.is_open:
+            logger.debug(f"Closing serial port: {s.port}")
             s.close()
+            logger.debug(f"Serial port closed: {s.port}")
         self._serial = None
 
     def write(self, data: Buffer) -> None:
