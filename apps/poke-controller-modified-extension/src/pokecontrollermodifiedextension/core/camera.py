@@ -51,18 +51,19 @@ def _get_save_filespec(filename: str) -> str:
 
 class Camera:
     def __init__(self, fps: int = 45):
-        self.camera = cameralib.Camera(fps=fps, frame_size=(1280, 720))
+        capture_size = (1280, 720)
+        self.camera = cameralib.Camera(frame_size=capture_size)
         self.image_bgr: imagelib.RawImage | None = None
-        # self.capture_size = (1920, 1080)
+        self._fps = fps
         self.capture_dir = "Captures"
 
     @property
     def fps(self) -> int:
-        return self.camera.fps
+        return self._fps
 
     @fps.setter
     def fps(self, fps: int) -> None:
-        self.camera.fps = fps
+        self._fps = fps
 
     @property
     def capture_size(self) -> tuple[int, int]:
@@ -70,7 +71,7 @@ class Camera:
 
     @capture_size.setter
     def capture_size(self, size: tuple[int, int]) -> None:
-        self.camera.frame_size = size
+        pass
 
     def openCamera(self, cameraId: int) -> None:  # noqa
         self.camera.open(camera_id=cameraId)
