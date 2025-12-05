@@ -19,7 +19,9 @@ class Capture(AppFrame):
     def __init__(self, master: tk.Misc, *args: Any, **kwargs: Any) -> None:
         super().__init__(master, *args, **kwargs)
 
-        self._disabled_raw_image = image.read(path="../Images/disabled.png", mode="grayscale")
+        self._disabled_raw_image = image.read(
+            path="../Images/disabled.png", mode="grayscale"
+        )
 
         self._camera = self.app.camera
 
@@ -33,7 +35,9 @@ class Capture(AppFrame):
         self._width, self._height = self._parse_size()
 
         self._disabled_image = ImageTk.PhotoImage(
-            image=Image.fromarray(image.resize(self._disabled_raw_image, self._parse_size())),
+            image=Image.fromarray(
+                image.resize(self._disabled_raw_image, self._parse_size())
+            ),
         )
 
         self._after_id: str | None = None
@@ -68,7 +72,9 @@ class Capture(AppFrame):
             self._load_frame()
 
         if not self._is_resizing:
-            self._after_id = self.after(ms=self._next_frame_time, func=self._update_frame)
+            self._after_id = self.after(
+                ms=self._next_frame_time, func=self._update_frame
+            )
 
     def _load_frame(self) -> None:
         try:
