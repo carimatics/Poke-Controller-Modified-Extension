@@ -85,7 +85,7 @@ class MainWindow(AppFrame):
 
     def _layout_left_frame(self) -> None:
         self._panes[CAPTURE].pack(expand=True, fill=l.BOTH)
-        self._panes[SETTINGS].pack(expand=False, fill=l.BOTH, pady=(4, 0))
+        self._panes[SETTINGS].pack(expand=True, fill=l.BOTH, pady=(4, 0))
         self._frames[l.LEFT].pack(
             expand=True,
             fill=l.BOTH,
