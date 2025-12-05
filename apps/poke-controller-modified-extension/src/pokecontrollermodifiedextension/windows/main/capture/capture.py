@@ -32,7 +32,8 @@ class Capture(AppFrame):
         self._show_matched = self.app.gui_state.capture.show_matched
         self._show_guide = self.app.gui_state.capture.show_guide
         self._next_frame_time = int(1000 / self._fps.get())
-        self._width, self._height = self._parse_size()
+        self._last_size = self._parse_size()
+        self._width, self._height = self._last_size
 
         if (disabled_raw_image := self._disabled_raw_image) is not None:
             self._disabled_image = ImageTk.PhotoImage(
@@ -68,16 +69,16 @@ class Capture(AppFrame):
 
     def _update_frame(self) -> None:
         logger.info("_update_frame called")
-        if self._is_resizing:
-            return
+        current_size = self._parse_size()
+        if current_size != self._last_size:
+            logger.info(f"Size change detected: {self._last_size} -> {current_size}")
+            self._resize(new_size=current_size)
+            self._last_size = current_size
 
         if self._show_realtime.get():
             self._load_frame()
 
-        if not self._is_resizing:
-            self._after_id = self.after(
-                ms=self._next_frame_time, func=self._update_frame
-            )
+        self._after_id = self.after(ms=self._next_frame_time, func=self._update_frame)
 
     def _load_frame(self) -> None:
         try:
@@ -110,32 +111,15 @@ class Capture(AppFrame):
 
     def _register_hooks(self) -> None:
         self._fps.trace_add("write", self._on_fps_changed)
-        self._size.trace_add("write", self._on_size_changed)
 
     def _on_fps_changed(self, *_: Any) -> None:
         self._next_frame_time = int(1000 / self._fps.get())
 
-    def _on_size_changed(self, *_: Any) -> None:
-        logger.info("_on_size_changed called")
-        self._is_resizing = True
-
-        width, height = self._parse_size()
-        self._pending_resize = (width, height)
-
-        logger.info(f"Scheduling resize to {width}x{height}")
-        self.after(1, self._resize)
-        logger.info("Resize scheduled")
-
-    def _resize(self) -> None:
+    def _resize(self, new_size: tuple[int, int]) -> None:
         logger.info("_resize called")
-        if (new_size := self._pending_resize) is None:
-            self._is_resizing = False
-            return
 
         # change size properties
         self._width, self._height = new_size
-        self._pending_resize = None
-
         # resize disabled image
         if (disabled_raw_image := self._disabled_raw_image) is not None:
             self._disabled_image = ImageTk.PhotoImage(
@@ -145,23 +129,12 @@ class Capture(AppFrame):
             self._disabled_image = ImageTk.PhotoImage()
         self._is_show_disabled = False
 
-        # recreate canvas
         logger.info("Destroying canvas")
         self._canvas.destroy()
+
+        logger.info("Creating new canvas")
         self._create_new_canvas()
-
-        logger.info("Scheduling resume")
-        self.after(50, self._resume_after_resize)
-        logger.info("Resume scheduled")
-
-    def _resume_after_resize(self) -> None:
-        logger.info("_resume_after_resize called")
-        logger.info(f"current after_id: {self._after_id}")
-        logger.info(f"is_resizing: {self._is_resizing}")
-        self._is_resizing = False
-        logger.info(f"After setting False, after_id: {self._after_id}")
-        self._update_frame()
-        logger.info("_resume_after_resize complete")
+        logger.info("Canvas recreated")
 
     def _parse_size(self) -> tuple[int, int]:
         width, height = self._size.get().split("x")
