@@ -39,8 +39,6 @@ class App(tk.Tk):
         # Title
         self.title(f"{INFO.name}(v{INFO.version})")
 
-        self.resizable(width=False, height=False)
-
         # Camera
         self._camera_id = self._gui_state.capture.camera_id
         self._camera.open(camera_id=int(self._camera_id.get()))
