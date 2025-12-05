@@ -32,8 +32,7 @@ class Capture(AppFrame):
         self._show_matched = self.app.gui_state.capture.show_matched
         self._show_guide = self.app.gui_state.capture.show_guide
         self._next_frame_time = int(1000 / self._fps.get())
-        self._last_size = self._parse_size()
-        self._width, self._height = self._last_size
+        self._width, self._height = self._parse_size()
 
         if (disabled_raw_image := self._disabled_raw_image) is not None:
             self._disabled_image = ImageTk.PhotoImage(
@@ -68,13 +67,6 @@ class Capture(AppFrame):
         logger.info("Canvas recreated")
 
     def _update_frame(self) -> None:
-        logger.info("_update_frame called")
-        current_size = self._parse_size()
-        if current_size != self._last_size:
-            logger.info(f"Size change detected: {self._last_size} -> {current_size}")
-            self._resize(new_size=current_size)
-            self._last_size = current_size
-
         if self._show_realtime.get():
             self._load_frame()
 
@@ -111,14 +103,23 @@ class Capture(AppFrame):
 
     def _register_hooks(self) -> None:
         self._fps.trace_add("write", self._on_fps_changed)
+        self._size.trace_add("write", self._on_size_changed)
 
     def _on_fps_changed(self, *_: Any) -> None:
         self._next_frame_time = int(1000 / self._fps.get())
 
-    def _resize(self, new_size: tuple[int, int]) -> None:
-        logger.info("_resize called")
+    def _on_size_changed(self, *_: Any) -> None:
+        if self._show_realtime.get():
+            return
+        self._resize()
+        self._width, self._height = self._parse_size()
 
+    def _resize(self) -> None:
         # change size properties
+        new_size = self._parse_size()
+
+        logger.info(f"Resizing canvas: ({self._width}, {self._height}) -> {new_size}")
+
         self._width, self._height = new_size
         # resize disabled image
         if (disabled_raw_image := self._disabled_raw_image) is not None:
@@ -131,16 +132,12 @@ class Capture(AppFrame):
 
         logger.info("Destroying canvas")
         self._canvas.destroy()
-
-        logger.info("Creating new canvas")
         self._create_new_canvas()
-        logger.info("Canvas recreated")
 
     def _parse_size(self) -> tuple[int, int]:
         width, height = self._size.get().split("x")
         return int(width), int(height)
 
     def _update_canvas(self) -> None:
-        logger.info("_update_canvas called")
         if not self._is_resizing:
             self._canvas.itemconfig(self._image_id, image=self._image)
