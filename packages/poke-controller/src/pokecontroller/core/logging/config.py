@@ -130,7 +130,7 @@ def _should_enable_debug(debug: bool | None = None) -> bool:
     return False
 
 
-def _enable_debug_mode(base_logger_name: str | None = "pokecontroller") -> None:
+def _enable_debug_mode(base_logger_name: str | None = None) -> None:
     """すべてのロガーをDEBUGレベルに設定"""
 
     # base logger
