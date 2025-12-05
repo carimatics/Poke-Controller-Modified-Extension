@@ -14,10 +14,6 @@ INFO = AppInfo(
 
 
 class App(tk.Tk):
-    _camera_id: tk.StringVar
-    _camera_size: tk.StringVar
-    _fps: tk.IntVar
-
     def __init__(
         self,
         base_dir: str,
@@ -46,7 +42,8 @@ class App(tk.Tk):
         self.resizable(width=False, height=False)
 
         # Camera
-        self._initialize_camera()
+        self._camera_id = self._gui_state.capture.camera_id
+        self._camera.open(camera_id=int(self._camera_id.get()))
 
         self._register_hooks()
 
@@ -77,31 +74,8 @@ class App(tk.Tk):
     def run(self) -> None:
         self.mainloop()
 
-    def _initialize_camera(self) -> None:
-        self._camera_id = self._gui_state.capture.camera_id
-        self._camera_size = self._gui_state.capture.size
-        self._fps = self._gui_state.capture.fps
-        width, height = self._parse_camera_size()
-        fps = self._fps.get()
-        self._camera.frame_size = (width, height)
-        self._camera.fps = fps
-        self._camera.open(camera_id=int(self._camera_id.get()))
-
     def _register_hooks(self) -> None:
-        self._camera_size.trace_add("write", self._on_camera_size_changed)
-        self._fps.trace_add("write", self._on_fps_changed)
         self._camera_id.trace_add("write", self._on_camera_id_changed)
-
-    def _on_camera_size_changed(self, *_: Any) -> None:
-        width, height = self._parse_camera_size()
-        self._camera.frame_size = (width, height)
-
-    def _on_fps_changed(self, *_: Any) -> None:
-        self._camera.fps = self._fps.get()
 
     def _on_camera_id_changed(self, *_: Any) -> None:
         self._camera.open(camera_id=int(self._camera_id.get()))
-
-    def _parse_camera_size(self) -> tuple[int, int]:
-        width, height = self._camera_size.get().split("x")
-        return int(width), int(height)
