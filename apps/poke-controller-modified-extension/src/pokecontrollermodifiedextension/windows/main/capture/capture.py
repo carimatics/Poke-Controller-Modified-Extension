@@ -31,7 +31,7 @@ class Capture(AppFrame):
         self._show_realtime = self.app.gui_state.capture.show_realtime
         self._show_matched = self.app.gui_state.capture.show_matched
         self._show_guide = self.app.gui_state.capture.show_guide
-        self._next_frame_time = int(1000 / self._fps.get())
+        self._next_frame_time = 1000 // self._fps.get()
         self._width, self._height = self._parse_size()
 
         if (disabled_raw_image := self._disabled_raw_image) is not None:
@@ -105,7 +105,7 @@ class Capture(AppFrame):
         self._size.trace_add("write", self._on_size_changed)
 
     def _on_fps_changed(self, *_: Any) -> None:
-        self._next_frame_time = int(1000 / self._fps.get())
+        self._next_frame_time = 1000 // self._fps.get()
 
     def _on_size_changed(self, *_: Any) -> None:
         if self._show_realtime.get():
