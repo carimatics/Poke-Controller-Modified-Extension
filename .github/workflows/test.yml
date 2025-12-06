@@ -31,8 +31,8 @@ jobs:
       - name: CI (Lint/Format/Typecheck/Test)
         if: runner.os != 'Windows'
         run: mise run ci
-        env:
-          MISE_ENV: ci_windows
       - name: CI for windows (Lint/Format/Typecheck/Test)
         if: runner.os == 'Windows'
         run: mise run ci
+        env:
+          MISE_ENV: ci_windows
