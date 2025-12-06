@@ -26,6 +26,9 @@ jobs:
           version: 2025.12.0
           install: true
           cache: true
+      - name: Check username
+        if: runner.os == 'Windows'
+        run: (Get-CimInstance Win32_ComputerSystem).UserName
       - name: Set mise-tasks executable permissions
         if: runner.os == 'Windows'
         run: |
