@@ -6,6 +6,7 @@ import tkinter as tk
 from collections import deque
 from typing import Any
 
+import cv2
 from PIL import Image, ImageTk
 from pokecontroller.core import image
 from pokecontroller.core.controller import switch
@@ -61,7 +62,7 @@ class Capture(AppFrame):
             self.app.gui_state.device_input.enabled_rstick_mouse
         )
         self._mouse_circle_radius = 60
-        self._stick_center = (0, 0)
+        self._pressed_point = (0, 0)
         self._stick_mode = self._data_format.get()
         self._update_ratio()
 
@@ -312,6 +313,111 @@ class Capture(AppFrame):
             self._height / self.frame_size[1],
         )
 
+    def _on_ctrl_shift_mouse_left_pressed(self, event: tk.Event) -> None:
+        if self._camera.frame is None:
+            logger.warning("Failed to get current frame")
+            return
+
+        if self._enabled_lstick_mouse.get():
+            self._unbind_mouse_left()
+        if self._enabled_rstick_mouse.get():
+            self._unbind_mouse_right()
+
+        # FIXME: clamp
+        x, y = event.x, event.y
+        if x < 0:
+            x = 0
+        elif x > self._width:
+            x = self._width
+        if y < 0:
+            y = 0
+        elif y > self._height:
+            y = self._height
+        self._pressed_point = (x, y)
+        self._delete_tagged_item("shift_mouse_left_select_area")
+        self._draw_rect(
+            self._pressed_point,
+            self._pressed_point,
+            outline="red",
+            width=3.0,
+            tag="shift_mouse_left_select_area",
+            delete_after_ms=None,
+        )
+
+        cx, cy = int(x / self._ratio[0]), int(y / self._ratio[1])
+        logger.info(f"Start selecting area at ({x}, {y}) / Capture ({cx}, {cy})")
+
+    def _on_ctrl_shift_mouse_left_pressing(self, event: tk.Event) -> None:
+        # FIXME: clamp
+        x, y = event.x, event.y
+        if x > self._width:
+            x = self._width
+        elif x < 0:
+            x = 0
+        if y > self._height:
+            y = self._height
+        elif y < 0:
+            y = 0
+        self._canvas.coords(
+            "shift_mouse_left_select_area",
+            self._pressed_point[0],
+            self._pressed_point[1],
+            x,
+            y,
+        )
+
+    def _on_ctrl_shift_mouse_left_released(self, event: tk.Event) -> None:
+        if (current_frame := self._camera.frame) is not None:
+            # FIXME: clamp
+            x, y = event.x, event.y
+            if x > self._width:
+                x = self._width
+            elif x < 0:
+                x = 0
+            if y > self._height:
+                y = self._height
+            elif y < 0:
+                y = 0
+
+            xs, ys = self._pressed_point
+            xe, ye = x, y
+            if xs > xe:
+                xs, xe = xe, xs
+            if ys > ye:
+                ys, ye = ye, ys
+
+            cxs, cys = int(xs / self._ratio[0]), int(ys / self._ratio[1])
+            cxe, cye = int(xe / self._ratio[0]), int(ye / self._ratio[1])
+            logger.info(f"End selecting area at ({xe}, {ye}) / Capture ({cxe}, {cye})")
+
+            try:
+                image.write(
+                    src=image.crop(
+                        src=current_frame,
+                        args=image.ImageCropArgs(
+                            xs=cxs,
+                            xe=cxe,
+                            ys=cys,
+                            ye=cye,
+                        ),
+                    ),
+                    # FIXME
+                    path=str(self.app.base_dir / "Captures" / "capture.png"),
+                    # FIXME
+                    params=(cv2.IMWRITE_PNG_COMPRESSION, 3),
+                )
+            except Exception as e:
+                logger.error(f"Failed to save capture: {e}")
+
+        self._delete_tagged_item("shift_mouse_left_select_area")
+
+        self._pressed_point = (0, 0)
+
+        if self._enabled_lstick_mouse.get():
+            self._bind_mouse_left()
+        if self._enabled_rstick_mouse.get():
+            self._bind_mouse_right()
+
     def _on_ctrl_mouse_left_pressed(self, event: tk.Event) -> None:
         current_frame = self._camera.frame
         if current_frame is None:
@@ -324,7 +430,7 @@ class Capture(AppFrame):
         x, y = event.x, event.y
         fx, fy = int(x / self._ratio[0]), int(y / self._ratio[1])
         pixel = current_frame[fy, fx]
-        logger.info(f"Mouse down: show ({x}, {y}) / Capture ({fx}, {fy})")
+        logger.info(f"Mouse down: Show ({x}, {y}) / Capture ({fx}, {fy})")
         logger.info(f"Color [R: {pixel[0]}, G: {pixel[2]}, B: {pixel[1]}]")
 
     def _on_ctrl_mouse_left_released(self, event: tk.Event) -> None:
@@ -397,10 +503,24 @@ class Capture(AppFrame):
 
     def _bind_all(self) -> None:
         self._bind_ctrl_mouse_left()
+        self._bind_ctrl_shift_mouse_left()
         if self._enabled_lstick_mouse.get():
             self._bind_mouse_left()
         if self._enabled_rstick_mouse.get():
             self._bind_mouse_right()
+
+    def _bind_ctrl_shift_mouse_left(self) -> None:
+        logger.debug("Binding mouse shift left click functions")
+        self._canvas.bind(
+            "<Control-Shift-ButtonPress-1>", self._on_ctrl_shift_mouse_left_pressed
+        )
+        self._canvas.bind(
+            "<Control-Shift-ButtonRelease-1>", self._on_ctrl_shift_mouse_left_released
+        )
+        self._canvas.bind(
+            "<Control-Shift-B1-Motion>", self._on_ctrl_shift_mouse_left_pressing
+        )
+        logger.debug("Bound mouse shift left click functions")
 
     def _bind_ctrl_mouse_left(self) -> None:
         logger.debug("Binding mouse ctrl left click functions")
@@ -463,7 +583,7 @@ class Capture(AppFrame):
             # self._controller.state.touchscreen.touch((pos_x, pos_y))
 
     def _on_switch_mouse_pressed(self, pressed_point: tuple[int, int]) -> None:
-        self._stick_center = pressed_point
+        self._pressed_point = pressed_point
         radius = self._mouse_circle_radius
         self._draw_circle(
             pressed_point,
@@ -498,8 +618,8 @@ class Capture(AppFrame):
         stick_state: switch.SwitchStickState,
     ) -> None:
         pos = complex(
-            pressing_point[0] - self._stick_center[0],
-            self._stick_center[1] - pressing_point[1],
+            pressing_point[0] - self._pressed_point[0],
+            self._pressed_point[1] - pressing_point[1],
         )
         angle_rad = cmath.phase(pos)
         angle = math.degrees(angle_rad)
@@ -511,10 +631,10 @@ class Capture(AppFrame):
         if mag >= 1.0:
             center_x = (circle_radius + circle_radius // 11) * math.cos(angle_rad)
             center_y = (circle_radius + circle_radius // 11) * math.sin(angle_rad)
-            start_x = self._stick_center[0] + center_x - circle_radius // 10
-            end_x = self._stick_center[0] + center_x + circle_radius // 10
-            start_y = self._stick_center[1] - center_y - circle_radius // 10
-            end_y = self._stick_center[1] - center_y + circle_radius // 10
+            start_x = self._pressed_point[0] + center_x - circle_radius // 10
+            end_x = self._pressed_point[0] + center_x + circle_radius // 10
+            start_y = self._pressed_point[1] - center_y - circle_radius // 10
+            end_y = self._pressed_point[1] - center_y + circle_radius // 10
         else:
             start_x = pressing_point[0] - circle_radius // 10
             start_y = pressing_point[1] - circle_radius // 10
@@ -593,8 +713,8 @@ class Capture(AppFrame):
             if (logs := self._input_logs) is not None:
                 if (last_input_time := self._last_input_time) is not None:
                     pos = complex(
-                        release_point[0] - self._stick_center[0],
-                        self._stick_center[1] - release_point[1],
+                        release_point[0] - self._pressed_point[0],
+                        self._pressed_point[1] - release_point[1],
                     )
                     angle_rad = cmath.phase(pos)
                     angle = math.degrees(angle_rad)

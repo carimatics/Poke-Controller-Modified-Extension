@@ -1,4 +1,5 @@
 import io
+import logging
 import os
 from dataclasses import dataclass
 from typing import Literal, Protocol, Sequence
@@ -7,6 +8,8 @@ import cv2
 from PIL import Image
 
 from .raw_image import RawImage
+
+logger = logging.getLogger(__name__)
 
 ImageReadMode = Literal["grayscale", "color"]
 
@@ -47,7 +50,8 @@ class GpuTemplateMatchable(Protocol):
 
 
 def crop(src: RawImage, args: ImageCropArgs) -> RawImage:
-    return src[args.ys : args.ye, args.xs : args.xs]
+    logger.debug(f"src[{args.ys} : {args.ye}, {args.xs} : {args.xe}]")
+    return src[args.ys : args.ye, args.xs : args.xe]
 
 
 def resize(src: RawImage, size: tuple[int, int]) -> RawImage:
