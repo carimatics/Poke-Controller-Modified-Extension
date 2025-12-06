@@ -26,6 +26,9 @@ jobs:
           version: 2025.12.0
           install: true
           cache: true
+      - run: mise --version
+      - run: mise tasks
+      - run: ls -R mise-tasks
       - name: Setup Runtime via uv
         run: uv sync
       - name: CI(Lint/Format/Typecheck/Test)
