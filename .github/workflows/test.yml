@@ -37,6 +37,8 @@ jobs:
           echo "=== Mise debug ==="
           mise tasks --log-level=debug
         shell: bash
+      - run: net user
+        if: runner.os == 'Windows'
       - name: Set mise-tasks executable permissions
         if: runner.os == 'Windows'
         run: |
