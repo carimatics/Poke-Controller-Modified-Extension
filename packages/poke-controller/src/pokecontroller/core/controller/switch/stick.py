@@ -82,6 +82,8 @@ def _generate_xy_presets() -> dict[int, tuple[int, int]]:
 
 
 class SwitchStickState:
+    _xy_presets: dict[int, tuple[int, int]] = _generate_xy_presets()
+
     def __init__(
         self,
         x: int | None = None,
@@ -174,5 +176,3 @@ class SwitchStickState:
     def from_polar(r: float, degree: float) -> "SwitchStickState":
         x, y = _polar_to_xy(r, degree)
         return SwitchStickState(x, y)
-
-    _xy_presets: dict[int, tuple[int, int]] = _generate_xy_presets()
