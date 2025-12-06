@@ -73,7 +73,7 @@ class ColoredFormatter(logging.Formatter):
             # Windows 10 バージョン1511以降で利用可能
             import ctypes
 
-            kernel32 = ctypes.windll.kernel32  # type: ignore[attr-defined]
+            kernel32 = ctypes.windll.kernel32  # type: ignore[attr-defined,unused-ignore]
             # STD_OUTPUT_HANDLE = -11
             handle = kernel32.GetStdHandle(-11)  # noqa
             # ENABLE_VIRTUAL_TERMINAL_PROCESSING = 0x0004
