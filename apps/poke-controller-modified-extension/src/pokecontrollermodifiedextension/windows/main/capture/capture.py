@@ -55,6 +55,7 @@ class Capture(AppFrame):
 
         # for mouse control
         self._data_format = self.app.gui_state.serial.data_format
+        self._mouse_right_mode = "Default"
         self._controller = switch.SwitchController(self._serial)
         self._enabled_lstick_mouse = (
             self.app.gui_state.device_input.enabled_lstick_mouse
@@ -64,14 +65,11 @@ class Capture(AppFrame):
         )
         self._mouse_circle_radius = 60
         self._pressed_point = (0, 0)
-        self._stick_mode = self._data_format.get()
+        self._right_stick_mode = self._data_format.get()
         self._update_ratio()
 
         # for touchscreen support
-        self._touchscreen_start_x = 1
-        self._touchscreen_start_y = 1
-        self._touchscreen_end_x = 320
-        self._touchscreen_end_y = 240
+        self._touchscreen_area = ((1, 1), (320, 240))
 
         # for input logging
         self._should_log_input = True
@@ -141,10 +139,10 @@ class Capture(AppFrame):
 
         rat = ratio if ratio is not None else self._ratio
         self._canvas.create_rectangle(
-            (start[0] - 1.0) * rat[0],
-            (start[1] - 1.0) * rat[1],
-            (end[0] + 1.0) * rat[0],
-            (end[1] + 1.0) * rat[1],
+            start[0] * rat[0],
+            start[1] * rat[1],
+            end[0] * rat[0],
+            end[1] * rat[1],
             width=width,
             outline=outline,
             tags=tag,
@@ -195,8 +193,8 @@ class Capture(AppFrame):
 
         rat = ratio if ratio is not None else self._ratio
         self._canvas.create_text(
-            (start[0] - 1.0) * rat[0],
-            (start[1] - 1.0) * rat[1],
+            start[0] * rat[0],
+            start[1] * rat[1],
             text=text,
             font=font,
             fill=color,
@@ -276,12 +274,13 @@ class Capture(AppFrame):
         data_format = self._data_format.get()
         if data_format == "Qingpi":
             # FIXME
-            pass
+            self._bind_ctrl_mouse_right()
         elif data_format == "Switch":
             self._controller = switch.SwitchController(self._serial)
+            self._unbind_ctrl_mouse_right()
         elif data_format == "3DS Controller":
             # FIXME
-            pass
+            self._unbind_ctrl_mouse_right()
 
     def _resize(self) -> None:
         # change size properties
@@ -333,11 +332,15 @@ class Capture(AppFrame):
                 initialdir=str(self.app.base_dir / "Template"),
                 defaultextension=".png",
             )
-            image.write(
-                src=cropped,
-                path=filename,
-                params=(cv2.IMWRITE_PNG_COMPRESSION, 0),
-            )
+            if filename != "":
+                logger.info(f"Saving cropped image to {filename!r}")
+                image.write(
+                    src=cropped,
+                    path=filename,
+                    params=(cv2.IMWRITE_PNG_COMPRESSION, 0),
+                )
+            else:
+                logger.info("Canceled saving cropped image")
 
         self._delete_tagged_item("select_area")
 
@@ -400,6 +403,7 @@ class Capture(AppFrame):
             outline="red",
             width=3.0,
             tag="select_area",
+            ratio=(1.0, 1.0),
             delete_after_ms=None,
         )
 
@@ -452,6 +456,10 @@ class Capture(AppFrame):
         cxe, cye = int(xe / self._ratio[0]), int(ye / self._ratio[1])
         logger.info(f"End selecting area at ({xe}, {ye}) / Capture ({cxe}, {cye})")
 
+        if cxs == cxe or cys == cye:
+            logger.warning("Selected area has no size")
+            return None
+
         try:
             return image.crop(
                 src=current_frame,
@@ -486,6 +494,77 @@ class Capture(AppFrame):
         if self._enabled_lstick_mouse.get():
             self._bind_mouse_left()
 
+    def _on_ctrl_mouse_right_pressed(self, event: tk.Event) -> None:
+        if self._enabled_rstick_mouse.get():
+            self._unbind_mouse_right()
+        if self._enabled_lstick_mouse.get():
+            self._unbind_mouse_left()
+
+        x, y = event.x, event.y
+        if x < 0:
+            x = 0
+        elif x > self._width:
+            x = self._width
+        if y < 0:
+            y = 0
+        elif y > self._height:
+            y = self._height
+        self._pressed_point = (x, y)
+        self._delete_tagged_item("select_area")
+        self._draw_rect(
+            self._pressed_point,
+            self._pressed_point,
+            outline="red",
+            width=3.0,
+            tag="select_area",
+            ratio=(1.0, 1.0),
+            delete_after_ms=None,
+        )
+
+    def _on_ctrl_mouse_right_pressing(self, event: tk.Event) -> None:
+        x, y = event.x, event.y
+        if x < 0:
+            x = 0
+        elif x > self._width:
+            x = self._width
+        if y < 0:
+            y = 0
+        elif y > self._height:
+            y = self._height
+        self._canvas.coords(
+            "select_area",
+            self._pressed_point[0],
+            self._pressed_point[1],
+            x,
+            y,
+        )
+
+    def _on_ctrl_mouse_right_released(self, event: tk.Event) -> None:
+        xs, ys = self._pressed_point
+        xe, ye = event.x, event.y
+        if xe < 0:
+            xe = 0
+        elif xe > self._width:
+            xe = self._width
+        if ye < 0:
+            ye = 0
+        elif ye > self._height:
+            ye = self._height
+        if xs > xe:
+            xs, xe = xe, xs
+        if ys > ye:
+            ys, ye = ye, ys
+
+        logger.info(f"Touchscreen Area: (({xs}, {ys}), ({xe}, {ye}))")
+        self._touchscreen_area = ((xs, ys), (xe, ye))
+        self._delete_tagged_item("select_area")
+        self._pressed_point = (0, 0)
+
+        if self._enabled_rstick_mouse.get():
+            self._bind_mouse_right()
+        if self._enabled_lstick_mouse.get():
+            self._bind_mouse_left()
+
     def _on_mouse_left_pressed(self, event: tk.Event) -> None:
         if not self._enabled_lstick_mouse.get():
             return
@@ -493,14 +572,18 @@ class Capture(AppFrame):
         if self._enabled_rstick_mouse.get():
             self._unbind_mouse_right()
 
-        self._on_mouse_pressed((event.x, event.y))
+        self._canvas.config(cursor="dot")
+        pressed_point = (event.x, event.y)
+        self._on_switch_mouse_pressed(pressed_point)
+        self._init_mouse_log()
 
     def _on_mouse_left_pressing(self, event: tk.Event) -> None:
         if not self._enabled_lstick_mouse.get():
             return
 
-        self._on_mouse_pressing(
-            (event.x, event.y),
+        pressing_point = (event.x, event.y)
+        self._on_switch_mouse_pressing(
+            pressing_point,
             self._controller.state.lstick,
         )
 
@@ -508,15 +591,16 @@ class Capture(AppFrame):
         if not self._enabled_lstick_mouse.get():
             return
 
-        self._on_mouse_released(
-            (event.x, event.y),
+        released_point = (event.x, event.y)
+        self._on_switch_mouse_released(
+            released_point,
             self._controller.state.lstick,
         )
+        self._finish_mouse_log(released_point)
+        self._output_mouse_log()
 
         if self._enabled_rstick_mouse.get():
             self._bind_mouse_right()
-
-        self._output_mouse_log()
 
     def _on_mouse_right_pressed(self, event: tk.Event) -> None:
         if not self._enabled_rstick_mouse.get():
@@ -525,35 +609,51 @@ class Capture(AppFrame):
         if self._enabled_lstick_mouse.get():
             self._unbind_mouse_left()
 
-        self._on_mouse_pressed((event.x, event.y))
+        self._canvas.config(cursor="dot")
+        pressed_point = (event.x, event.y)
+        if self._right_stick_mode == "Qingpi":
+            self._on_qingpi_mouse_pressed(pressed_point)
+        else:
+            self._on_switch_mouse_pressed(pressed_point)
+            self._init_mouse_log()
 
     def _on_mouse_right_pressing(self, event: tk.Event) -> None:
         if not self._enabled_rstick_mouse.get():
             return
 
-        self._on_mouse_pressing(
-            (event.x, event.y),
-            self._controller.state.rstick,
-        )
+        pressing_point = (event.x, event.y)
+        if self._right_stick_mode == "Qingpi":
+            self._on_qingpi_mouse_pressed(pressing_point)
+        else:
+            self._on_switch_mouse_pressing(
+                pressing_point,
+                self._controller.state.rstick,
+            )
 
     def _on_mouse_right_released(self, event: tk.Event) -> None:
         if not self._enabled_rstick_mouse.get():
             return
 
-        self._on_mouse_released(
-            (event.x, event.y),
-            self._controller.state.rstick,
-        )
+        released_point = (event.x, event.y)
+        if self._right_stick_mode == "Qingpi":
+            self._on_qingpi_mouse_released(released_point)
+        else:
+            self._on_switch_mouse_released(
+                released_point,
+                self._controller.state.rstick,
+            )
+            self._finish_mouse_log(released_point)
+            self._output_mouse_log()
 
         if self._enabled_lstick_mouse.get():
             self._bind_mouse_left()
-
-        self._output_mouse_log()
 
     def _bind_all(self) -> None:
         self._bind_ctrl_mouse_left()
         self._bind_ctrl_shift_mouse_left()
         self._bind_ctrl_alt_mouse_left()
+        if self._data_format.get() == "Qingpi":
+            self._bind_ctrl_mouse_right()
         if self._enabled_lstick_mouse.get():
             self._bind_mouse_left()
         if self._enabled_rstick_mouse.get():
@@ -597,6 +697,24 @@ class Capture(AppFrame):
             )
         logger.debug("Bound ctrl alt mouse left click functions")
 
+    def _bind_ctrl_mouse_right(self) -> None:
+        logger.debug("Binding mouse ctrl right click functions")
+        self._canvas.bind("<Control-ButtonPress-3>", self._on_ctrl_mouse_right_pressed)
+        self._canvas.bind(
+            "<Control-Button3-Motion>", self._on_ctrl_mouse_right_pressing
+        )
+        self._canvas.bind(
+            "<Control-ButtonRelease-3>", self._on_ctrl_mouse_right_released
+        )
+        logger.debug("Bound mouse ctrl right click functions")
+
+    def _unbind_ctrl_mouse_right(self) -> None:
+        logger.debug("Binding mouse ctrl right click functions")
+        self._canvas.unbind("<Control-ButtonPress-3>")
+        self._canvas.unbind("<Control-Button3-Motion>")
+        self._canvas.unbind("<Control-ButtonRelease-3>")
+        logger.debug("Bound mouse ctrl right click functions")
+
     def _bind_ctrl_mouse_left(self) -> None:
         logger.debug("Binding mouse ctrl left click functions")
         self._canvas.bind("<Control-ButtonPress-1>", self._on_ctrl_mouse_left_pressed)
@@ -633,27 +751,12 @@ class Capture(AppFrame):
         self._canvas.unbind("<ButtonRelease-3>")
         logger.debug("Unbound mouse right functions")
 
-    def _on_mouse_pressed(self, pressed_point: tuple[int, int]) -> None:
-        self._stick_mode = self._data_format.get()
-        self._canvas.config(cursor="dot")
-
-        if self._stick_mode == "Qingpi":
-            self._on_qingpi_mouse_pressed(pressed_point)
-        else:
-            self._on_switch_mouse_pressed(pressed_point)
-            self._init_mouse_log()
-
     def _on_qingpi_mouse_pressed(self, pressed_point: tuple[int, int]) -> None:
-        if (
-            self._touchscreen_start_x < pressed_point[0] < self._touchscreen_end_x
-            and self._touchscreen_start_y < pressed_point[1] < self._touchscreen_end_y
-        ):
-            width = self._touchscreen_end_x - self._touchscreen_start_x
-            height = self._touchscreen_end_y - self._touchscreen_start_y
-            _pos_x = int(320.0 * (pressed_point[0] - self._touchscreen_start_x) / width)
-            _pos_y = int(
-                240.0 * (pressed_point[1] - self._touchscreen_start_y) / height
-            )
+        (xs, ys), (xe, ye) = self._touchscreen_area
+        if xs < pressed_point[0] < xe and ys < pressed_point[1] < ye:
+            width, height = xe - xs, ye - ys
+            _pos_x = int(320.0 * (pressed_point[0] - xs) / width)
+            _pos_y = int(240.0 * (pressed_point[1] - ys) / height)
             # FIXME
             # self._controller.state.touchscreen.touch((pos_x, pos_y))
 
@@ -676,16 +779,6 @@ class Capture(AppFrame):
             ratio=(1.0, 1.0),
             delete_after_ms=None,
         )
-
-    def _on_mouse_pressing(
-        self,
-        pressing_point: tuple[int, int],
-        stick_state: switch.SwitchStickState,
-    ) -> None:
-        if self._stick_mode == "Qingpi":
-            self._on_qingpi_mouse_pressed(pressing_point)
-        else:
-            self._on_switch_mouse_pressing(pressing_point, stick_state)
 
     def _on_switch_mouse_pressing(
         self,
@@ -725,21 +818,6 @@ class Capture(AppFrame):
         )
 
         self._add_mouse_log(angle, mag)
-
-    def _on_mouse_released(
-        self,
-        released_point: tuple[int, int],
-        stick_state: switch.SwitchStickState,
-    ) -> None:
-        if not self._enabled_lstick_mouse.get():
-            return
-
-        if self._stick_mode == "Qingpi":
-            self._on_qingpi_mouse_released(released_point)
-        else:
-            self._on_switch_mouse_released(released_point, stick_state)
-            self._finish_mouse_log(released_point)
-            self._output_mouse_log()
 
     def _on_qingpi_mouse_released(self, released_point: tuple[int, int]) -> None:
         # FIXME
