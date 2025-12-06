@@ -10,9 +10,20 @@ from ....widgets import AppFrame
 
 logger = logging.getLogger(__name__)
 
+type Font = (
+    str
+    | tk.font.Font
+    | list[Any]
+    | tuple[str]
+    | tuple[str, int]
+    | tuple[str, int, str]
+    | tuple[str, int, list[str] | tuple[str, ...]]
+)
+
 
 class Capture(AppFrame):
     _canvas: tk.Canvas
+    _ratio: tuple[float, float]
     _image: ImageTk.PhotoImage
     _image_id: int
 
@@ -34,6 +45,7 @@ class Capture(AppFrame):
         self._show_guide = self.app.gui_state.capture.show_guide
         self._next_frame_time = 1000 // self._fps.get()
         self._width, self._height = self._parse_size()
+        self._update_ratio()
 
         if (disabled_raw_image := self._disabled_raw_image) is not None:
             self._disabled_image = ImageTk.PhotoImage(
@@ -54,6 +66,10 @@ class Capture(AppFrame):
         self._register_hooks()
         self._update_frame()
 
+    @property
+    def frame_size(self) -> tuple[int, int]:
+        return self._camera.frame_size
+
     def build_ui(self) -> None:
         self._create_new_canvas()
 
@@ -66,6 +82,88 @@ class Capture(AppFrame):
             self._load_frame()
 
         self._after_id = self.after(ms=self._next_frame_time, func=self._update_frame)
+
+    def _draw_rect(
+        self,
+        start: tuple[int, int],
+        end: tuple[int, int],
+        *,
+        outline: str,
+        width: int,
+        tag: str,
+        ratio: tuple[float, float] | None = None,
+        delete_after_ms: int | None = 100,
+    ) -> None:
+        if not self._show_realtime.get() or self._is_resizing:
+            return
+
+        rat = ratio if ratio is not None else self._ratio
+        self._canvas.create_rectangle(
+            (start[0] - 1.0) * rat[0],
+            (start[1] - 1.0) * rat[1],
+            (end[0] + 1.0) * rat[0],
+            (end[1] + 1.0) * rat[1],
+            width=width,
+            outline=outline,
+            tags=tag,
+        )
+        if delete_after_ms is not None:
+            self.after(delete_after_ms, self._delete_tagged_item, tag)
+
+    def _draw_circle(
+        self,
+        center: tuple[int, int],
+        radius: int,
+        *,
+        outline: str,
+        tag: str,
+        ratio: tuple[float, float] | None = None,
+        delete_after_ms: int | None = 100,
+    ) -> None:
+        if not self._show_realtime.get() or self._is_resizing:
+            return
+
+        rat = ratio if ratio is not None else self._ratio
+        self._canvas.create_oval(
+            (center[0] - radius) * rat[0],
+            (center[1] - radius) * rat[1],
+            (center[0] + radius) * rat[0],
+            (center[1] + radius) * rat[1],
+            width=2.5,
+            outline=outline,
+            tags=tag,
+        )
+        if delete_after_ms is not None:
+            self.after(delete_after_ms, self._delete_tagged_item, tag)
+
+    def _draw_text(
+        self,
+        start: tuple[int, int],
+        text: str,
+        *,
+        font: Font,
+        color: str,
+        tag: str,
+        ratio: tuple[float, float] | None = None,
+        delete_after_ms: int | None = 100,
+    ) -> None:
+        if not self._show_realtime.get() or self._is_resizing:
+            return
+
+        rat = ratio if ratio is not None else self._ratio
+        self._canvas.create_text(
+            (start[0] - 1.0) * rat[0],
+            (start[1] - 1.0) * rat[1],
+            text=text,
+            font=font,
+            fill=color,
+            tags=tag,
+        )
+        if delete_after_ms is not None:
+            self.after(delete_after_ms, self._delete_tagged_item, tag)
+
+    def _delete_tagged_item(self, tag: str) -> None:
+        self._canvas.delete(tag)
 
     def _create_new_canvas(self) -> None:
         logger.info(f"Creating new canvas: {self._width}x{self._height}")
@@ -121,6 +219,7 @@ class Capture(AppFrame):
         logger.info(f"Resizing canvas: ({self._width}, {self._height}) -> {new_size}")
 
         self._width, self._height = new_size
+        self._update_ratio()
         # resize disabled image
         if (disabled_raw_image := self._disabled_raw_image) is not None:
             self._disabled_image = ImageTk.PhotoImage(
@@ -141,3 +240,9 @@ class Capture(AppFrame):
     def _update_canvas(self) -> None:
         if not self._is_resizing:
             self._canvas.itemconfig(self._image_id, image=self._image)
+
+    def _update_ratio(self) -> None:
+        self._ratio = (
+            self._width / self.frame_size[0],
+            self._height / self.frame_size[1],
+        )
