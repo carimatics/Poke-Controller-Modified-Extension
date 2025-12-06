@@ -24,6 +24,7 @@ class Capture(AppFrame):
         )
 
         self._camera = self.app.camera
+        self._serial = self.app.serial
 
         self._camera_id = self.app.gui_state.capture.camera_id
         self._fps = self.app.gui_state.capture.fps
@@ -48,13 +49,23 @@ class Capture(AppFrame):
         self._is_disabled = True
         self._is_show_disabled = False
 
-        self._register_hooks()
         self.build_ui()
 
+        self._register_hooks()
         self._update_frame()
 
     def build_ui(self) -> None:
         self._create_new_canvas()
+
+    def _register_hooks(self) -> None:
+        self._fps.trace_add("write", self._on_fps_changed)
+        self._size.trace_add("write", self._on_size_changed)
+
+    def _update_frame(self) -> None:
+        if self._show_realtime.get():
+            self._load_frame()
+
+        self._after_id = self.after(ms=self._next_frame_time, func=self._update_frame)
 
     def _create_new_canvas(self) -> None:
         logger.info(f"Creating new canvas: {self._width}x{self._height}")
@@ -64,12 +75,6 @@ class Capture(AppFrame):
         self._is_disabled = False
         self._canvas.pack(expand=True, fill=l.BOTH)
         logger.info("Canvas recreated")
-
-    def _update_frame(self) -> None:
-        if self._show_realtime.get():
-            self._load_frame()
-
-        self._after_id = self.after(ms=self._next_frame_time, func=self._update_frame)
 
     def _load_frame(self) -> None:
         try:
@@ -99,10 +104,6 @@ class Capture(AppFrame):
         self._image = ImageTk.PhotoImage(image=Image.fromarray(frame_resized))
         self._update_canvas()
         self._is_show_disabled = False
-
-    def _register_hooks(self) -> None:
-        self._fps.trace_add("write", self._on_fps_changed)
-        self._size.trace_add("write", self._on_size_changed)
 
     def _on_fps_changed(self, *_: Any) -> None:
         self._next_frame_time = 1000 // self._fps.get()
