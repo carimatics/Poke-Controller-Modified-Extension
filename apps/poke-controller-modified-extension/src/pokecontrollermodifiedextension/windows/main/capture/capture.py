@@ -4,11 +4,12 @@ import math
 import time
 import tkinter as tk
 from collections import deque
+from tkinter import filedialog
 from typing import Any
 
 import cv2
 from PIL import Image, ImageTk
-from pokecontroller.core import image
+from pokecontroller.core import image, platform
 from pokecontroller.core.controller import switch
 
 from ....values import literals as l
@@ -209,11 +210,15 @@ class Capture(AppFrame):
 
     def _create_new_canvas(self) -> None:
         logger.info(f"Creating new canvas: {self._width}x{self._height}")
-        self._canvas = tk.Canvas(self, width=self._width, height=self._height)
+        self._canvas = tk.Canvas(
+            self,
+            width=self._width,
+            height=self._height,
+            cursor="tcross",
+        )
         self._image = self._disabled_image
         self._image_id = self._canvas.create_image(0, 0, anchor=l.NW, image=self._image)
         self._is_disabled = False
-        self._canvas.config(cursor="tcross")
         self._canvas.pack(expand=True, fill=l.BOTH)
         logger.info("Canvas recreated")
 
@@ -313,7 +318,61 @@ class Capture(AppFrame):
             self._height / self.frame_size[1],
         )
 
+    def _on_ctrl_alt_mouse_left_pressed(self, event: tk.Event) -> None:
+        self._on_select_area_pressed(event)
+
+    def _on_ctrl_alt_mouse_left_pressing(self, event: tk.Event) -> None:
+        self._on_select_area_pressing(event)
+
+    def _on_ctrl_alt_mouse_left_released(self, event: tk.Event) -> None:
+        cropped = self._on_select_area_released(event)
+        if cropped is not None:
+            filename = filedialog.asksaveasfilename(
+                title="名前をつけて保存",
+                filetypes=[("PNG", "*.png")],
+                initialdir=str(self.app.base_dir / "Template"),
+                defaultextension=".png",
+            )
+            image.write(
+                src=cropped,
+                path=filename,
+                params=(cv2.IMWRITE_PNG_COMPRESSION, 0),
+            )
+
+        self._delete_tagged_item("select_area")
+
+        self._pressed_point = (0, 0)
+
+        if self._enabled_lstick_mouse.get():
+            self._bind_mouse_left()
+        if self._enabled_rstick_mouse.get():
+            self._bind_mouse_right()
+
     def _on_ctrl_shift_mouse_left_pressed(self, event: tk.Event) -> None:
+        self._on_select_area_pressed(event)
+
+    def _on_ctrl_shift_mouse_left_pressing(self, event: tk.Event) -> None:
+        self._on_select_area_pressing(event)
+
+    def _on_ctrl_shift_mouse_left_released(self, event: tk.Event) -> None:
+        cropped = self._on_select_area_released(event)
+        if cropped is not None:
+            image.write(
+                src=cropped,
+                path=str(self.app.base_dir / "Captures" / "cropped.png"),
+                params=(cv2.IMWRITE_PNG_COMPRESSION, 0),
+            )
+
+        self._delete_tagged_item("select_area")
+
+        self._pressed_point = (0, 0)
+
+        if self._enabled_lstick_mouse.get():
+            self._bind_mouse_left()
+        if self._enabled_rstick_mouse.get():
+            self._bind_mouse_right()
+
+    def _on_select_area_pressed(self, event: tk.Event) -> None:
         if self._camera.frame is None:
             logger.warning("Failed to get current frame")
             return
@@ -334,20 +393,20 @@ class Capture(AppFrame):
         elif y > self._height:
             y = self._height
         self._pressed_point = (x, y)
-        self._delete_tagged_item("shift_mouse_left_select_area")
+        self._delete_tagged_item("select_area")
         self._draw_rect(
             self._pressed_point,
             self._pressed_point,
             outline="red",
             width=3.0,
-            tag="shift_mouse_left_select_area",
+            tag="select_area",
             delete_after_ms=None,
         )
 
         cx, cy = int(x / self._ratio[0]), int(y / self._ratio[1])
         logger.info(f"Start selecting area at ({x}, {y}) / Capture ({cx}, {cy})")
 
-    def _on_ctrl_shift_mouse_left_pressing(self, event: tk.Event) -> None:
+    def _on_select_area_pressing(self, event: tk.Event) -> None:
         # FIXME: clamp
         x, y = event.x, event.y
         if x > self._width:
@@ -359,64 +418,54 @@ class Capture(AppFrame):
         elif y < 0:
             y = 0
         self._canvas.coords(
-            "shift_mouse_left_select_area",
+            "select_area",
             self._pressed_point[0],
             self._pressed_point[1],
             x,
             y,
         )
 
-    def _on_ctrl_shift_mouse_left_released(self, event: tk.Event) -> None:
-        if (current_frame := self._camera.frame) is not None:
-            # FIXME: clamp
-            x, y = event.x, event.y
-            if x > self._width:
-                x = self._width
-            elif x < 0:
-                x = 0
-            if y > self._height:
-                y = self._height
-            elif y < 0:
-                y = 0
+    def _on_select_area_released(self, event: tk.Event) -> image.RawImage | None:
+        if (current_frame := self._camera.frame) is None:
+            logger.warning("Failed to get current frame")
+            return None
 
-            xs, ys = self._pressed_point
-            xe, ye = x, y
-            if xs > xe:
-                xs, xe = xe, xs
-            if ys > ye:
-                ys, ye = ye, ys
+        # FIXME: clamp
+        x, y = event.x, event.y
+        if x > self._width:
+            x = self._width
+        elif x < 0:
+            x = 0
+        if y > self._height:
+            y = self._height
+        elif y < 0:
+            y = 0
 
-            cxs, cys = int(xs / self._ratio[0]), int(ys / self._ratio[1])
-            cxe, cye = int(xe / self._ratio[0]), int(ye / self._ratio[1])
-            logger.info(f"End selecting area at ({xe}, {ye}) / Capture ({cxe}, {cye})")
+        xs, ys = self._pressed_point
+        xe, ye = x, y
+        if xs > xe:
+            xs, xe = xe, xs
+        if ys > ye:
+            ys, ye = ye, ys
 
-            try:
-                image.write(
-                    src=image.crop(
-                        src=current_frame,
-                        args=image.ImageCropArgs(
-                            xs=cxs,
-                            xe=cxe,
-                            ys=cys,
-                            ye=cye,
-                        ),
-                    ),
-                    # FIXME
-                    path=str(self.app.base_dir / "Captures" / "capture.png"),
-                    # FIXME
-                    params=(cv2.IMWRITE_PNG_COMPRESSION, 3),
-                )
-            except Exception as e:
-                logger.error(f"Failed to save capture: {e}")
+        cxs, cys = int(xs / self._ratio[0]), int(ys / self._ratio[1])
+        cxe, cye = int(xe / self._ratio[0]), int(ye / self._ratio[1])
+        logger.info(f"End selecting area at ({xe}, {ye}) / Capture ({cxe}, {cye})")
 
-        self._delete_tagged_item("shift_mouse_left_select_area")
+        try:
+            return image.crop(
+                src=current_frame,
+                args=image.ImageCropArgs(
+                    xs=cxs,
+                    xe=cxe,
+                    ys=cys,
+                    ye=cye,
+                ),
+            )
+        except Exception as e:
+            logger.error(f"Failed to crop capture: {e}")
 
-        self._pressed_point = (0, 0)
-
-        if self._enabled_lstick_mouse.get():
-            self._bind_mouse_left()
-        if self._enabled_rstick_mouse.get():
-            self._bind_mouse_right()
+        return None
 
     def _on_ctrl_mouse_left_pressed(self, event: tk.Event) -> None:
         current_frame = self._camera.frame
@@ -504,6 +553,7 @@ class Capture(AppFrame):
     def _bind_all(self) -> None:
         self._bind_ctrl_mouse_left()
         self._bind_ctrl_shift_mouse_left()
+        self._bind_ctrl_alt_mouse_left()
         if self._enabled_lstick_mouse.get():
             self._bind_mouse_left()
         if self._enabled_rstick_mouse.get():
@@ -521,6 +571,31 @@ class Capture(AppFrame):
             "<Control-Shift-B1-Motion>", self._on_ctrl_shift_mouse_left_pressing
         )
         logger.debug("Bound mouse shift left click functions")
+
+    def _bind_ctrl_alt_mouse_left(self) -> None:
+        logger.debug("Binding ctrl alt mouse left click functions")
+        if platform.is_macos():
+            self._canvas.bind(
+                "<Control-Option-ButtonPress-1>", self._on_ctrl_alt_mouse_left_pressed
+            )
+            self._canvas.bind(
+                "<Control-Option-Button1-Motion>", self._on_ctrl_alt_mouse_left_pressing
+            )
+            self._canvas.bind(
+                "<Control-Option-ButtonRelease-1>",
+                self._on_ctrl_alt_mouse_left_released,
+            )
+        else:
+            self._canvas.bind(
+                "<Control-Alt-ButtonPress-1>", self._on_ctrl_alt_mouse_left_pressed
+            )
+            self._canvas.bind(
+                "<Control-Alt-Button1-Motion>", self._on_ctrl_alt_mouse_left_pressing
+            )
+            self._canvas.bind(
+                "<Control-Alt-ButtonRelease-1>", self._on_ctrl_alt_mouse_left_released
+            )
+        logger.debug("Bound ctrl alt mouse left click functions")
 
     def _bind_ctrl_mouse_left(self) -> None:
         logger.debug("Binding mouse ctrl left click functions")
