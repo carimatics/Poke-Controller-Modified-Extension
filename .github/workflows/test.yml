@@ -23,7 +23,9 @@ jobs:
           version: 2025.12.0
           install: true
           cache: true
-      - name: Sync Dependencies via uv
+      - name: Setup Runtime via uv
+        run: mise run setup
+      - name: Install Dependencies via uv
         run: mise run sync
       - name: CI(Lint/Format/Typecheck/Test)
         run: mise run ci

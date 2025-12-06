@@ -1,0 +1,20 @@
+#!/usr/bin/env -S uv run --script
+# @formatter:off
+#MISE description="Setup runtime"
+#MISE dir="{{cwd}}"
+# @formatter:on
+
+from pathlib import Path
+import sys
+
+project_root = Path(__file__).parent.parent
+sys.path.append(str(project_root))
+
+from scripts.utils.command import CrossPlatformCommand, get_usage_envs
+
+if __name__ == '__main__':
+    # Run the command
+    _ = CrossPlatformCommand().run(
+        command=["uv", "install"],
+        cwd=project_root,
+    )
