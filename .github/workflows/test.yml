@@ -33,7 +33,7 @@ jobs:
         if: runner.os == 'Windows'
         run: |
           Get-ChildItem -Path "mise-tasks\*" -Recurse | ForEach-Object {
-              icacls $_.FullName /grant Everyone:RX
+              icacls $_.FullName /grant "%USERNAME%":RX
           }
       - run: mise --version
       - run: mise tasks
