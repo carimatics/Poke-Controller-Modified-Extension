@@ -55,7 +55,7 @@ class Camera:
         self.close()
 
         if is_windows():
-            logger.debug("NT OS")
+            logger.debug("Windows OS")
             if camera_id is not None:
                 self._video_capture = cv2.VideoCapture(
                     index=camera_id, apiPreference=cv2.CAP_DSHOW
@@ -69,11 +69,11 @@ class Camera:
                     "Camera ID or Name is not specified."
                 )
         else:
-            logger.debug("Not NT OS")
+            logger.debug("Not Windows OS")
             if camera_id is not None:
-                self._video_capture = vc = cv2.VideoCapture(index=camera_id)
+                self._video_capture = cv2.VideoCapture(index=camera_id)
             elif camera_path is not None:
-                self._video_capture = vc = cv2.VideoCapture(filename=camera_path)
+                self._video_capture = cv2.VideoCapture(filename=camera_path)
             else:
                 raise PokeControllerCameraException(
                     "Camera ID or Name is not specified."
@@ -84,6 +84,7 @@ class Camera:
             return
 
         logger.debug(f"Camera ID {camera_id} opened successfully.")
+        vc = self._video_capture
         vc.set(cv2.CAP_PROP_FRAME_WIDTH, float(self._frame_size[0]))
         vc.set(cv2.CAP_PROP_FRAME_HEIGHT, float(self._frame_size[1]))
 
