@@ -27,8 +27,11 @@ jobs:
           install: true
           cache: true
       - name: Set mise-tasks executable permissions
-        run: chmod +x mise-tasks/*
-        shell: bash
+        if: runner.os == 'Windows'
+        run: |
+          Get-ChildItem -Path "mise-tasks\*" -Recurse | ForEach-Object {
+              icacls $_.FullName /grant Everyone:(RX)
+          }
       - run: mise --version
       - run: mise tasks
       - run: ls -R mise-tasks
