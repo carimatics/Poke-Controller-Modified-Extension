@@ -1,4 +1,4 @@
-from typing import Literal
+from typing import Literal, Self
 
 import cv2
 
@@ -46,17 +46,17 @@ class GpuTemplateMatcher(TemplateMatcher):
         self._gpu_template = cv2.cuda.GpuMat()
         self._initialized = True
 
-    def set_image(self, image: RawImage | None) -> TemplateMatcher:
+    def set_image(self, image: RawImage | None) -> Self:
         self._image = image
         self._upload_image(self._gpu_image, image)
         return self
 
-    def set_template(self, template: RawImage | None) -> TemplateMatcher:
+    def set_template(self, template: RawImage | None) -> Self:
         self._template = template
         self._upload_image(self._gpu_template, template)
         return self
 
-    def set_mask(self, mask: RawImage | None) -> TemplateMatcher:
+    def set_mask(self, mask: RawImage | None) -> Self:
         return self
 
     def match(self) -> TemplateMatchResult | None:

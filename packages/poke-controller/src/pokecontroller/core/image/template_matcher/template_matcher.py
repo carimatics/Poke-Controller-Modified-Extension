@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+from typing import Self
 
 import cv2
 
@@ -53,15 +54,15 @@ class TemplateMatcher(ABC):
     def match(self) -> TemplateMatchResult | None: ...
 
     @abstractmethod
-    def set_image(self, image: RawImage | None) -> "TemplateMatcher": ...
+    def set_image(self, image: RawImage | None) -> Self: ...
 
     @abstractmethod
-    def set_template(self, template: RawImage | None) -> "TemplateMatcher": ...
+    def set_template(self, template: RawImage | None) -> Self: ...
 
     @abstractmethod
-    def set_mask(self, mask: RawImage | None) -> "TemplateMatcher": ...
+    def set_mask(self, mask: RawImage | None) -> Self: ...
 
-    def set_threshold(self, threshold: float) -> "TemplateMatcher":
+    def set_threshold(self, threshold: float) -> Self:
         self._threshold = threshold
         return self
 

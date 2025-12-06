@@ -1,4 +1,4 @@
-from typing import Literal
+from typing import Literal, Self
 
 from ..image_processing import match_template
 from ..raw_image import RawImage
@@ -19,15 +19,15 @@ class CpuTemplateMatcher(TemplateMatcher):
         ready, *_ = self._ready_state()
         return ready
 
-    def set_image(self, image: RawImage | None) -> TemplateMatcher:
+    def set_image(self, image: RawImage | None) -> Self:
         self._image = image
         return self
 
-    def set_template(self, template: RawImage | None) -> TemplateMatcher:
+    def set_template(self, template: RawImage | None) -> Self:
         self._template = template
         return self
 
-    def set_mask(self, mask: RawImage | None) -> TemplateMatcher:
+    def set_mask(self, mask: RawImage | None) -> Self:
         self._mask = mask
         return self
 
