@@ -82,9 +82,19 @@ def _generate_xy_presets() -> dict[int, tuple[int, int]]:
 
 
 class SwitchStickState:
-    def __init__(self) -> None:
-        self._x: int = xy_range["center_x"]
-        self._y: int = xy_range["center_y"]
+    def __init__(
+        self,
+        x: int | None = None,
+        y: int | None = None,
+    ) -> None:
+        if x is None:
+            x = xy_range["center_x"]
+        else:
+            x = _normalize_range(x)
+        if y is None:
+            y = xy_range["center_y"]
+        else:
+            y = _normalize_range(y)
         self._is_dirty: bool = False
 
     def __eq__(self, other: object) -> bool:
@@ -105,10 +115,9 @@ class SwitchStickState:
         return self._is_dirty
 
     def set_xy(self, x: int, y: int) -> None:
-        normalize = _normalize_range
         self._set_xy(
-            x=normalize(x),
-            y=normalize(y),
+            x=_normalize_range(x),
+            y=_normalize_range(y),
         )
 
     def to_neutral(self) -> None:
@@ -142,17 +151,17 @@ class SwitchStickState:
                 y = xy_range["center_y"]
         self._set_xy(x, y)
 
-    def calculate_tilting(self) -> list[SwitchStickTilt]:
-        tilting = []
+    def calculate_tiltings(self) -> list[SwitchStickTilt]:
+        tiltings = []
         if self.x < xy_range["center_x"]:
-            tilting.append(SwitchStickTilt.LEFT)
+            tiltings.append(SwitchStickTilt.LEFT)
         elif self.x > xy_range["center_x"]:
-            tilting.append(SwitchStickTilt.RIGHT)
+            tiltings.append(SwitchStickTilt.RIGHT)
         if self.y < xy_range["center_y"]:
-            tilting.append(SwitchStickTilt.BOTTOM)
+            tiltings.append(SwitchStickTilt.BOTTOM)
         elif self.y > xy_range["center_y"]:
-            tilting.append(SwitchStickTilt.TOP)
-        return tilting
+            tiltings.append(SwitchStickTilt.TOP)
+        return tiltings
 
     def clean(self) -> None:
         self._is_dirty = False
@@ -164,6 +173,6 @@ class SwitchStickState:
     @staticmethod
     def from_polar(r: float, degree: float) -> "SwitchStickState":
         x, y = _polar_to_xy(r, degree)
-        return SwitchStickState()
+        return SwitchStickState(x, y)
 
     _xy_presets: dict[int, tuple[int, int]] = _generate_xy_presets()
