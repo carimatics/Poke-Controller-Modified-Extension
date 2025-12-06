@@ -89,6 +89,7 @@ class Capture(AppFrame):
         else:
             self._disabled_image = ImageTk.PhotoImage()
 
+        # for resizing
         self._after_id: str | None = None
         self._is_resizing = False
         self._is_disabled = True
