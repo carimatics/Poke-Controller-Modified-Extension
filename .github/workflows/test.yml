@@ -26,29 +26,13 @@ jobs:
           version: 2025.12.0
           install: true
           cache: true
-      - name: Debug mise task detection
-        run: |
-          echo "=== Mise version ==="
-          mise --version
-
-          echo "=== File permissions (Git bash) ==="
-          ls -la mise-tasks/
-
-          echo "=== Mise debug ==="
-          mise tasks --log-level=debug
-        shell: bash
-      - run: net user
-        if: runner.os == 'Windows'
-      - name: Set mise-tasks executable permissions
-        if: runner.os == 'Windows'
-        run: |
-          Get-ChildItem -Path "mise-tasks\*" -Recurse | ForEach-Object {
-              icacls $_.FullName /grant ${net user}:RX
-          }
-      - run: mise --version
-      - run: mise tasks
-      - run: ls -R mise-tasks
       - name: Setup Runtime via uv
         run: uv sync
-      - name: CI(Lint/Format/Typecheck/Test)
+      - name: CI (Lint/Format/Typecheck/Test)
+        if: runner.os != 'Windows'
+        run: mise run ci
+        env:
+          MISE_ENV: ci_windows
+      - name: CI for windows (Lint/Format/Typecheck/Test)
+        if: runner.os == 'Windows'
         run: mise run ci
