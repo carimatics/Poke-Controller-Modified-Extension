@@ -23,10 +23,6 @@ jobs:
           version: 2025.12.0
           install: true
           cache: true
-      - name: Update uv
-        run: uv self update
-      - name: Check Python versions list
-        run: uv python list
       - name: Setup Runtime via uv
         run: uv sync
       - name: CI(Lint/Format/Typecheck/Test)
