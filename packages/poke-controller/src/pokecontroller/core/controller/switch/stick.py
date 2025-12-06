@@ -88,13 +88,13 @@ class SwitchStickState:
         y: int | None = None,
     ) -> None:
         if x is None:
-            x = xy_range["center_x"]
+            self._x = xy_range["center_x"]
         else:
-            x = _normalize_range(x)
+            self._x = _normalize_range(x)
         if y is None:
-            y = xy_range["center_y"]
+            self._y = xy_range["center_y"]
         else:
-            y = _normalize_range(y)
+            self._y = _normalize_range(y)
         self._is_dirty: bool = False
 
     def __eq__(self, other: object) -> bool:
