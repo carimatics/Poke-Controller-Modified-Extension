@@ -312,11 +312,24 @@ class Capture(AppFrame):
             self._height / self.frame_size[1],
         )
 
-    def _on_mouse_ctrl_left_pressed(self) -> None:
-        pass
+    def _on_mouse_ctrl_left_pressed(self, event: tk.Event) -> None:
+        current_frame = self._camera.frame
+        if current_frame is None:
+            logger.warning("Failed to get current frame")
+            return
 
-    def _on_mouse_ctrl_left_released(self) -> None:
-        pass
+        if self._enabled_lstick_mouse.get():
+            self._unbind_mouse_left()
+
+        x, y = event.x, event.y
+        fx, fy = int(x / self._ratio[0]), int(y / self._ratio[1])
+        pixel = current_frame[fy, fx]
+        logger.info(f"Mouse down: show ({x}, {y}) / Capture ({fx}, {fy})")
+        logger.info(f"Color [R: {pixel[0]}, G: {pixel[2]}, B: {pixel[1]}]")
+
+    def _on_mouse_ctrl_left_released(self, event: tk.Event) -> None:
+        if self._enabled_lstick_mouse.get():
+            self._bind_mouse_left()
 
     def _on_mouse_left_pressed(self, event: tk.Event) -> None:
         if not self._enabled_lstick_mouse.get():
@@ -383,10 +396,19 @@ class Capture(AppFrame):
         self._output_mouse_log()
 
     def _bind_all(self) -> None:
+        self._bind_mouse_ctrl_left()
         if self._enabled_lstick_mouse.get():
             self._bind_mouse_left()
         if self._enabled_rstick_mouse.get():
             self._bind_mouse_right()
+
+    def _bind_mouse_ctrl_left(self) -> None:
+        logger.debug("Binding mouse ctrl left functions")
+        self._canvas.bind("<Control-ButtonPress-1>", self._on_mouse_ctrl_left_pressed)
+        self._canvas.bind(
+            "<Control-ButtonRelease-1>", self._on_mouse_ctrl_left_released
+        )
+        logger.debug("Bound mouse ctrl left functions")
 
     def _bind_mouse_left(self) -> None:
         logger.debug("Binding mouse left functions")
