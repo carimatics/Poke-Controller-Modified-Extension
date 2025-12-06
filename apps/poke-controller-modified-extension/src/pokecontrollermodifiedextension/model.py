@@ -1,4 +1,5 @@
 import logging
+
 from pokecontroller.core.serial import Serial, SerialPort, get_serial_ports
 
 from .info import AppInfo

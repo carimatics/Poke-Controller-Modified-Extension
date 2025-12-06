@@ -73,7 +73,7 @@ class Capture(AppFrame):
 
         # for input logging
         self._should_log_input = False
-        self._input_log: deque[tuple[int, int, float]] | None = None
+        self._input_log: deque[tuple[float, float, float]] | None = None
         self._last_input_time: float | None = None
         self._langle: float | None = None
         self._lmag: float | None = None
@@ -411,9 +411,7 @@ class Capture(AppFrame):
                     langle_rad = cmath.phase(lpos)
                     langle = math.degrees(langle_rad)
                     lmag = abs(lpos) / self._mouse_circle_radius
-                    logs.append(
-                        (langle, lmag, time.perf_counter() - last_input_time)
-                    )
+                    logs.append((langle, lmag, time.perf_counter() - last_input_time))
                 for log in logs:
                     logger.debug(",".join(str(v) for v in log))
 

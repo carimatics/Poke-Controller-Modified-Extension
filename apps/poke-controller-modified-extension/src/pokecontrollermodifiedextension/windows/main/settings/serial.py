@@ -131,10 +131,7 @@ class SerialSettings(AppFrame):
         return labelframe
 
     def _load_serial_ports(self) -> list[str]:
-        return [
-            port.path
-            for port in self.app_model.load_serial_ports()
-        ]
+        return [port.path for port in self.app_model.load_serial_ports()]
 
     def _load_serial_baud_rate_list(self) -> list[int]:
         return self.app_model.load_serial_baud_rate_list()

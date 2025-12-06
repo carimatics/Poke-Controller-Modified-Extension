@@ -9,11 +9,13 @@ logger = logging.getLogger(__name__)
 
 LINESEP = "\r\n"
 
+
 @dataclass
 class SerialPort:
     path: str
     name: str
     description: str
+
 
 def get_serial_ports() -> list[SerialPort]:
     return [
@@ -24,6 +26,7 @@ def get_serial_ports() -> list[SerialPort]:
         )
         for port in list_ports.comports()
     ]
+
 
 class Serial:
     def __init__(self) -> None:

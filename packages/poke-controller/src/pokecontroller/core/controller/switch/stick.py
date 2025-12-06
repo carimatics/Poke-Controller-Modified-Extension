@@ -1,5 +1,4 @@
 import logging
-
 import math
 from enum import IntFlag, auto
 from typing import Self
