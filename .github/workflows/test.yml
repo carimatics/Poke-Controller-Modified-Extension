@@ -1,0 +1,29 @@
+name: Test
+on:
+  pull_request:
+    branches:
+      - master
+      - develop
+      - rewritten # tmp
+  push:
+    branches:
+      - master
+      - develop
+      - rewritten # tmp
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Install Mise
+        uses: jdx/mise-action@v2
+        with:
+          version: 2025.12.0
+          install: true
+          cache: true
+      - name: Sync Dependencies via uv
+        run: mise run sync
+      - name: CI(Lint/Format/Typecheck/Test)
+        run: mise run ci
