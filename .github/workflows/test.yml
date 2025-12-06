@@ -24,7 +24,7 @@ jobs:
           install: true
           cache: true
       - name: Setup Runtime via uv
-        run: mise run setup
+        run: uv python install
       - name: Install Dependencies via uv
         run: mise run sync
       - name: CI(Lint/Format/Typecheck/Test)
