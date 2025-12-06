@@ -19,7 +19,6 @@ logger = logging.getLogger(__name__)
 
 type Font = (
     str
-    | tk.font.Font
     | list[Any]
     | tuple[str]
     | tuple[str, int]
