@@ -13,7 +13,7 @@ class SerialSettings(AppFrame):
     def __init__(self, master: tk.Misc, *args: Any, **kwargs: Any) -> None:
         super().__init__(master, *args, **kwargs)
 
-        self._port_list: list[str] = self._load_serial_port_list()
+        self._port_list: list[str] = self._load_serial_ports()
         self._baud_rate_list: list[int] = self._load_serial_baud_rate_list()
         self._data_format_list: list[str] = self._load_serial_data_format_list()
 
@@ -130,8 +130,11 @@ class SerialSettings(AppFrame):
 
         return labelframe
 
-    def _load_serial_port_list(self) -> list[str]:
-        return self.app_model.load_serial_port_list()
+    def _load_serial_ports(self) -> list[str]:
+        return [
+            port.path
+            for port in self.app_model.load_serial_ports()
+        ]
 
     def _load_serial_baud_rate_list(self) -> list[int]:
         return self.app_model.load_serial_baud_rate_list()
@@ -140,7 +143,7 @@ class SerialSettings(AppFrame):
         return self.app_model.load_serial_data_format_list()
 
     def _on_reconnect_pushed(self) -> None:
-        self.app_model.connect_serial_port()
+        self.app_model.connect_serial_port(self.app.serial)
 
     def _on_disconnect_pushed(self) -> None:
         self.app_model.disconnect_serial_port()

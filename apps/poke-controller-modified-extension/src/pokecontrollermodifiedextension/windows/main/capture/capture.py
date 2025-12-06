@@ -1,9 +1,14 @@
+import cmath
 import logging
+import math
+import time
 import tkinter as tk
+from collections import deque
 from typing import Any
 
 from PIL import Image, ImageTk
 from pokecontroller.core import image
+from pokecontroller.core.controller import switch
 
 from ....values import literals as l
 from ....widgets import AppFrame
@@ -45,7 +50,35 @@ class Capture(AppFrame):
         self._show_guide = self.app.gui_state.capture.show_guide
         self._next_frame_time = 1000 // self._fps.get()
         self._width, self._height = self._parse_size()
+
+        # for mouse control
+        self._controller = switch.SwitchController(self._serial)
+        self._enabled_lstick_mouse = (
+            self.app.gui_state.device_input.enabled_lstick_mouse
+        )
+        self._enabled_rstick_mouse = (
+            self.app.gui_state.device_input.enabled_rstick_mouse
+        )
+        self._mouse_circle_radius = 60
+        self._lstick_init = (0, 0)
+        self._rstick_init = (0, 0)
+        self._data_format = self.app.gui_state.serial.data_format
         self._update_ratio()
+
+        # for touchscreen support
+        self._touchscreen_start_x = 1
+        self._touchscreen_start_y = 1
+        self._touchscreen_end_x = 320
+        self._touchscreen_end_y = 240
+
+        # for input logging
+        self._should_log_input = False
+        self._input_log: deque[tuple[int, int, float]] | None = None
+        self._last_input_time: float | None = None
+        self._langle: float | None = None
+        self._lmag: float | None = None
+        self._rangle: float | None = None
+        self._rmag: float | None = None
 
         if (disabled_raw_image := self._disabled_raw_image) is not None:
             self._disabled_image = ImageTk.PhotoImage(
@@ -64,6 +97,7 @@ class Capture(AppFrame):
         self.build_ui()
 
         self._register_hooks()
+        self._bind_all()
         self._update_frame()
 
     @property
@@ -76,6 +110,12 @@ class Capture(AppFrame):
     def _register_hooks(self) -> None:
         self._fps.trace_add("write", self._on_fps_changed)
         self._size.trace_add("write", self._on_size_changed)
+        self._enabled_lstick_mouse.trace_add(
+            "write", self._on_enable_lstick_mouse_changed
+        )
+        self._enabled_rstick_mouse.trace_add(
+            "write", self._on_enable_rstick_mouse_changed
+        )
 
     def _update_frame(self) -> None:
         if self._show_realtime.get():
@@ -89,8 +129,8 @@ class Capture(AppFrame):
         end: tuple[int, int],
         *,
         outline: str,
-        width: int,
         tag: str,
+        width: float = 1.0,
         ratio: tuple[float, float] | None = None,
         delete_after_ms: int | None = 100,
     ) -> None:
@@ -117,6 +157,7 @@ class Capture(AppFrame):
         *,
         outline: str,
         tag: str,
+        width: float = 1.0,
         ratio: tuple[float, float] | None = None,
         delete_after_ms: int | None = 100,
     ) -> None:
@@ -129,7 +170,7 @@ class Capture(AppFrame):
             (center[1] - radius) * rat[1],
             (center[0] + radius) * rat[0],
             (center[1] + radius) * rat[1],
-            width=2.5,
+            width=width,
             outline=outline,
             tags=tag,
         )
@@ -212,6 +253,18 @@ class Capture(AppFrame):
         self._resize()
         self._width, self._height = self._parse_size()
 
+    def _on_enable_lstick_mouse_changed(self, *_: Any) -> None:
+        if self._enabled_lstick_mouse.get():
+            self._bind_mouse_left()
+        else:
+            self._unbind_mouse_left()
+
+    def _on_enable_rstick_mouse_changed(self, *_: Any) -> None:
+        if self._enabled_rstick_mouse.get():
+            self._bind_mouse_right()
+        else:
+            self._unbind_mouse_right()
+
     def _resize(self) -> None:
         # change size properties
         new_size = self._parse_size()
@@ -246,3 +299,166 @@ class Capture(AppFrame):
             self._width / self.frame_size[0],
             self._height / self.frame_size[1],
         )
+
+    def _on_mouse_ctrl_left_pressed(self) -> None:
+        pass
+
+    def _on_mouse_ctrl_left_released(self) -> None:
+        pass
+
+    def _on_mouse_left_pressed(self, event: tk.Event) -> None:
+        if not self._enabled_lstick_mouse.get():
+            return
+
+        if self._enabled_rstick_mouse.get():
+            self._unbind_mouse_right()
+
+        self._canvas.config(cursor="dot")
+        x, y = event.x, event.y
+        self._lstick_init = (x, y)
+        radius = self._mouse_circle_radius
+        self._draw_circle(
+            (x, y),
+            radius,
+            outline="cyan",
+            tag="lcircle_outer",
+            ratio=(1.0, 1.0),
+            delete_after_ms=None,
+        )
+        self._draw_circle(
+            (x, y),
+            radius // 10,
+            outline="cyan",
+            tag="lcircle_inner",
+            ratio=(1.0, 1.0),
+            delete_after_ms=None,
+        )
+
+        if self._should_log_input:
+            if self._input_log is None:
+                self._input_log = deque()
+            else:
+                self._input_log.clear()
+
+            self._last_input_time = time.perf_counter()
+            self._langle = None
+            self._lmag = None
+
+    def _on_mouse_left_pressing(self, event: tk.Event) -> None:
+        if not self._enabled_lstick_mouse.get():
+            return
+
+        lpos = complex(
+            event.x - self._lstick_init[0],
+            self._lstick_init[1] - event.y,
+        )
+        langle_rad = cmath.phase(lpos)
+        langle = math.degrees(langle_rad)
+        lmag = abs(lpos) / self._mouse_circle_radius
+        self._controller.state.lstick.tilt_by_polar(lmag, langle)
+        self._controller.send_state()
+
+        circle_radius = self._mouse_circle_radius
+        if lmag >= 1.0:
+            center_x = (circle_radius + circle_radius // 11) * math.cos(langle_rad)
+            center_y = (circle_radius + circle_radius // 11) * math.sin(langle_rad)
+            start_x = self._lstick_init[0] + center_x - circle_radius // 10
+            end_x = self._lstick_init[0] + center_x + circle_radius // 10
+            start_y = self._lstick_init[1] - center_y - circle_radius // 10
+            end_y = self._lstick_init[1] - center_y + circle_radius // 10
+        else:
+            start_x = event.x - circle_radius // 10
+            end_x = event.x + circle_radius // 10
+            start_y = event.y - circle_radius // 10
+            end_y = event.y + circle_radius // 10
+
+        self._canvas.coords(
+            "lcircle_inner",
+            start_x,
+            start_y,
+            end_x,
+            end_y,
+        )
+
+        if self._should_log_input:
+            if (logs := self._input_log) is not None:
+                current_input_time = time.perf_counter()
+                if (last_input_time := self._last_input_time) is not None:
+                    duration = current_input_time - last_input_time
+                    logs.append((langle, lmag, duration))
+                    self._last_input_time = current_input_time
+                    self._langle = langle
+                    self._lmag = lmag
+
+    def _on_mouse_left_released(self, event: tk.Event) -> None:
+        if not self._enabled_lstick_mouse.get():
+            return
+
+        self._canvas.config(cursor="tcross")
+        self._controller.state.lstick.reset()
+        self._controller.send_state()
+        self._delete_tagged_item("lcircle_outer")
+        self._delete_tagged_item("lcircle_inner")
+        if self._enabled_rstick_mouse.get():
+            self._bind_mouse_right()
+        if self._should_log_input:
+            if (logs := self._input_log) is not None:
+                if (last_input_time := self._last_input_time) is not None:
+                    lpos = complex(
+                        event.x - self._lstick_init[0],
+                        self._lstick_init[1] - event.y,
+                    )
+                    langle_rad = cmath.phase(lpos)
+                    langle = math.degrees(langle_rad)
+                    lmag = abs(lpos) / self._mouse_circle_radius
+                    logs.append(
+                        (langle, lmag, time.perf_counter() - last_input_time)
+                    )
+                for log in logs:
+                    logger.debug(",".join(str(v) for v in log))
+
+    def _on_mouse_right_pressed(self, event: tk.Event) -> None:
+        if not self._enabled_rstick_mouse.get():
+            return
+
+    def _on_mouse_right_pressing(self, event: tk.Event) -> None:
+        if not self._enabled_rstick_mouse.get():
+            return
+
+    def _on_mouse_right_released(self, event: tk.Event) -> None:
+        if not self._enabled_rstick_mouse.get():
+            return
+
+    def _bind_all(self) -> None:
+        if self._enabled_lstick_mouse.get():
+            self._bind_mouse_left()
+        if self._enabled_rstick_mouse.get():
+            self._bind_mouse_right()
+
+    def _bind_mouse_left(self) -> None:
+        logger.debug("Binding mouse left functions")
+        self._canvas.bind("<ButtonPress-1>", self._on_mouse_left_pressed)
+        self._canvas.bind("<Button1-Motion>", self._on_mouse_left_pressing)
+        self._canvas.bind("<ButtonRelease-1>", self._on_mouse_left_released)
+        logger.debug("Bound mouse left functions")
+
+    def _unbind_mouse_left(self) -> None:
+        logger.debug("Unbinding mouse left functions")
+        self._canvas.unbind("<ButtonPress-1>")
+        self._canvas.unbind("<Button1-Motion>")
+        self._canvas.unbind("<ButtonRelease-1>")
+        logger.debug("Unbound mouse left functions")
+
+    def _bind_mouse_right(self) -> None:
+        logger.debug("Binding mouse right functions")
+        self._canvas.bind("<ButtonPress-3>", self._on_mouse_right_pressed)
+        self._canvas.bind("<Button3-Motion>", self._on_mouse_right_pressing)
+        self._canvas.bind("<ButtonRelease-3>", self._on_mouse_right_released)
+        logger.debug("Bound mouse right functions")
+
+    def _unbind_mouse_right(self) -> None:
+        logger.debug("Unbinding mouse right functions")
+        self._canvas.unbind("<ButtonPress-3>")
+        self._canvas.unbind("<Button3-Motion>")
+        self._canvas.unbind("<ButtonRelease-3>")
+        logger.debug("Unbound mouse right functions")

@@ -1,4 +1,5 @@
 import logging
+from pokecontroller.core.serial import Serial, SerialPort, get_serial_ports
 
 from .info import AppInfo
 from .state import AppGuiState
@@ -100,8 +101,8 @@ class AppModel:
     def open_screencapture_directory_window(self) -> None:
         pass
 
-    def load_serial_port_list(self) -> list[str]:
-        return ["COM1", "COM2", "COM3"]
+    def load_serial_ports(self) -> list[SerialPort]:
+        return get_serial_ports()
 
     def load_serial_baud_rate_list(self) -> list[int]:
         return [4800, 9600, 115200]
@@ -109,8 +110,10 @@ class AppModel:
     def load_serial_data_format_list(self) -> list[str]:
         return ["Default", "Qingpi", "3DS Controller"]
 
-    def connect_serial_port(self) -> None:
-        pass
+    def connect_serial_port(self, serial: Serial) -> None:
+        port = self.gui_state.serial.port.get()
+        baud_rate = self.gui_state.serial.baud_rate.get()
+        serial.open(port_path=port, baud_rate=baud_rate)
 
     def disconnect_serial_port(self) -> None:
         pass

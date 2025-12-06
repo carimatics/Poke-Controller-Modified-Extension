@@ -1,12 +1,29 @@
 import logging
 from collections.abc import Buffer
+from dataclasses import dataclass
 
 import serial
+from serial.tools import list_ports
 
 logger = logging.getLogger(__name__)
 
 LINESEP = "\r\n"
 
+@dataclass
+class SerialPort:
+    path: str
+    name: str
+    description: str
+
+def get_serial_ports() -> list[SerialPort]:
+    return [
+        SerialPort(
+            path=port.device,
+            name=port.name,
+            description=port.description,
+        )
+        for port in list_ports.comports()
+    ]
 
 class Serial:
     def __init__(self) -> None:
@@ -18,9 +35,9 @@ class Serial:
             return False
         return s.is_open  # type: ignore[no-any-return]
 
-    def open(self, port_name: str, baud_rate: int) -> None:
+    def open(self, port_path: str, baud_rate: int) -> None:
         self.close()
-        self._serial = serial.Serial(port_name, baud_rate)
+        self._serial = serial.Serial(port_path, baud_rate)
 
     def close(self) -> None:
         if (s := self._serial) is None:

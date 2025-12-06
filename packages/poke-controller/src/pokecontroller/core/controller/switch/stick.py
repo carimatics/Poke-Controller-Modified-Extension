@@ -1,6 +1,10 @@
+import logging
+
 import math
 from enum import IntFlag, auto
 from typing import Self
+
+logger = logging.getLogger(__name__)
 
 
 class SwitchStickTilt(IntFlag):
@@ -169,6 +173,7 @@ class SwitchStickState:
     def _set_xy(self, x: int, y: int) -> None:
         if self._x != x or self._y != y:
             self._x, self._y, self._is_dirty = x, y, True
+            logger.debug(f"SwitchStickState: x={self._x}, y={self._y}")
 
     @classmethod
     def from_polar(cls, r: float, degree: float) -> Self:
