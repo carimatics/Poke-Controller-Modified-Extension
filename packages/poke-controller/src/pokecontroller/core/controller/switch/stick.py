@@ -1,5 +1,6 @@
 import math
 from enum import IntFlag, auto
+from typing import Self
 
 
 class SwitchStickTilt(IntFlag):
@@ -57,27 +58,24 @@ def _generate_xy_presets() -> dict[int, tuple[int, int]]:
         _xy_preset[TOP|BOTTOM] => None (invalid)
         _xy_preset[TOP|BOTTOM|LEFT] => None (invalid)
     """
-    neutral = (xy_range["center_x"], xy_range["center_y"])
-    right = _polar_to_xy(1.0, 0.0)
-    top_right = _polar_to_xy(1.0, 45.0)
-    top = _polar_to_xy(1.0, 90.0)
-    top_left = _polar_to_xy(1.0, 135.0)
-    left = _polar_to_xy(1.0, 180.0)
-    bottom_left = _polar_to_xy(1.0, 225.0)
-    bottom = _polar_to_xy(1.0, 270.0)
-    bottom_right = _polar_to_xy(1.0, 315.0)
-
+    # presets unneutral
     return {
-        # LBRT
-        0b0000: neutral,
-        0b0001: top,
-        0b0010: right,
-        0b0011: top_right,
-        0b0100: bottom,
-        0b0110: bottom_right,
-        0b1000: left,
-        0b1001: top_left,
-        0b1100: bottom_left,
+        input_tilt: _polar_to_xy(1.0, 45.0 * coefficient)
+        for coefficient, input_tilt in enumerate(
+            (
+                # LBRT
+                0b0010,  # right
+                0b0011,  # top_right
+                0b0001,  # top
+                0b1001,  # top_left
+                0b1000,  # left
+                0b1100,  # bottom_left
+                0b0100,  # bottom
+                0b0110,  # bottom_right
+            )
+        )
+    } | {
+        0b0000: (xy_range["center_x"], xy_range["center_y"]),  # neutral
     }
 
 
@@ -136,7 +134,7 @@ class SwitchStickState:
         self._set_xy(x, y)
 
     def tilt_by_preset(self, tilt: int) -> None:
-        presets = SwitchStickState._xy_presets
+        presets = self._xy_presets
         x, y = presets.get(tilt, presets[0])
         self._set_xy(x, y)
 
@@ -172,7 +170,7 @@ class SwitchStickState:
         if self._x != x or self._y != y:
             self._x, self._y, self._is_dirty = x, y, True
 
-    @staticmethod
-    def from_polar(r: float, degree: float) -> "SwitchStickState":
+    @classmethod
+    def from_polar(cls, r: float, degree: float) -> Self:
         x, y = _polar_to_xy(r, degree)
-        return SwitchStickState(x, y)
+        return cls(x, y)
