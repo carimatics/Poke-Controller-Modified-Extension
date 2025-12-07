@@ -5,7 +5,8 @@ from typing import Any
 
 from ....model import AppModel
 from ....values import literals as l
-from ....widgets import AppFrame
+from ....widgets import AppDialog, AppFrame
+from ...controller import ControllerWindow
 
 logger = logging.getLogger(__name__)
 
@@ -32,6 +33,7 @@ class Buttons(AppFrame):
         self._open_dir_button_image: tk.PhotoImage = tk.PhotoImage(
             file="../assets/icons8-OpenDir-16.png"
         )
+        self._controller_window: AppDialog | None = None
         self.build_ui()
 
     @property
@@ -71,7 +73,10 @@ class Buttons(AppFrame):
         self.app_model.start_command()
 
     def _on_controller_pushed(self) -> None:
-        self.app_model.open_software_controller_window()
+        self._controller_window = ControllerWindow(self)
+        self._controller_window.protocol(
+            "WM_DELETE_WINDOW", self._on_controller_window_closed
+        )
 
     def _on_clear_outputs_pushed(self) -> None:
         self.app_model.clear_log_outputs()
@@ -84,3 +89,9 @@ class Buttons(AppFrame):
 
     def _on_notify_discord_pushed(self) -> None:
         self.app_model.notify_discord()
+
+    def _on_controller_window_closed(self) -> None:
+        if (window := self._controller_window) is None:
+            return
+        window.destroy()
+        self._controller_window = None

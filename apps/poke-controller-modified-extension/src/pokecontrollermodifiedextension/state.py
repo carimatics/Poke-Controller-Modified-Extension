@@ -3,6 +3,7 @@ from tkinter import BooleanVar, DoubleVar, IntVar, StringVar, Variable
 from typing import Any
 
 DEFAULT_GUI_STATE: dict[str, Any] = {
+    "version": "0.2.0",
     "general": {
         "theme": "default",
     },
@@ -177,6 +178,7 @@ class AppGuiWidgetSettings:
 
 @dataclass
 class AppGuiState:
+    version: str
     general: AppGuiGeneralSettings
     capture: AppGuiCaptureSettings
     serial: AppGuiSerialSettings
@@ -196,6 +198,7 @@ def load_state(
 
     # general
     return AppGuiState(
+        version=raw["version"],
         general=AppGuiGeneralSettings(
             theme=StringVar(value=raw["general"]["theme"]),
         ),
