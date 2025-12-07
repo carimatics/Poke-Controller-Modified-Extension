@@ -1,5 +1,6 @@
 import logging
 import tkinter as tk
+import tomllib
 import webbrowser
 from typing import Any
 
@@ -110,7 +111,8 @@ class AppMenu(tk.Menu, AppAccessorMixIn):
 
     def _on_menu_reset_window_size_pushed(self) -> None:
         logger.debug("Reset window size")
-        default_size = DEFAULT_GUI_STATE["capture"]["size"]
+        default_gui_state = tomllib.loads(DEFAULT_GUI_STATE)
+        default_size = default_gui_state["capture"]["size"]
         self.app.gui_state.capture.size.set(default_size)
 
     def _on_command_line_settings_pushed(self) -> None:
