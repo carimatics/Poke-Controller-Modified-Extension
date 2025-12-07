@@ -1,3 +1,4 @@
+import logging
 import tkinter as tk
 from pathlib import Path
 from typing import Any
@@ -8,6 +9,8 @@ from pokecontroller.core.serial import Serial
 from .info import AppInfo
 from .model import AppModel
 from .state import AppGuiState, load_state
+
+logger = logging.getLogger(__name__)
 
 INFO = AppInfo(
     name="Poke-Controller Modified Extension",

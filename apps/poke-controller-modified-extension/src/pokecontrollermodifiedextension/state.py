@@ -1,86 +1,92 @@
-from dataclasses import dataclass
-from tkinter import BooleanVar, DoubleVar, IntVar, StringVar, Variable
-from typing import Any
+import tomllib
+from dataclasses import dataclass, fields, is_dataclass
+from tkinter import BooleanVar, DoubleVar, IntVar, StringVar
+from typing import Any, Self
 
-DEFAULT_GUI_STATE: dict[str, Any] = {
-    "version": "0.2.0",
-    "general": {
-        "theme": "default",
-    },
-    "capture": {
-        "camera_id": "0",
-        "camera_name": "0",
-        "fps": "45",
-        "size": "640x360",
-        "show_realtime": "True",
-        "show_matched": "False",
-        "show_guide": "False",
-    },
-    "serial": {
-        "port": "",
-        "baud_rate": "9600",
-        "data_format": "Default",
-        "show_data": "False",
-    },
-    "device_input": {
-        "enabled_keyboard": "True",
-        "enabled_lstick_mouse": "True",
-        "enabled_rstick_mouse": "True",
-        "enabled_pro_controller": "True",
-        "enabled_record_pro_controller": "True",
-    },
-    "command": {
-        "python_commands_filter": "-",
-        "python_command": "",
-        "mcu_commands_filter": "-",
-        "mcu_command": "",
-        "shortcut": {
-            "number": "1",
-            "registered_commands": {
-                "1": {"name": "(empty)", "klass": "None"},
-                "2": {"name": "(empty)", "klass": "None"},
-                "3": {"name": "(empty)", "klass": "None"},
-                "4": {"name": "(empty)", "klass": "None"},
-                "5": {"name": "(empty)", "klass": "None"},
-                "6": {"name": "(empty)", "klass": "None"},
-                "7": {"name": "(empty)", "klass": "None"},
-                "8": {"name": "(empty)", "klass": "None"},
-                "9": {"name": "(empty)", "klass": "None"},
-                "10": {"name": "(empty)", "klass": "None"},
-            },
-        },
-    },
-    "notification": {
-        "line": {
-            "enabled_started": "False",
-            "enabled_ended": "False",
-        },
-        "discord": {
-            "enabled_started": "False",
-            "enabled_ended": "False",
-        },
-    },
-    "widget": {
-        "outputs": {
-            "size_balance": "50.0",
-            "stdout": "1",
-            "visible_output1": "True",
-            "visible_output2": "True",
-        },
-        "software_controller": {
-            "position": "bottom",
-            "visible": "True",
-        },
-        "dialog": {
-            "confirm_buttons_position": "bottom",
-        },
-    },
-}
+# @formatter:off (for PyCharm)
+# fmt: off
+# language=toml
+DEFAULT_GUI_STATE: str = """
+[general]
+theme = "default"
+settings_version = "0.1.8"
+
+[capture]
+camera_id = 0
+camera_name = "0"
+fps = 45
+size = "640x360"
+show_realtime = true
+show_matched = false
+show_guide = false
+
+[serial]
+port = ""
+baud_rate = 9600
+data_format = "Default"
+show_data = false
+
+[device_input]
+enabled_keyboard = true
+enabled_lstick_mouse = true
+enabled_rstick_mouse = true
+enabled_pro_controller = false
+enabled_record_pro_controller = false
+
+[command]
+python_commands_filter = "-"
+python_command = ""
+mcu_commands_filter = "-"
+mcu_command = ""
+
+[command.shortcut]
+number = 1
+
+[command.shortcut.registered_commands]
+"1".name = "(empty)"
+"1".klass = "None"
+"2".name = "(empty)"
+"2".klass = "None"
+"3".name = "(empty)"
+"3".klass = "None"
+"4".name = "(empty)"
+"4".klass = "None"
+"5".name = "(empty)"
+"5".klass = "None"
+"6".name = "(empty)"
+"6".klass = "None"
+"7".name = "(empty)"
+"7".klass = "None"
+"8".name = "(empty)"
+"8".klass = "None"
+"9".name = "(empty)"
+"9".klass = "None"
+"10".name = "(empty)"
+"10".klass = "None"
+
+[notification]
+line.enabled_started = false
+line.enabled_ended = false
+discord.enabled_started = false
+discord.enabled_ended = false
+
+[widget]
+outputs.size_balance = 50.0
+outputs.stdout = 1
+outputs.visible_output1 = true
+outputs.visible_output2 = true
+software_controller.position = "bottom"
+software_controller.visible = true
+dialog.confirm_buttons_position = "bottom"
+"""
+# fmt: on
+# @formatter:on (for PyCharm)
 
 
 @dataclass
 class AppGuiGeneralSettings:
     theme: StringVar
+    settings_version: StringVar
 
 
 @dataclass
@@ -122,6 +128,16 @@ class AppGuiCommandShortcutSettings:
     number: IntVar
     registered_commands: dict[str, AppGuiCommandShortcut]
 
+    @classmethod
+    def from_dict(cls, d: dict[str, Any]) -> Self:
+        return cls(
+            number=d["number"],
+            registered_commands={
+                k: AppGuiCommandShortcut(**v)
+                for k, v in d["registered_commands"].items()
+            },
+        )
+
 
 @dataclass
 class AppGuiCommandSettings:
@@ -130,6 +146,16 @@ class AppGuiCommandSettings:
     mcu_commands_filter: StringVar
     mcu_command: StringVar
     shortcut: AppGuiCommandShortcutSettings
+
+    @classmethod
+    def from_dict(cls, d: dict[str, Any]) -> Self:
+        return cls(
+            python_commands_filter=d["python_commands_filter"],
+            python_command=d["python_command"],
+            mcu_commands_filter=d["mcu_commands_filter"],
+            mcu_command=d["mcu_command"],
+            shortcut=AppGuiCommandShortcutSettings.from_dict(d["shortcut"]),
+        )
 
 
 @dataclass
@@ -148,6 +174,13 @@ class AppGuiDiscordNotificationSettings:
 class AppGuiNotificationSettings:
     line: AppGuiLineNotificationSettings
     discord: AppGuiDiscordNotificationSettings
+
+    @classmethod
+    def from_dict(cls, d: dict[str, Any]) -> Self:
+        return cls(
+            line=AppGuiLineNotificationSettings(**d["line"]),
+            discord=AppGuiDiscordNotificationSettings(**d["discord"]),
+        )
 
 
 @dataclass
@@ -175,10 +208,19 @@ class AppGuiWidgetSettings:
     software_controller: AppGuiSoftwareControllerWidgetSettings
     dialog: AppGuiDialogWidgetSettings
 
+    @classmethod
+    def from_dict(cls, d: dict[str, Any]) -> Self:
+        return cls(
+            outputs=AppGuiOutputsWidgetSettings(**d["outputs"]),
+            software_controller=AppGuiSoftwareControllerWidgetSettings(
+                **d["software_controller"]
+            ),
+            dialog=AppGuiDialogWidgetSettings(**d["dialog"]),
+        )
+
 
 @dataclass
 class AppGuiState:
-    version: str
     general: AppGuiGeneralSettings
     capture: AppGuiCaptureSettings
     serial: AppGuiSerialSettings
@@ -187,6 +229,18 @@ class AppGuiState:
     notification: AppGuiNotificationSettings
     widget: AppGuiWidgetSettings
 
+    @classmethod
+    def from_dict(cls, d: dict[str, Any]) -> Self:
+        return cls(
+            general=AppGuiGeneralSettings(**d["general"]),
+            capture=AppGuiCaptureSettings(**d["capture"]),
+            serial=AppGuiSerialSettings(**d["serial"]),
+            device_input=AppGuiDeviceInputSettings(**d["device_input"]),
+            command=AppGuiCommandSettings.from_dict(d["command"]),
+            notification=AppGuiNotificationSettings.from_dict(d["notification"]),
+            widget=AppGuiWidgetSettings.from_dict(d["widget"]),
+        )
+
 
 def load_state(
     *,
@@ -194,242 +248,46 @@ def load_state(
     profile: str,
 ) -> AppGuiState:
     # FIXME: load from state file
-    raw: dict[str, Any] = DEFAULT_GUI_STATE
-
-    # general
-    return AppGuiState(
-        version=raw["version"],
-        general=AppGuiGeneralSettings(
-            theme=StringVar(value=raw["general"]["theme"]),
-        ),
-        capture=AppGuiCaptureSettings(
-            camera_id=StringVar(value=raw["capture"]["camera_id"]),
-            camera_name=StringVar(value=raw["capture"]["camera_name"]),
-            fps=IntVar(value=int(raw["capture"]["fps"])),
-            size=StringVar(value=raw["capture"]["size"]),
-            show_realtime=BooleanVar(value=raw["capture"]["show_realtime"] == "True"),
-            show_matched=BooleanVar(value=raw["capture"]["show_matched"] == "True"),
-            show_guide=BooleanVar(value=raw["capture"]["show_guide"] == "True"),
-        ),
-        serial=AppGuiSerialSettings(
-            port=StringVar(value=raw["serial"]["port"]),
-            baud_rate=IntVar(value=int(raw["serial"]["baud_rate"])),
-            data_format=StringVar(value=raw["serial"]["data_format"]),
-            show_data=BooleanVar(value=raw["serial"]["show_data"] == "True"),
-        ),
-        device_input=AppGuiDeviceInputSettings(
-            enabled_keyboard=BooleanVar(
-                value=raw["device_input"]["enabled_keyboard"] == "True"
-            ),
-            enabled_lstick_mouse=BooleanVar(
-                value=raw["device_input"]["enabled_lstick_mouse"] == "True"
-            ),
-            enabled_rstick_mouse=BooleanVar(
-                value=raw["device_input"]["enabled_rstick_mouse"] == "True"
-            ),
-            enabled_pro_controller=BooleanVar(
-                value=raw["device_input"]["enabled_pro_controller"] == "True"
-            ),
-            enabled_record_pro_controller=BooleanVar(
-                value=raw["device_input"]["enabled_record_pro_controller"] == "True"
-            ),
-        ),
-        command=AppGuiCommandSettings(
-            python_commands_filter=StringVar(
-                value=raw["command"]["python_commands_filter"]
-            ),
-            python_command=StringVar(value=raw["command"]["python_command"]),
-            mcu_commands_filter=StringVar(value=raw["command"]["mcu_commands_filter"]),
-            mcu_command=StringVar(value=raw["command"]["mcu_command"]),
-            shortcut=AppGuiCommandShortcutSettings(
-                number=IntVar(value=int(raw["command"]["shortcut"]["number"])),
-                registered_commands={
-                    "1": AppGuiCommandShortcut(
-                        name=StringVar(
-                            value=raw["command"]["shortcut"]["registered_commands"][
-                                "1"
-                            ]["name"]
-                        ),
-                        klass=StringVar(
-                            value=raw["command"]["shortcut"]["registered_commands"][
-                                "1"
-                            ]["klass"]
-                        ),
-                    ),
-                    "2": AppGuiCommandShortcut(
-                        name=StringVar(
-                            value=raw["command"]["shortcut"]["registered_commands"][
-                                "2"
-                            ]["name"]
-                        ),
-                        klass=StringVar(
-                            value=raw["command"]["shortcut"]["registered_commands"][
-                                "2"
-                            ]["klass"]
-                        ),
-                    ),
-                    "3": AppGuiCommandShortcut(
-                        name=StringVar(
-                            value=raw["command"]["shortcut"]["registered_commands"][
-                                "3"
-                            ]["name"]
-                        ),
-                        klass=StringVar(
-                            value=raw["command"]["shortcut"]["registered_commands"][
-                                "3"
-                            ]["klass"]
-                        ),
-                    ),
-                    "4": AppGuiCommandShortcut(
-                        name=StringVar(
-                            value=raw["command"]["shortcut"]["registered_commands"][
-                                "4"
-                            ]["name"]
-                        ),
-                        klass=StringVar(
-                            value=raw["command"]["shortcut"]["registered_commands"][
-                                "4"
-                            ]["klass"]
-                        ),
-                    ),
-                    "5": AppGuiCommandShortcut(
-                        name=StringVar(
-                            value=raw["command"]["shortcut"]["registered_commands"][
-                                "5"
-                            ]["name"]
-                        ),
-                        klass=StringVar(
-                            value=raw["command"]["shortcut"]["registered_commands"][
-                                "5"
-                            ]["klass"]
-                        ),
-                    ),
-                    "6": AppGuiCommandShortcut(
-                        name=StringVar(
-                            value=raw["command"]["shortcut"]["registered_commands"][
-                                "6"
-                            ]["name"]
-                        ),
-                        klass=StringVar(
-                            value=raw["command"]["shortcut"]["registered_commands"][
-                                "6"
-                            ]["klass"]
-                        ),
-                    ),
-                    "7": AppGuiCommandShortcut(
-                        name=StringVar(
-                            value=raw["command"]["shortcut"]["registered_commands"][
-                                "7"
-                            ]["name"]
-                        ),
-                        klass=StringVar(
-                            value=raw["command"]["shortcut"]["registered_commands"][
-                                "7"
-                            ]["klass"]
-                        ),
-                    ),
-                    "8": AppGuiCommandShortcut(
-                        name=StringVar(
-                            value=raw["command"]["shortcut"]["registered_commands"][
-                                "8"
-                            ]["name"]
-                        ),
-                        klass=StringVar(
-                            value=raw["command"]["shortcut"]["registered_commands"][
-                                "8"
-                            ]["klass"]
-                        ),
-                    ),
-                    "9": AppGuiCommandShortcut(
-                        name=StringVar(
-                            value=raw["command"]["shortcut"]["registered_commands"][
-                                "9"
-                            ]["name"]
-                        ),
-                        klass=StringVar(
-                            value=raw["command"]["shortcut"]["registered_commands"][
-                                "9"
-                            ]["klass"]
-                        ),
-                    ),
-                    "10": AppGuiCommandShortcut(
-                        name=StringVar(
-                            value=raw["command"]["shortcut"]["registered_commands"][
-                                "10"
-                            ]["name"]
-                        ),
-                        klass=StringVar(
-                            value=raw["command"]["shortcut"]["registered_commands"][
-                                "10"
-                            ]["klass"]
-                        ),
-                    ),
-                },
-            ),
-        ),
-        notification=AppGuiNotificationSettings(
-            line=AppGuiLineNotificationSettings(
-                enabled_started=BooleanVar(
-                    value=raw["notification"]["line"]["enabled_started"] == "True"
-                ),
-                enabled_ended=BooleanVar(
-                    value=raw["notification"]["line"]["enabled_ended"] == "True"
-                ),
-            ),
-            discord=AppGuiDiscordNotificationSettings(
-                enabled_started=BooleanVar(
-                    value=raw["notification"]["discord"]["enabled_started"] == "True"
-                ),
-                enabled_ended=BooleanVar(
-                    value=raw["notification"]["discord"]["enabled_ended"] == "True"
-                ),
-            ),
-        ),
-        widget=AppGuiWidgetSettings(
-            outputs=AppGuiOutputsWidgetSettings(
-                size_balance=DoubleVar(
-                    value=float(raw["widget"]["outputs"]["size_balance"])
-                ),
-                stdout=IntVar(value=int(raw["widget"]["outputs"]["stdout"])),
-                visible_output1=BooleanVar(
-                    value=raw["widget"]["outputs"]["visible_output1"] == "True"
-                ),
-                visible_output2=BooleanVar(
-                    value=raw["widget"]["outputs"]["visible_output2"] == "True"
-                ),
-            ),
-            software_controller=AppGuiSoftwareControllerWidgetSettings(
-                position=StringVar(
-                    value=raw["widget"]["software_controller"]["position"]
-                ),
-                visible=BooleanVar(
-                    value=raw["widget"]["software_controller"]["visible"] == "True"
-                ),
-            ),
-            dialog=AppGuiDialogWidgetSettings(
-                confirm_buttons_position=StringVar(
-                    value=raw["widget"]["dialog"]["confirm_buttons_position"]
-                ),
-            ),
-        ),
-    )
+    raw: dict[str, Any] = tomllib.loads(DEFAULT_GUI_STATE)
+    return _convert_to_state(raw)
 
 
-def save_state(
-    state: AppGuiState,
-    *,
-    base_dir: str,
-    profile: str,
-) -> None:
-    raw_state = {}
-    for k in DEFAULT_GUI_STATE.keys():
-        v = state.__dict__[k]
-        if isinstance(v, list):
-            raw_state[k] = [item.get() for item in v]
-        elif isinstance(v, Variable):
-            raw_state[k] = v.get()
+def _convert_to_state(d: dict[str, Any]) -> AppGuiState:
+    state_dict = _convert_to_state_dict(d)
+    return AppGuiState.from_dict(state_dict)
+
+
+def _convert_to_state_dict(data: dict[str, Any]) -> dict[str, Any]:
+    result: dict[str, Any] = {}
+    for k, v in data.items():
+        match v:
+            case dict(d):
+                result[k] = _convert_to_state_dict(d)
+            case int(i):
+                result[k] = IntVar(value=i)
+            case float(f):
+                result[k] = DoubleVar(value=f)
+            case str(s):
+                result[k] = StringVar(value=s)
+            case bool(b):
+                result[k] = BooleanVar(value=b)
+            case _:
+                raise ValueError(f"unsupported type: {type(v)}")
+    return result
+
+
+def convert_from_state(state: Any) -> dict[str, Any]:
+    if isinstance(state, dict):
+        return {k: convert_from_state(v) for k, v in state.items()}
+
+    if not is_dataclass(state):
+        raise ValueError(f"unsupported type: {type(state)}")
+
+    result: dict[str, Any] = {}
+    for field in fields(state):
+        k, v = field.name, getattr(state, field.name)
+        if isinstance(v, (StringVar, BooleanVar, IntVar, DoubleVar)):
+            result[k] = v.get()
         else:
-            raise ValueError(f"Unsupported variable type: {type(v)}")
-
-    # FIXME: save to state file
-    print(raw_state)
+            result[k] = convert_from_state(v)
+    return result
