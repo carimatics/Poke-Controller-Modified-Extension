@@ -3,6 +3,6 @@ from abc import ABC, abstractmethod
 from ..context import PapicoExecContext, PapicoResult
 
 
-class PapicoHandler(ABC):
+class PapicoHandler[R](ABC):
     @abstractmethod
-    def handle(self, ctx: PapicoExecContext) -> PapicoResult: ...
+    def handle(self, ctx: PapicoExecContext) -> PapicoResult[R]: ...

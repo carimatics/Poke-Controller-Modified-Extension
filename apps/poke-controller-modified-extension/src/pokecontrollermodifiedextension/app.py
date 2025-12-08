@@ -6,9 +6,10 @@ from typing import Any
 from pokecontroller.core.camera import Camera
 from pokecontroller.core.serial import Serial
 
+from .core.papico import Papico
 from .info import AppInfo
 from .model import AppModel
-from .state import AppGuiState, load_state
+from .state import AppGuiState
 
 logger = logging.getLogger(__name__)
 
@@ -19,24 +20,28 @@ INFO = AppInfo(
 
 
 class App(tk.Tk):
+    _gui_state: AppGuiState
+
     def __init__(
         self,
-        base_dir: str,
+        base_dir: Path,
         profile: str,
+        papico: Papico,
         camera: Camera,
         serial: Serial,
         *args: Any,
         **kwargs: Any,
     ) -> None:
         super().__init__(*args, **kwargs)
-        self._base_dir = Path(base_dir)
+        self._base_dir = base_dir
         self._profile = profile
+        self._papico = papico
 
         self._camera = camera
         self._serial = serial
 
         self._app_info = INFO
-        self._gui_state = load_state(base_dir=base_dir, profile=profile)
+        self._gui_state = papico.load_gui_state().data  # type: ignore[assignment]
         self._app_model = AppModel(self._app_info, self._gui_state)
 
         # Theme

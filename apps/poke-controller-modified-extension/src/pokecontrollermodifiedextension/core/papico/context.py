@@ -1,8 +1,7 @@
 from dataclasses import dataclass
-from typing import Any, Callable
+from typing import Any
 
 from .exception import PapicoException
-from .handlers.handler import PapicoHandler
 
 
 @dataclass(frozen=True, kw_only=True)
@@ -13,23 +12,13 @@ class PapicoContext:
 
 
 @dataclass(frozen=True, kw_only=True)
-class PapicoRegisterHandlerContext(PapicoContext):
-    handler_generator: Callable[[], PapicoHandler]
-
-
-@dataclass(frozen=True, kw_only=True)
 class PapicoExecContext(PapicoContext):
-    args: tuple[Any, ...]
-    kwargs: dict[str, Any]
+    params: dict[str, Any]
 
 
 @dataclass(frozen=True, kw_only=True)
-class PapicoResult:
+class PapicoResult[R]:
     success: bool
-    api_version: str
-    domain: str
-    operation: str
-    args: tuple[Any, ...]
-    kwargs: dict[str, Any]
-    data: Any | None = None
+    ctx: PapicoExecContext
+    data: R | None = None
     error: PapicoException | None = None

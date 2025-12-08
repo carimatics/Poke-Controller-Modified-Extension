@@ -1,4 +1,3 @@
-import tomllib
 from dataclasses import dataclass, fields, is_dataclass
 from tkinter import BooleanVar, DoubleVar, IntVar, StringVar
 from typing import Any, Self
@@ -231,30 +230,16 @@ class AppGuiState:
 
     @classmethod
     def from_dict(cls, d: dict[str, Any]) -> Self:
+        sd = _convert_to_state_dict(d)
         return cls(
-            general=AppGuiGeneralSettings(**d["general"]),
-            capture=AppGuiCaptureSettings(**d["capture"]),
-            serial=AppGuiSerialSettings(**d["serial"]),
-            device_input=AppGuiDeviceInputSettings(**d["device_input"]),
-            command=AppGuiCommandSettings.from_dict(d["command"]),
-            notification=AppGuiNotificationSettings.from_dict(d["notification"]),
-            widget=AppGuiWidgetSettings.from_dict(d["widget"]),
+            general=AppGuiGeneralSettings(**sd["general"]),
+            capture=AppGuiCaptureSettings(**sd["capture"]),
+            serial=AppGuiSerialSettings(**sd["serial"]),
+            device_input=AppGuiDeviceInputSettings(**sd["device_input"]),
+            command=AppGuiCommandSettings.from_dict(sd["command"]),
+            notification=AppGuiNotificationSettings.from_dict(sd["notification"]),
+            widget=AppGuiWidgetSettings.from_dict(sd["widget"]),
         )
-
-
-def load_state(
-    *,
-    base_dir: str,
-    profile: str,
-) -> AppGuiState:
-    # FIXME: load from state file
-    raw: dict[str, Any] = tomllib.loads(DEFAULT_GUI_STATE)
-    return _convert_to_state(raw)
-
-
-def _convert_to_state(d: dict[str, Any]) -> AppGuiState:
-    state_dict = _convert_to_state_dict(d)
-    return AppGuiState.from_dict(state_dict)
 
 
 def _convert_to_state_dict(data: dict[str, Any]) -> dict[str, Any]:
