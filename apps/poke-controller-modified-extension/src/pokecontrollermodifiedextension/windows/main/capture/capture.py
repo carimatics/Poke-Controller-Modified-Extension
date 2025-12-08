@@ -11,6 +11,7 @@ import cv2
 from PIL import Image, ImageTk
 from pokecontroller.core import image, platform
 from pokecontroller.core.controller import switch
+from pokecontroller.core.math import clamp
 
 from ....values import literals as l
 from ....widgets import AppFrame
@@ -384,16 +385,8 @@ class Capture(AppFrame):
         if self._enabled_rstick_mouse.get():
             self._unbind_mouse_right()
 
-        # FIXME: clamp
-        x, y = event.x, event.y
-        if x < 0:
-            x = 0
-        elif x > self._width:
-            x = self._width
-        if y < 0:
-            y = 0
-        elif y > self._height:
-            y = self._height
+        x = clamp(event.x, 0, self._width)
+        y = clamp(event.y, 0, self._height)
         self._pressed_point = (x, y)
         self._delete_tagged_item("select_area")
         self._draw_rect(
@@ -410,16 +403,8 @@ class Capture(AppFrame):
         logger.info(f"Start selecting area at ({x}, {y}) / Capture ({cx}, {cy})")
 
     def _on_select_area_pressing(self, event: tk.Event) -> None:
-        # FIXME: clamp
-        x, y = event.x, event.y
-        if x > self._width:
-            x = self._width
-        elif x < 0:
-            x = 0
-        if y > self._height:
-            y = self._height
-        elif y < 0:
-            y = 0
+        x = clamp(event.x, 0, self._width)
+        y = clamp(event.y, 0, self._height)
         self._canvas.coords(
             "select_area",
             self._pressed_point[0],
@@ -433,17 +418,8 @@ class Capture(AppFrame):
             logger.warning("Failed to get current frame")
             return None
 
-        # FIXME: clamp
-        x, y = event.x, event.y
-        if x > self._width:
-            x = self._width
-        elif x < 0:
-            x = 0
-        if y > self._height:
-            y = self._height
-        elif y < 0:
-            y = 0
-
+        x = clamp(event.x, 0, self._width)
+        y = clamp(event.y, 0, self._height)
         sx, sy = self._pressed_point
         ex, ey = x, y
         if sx > ex:
@@ -499,15 +475,8 @@ class Capture(AppFrame):
         if self._enabled_lstick_mouse.get():
             self._unbind_mouse_left()
 
-        x, y = event.x, event.y
-        if x < 0:
-            x = 0
-        elif x > self._width:
-            x = self._width
-        if y < 0:
-            y = 0
-        elif y > self._height:
-            y = self._height
+        x = clamp(event.x, 0, self._width)
+        y = clamp(event.y, 0, self._height)
         self._pressed_point = (x, y)
         self._delete_tagged_item("select_area")
         self._draw_rect(
@@ -521,15 +490,8 @@ class Capture(AppFrame):
         )
 
     def _on_ctrl_mouse_right_pressing(self, event: tk.Event) -> None:
-        x, y = event.x, event.y
-        if x < 0:
-            x = 0
-        elif x > self._width:
-            x = self._width
-        if y < 0:
-            y = 0
-        elif y > self._height:
-            y = self._height
+        x = clamp(event.x, 0, self._width)
+        y = clamp(event.y, 0, self._height)
         self._canvas.coords(
             "select_area",
             self._pressed_point[0],
@@ -540,15 +502,8 @@ class Capture(AppFrame):
 
     def _on_ctrl_mouse_right_released(self, event: tk.Event) -> None:
         sx, sy = self._pressed_point
-        ex, ey = event.x, event.y
-        if ex < 0:
-            ex = 0
-        elif ex > self._width:
-            ex = self._width
-        if ey < 0:
-            ey = 0
-        elif ey > self._height:
-            ey = self._height
+        ex = clamp(event.x, 0, self._width)
+        ey = clamp(event.y, 0, self._height)
         if sx > ex:
             sx, ex = ex, sx
         if sy > ey:
