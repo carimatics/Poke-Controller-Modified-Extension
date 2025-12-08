@@ -112,12 +112,14 @@ class AppGuiSerialSettings:
     data_format: StringVar
     show_data: BooleanVar
 
+
 @dataclass
 class AppGuiTouchscreenSettings:
     sx: IntVar
     sy: IntVar
     ex: IntVar
     ey: IntVar
+
 
 @dataclass
 class AppGuiDeviceInputSettings:

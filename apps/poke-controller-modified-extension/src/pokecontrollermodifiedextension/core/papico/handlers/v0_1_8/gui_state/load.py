@@ -185,7 +185,9 @@ class PapicoGuiStateLoadHandler(PapicoHandler):
         widget_mode = config["Output"]["widget_mode"]
         visible_output1 = "ALL" in widget_mode or "Output#1" in widget_mode
         visible_output2 = "ALL" in widget_mode or "Output#2" in widget_mode
-        visible_software_controller = "ALL" in widget_mode or "Software-Controller" in widget_mode
+        visible_software_controller = (
+            "ALL" in widget_mode or "Software-Controller" in widget_mode
+        )
         software_controller_position = config["Output"]["software_controller_position"]
         dialogue_buttons_position = config["Output"]["dialogue_buttons_position"]
         if dialogue_buttons_position == "1":
@@ -290,7 +292,9 @@ class PapicoGuiStateLoadHandler(PapicoHandler):
                     "visible_output2": visible_output2,
                 },
                 "software_controller": {
-                    "position": "top" if software_controller_position == "1" else "bottom",
+                    "position": "top"
+                    if software_controller_position == "1"
+                    else "bottom",
                     "visible": visible_software_controller,
                 },
                 "dialog": {
