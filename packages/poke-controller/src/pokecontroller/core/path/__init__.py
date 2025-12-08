@@ -1,3 +1,4 @@
+# FIXME: このパッケージいらないので全部消す(Pyhon標準のPathが使いやすくて便利)
 from .path import (
     basename as basename,
     directory_name as directory_name,
