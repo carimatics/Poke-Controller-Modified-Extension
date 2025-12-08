@@ -13,3 +13,7 @@ class PapicoExecException(PapicoException):
 
 class PapicoRegisterHandlerException(PapicoException):
     pass
+
+
+class PapicoGuiStateLoadHandlerException(PapicoExecException):
+    pass

@@ -3,7 +3,7 @@ from pathlib import Path
 
 from ......state import AppGuiState
 from ....context import PapicoExecContext, PapicoResult
-from ....exception import PapicoExecException
+from ....exception import PapicoGuiStateLoadHandlerException
 from ....handlers.handler import PapicoHandler
 
 # @formatter:off (for PyCharm)
@@ -116,25 +116,15 @@ dialogue_buttons_position = 2
 # @formatter:on
 
 
-class PapicoGuiStateLoadHandlerException(PapicoExecException):
-    pass
-
-
 class PapicoGuiStateLoadHandler(PapicoHandler):
-    _ctx: PapicoExecContext
-
-    def __init__(self) -> None:
-        super().__init__()
-
     def handle(self, ctx: PapicoExecContext) -> PapicoResult[AppGuiState]:
-        self._ctx = ctx
         try:
             path: str = ctx.params["path"]
             config = self._read_config(path)
             self._fill_by_default(config)
             return PapicoResult(
                 success=True,
-                ctx=self._ctx,
+                ctx=ctx,
                 data=self._config_to_state(config),
             )
         except Exception as e:
@@ -142,7 +132,7 @@ class PapicoGuiStateLoadHandler(PapicoHandler):
             default.read_string(DEFAULT_SETTINGS)
             return PapicoResult(
                 success=False,
-                ctx=self._ctx,
+                ctx=ctx,
                 data=self._config_to_state(default),
                 error=PapicoGuiStateLoadHandlerException(
                     f"{e}",
@@ -304,7 +294,3 @@ class PapicoGuiStateLoadHandler(PapicoHandler):
         }
 
         return AppGuiState.from_dict(state_dict)
-
-
-def generate_load_state_handler() -> PapicoGuiStateLoadHandler:
-    return PapicoGuiStateLoadHandler()
