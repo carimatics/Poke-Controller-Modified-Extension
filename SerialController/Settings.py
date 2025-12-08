@@ -1,2 +1,2 @@
 # for compatibility
-from pokecontrollermodifiedextension.settings import GuiSettings as GuiSettings  # noqa
+from pokecontrollermodifiedextension.api.v0_1_8.settings import GuiSettings as GuiSettings  # noqa

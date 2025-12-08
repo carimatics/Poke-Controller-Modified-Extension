@@ -1,7 +1,7 @@
 from pathlib import Path
 from typing import Callable
 
-from ...state import AppGuiState
+from ...settings import AppSettings
 from .context import PapicoExecContext, PapicoResult
 from .exception import PapicoExecException
 from .handlers import PapicoHandler, PapicoRegisterHandlerContext
@@ -24,14 +24,23 @@ class Papico:
         self._handler_generators: PapicoContainer[PapicoHandlerGenerator] = {}
         self._current_handler: PapicoHandler | None = None
 
-    def load_gui_state(self) -> PapicoResult:
-        path_v0_2 = self._base_dir / "profiles" / self._profile / "settings.toml"
+    def register_handler(self, ctx: PapicoRegisterHandlerContext) -> None:
+        self._handler_generators.setdefault(
+            ctx.api_version,
+            {},
+        ).setdefault(
+            ctx.domain,
+            {},
+        )[ctx.operation] = ctx.handler_generator
+
+    def load_settings(self) -> PapicoResult[AppSettings]:
+        path_v0_2 = self._base_dir / "profiles" / self._profile / "settings.json"
         path_v0_1 = self._base_dir / "profiles" / self._profile / "settings.ini"
         if path_v0_2.exists() and path_v0_2.is_file():
             result = self._exec(
                 PapicoExecContext(
                     api_version="0.2.0",
-                    domain="gui_state",
+                    domain="settings",
                     operation="load",
                     params={"path": str(path_v0_2)},
                 )
@@ -40,7 +49,7 @@ class Papico:
             result = self._exec(
                 PapicoExecContext(
                     api_version="0.1.8",
-                    domain="gui_state",
+                    domain="settings",
                     operation="load",
                     params={"path": str(path_v0_1)},
                 )
@@ -49,64 +58,37 @@ class Papico:
             result = self._exec(
                 PapicoExecContext(
                     api_version=LATEST_API_VERSION,
-                    domain="gui_state",
+                    domain="settings",
                     operation="load",
                     params={"path": str(path_v0_2)},
                 )
             )
         return result
 
-    def load_default_gui_state(self) -> PapicoResult:
-        return self._exec(
-            PapicoExecContext(
-                api_version=LATEST_API_VERSION,
-                domain="gui_state",
-                operation="load_default",
-            )
-        )
-
-    def save_gui_state(self, state: AppGuiState) -> PapicoResult:
-        version = state.general.version.get()
+    def save_settings(self, settings: AppSettings) -> PapicoResult[None]:
+        version = settings.general.version.get()
         if version == "0.2.0":
-            path = self._base_dir / "profiles" / self._profile / "settings.toml"
-            result = self._exec(
+            path = self._base_dir / "profiles" / self._profile / "settings.json"
+            return self._exec(
                 PapicoExecContext(
-                    api_version="0.2.0",
-                    domain="gui_state",
+                    api_version=version,
+                    domain="settings",
                     operation="save",
-                    params={
-                        "path": str(path),
-                        "state": state,
-                    },
+                    params={"settings": settings, "path": str(path)},
                 )
             )
         elif version == "0.1.8":
             path = self._base_dir / "profiles" / self._profile / "settings.ini"
-            result = self._exec(
+            return self._exec(
                 PapicoExecContext(
-                    api_version="0.1.8",
-                    domain="gui_state",
+                    api_version=version,
+                    domain="settings",
                     operation="save",
-                    params={
-                        "path": str(path),
-                        "state": state,
-                    },
+                    params={"settings": settings, "path": str(path)},
                 )
             )
         else:
-            path = self._base_dir / "profiles" / self._profile / "settings.toml"
-            result = self._exec(
-                PapicoExecContext(
-                    api_version=LATEST_API_VERSION,
-                    domain="gui_state",
-                    operation="save",
-                    params={
-                        "path": str(path),
-                        "state": state,
-                    },
-                )
-            )
-        return result
+            raise PapicoExecException(f"Unknown version: {version}")
 
     def _exec(self, ctx: PapicoExecContext) -> PapicoResult:
         if self._current_handler is not None:
@@ -120,12 +102,3 @@ class Papico:
             raise PapicoExecException(message=f"Operation not found: {e}") from e
         finally:
             self._current_handler = None
-
-    def register_handler(self, ctx: PapicoRegisterHandlerContext) -> None:
-        self._handler_generators.setdefault(
-            ctx.api_version,
-            {},
-        ).setdefault(
-            ctx.domain,
-            {},
-        )[ctx.operation] = ctx.handler_generator

@@ -5,11 +5,11 @@ from abc import ABC, abstractmethod
 from time import sleep
 from typing import Never
 
+from pokecontrollermodifiedextension.api.v0_1_8.settings import GuiSettings
 from pokecontrollermodifiedextension.core.notification import (
     Discord_Notify,
     Line_Notify,
 )
-from pokecontrollermodifiedextension.settings import GuiSettings
 
 from ... import Sender
 from ...keys import ButtonLike, KeyPress

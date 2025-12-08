@@ -3,7 +3,7 @@ import tkinter.ttk as ttk
 from typing import Any, Callable
 
 from ....model import AppModel
-from ....state import AppGuiState
+from ....settings import AppSettings
 from ....values import literals as l
 from ....widgets import AppFrame
 
@@ -22,8 +22,8 @@ class NotificationSettings(AppFrame):
         self.build_ui()
 
     @property
-    def app_state(self) -> AppGuiState:
-        return self.app.gui_state
+    def app_state(self) -> AppSettings:
+        return self.app.settings
 
     @property
     def app_model(self) -> AppModel:

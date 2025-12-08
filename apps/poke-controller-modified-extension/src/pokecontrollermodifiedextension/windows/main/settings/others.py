@@ -3,7 +3,7 @@ import tkinter.ttk as ttk
 from typing import Any
 
 from ....model import AppModel
-from ....state import AppGuiState
+from ....settings import AppSettings
 from ....values import literals as l
 from ....widgets import AppFrame
 
@@ -12,25 +12,25 @@ class OthersSettings(AppFrame):
     def __init__(self, master: tk.Misc, *args: Any, **kwargs: Any) -> None:
         super().__init__(master, *args, **kwargs)
 
-        self._output_size = self.app_state.widget.outputs.size_balance
-        self._output_stdout = self.app_state.widget.outputs.stdout
-        self._output1_visibility = self.app_state.widget.outputs.visible_output1
-        self._output2_visibility = self.app_state.widget.outputs.visible_output2
+        self._output_size = self.settings.widget.output.size_balance
+        self._output_stdout = self.settings.widget.output.stdout
+        self._output1_visibility = self.settings.widget.output.visible_output1
+        self._output2_visibility = self.settings.widget.output.visible_output2
         self._software_controller_visibility = (
-            self.app_state.widget.software_controller.visible
+            self.settings.widget.software_controller.visible
         )
         self._software_controller_position = (
-            self.app_state.widget.software_controller.position
+            self.settings.widget.software_controller.position
         )
         self._confirm_dialogue_buttons_position = (
-            self.app_state.widget.dialog.confirm_buttons_position
+            self.settings.widget.dialog.confirm_buttons_position
         )
 
         self.build_ui()
 
     @property
-    def app_state(self) -> AppGuiState:
-        return self.app.gui_state
+    def settings(self) -> AppSettings:
+        return self.app.settings
 
     @property
     def app_model(self) -> AppModel:

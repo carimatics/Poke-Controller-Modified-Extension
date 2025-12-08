@@ -9,7 +9,7 @@ from pokecontroller.core.serial import Serial
 from .core.papico import Papico
 from .info import AppInfo
 from .model import AppModel
-from .state import AppGuiState
+from .settings import AppSettings
 
 logger = logging.getLogger(__name__)
 
@@ -20,7 +20,7 @@ INFO = AppInfo(
 
 
 class App(tk.Tk):
-    _gui_state: AppGuiState
+    _settings: AppSettings
 
     def __init__(
         self,
@@ -41,8 +41,8 @@ class App(tk.Tk):
         self._serial = serial
 
         self._app_info = INFO
-        self._gui_state = papico.load_gui_state().data  # type: ignore[assignment]
-        self._app_model = AppModel(self._app_info, self._gui_state)
+        self._settings = papico.load_settings().data  # type: ignore[assignment]
+        self._app_model = AppModel(self._app_info, self._settings)
 
         # Theme
         # style = ttk.Style(self)
@@ -52,7 +52,7 @@ class App(tk.Tk):
         self.title(f"{INFO.name}(v{INFO.version})")
 
         # Camera
-        self._camera_id = self._gui_state.capture.camera_id
+        self._camera_id = self._settings.capture.camera_id
         self._camera.open(camera_id=int(self._camera_id.get()))
 
         self._register_hooks()
@@ -86,8 +86,8 @@ class App(tk.Tk):
         return self._app_model
 
     @property
-    def gui_state(self) -> AppGuiState:
-        return self._gui_state
+    def settings(self) -> AppSettings:
+        return self._settings
 
     def run(self) -> None:
         self.mainloop()

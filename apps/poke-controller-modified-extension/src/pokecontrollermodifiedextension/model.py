@@ -3,23 +3,23 @@ import logging
 from pokecontroller.core.serial import Serial, SerialPort, get_serial_ports
 
 from .info import AppInfo
-from .state import AppGuiState
+from .settings import AppSettings
 
 logger = logging.getLogger(__name__)
 
 
 class AppModel:
-    def __init__(self, app_info: AppInfo, gui_state: AppGuiState):
+    def __init__(self, app_info: AppInfo, settings: AppSettings):
         self._app_info = app_info
-        self._gui_state = gui_state
+        self._settings = settings
 
     @property
     def app_info(self) -> AppInfo:
         return self._app_info
 
     @property
-    def gui_state(self) -> AppGuiState:
-        return self._gui_state
+    def gui_state(self) -> AppSettings:
+        return self._settings
 
     def load_commands(self) -> list[str]:
         return []

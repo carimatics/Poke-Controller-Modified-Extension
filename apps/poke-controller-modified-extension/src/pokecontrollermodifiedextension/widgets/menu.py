@@ -5,6 +5,7 @@ from typing import Any
 
 from ..app import App
 from ..mixins import AppAccessorMixIn
+from ..settings import DEFAULT_SETTINGS
 
 logger = logging.getLogger(__name__)
 
@@ -108,10 +109,7 @@ class AppMenu(tk.Menu, AppAccessorMixIn):
         )
 
     def _on_menu_reset_window_size_pushed(self) -> None:
-        result = self.app.papico.load_gui_state()
-        if not result.success or (data := result.data) is None:
-            raise RuntimeError("Failed to load derault GUI state.")
-        self.app.gui_state.capture.size.set(data.capture.size.get())
+        self.app.settings.capture.size.set(DEFAULT_SETTINGS["capture"]["size"])
 
     def _on_command_line_settings_pushed(self) -> None:
         pass

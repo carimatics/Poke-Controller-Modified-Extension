@@ -7,8 +7,10 @@ class Config:
     def __init__(self, path: str) -> None:
         self._path: str = path
         self._config: configparser.ConfigParser = configparser.ConfigParser(
-            allow_no_value=True
+            allow_no_value=True,
+            comment_prefixes=("#", ";"),
         )
+        self._config.optionxform = str  # type: ignore[assignment]
 
     def __getitem__(self, section: str) -> configparser.SectionProxy:
         return self._config[section]
@@ -41,6 +43,9 @@ class Config:
         value = self._config[section][option]
         return value if value is not None else default
 
+    def has_option(self, section: str, option: str) -> bool:
+        return self._config.has_option(section, option)
+
     def get_boolean(
         self,
         section: str,
@@ -69,11 +74,9 @@ class Config:
         return value if value is not None else default
 
     def set(self, section: str, option: str, value: str) -> None:
-        try:
-            self._config[section][option] = value
-        except configparser.NoSectionError:
-            self._config[section] = {}
-            self._config[section][option] = value
+        if not self._config.has_section(section):
+            self._config.add_section(section)
+        self._config[section][option] = value
 
     def sections(self) -> list[str]:
         return self._config.sections()

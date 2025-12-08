@@ -1,302 +1,647 @@
-import configparser
 import logging
-import os
-import tkinter as tk
+from dataclasses import dataclass, fields, is_dataclass
+from tkinter import BooleanVar, DoubleVar, IntVar, StringVar, Variable
+from typing import Any, Self
 
 logger = logging.getLogger(__name__)
 
-DEFAULT_SETTING: dict[str, dict[str, str]] = {
-    "General Setting": {
-        "camera_id": "0",
-        "com_port": "0",
-        "com_port_name": "0",
-        "baud_rate": "9600",
-        "fps": "45",
-        "show_size": "640x360",
-        "is_show_realtime": "True",
-        "is_show_value": "False",
-        "is_show_guide": "False",
-        "is_show_serial": "False",
-        "is_use_keyboard": "True",
-        "serial_data_format_name": "Default",
-        "touchscreen_start_x": "1",
-        "touchscreen_start_y": "1",
-        "touchscreen_end_x": "320",
-        "touchscreen_end_y": "240",
+SCHEMA: dict[str, Any] = {
+    "general": {
+        "version": str,
+        "theme": str,
     },
-    "Pokemon Home": {
-        "Season": "1",
-        "Single or Double": "シングル",
+    "capture": {
+        "camera_id": int,
+        "camera_name": str,
+        "fps": int,
+        "size": str,
+        "show_realtime": bool,
+        "show_matched": bool,
+        "show_guide": bool,
     },
-    "KeyMap-Button": {
-        "Button.Y": "y",
-        "Button.B": "b",
-        "Button.X": "x",
-        "Button.A": "a",
-        "Button.L": "l",
-        "Button.R": "r",
-        "Button.ZL": "k",
-        "Button.ZR": "e",
-        "Button.MINUS": "m",
-        "Button.PLUS": "p",
-        "Button.LCLICK": "q",
-        "Button.RCLICK": "w",
-        "Button.HOME": "h",
-        "Button.CAPTURE": "c",
+    "serial": {
+        "port": str,
+        "port_name": str,
+        "baud_rate": int,
+        "data_format": str,
+        "show_data": bool,
     },
-    "KeyMap-Direction": {
-        "Direction.UP": "Key.up",
-        "Direction.RIGHT": "Key.right",
-        "Direction.DOWN": "Key.down",
-        "Direction.LEFT": "Key.left",
-        "Direction.UP_RIGHT": "20001",
-        "Direction.DOWN_RIGHT": "20002",
-        "Direction.DOWN_LEFT": "20010",
-        "Direction.UP_LEFT": "20011",
+    "device_input": {
+        "touchscreen": {
+            "sx": int,
+            "sy": int,
+            "ex": int,
+            "ey": int,
+        },
+        "keyboard": {
+            "enabled": bool,
+            "keymap": {
+                "button": {
+                    "y": str,
+                    "b": str,
+                    "x": str,
+                    "a": str,
+                    "l": str,
+                    "r": str,
+                    "zl": str,
+                    "zr": str,
+                    "minus": str,
+                    "plus": str,
+                    "lclick": str,
+                    "rclick": str,
+                    "home": str,
+                    "capture": str,
+                },
+                "direction": {
+                    "up": str,
+                    "right": str,
+                    "down": str,
+                    "left": str,
+                    "up_right": str,
+                    "down_right": str,
+                    "down_left": str,
+                    "up_left": str,
+                },
+                "dpad": {
+                    "up": str,
+                    "up_right": str,
+                    "right": str,
+                    "down_right": str,
+                    "down": str,
+                    "down_left": str,
+                    "left": str,
+                    "up_left": str,
+                    "center": str,
+                },
+            },
+        },
+        "mouse": {
+            "enabled_lclick": bool,
+            "enabled_rclick": bool,
+        },
+        "pro_controller": {
+            "enabled": bool,
+            "enabled_record": bool,
+        },
     },
-    "KeyMap-Hat": {
-        "Hat.TOP": "10000",
-        "Hat.TOP_RIGHT": "10001",
-        "Hat.RIGHT": "10010",
-        "Hat.BTM_RIGHT": "10011",
-        "Hat.BTM": "10100",
-        "Hat.BTM_LEFT": "10101",
-        "Hat.LEFT": "10110",
-        "Hat.TOP_LEFT": "10111",
-        "Hat.CENTER": "11000",
+    "command": {
+        "python_commands_filter": str,
+        "python_command": str,
+        "mcu_commands_filter": str,
+        "mcu_command": str,
+        "shortcut": {
+            "number": int,
+            "registered_commands": {
+                "1": {
+                    "klass": str,
+                    "name": str,
+                },
+                "2": {
+                    "klass": str,
+                    "name": str,
+                },
+                "3": {
+                    "klass": str,
+                    "name": str,
+                },
+                "4": {
+                    "klass": str,
+                    "name": str,
+                },
+                "5": {
+                    "klass": str,
+                    "name": str,
+                },
+                "6": {
+                    "klass": str,
+                    "name": str,
+                },
+                "7": {
+                    "klass": str,
+                    "name": str,
+                },
+                "8": {
+                    "klass": str,
+                    "name": str,
+                },
+                "9": {
+                    "klass": str,
+                    "name": str,
+                },
+                "10": {
+                    "klass": str,
+                    "name": str,
+                },
+            },
+        },
     },
-    "Shortcut": {
-        "command_class_1": "None",
-        "command_name_1": "(empty)",
-        "command_class_2": "None",
-        "command_name_2": "(empty)",
-        "command_class_3": "None",
-        "command_name_3": "(empty)",
-        "command_class_4": "None",
-        "command_name_4": "(empty)",
-        "command_class_5": "None",
-        "command_name_5": "(empty)",
-        "command_class_6": "None",
-        "command_name_6": "(empty)",
-        "command_class_7": "None",
-        "command_name_7": "(empty)",
-        "command_class_8": "None",
-        "command_name_8": "(empty)",
-        "command_class_9": "None",
-        "command_name_9": "(empty)",
-        "command_class_10": "None",
-        "command_name_10": "(empty)",
+    "notification": {
+        "windows": {
+            "enabled_started": bool,
+            "enabled_ended": bool,
+        },
+        "line": {
+            "enabled_started": bool,
+            "enabled_ended": bool,
+        },
+        "discord": {
+            "enabled_started": bool,
+            "enabled_ended": bool,
+        },
     },
-    "Notification": {
-        "is_win_notification_start": "False",
-        "is_win_notification_end": "False",
-        "is_line_notification_start": "False",
-        "is_line_notification_end": "False",
-        "is_discord_notification_start": "False",
-        "is_discord_notification_end": "False",
+    "widget": {
+        "output": {
+            "size_balance": float,
+            "stdout": int,
+            "visible_output1": bool,
+            "visible_output2": bool,
+        },
+        "software_controller": {
+            "position": str,
+            "visible": bool,
+        },
+        "dialog": {
+            "confirm_buttons_position": str,
+        },
     },
-    "Output": {
-        "area_size": "20",
-        "stdout_destination": "1",
-        "widget_mode": "ALL (default)",
-        "software_controller_position": "2",
-        "dialogue_buttons_position": "2",
+    "external": {
+        "pokemon_home": {
+            "season": int,
+            "single_or_double": str,
+        },
+    },
+}
+
+DEFAULT_SETTINGS: dict[str, Any] = {
+    "general": {
+        "version": "0.2.0",
+        "theme": "default",
+    },
+    "capture": {
+        "camera_id": 0,
+        "camera_name": "",
+        "fps": 45,
+        "size": "640x360",
+        "show_realtime": True,
+        "show_matched": False,
+        "show_guide": False,
+    },
+    "serial": {
+        "port": "",
+        "port_name": "",
+        "baud_rate": 9600,
+        "data_format": "default",
+        "show_data": False,
+    },
+    "device_input": {
+        "touchscreen": {
+            "sx": 1,
+            "sy": 1,
+            "ex": 320,
+            "ey": 240,
+        },
+        "keyboard": {
+            "enabled": True,
+            "keymap": {
+                "button": {
+                    "y": "y",
+                    "b": "b",
+                    "x": "x",
+                    "a": "a",
+                    "l": "l",
+                    "r": "r",
+                    "zl": "k",
+                    "zr": "e",
+                    "minus": "m",
+                    "plus": "p",
+                    "lclick": "q",
+                    "rclick": "w",
+                    "home": "h",
+                    "capture": "c",
+                },
+                "direction": {
+                    "up": "up",
+                    "right": "right",
+                    "down": "left",
+                    "left": "20001",
+                    "up_right": "20002",
+                    "down_right": "20010",
+                    "down_left": "20010",
+                    "up_left": "20011",
+                },
+                "dpad": {
+                    "up": "10000",
+                    "up_right": "10001",
+                    "right": "10010",
+                    "down_right": "10011",
+                    "down": "10100",
+                    "down_left": "10101",
+                    "left": "10110",
+                    "up_left": "10111",
+                    "center": "11000",
+                },
+            },
+        },
+        "mouse": {
+            "enabled_lclick": True,
+            "enabled_rclick": True,
+        },
+        "pro_controller": {
+            "enabled": False,
+            "enabled_record": False,
+        },
+    },
+    "command": {
+        "python_commands_filter": "-",
+        "python_command": "",
+        "mcu_commands_filter": "-",
+        "mcu_command": "",
+        "shortcut": {
+            "number": 1,
+            "registered_commands": {
+                "1": {
+                    "klass": "None",
+                    "name": "(empty)",
+                },
+                "2": {
+                    "klass": "None",
+                    "name": "(empty)",
+                },
+                "3": {
+                    "klass": "None",
+                    "name": "(empty)",
+                },
+                "4": {
+                    "klass": "None",
+                    "name": "(empty)",
+                },
+                "5": {
+                    "klass": "None",
+                    "name": "(empty)",
+                },
+                "6": {
+                    "klass": "None",
+                    "name": "(empty)",
+                },
+                "7": {
+                    "klass": "None",
+                    "name": "(empty)",
+                },
+                "8": {
+                    "klass": "None",
+                    "name": "(empty)",
+                },
+                "9": {
+                    "klass": "None",
+                    "name": "(empty)",
+                },
+                "10": {
+                    "klass": "None",
+                    "name": "(empty)",
+                },
+            },
+        },
+    },
+    "notification": {
+        "windows": {
+            "enabled_started": False,
+            "enabled_ended": False,
+        },
+        "line": {
+            "enabled_started": False,
+            "enabled_ended": False,
+        },
+        "discord": {
+            "enabled_started": False,
+            "enabled_ended": False,
+        },
+    },
+    "widget": {
+        "output": {
+            "size_balance": 20.0,
+            "stdout": 1,
+            "visible_output1": True,
+            "visible_output2": True,
+        },
+        "software_controller": {
+            "position": "bottom",
+            "visible": True,
+        },
+        "dialog": {
+            "confirm_buttons_position": "bottom",
+        },
+    },
+    "external": {
+        "pokemon_home": {
+            "season": 1,
+            "single_or_double": "single",
+        },
     },
 }
 
 
-class GuiSettings:
-    SETTING_PATH = os.path.join(
-        os.path.dirname(__file__), "profiles", "default", "settings.ini"
-    )
+@dataclass(kw_only=True, frozen=True)
+class GeneralSettings:
+    version: StringVar
+    theme: StringVar
 
-    def __init__(self) -> None:
-        self.setting = configparser.ConfigParser()
-        self._initialize_setting()
 
-        general_setting = self.setting["General Setting"]
-        self.camera_id = tk.IntVar(
-            value=general_setting.getint("camera_id"),
+@dataclass(kw_only=True, frozen=True)
+class CaptureSettings:
+    camera_id: IntVar
+    camera_name: StringVar
+    fps: IntVar
+    size: StringVar
+    show_realtime: BooleanVar
+    show_matched: BooleanVar
+    show_guide: BooleanVar
+
+
+@dataclass(kw_only=True, frozen=True)
+class SerialSettings:
+    port: StringVar
+    port_name: StringVar
+    baud_rate: IntVar
+    data_format: StringVar
+    show_data: BooleanVar
+
+
+@dataclass(kw_only=True, frozen=True)
+class TouchscreenSettings:
+    sx: IntVar
+    sy: IntVar
+    ex: IntVar
+    ey: IntVar
+
+
+@dataclass(kw_only=True, frozen=True)
+class ButtonKeymapSettings:
+    y: StringVar
+    b: StringVar
+    x: StringVar
+    a: StringVar
+    l: StringVar  # noqa: E741
+    r: StringVar
+    zl: StringVar
+    zr: StringVar
+    minus: StringVar
+    plus: StringVar
+    lclick: StringVar
+    rclick: StringVar
+    home: StringVar
+    capture: StringVar
+
+
+@dataclass(kw_only=True, frozen=True)
+class DirectionKeymapSettings:
+    up: StringVar
+    right: StringVar
+    down: StringVar
+    left: StringVar
+    up_right: StringVar
+    down_right: StringVar
+    down_left: StringVar
+    up_left: StringVar
+
+
+@dataclass(kw_only=True, frozen=True)
+class DpadKeymapSettings:
+    up: StringVar
+    up_right: StringVar
+    right: StringVar
+    down_right: StringVar
+    down: StringVar
+    down_left: StringVar
+    left: StringVar
+    up_left: StringVar
+    center: StringVar
+
+
+@dataclass(kw_only=True, frozen=True)
+class KeymapSettings:
+    button: ButtonKeymapSettings
+    direction: DirectionKeymapSettings
+    dpad: DpadKeymapSettings
+
+    @classmethod
+    def from_dict(cls, d: dict[str, Any]) -> Self:
+        return cls(
+            button=ButtonKeymapSettings(**d["button"]),
+            direction=DirectionKeymapSettings(**d["direction"]),
+            dpad=DpadKeymapSettings(**d["dpad"]),
         )
-        self.com_port = tk.IntVar(
-            value=general_setting.getint("com_port"),
-        )
-        self.com_port_name = tk.StringVar(
-            value=general_setting.get("com_port_name"),
-        )
-        self.baud_rate = tk.IntVar(
-            value=general_setting.getint("baud_rate"),
-        )
-        self.fps = tk.StringVar(
-            value=general_setting["fps"],
-        )
-        self.show_size = tk.StringVar(value=general_setting.get("show_size"))
-        self.is_show_realtime = tk.BooleanVar(
-            value=general_setting.getboolean("is_show_realtime")
-        )
-        self.is_show_value = tk.BooleanVar(
-            value=general_setting.getboolean("is_show_value")
-        )
-        self.is_show_guide = tk.BooleanVar(
-            value=general_setting.getboolean("is_show_guide")
-        )
-        self.is_show_serial = tk.BooleanVar(
-            value=general_setting.getboolean("is_show_serial")
-        )
-        self.is_use_keyboard = tk.BooleanVar(
-            value=general_setting.getboolean("is_use_keyboard")
-        )
-        self.serial_data_format_name = tk.StringVar(
-            value=general_setting["serial_data_format_name"]
-        )
-        self.touchscreen_start_x = general_setting.getint("touchscreen_start_x")
-        self.touchscreen_start_y = general_setting.getint("touchscreen_start_y")
-        self.touchscreen_end_x = general_setting.getint("touchscreen_end_x")
-        self.touchscreen_end_y = general_setting.getint("touchscreen_end_y")
 
-        # Pokemon Home用の設定
-        pokemon_home = self.setting["Pokemon Home"]
-        self.season = tk.StringVar(value=pokemon_home.get("Season"))
-        self.is_SingleBattle = tk.StringVar(value=pokemon_home.get("Single or Double"))
 
-        # Shortcut用の設定
-        shortcut = self.setting["Shortcut"]
-        self.command_class_dict: dict[str, str] = {}
-        self.command_name_dict: dict[str, tk.StringVar] = {}
-        for i in range(1, 11):
-            key = str(i)
-            self.command_class_dict[key] = shortcut[f"command_class_{key}"]
-            self.command_name_dict[key] = tk.StringVar(
-                value=shortcut[f"command_name_{key}"]
-            )
+@dataclass(kw_only=True, frozen=True)
+class KeyboardSettings:
+    enabled: BooleanVar
+    keymap: KeymapSettings
 
-        # Notification用の設定
-        notification = self.setting["Notification"]
-        self.is_win_notification_start = tk.BooleanVar(
-            value=notification.getboolean("is_win_notification_start")
-        )
-        self.is_win_notification_end = tk.BooleanVar(
-            value=notification.getboolean("is_win_notification_end")
-        )
-        self.is_line_notification_start = tk.BooleanVar(
-            value=notification.getboolean("is_line_notification_start")
-        )
-        self.is_line_notification_end = tk.BooleanVar(
-            value=notification.getboolean("is_line_notification_end")
-        )
-        self.is_discord_notification_start = tk.BooleanVar(
-            value=notification.getboolean("is_discord_notification_start")
-        )
-        self.is_discord_notification_end = tk.BooleanVar(
-            value=notification.getboolean("is_discord_notification_end")
+    @classmethod
+    def from_dict(cls, d: dict[str, Any]) -> Self:
+        return cls(
+            enabled=d["enabled"],
+            keymap=KeymapSettings.from_dict(d["keymap"]),
         )
 
-        # Output Area用の設定
-        output = self.setting["Output"]
-        self.area_size = output["area_size"]
-        self.stdout_destination = output["stdout_destination"]
-        self.right_frame_widget_mode = output["widget_mode"]
-        self.pos_software_controller = output["software_controller_position"]
-        self.pos_dialogue_buttons = output["dialogue_buttons_position"]
 
-    def load(self) -> None:
-        if os.path.isfile(self.SETTING_PATH):
-            self.setting.read(self.SETTING_PATH, encoding="utf-8")
+@dataclass(kw_only=True, frozen=True)
+class MouseSettings:
+    enabled_lclick: BooleanVar
+    enabled_rclick: BooleanVar
 
-    def generate(self) -> None:
-        for section, options in DEFAULT_SETTING.items():
-            self.setting[section] = dict(options)
-        with open(self.SETTING_PATH, "w", encoding="utf-8") as file:
-            self.setting.write(file)
-        os.chmod(path=self.SETTING_PATH, mode=0o777)
 
-    def save(self, path: str | None = None) -> None:
-        # update setting values
-        self._general_setting_to_config()
-        self._pokemon_home_setting_to_config()
-        self._shortcut_setting_to_config()
-        self._notification_setting_to_config()
-        self._output_setting_to_config()
+@dataclass(kw_only=True, frozen=True)
+class ProControllerSettings:
+    enabled: BooleanVar
+    enabled_record: BooleanVar
 
-        with open(self.SETTING_PATH, "w", encoding="utf-8") as file:
-            self.setting.write(file)
-        os.chmod(path=self.SETTING_PATH, mode=0o777)
-        logger.debug("Settings file has been saved.")
 
-    def _initialize_setting(self) -> None:
-        self.setting.optionxform = str  # type: ignore[method-assign, assignment]
+@dataclass(kw_only=True, frozen=True)
+class DeviceInputSettings:
+    touchscreen: TouchscreenSettings
+    keyboard: KeyboardSettings
+    mouse: MouseSettings
+    pro_controller: ProControllerSettings
 
-        # generate setting file
-        if not os.path.exists(self.SETTING_PATH):
-            logger.debug("Setting file does not exists.")
-            self.generate()
-            logger.debug("Settings file has been generated.")
-        else:
-            logger.debug("Setting file exists.")
+    @classmethod
+    def from_dict(cls, d: dict[str, Any]) -> Self:
+        return cls(
+            touchscreen=TouchscreenSettings(**d["touchscreen"]),
+            keyboard=KeyboardSettings.from_dict(d["keyboard"]),
+            mouse=MouseSettings(**d["mouse"]),
+            pro_controller=ProControllerSettings(**d["pro_controller"]),
+        )
 
-        # load setting file
-        self.load()
-        logger.debug("Settings file has been loaded.")
 
-        # fill by default values if not exist
-        sections = self.setting.sections()
-        for section, options in DEFAULT_SETTING.items():
-            if section not in sections:
-                self.setting[section] = {}
-            for option, val in options.items():
-                self.setting[section].setdefault(option, val)
+@dataclass(kw_only=True, frozen=True)
+class ShortcutCommandSettings:
+    klass: StringVar
+    name: StringVar
 
-    def _general_setting_to_config(self) -> None:
-        self.setting["General Setting"] = {
-            "camera_id": str(self.camera_id.get()),
-            "com_port": str(self.com_port.get()),
-            "com_port_name": self.com_port_name.get(),
-            "baud_rate": str(self.baud_rate.get()),
-            "fps": self.fps.get(),
-            "show_size": self.show_size.get(),
-            "is_show_realtime": str(self.is_show_realtime.get()),
-            "is_show_value": str(self.is_show_value.get()),
-            "is_show_guide": str(self.is_show_guide.get()),
-            "is_show_serial": str(self.is_show_serial.get()),
-            "is_use_keyboard": str(self.is_use_keyboard.get()),
-            "serial_data_format_name": self.serial_data_format_name.get(),
-            "touchscreen_start_x": str(self.touchscreen_start_x),
-            "touchscreen_start_y": str(self.touchscreen_start_y),
-            "touchscreen_end_x": str(self.touchscreen_end_x),
-            "touchscreen_end_y": str(self.touchscreen_end_y),
-        }
 
-    def _pokemon_home_setting_to_config(self) -> None:
-        self.setting["Pokemon Home"] = {
-            "Season": self.season.get(),
-            "Single or Double": self.is_SingleBattle.get(),
-        }
+@dataclass(kw_only=True, frozen=True)
+class ShortcutSettings:
+    number: IntVar
+    registered_commands: dict[str, ShortcutCommandSettings]
 
-    def _shortcut_setting_to_config(self) -> None:
-        shortcut_setting = {}
-        for i in range(1, 11):
-            key = str(i)
-            shortcut_setting[f"command_class_{i}"] = self.command_class_dict[key]
-            shortcut_setting[f"command_name_{i}"] = self.command_name_dict[key].get()
-        self.setting["Shortcut"] = shortcut_setting
+    @classmethod
+    def from_dict(cls, d: dict[str, Any]) -> Self:
+        return cls(
+            number=d["number"],
+            registered_commands={
+                k: ShortcutCommandSettings(**v)
+                for k, v in d["registered_commands"].items()
+            },
+        )
 
-    def _notification_setting_to_config(self) -> None:
-        self.setting["Notification"] = {
-            "is_win_notification_start": str(self.is_win_notification_start.get()),
-            "is_win_notification_end": str(self.is_win_notification_end.get()),
-            "is_line_notification_start": str(self.is_line_notification_start.get()),
-            "is_line_notification_end": str(self.is_line_notification_end.get()),
-            "is_discord_notification_start": str(
-                self.is_discord_notification_start.get()
-            ),
-            "is_discord_notification_end": str(self.is_discord_notification_end.get()),
-        }
 
-    def _output_setting_to_config(self) -> None:
-        self.setting["Output"] = {
-            "area_size": self.area_size,
-            "stdout_destination": self.stdout_destination,
-            "widget_mode": self.right_frame_widget_mode,
-            "software_controller_position": self.pos_software_controller,
-            "dialogue_buttons_position": self.pos_dialogue_buttons,
-        }
+@dataclass(kw_only=True, frozen=True)
+class CommandSettings:
+    python_commands_filter: StringVar
+    python_command: StringVar
+    mcu_commands_filter: StringVar
+    mcu_command: StringVar
+    shortcut: ShortcutSettings
+
+    @classmethod
+    def from_dict(cls, d: dict[str, Any]) -> Self:
+        return cls(
+            python_commands_filter=d["python_commands_filter"],
+            python_command=d["python_command"],
+            mcu_commands_filter=d["mcu_commands_filter"],
+            mcu_command=d["mcu_command"],
+            shortcut=ShortcutSettings(**d["shortcut"]),
+        )
+
+
+@dataclass(kw_only=True, frozen=True)
+class WindowsNotificationSettings:
+    enabled_started: BooleanVar
+    enabled_ended: BooleanVar
+
+
+@dataclass(kw_only=True, frozen=True)
+class LineNotificationSettings:
+    enabled_started: BooleanVar
+    enabled_ended: BooleanVar
+
+
+@dataclass(kw_only=True, frozen=True)
+class DiscordNotificationSettings:
+    enabled_started: BooleanVar
+    enabled_ended: BooleanVar
+
+
+@dataclass(kw_only=True, frozen=True)
+class NotificationSettings:
+    windows: WindowsNotificationSettings
+    line: LineNotificationSettings
+    discord: DiscordNotificationSettings
+
+    @classmethod
+    def from_dict(cls, d: dict[str, Any]) -> Self:
+        return cls(
+            windows=WindowsNotificationSettings(**d["windows"]),
+            line=LineNotificationSettings(**d["line"]),
+            discord=DiscordNotificationSettings(**d["discord"]),
+        )
+
+
+@dataclass(kw_only=True, frozen=True)
+class OutputSettings:
+    size_balance: DoubleVar
+    stdout: IntVar
+    visible_output1: BooleanVar
+    visible_output2: BooleanVar
+
+
+@dataclass(kw_only=True, frozen=True)
+class SoftwareControllerSettings:
+    position: StringVar
+    visible: BooleanVar
+
+
+@dataclass(kw_only=True, frozen=True)
+class DialogSettings:
+    confirm_buttons_position: StringVar
+
+
+@dataclass(kw_only=True, frozen=True)
+class WidgetSettings:
+    output: OutputSettings
+    software_controller: SoftwareControllerSettings
+    dialog: DialogSettings
+
+    @classmethod
+    def from_dict(cls, d: dict[str, Any]) -> Self:
+        return cls(
+            output=OutputSettings(**d["output"]),
+            software_controller=SoftwareControllerSettings(**d["software_controller"]),
+            dialog=DialogSettings(**d["dialog"]),
+        )
+
+
+@dataclass(kw_only=True, frozen=True)
+class PokemonHomeSettings:
+    season: IntVar
+    single_or_double: StringVar
+
+
+@dataclass(kw_only=True, frozen=True)
+class ExternalSettings:
+    pokemon_home: PokemonHomeSettings
+
+    @classmethod
+    def from_dict(cls, d: dict[str, Any]) -> Self:
+        return cls(
+            pokemon_home=PokemonHomeSettings(**d["pokemon_home"]),
+        )
+
+
+@dataclass(kw_only=True, frozen=True)
+class AppSettings:
+    general: GeneralSettings
+    capture: CaptureSettings
+    serial: SerialSettings
+    device_input: DeviceInputSettings
+    command: CommandSettings
+    notification: NotificationSettings
+    widget: WidgetSettings
+    external: ExternalSettings
+
+    @classmethod
+    def from_dict(cls, d: dict[str, Any]) -> Self:
+        return cls(
+            general=GeneralSettings(**d["general"]),
+            capture=CaptureSettings(**d["capture"]),
+            serial=SerialSettings(**d["serial"]),
+            device_input=DeviceInputSettings.from_dict(d["device_input"]),
+            command=CommandSettings.from_dict(d["command"]),
+            notification=NotificationSettings.from_dict(d["notification"]),
+            widget=WidgetSettings.from_dict(d["widget"]),
+            external=ExternalSettings.from_dict(d["external"]),
+        )
+
+
+def settings_to_dict(settings: AppSettings) -> dict[str, Any]:
+    def convert(s: Any) -> dict[str, Any]:
+        if isinstance(s, dict):
+            return {k: convert(v) for k, v in s.items()}
+
+        if isinstance(s, Variable):
+            return s.get()
+
+        if not is_dataclass(s):
+            raise ValueError(f"unsupported type: {type(s)}")
+
+        result: dict[str, Any] = {}
+        for field in fields(s):
+            k, v = field.name, getattr(s, field.name)
+            if isinstance(v, Variable):
+                result[k] = v.get()
+            else:
+                result[k] = convert(v)
+        return result
+
+    return convert(settings)

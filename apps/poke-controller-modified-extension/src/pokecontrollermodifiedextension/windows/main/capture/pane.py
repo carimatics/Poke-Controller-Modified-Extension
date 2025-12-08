@@ -2,7 +2,7 @@ import tkinter as tk
 import tkinter.ttk as ttk
 from typing import Any
 
-from ....state import AppGuiState
+from ....settings import AppSettings
 from ....values import literals as l
 from ....widgets import AppFrame
 from .buttons import Buttons
@@ -18,8 +18,8 @@ class CapturePane(AppFrame):
         self.build_ui()
 
     @property
-    def app_state(self) -> AppGuiState:
-        return self.app.gui_state
+    def app_state(self) -> AppSettings:
+        return self.app.settings
 
     @property
     def _camera_size(self) -> tuple[int, int]:

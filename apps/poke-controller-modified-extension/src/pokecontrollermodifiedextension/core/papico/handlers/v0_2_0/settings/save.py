@@ -1,0 +1,54 @@
+import json
+from pathlib import Path
+from typing import Any
+
+from pokecontrollermodifiedextension.settings import AppSettings, settings_to_dict
+
+from ....context import PapicoExecContext, PapicoResult
+from ....exception import PapicoSettingsSaveHandlerException
+from ....handlers import PapicoHandler
+
+
+class PapicoSettingsSaveHandler(PapicoHandler):
+    _path: str
+    _settings: AppSettings
+    _values: dict[str, Any]
+
+    def handle(self, ctx: PapicoExecContext) -> PapicoResult[None]:
+        if (params := ctx.params) is None:
+            raise PapicoSettingsSaveHandlerException("params is required.")
+        if "settings" not in params:
+            raise PapicoSettingsSaveHandlerException("Settings is required.")
+        if "path" not in params:
+            raise PapicoSettingsSaveHandlerException("Path is required.")
+
+        try:
+            self._path = params["path"]
+            self._values = settings_to_dict(params["settings"])
+            self._save_settings()
+            return PapicoResult(
+                success=True,
+                ctx=ctx,
+            )
+        except Exception as e:
+            return PapicoResult(
+                success=False,
+                ctx=ctx,
+                error=PapicoSettingsSaveHandlerException(
+                    f"{e}",
+                ),
+            )
+
+    def _save_settings(self) -> None:
+        path = Path(self._path)
+        base = path.parent
+        if base.exists() and not base.is_dir():
+            raise PapicoSettingsSaveHandlerException(f"{base} is not directory.")
+
+        if not base.exists():
+            base.mkdir(parents=True, exist_ok=True)
+
+        path.write_text(
+            json.dumps(self._values, indent=4),
+            encoding="utf-8",
+        )

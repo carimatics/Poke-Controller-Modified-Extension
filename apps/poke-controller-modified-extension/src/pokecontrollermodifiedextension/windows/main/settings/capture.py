@@ -3,7 +3,7 @@ import tkinter.ttk as ttk
 from typing import Any
 
 from ....model import AppModel
-from ....state import AppGuiState
+from ....settings import AppSettings
 from ....values import literals as l
 from ....widgets import AppFrame
 
@@ -26,8 +26,8 @@ class CameraSettings(AppFrame):
         self.build_ui()
 
     @property
-    def app_state(self) -> AppGuiState:
-        return self.app.gui_state
+    def app_state(self) -> AppSettings:
+        return self.app.settings
 
     @property
     def app_model(self) -> AppModel:
@@ -67,7 +67,7 @@ class CameraSettings(AppFrame):
             self._on_camera_name_selected,
             add="",
         )
-        self._camera_id.set(self._name_list[0])
+        self._camera_name.set(self._name_list[0])
 
         # Lower Frame
         lower_frame = ttk.Frame(labelframe)

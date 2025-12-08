@@ -6,14 +6,13 @@ from pokecontroller.core.serial import use_serial
 
 from .app import App
 from .core.logging import setup_logging
-from .core.papico.handlers.v0_1_8.gui_state import (
-    PapicoGuiStateLoadHandler as PapicoGuiStateLoadHandler_v0_1_8,
-    PapicoGuiStateSaveHandler as PapicoGuiStateSaveHandler_v0_1_8,
+from .core.papico.handlers.v0_1_8.settings import (
+    PapicoSettingsLoadHandler as PapicoSettingsLoadHandler_v0_1_8,
+    PapicoSettingsSaveHandler as PapicoSettingsSaveHandler_v0_1_8,
 )
-from .core.papico.handlers.v0_2_0.gui_state import (
-    PapicoGuiStateLoadDefaultHandler as PapicoGuiStateLoadDefaultHandler_v0_2_0,
-    PapicoGuiStateLoadHandler as PapicoGuiStateLoadHandler_v0_2_0,
-    PapicoGuiStateSaveHandler as PapicoGuiStateSaveHandler_v0_2_0,
+from .core.papico.handlers.v0_2_0.settings import (
+    PapicoSettingsLoadHandler as PapicoSettingsLoadHandler_v0_2_0,
+    PapicoSettingsSaveHandler as PapicoSettingsSaveHandler_v0_2_0,
 )
 from .core.papico.papico import Papico, PapicoRegisterHandlerContext
 from .values import literals as l
@@ -54,17 +53,14 @@ def run_app(*, base_dir: str, profile: str) -> None:
 
 def _register_handlers(papico: Papico) -> None:
     handlers: dict[str, Any] = {
-        "gui_state": {
+        "settings": {
             "load": {
-                "0.2.0": PapicoGuiStateLoadHandler_v0_2_0,
-                "0.1.8": PapicoGuiStateLoadHandler_v0_1_8,
-            },
-            "load_default": {
-                "0.2.0": PapicoGuiStateLoadDefaultHandler_v0_2_0,
+                "0.2.0": PapicoSettingsLoadHandler_v0_2_0,
+                "0.1.8": PapicoSettingsLoadHandler_v0_1_8,
             },
             "save": {
-                "0.2.0": PapicoGuiStateSaveHandler_v0_2_0,
-                "0.1.8": PapicoGuiStateSaveHandler_v0_1_8,
+                "0.2.0": PapicoSettingsSaveHandler_v0_2_0,
+                "0.1.8": PapicoSettingsSaveHandler_v0_1_8,
             },
         },
     }

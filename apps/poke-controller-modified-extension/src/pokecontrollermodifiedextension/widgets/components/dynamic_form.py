@@ -45,7 +45,7 @@ class DynamicForm(AppDialog):
 
     def build_ui(self) -> None:
         confirm_button_position = (
-            self.app.gui_state.widget.dialog.confirm_buttons_position.get()
+            self.app.settings.widget.dialog.confirm_buttons_position.get()
         )
 
         frame = tk.Frame(self)
