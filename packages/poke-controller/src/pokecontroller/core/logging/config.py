@@ -3,9 +3,8 @@ import logging.config
 import os
 import sys
 import tomllib
+from pathlib import Path
 from typing import Any
-
-from .. import path
 
 
 def setup_logging(
@@ -26,7 +25,7 @@ def setup_logging(
     """
     if config_path is None:
         _apply_defaults(defaults=defaults)
-    elif path.exists_file(config_path):
+    elif Path(config_path).exists():
         _load_from_file(config_path)
     else:
         raise FileNotFoundError(

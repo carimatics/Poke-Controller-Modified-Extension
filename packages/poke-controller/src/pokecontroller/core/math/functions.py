@@ -1,4 +1,7 @@
-from _typeshed import SupportsRichComparison
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from _typeshed import SupportsRichComparison
 
 
 def clamp[T: SupportsRichComparison](

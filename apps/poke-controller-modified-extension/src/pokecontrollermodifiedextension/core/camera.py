@@ -1,12 +1,12 @@
 import logging
 from contextlib import contextmanager
+from pathlib import Path
 from typing import Generator, Sequence
 
 from pokecontroller.core import (
     camera as cameralib,
     datetime as datetimelib,
     image as imagelib,
-    path as pathlib,
 )
 from pokecontroller.core.image import utils as imagelib_utils
 
@@ -43,10 +43,12 @@ def _get_save_filespec(filename: str) -> str:
     Returns:
         str: _description_
     """
-    if pathlib.is_absolute(filename):
+    filepath = Path(filename)
+    if filepath.is_absolute():
         return filename
     else:
-        return pathlib.to_absolute(pathlib.join(CAPTURE_DIR, filename))
+        capture_dir = Path(CAPTURE_DIR)
+        return str((capture_dir / filename).resolve())
 
 
 class Camera:
@@ -121,17 +123,14 @@ class Camera:
             fn = f"{datetimelib.format_datetime()}.png"
         else:
             fn = filename + ".png"
-        save_path = _get_save_filespec(fn)
-
-        if not pathlib.exists_directory(
-            (save_dir := pathlib.directory_name(save_path))
-        ):
-            # 保存先ディレクトリが存在しないか、同名のファイルが存在する場合（existsはファイルとフォルダを区別しない）
-            pathlib.make_directory(save_dir)
+        save_path = Path(_get_save_filespec(fn))
+        save_dir = save_path.parent
+        if not save_dir.exists() or not save_dir.is_dir():
+            save_dir.mkdir(parents=True, exist_ok=True)
             logger.debug("Created Capture folder")
 
         try:
-            imwrite(save_path, image, [])
+            imwrite(str(save_path), image, [])
             logger.debug(f"Capture succeeded: {save_path}")
         except Exception as e:
             logger.error(f"Capture Failed :{e}")

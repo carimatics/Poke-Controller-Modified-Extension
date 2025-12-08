@@ -1,6 +1,7 @@
 import json
 import logging
 from dataclasses import dataclass
+from pathlib import Path
 from typing import Any
 
 import requests
@@ -8,7 +9,6 @@ import requests
 from ..config import Config
 from ..datetime import from_timestamp
 from ..image import RawImage, to_bytes
-from ..path import basename, directory_name
 from .notifier import Notifier, RateLimit
 
 logger = logging.getLogger(__name__)
@@ -61,7 +61,7 @@ class DiscordConfig(Config):
         self[section]["avatar_url"] = avatar_url
 
     def get_directory_basename(self) -> str:
-        return basename(directory_name(self._path))
+        return Path(self._path).parent.name
 
     def get_webhook_sections(self) -> list[str]:
         return [

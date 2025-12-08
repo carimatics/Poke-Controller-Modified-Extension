@@ -1,7 +1,6 @@
 import configparser
 import os
-
-from .. import path as libpath
+from pathlib import Path
 
 
 class Config:
@@ -18,7 +17,7 @@ class Config:
         self._config[section] = value
 
     def load(self, encoding: str | None = "utf-8-sig") -> None:
-        if not libpath.exists_file(self._path):
+        if not Path(self._path).exists():
             raise FileNotFoundError(self._path)
         self._config.read(self._path, encoding=encoding)
 
@@ -89,17 +88,18 @@ class Config:
         return list(self._config[section].keys())
 
     def _check_exists_directory(self, should_create: bool) -> None:
-        directory = libpath.directory_name(self._path)
-        exists_dir = libpath.exists(directory) and libpath.exists_directory(directory)
+        directory = Path(self._path).parent
+        exists_dir = self._exists_directory()
         if not exists_dir and not should_create:
             # FIXME: declare better error
             raise FileNotFoundError(directory)
-        libpath.make_directory(directory)
+        self._create_directories()
 
     def _exists_directory(self) -> bool:
-        directory = libpath.directory_name(self._path)
-        return libpath.exists_directory(directory) and libpath.exists(directory)
+        path = Path(self._path)
+        directory = path.parent
+        return directory.exists() and directory.is_dir()
 
     def _create_directories(self) -> None:
-        directory = libpath.directory_name(self._path)
-        libpath.make_directory(directory)
+        directory = Path(self._path).parent
+        directory.mkdir(parents=True, exist_ok=True)

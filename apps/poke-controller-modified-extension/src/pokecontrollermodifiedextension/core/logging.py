@@ -1,7 +1,8 @@
 import os
 import tomllib
+from pathlib import Path
 
-from pokecontroller.core import logging as logginglib, path
+from pokecontroller.core import logging as logginglib
 
 # FIXME: PR出す前にロギングの調整する
 # @formatter:off (for PyCharm)
@@ -104,7 +105,7 @@ def generate_default_config(output_path: str, force: bool = False) -> None:
         output_path: 設定ファイルの出力先のパス
         force: Trueの場合、設定ファイルが存在する場合に上書きする
     """
-    if path.exists_file(output_path) and not force:
+    if Path(output_path).exists() and not force:
         raise FileExistsError(
             os.linesep.join(
                 [
