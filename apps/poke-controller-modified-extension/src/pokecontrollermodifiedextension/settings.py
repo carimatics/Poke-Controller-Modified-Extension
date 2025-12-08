@@ -625,7 +625,7 @@ class AppSettings:
 
 
 def settings_to_dict(settings: AppSettings) -> dict[str, Any]:
-    def convert(s: Any) -> dict[str, Any]:
+    def convert(s: Any) -> Any:
         if isinstance(s, dict):
             return {k: convert(v) for k, v in s.items()}
 
@@ -644,4 +644,4 @@ def settings_to_dict(settings: AppSettings) -> dict[str, Any]:
                 result[k] = convert(v)
         return result
 
-    return convert(settings)
+    return convert(settings)  # type: ignore[no-any-return]

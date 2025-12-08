@@ -112,7 +112,9 @@ class PapicoSettingsLoadHandler(PapicoHandler):
         assign_default(self._settings, DEFAULT_SETTINGS)
 
     def _value_to_tk_variables(self) -> dict[str, Any]:
-        def to_tk_variables(data: dict[str, Any], schema: dict[str, Any], res: dict[str, Any]) -> None:
+        def to_tk_variables(
+            data: dict[str, Any], schema: dict[str, Any], res: dict[str, Any]
+        ) -> None:
             for k, v in data.items():
                 if isinstance(v, dict):
                     d = res.setdefault(k, {})

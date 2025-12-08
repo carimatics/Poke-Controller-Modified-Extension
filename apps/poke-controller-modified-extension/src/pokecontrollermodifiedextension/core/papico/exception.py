@@ -22,5 +22,6 @@ class PapicoGuiStateLoadHandlerException(PapicoExecException):
 class PapicoSettingsLoadHandlerException(PapicoExecException):
     pass
 
+
 class PapicoSettingsSaveHandlerException(PapicoExecException):
     pass
