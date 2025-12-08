@@ -1,16 +1,17 @@
 import logging
+from pathlib import Path
 
-from pokecontroller.core import notification, path
+from pokecontroller.core import notification
 from pokecontroller.core.image import RawImage
 
 logger = logging.getLogger(__name__)
 
 
 class Line_Notify:  # noqa
-    LINE_TOKEN_PATH = path.join("profiles", "default", "line_token.ini")
+    LINE_TOKEN_PATH = Path("profiles") / "default" / "line_token.ini"
 
     def __init__(self, token_name: str = "token") -> None:
-        self._config = notification.LineConfig(path=self.LINE_TOKEN_PATH)
+        self._config = notification.LineConfig(path=str(self.LINE_TOKEN_PATH))
         self._notifier = notification.LineNotifier(config=self._config)
 
     def __str__(self) -> str:

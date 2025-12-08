@@ -1,13 +1,14 @@
 import logging
+from pathlib import Path
 
-from pokecontroller.core import notification, path
+from pokecontroller.core import notification
 from pokecontroller.core.image import RawImage
 
 logger = logging.getLogger(__name__)
 
 
 class Discord_Notify:  # noqa
-    DISCORD_TOKEN_PATH = path.join("profiles", "default", "discord_token.ini")
+    DISCORD_TOKEN_PATH = Path("profiles") / "default" / "discord_token.ini"
 
     def __init__(
         self,
@@ -16,7 +17,7 @@ class Discord_Notify:  # noqa
         avatar_url: str = "",
         token_name: str = "token",
     ) -> None:
-        self._config = notification.DiscordConfig(path=self.DISCORD_TOKEN_PATH)
+        self._config = notification.DiscordConfig(path=str(self.DISCORD_TOKEN_PATH))
         self._notifier = notification.DiscordNotifier(config=self._config)
 
     def __str__(self) -> str:
