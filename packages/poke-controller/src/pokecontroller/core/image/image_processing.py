@@ -16,10 +16,10 @@ ImageReadMode = Literal["grayscale", "color"]
 
 @dataclass(kw_only=True, frozen=True)
 class ImageCropArgs:
-    xs: int
-    xe: int
-    ys: int
-    ye: int
+    sx: int
+    ex: int
+    sy: int
+    ey: int
 
 
 @dataclass(kw_only=True, frozen=True)
@@ -50,8 +50,8 @@ class GpuTemplateMatchable(Protocol):
 
 
 def crop(src: RawImage, args: ImageCropArgs) -> RawImage:
-    logger.debug(f"src[{args.ys} : {args.ye}, {args.xs} : {args.xe}]")
-    return src[args.ys : args.ye, args.xs : args.xe]
+    logger.debug(f"src[{args.sy} : {args.ey}, {args.sx} : {args.ex}]")
+    return src[args.sy : args.ey, args.sx : args.ex]
 
 
 def resize(src: RawImage, size: tuple[int, int]) -> RawImage:

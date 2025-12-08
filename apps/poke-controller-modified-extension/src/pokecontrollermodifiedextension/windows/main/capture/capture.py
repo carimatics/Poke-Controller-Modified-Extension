@@ -444,18 +444,18 @@ class Capture(AppFrame):
         elif y < 0:
             y = 0
 
-        xs, ys = self._pressed_point
-        xe, ye = x, y
-        if xs > xe:
-            xs, xe = xe, xs
-        if ys > ye:
-            ys, ye = ye, ys
+        sx, sy = self._pressed_point
+        ex, ey = x, y
+        if sx > ex:
+            sx, ex = ex, sx
+        if sy > ey:
+            sy, ey = ey, sy
 
-        cxs, cys = int(xs / self._ratio[0]), int(ys / self._ratio[1])
-        cxe, cye = int(xe / self._ratio[0]), int(ye / self._ratio[1])
-        logger.info(f"End selecting area at ({xe}, {ye}) / Capture ({cxe}, {cye})")
+        csx, csy = int(sx / self._ratio[0]), int(sy / self._ratio[1])
+        cex, cey = int(ex / self._ratio[0]), int(ey / self._ratio[1])
+        logger.info(f"End selecting area at ({ex}, {ey}) / Capture ({cex}, {cey})")
 
-        if cxs == cxe or cys == cye:
+        if csx == cex or csy == cey:
             logger.warning("Selected area has no size")
             return None
 
@@ -463,10 +463,10 @@ class Capture(AppFrame):
             return image.crop(
                 src=current_frame,
                 args=image.ImageCropArgs(
-                    xs=cxs,
-                    xe=cxe,
-                    ys=cys,
-                    ye=cye,
+                    sx=csx,
+                    ex=cex,
+                    sy=csy,
+                    ey=cey,
                 ),
             )
         except Exception as e:
@@ -539,23 +539,23 @@ class Capture(AppFrame):
         )
 
     def _on_ctrl_mouse_right_released(self, event: tk.Event) -> None:
-        xs, ys = self._pressed_point
-        xe, ye = event.x, event.y
-        if xe < 0:
-            xe = 0
-        elif xe > self._width:
-            xe = self._width
-        if ye < 0:
-            ye = 0
-        elif ye > self._height:
-            ye = self._height
-        if xs > xe:
-            xs, xe = xe, xs
-        if ys > ye:
-            ys, ye = ye, ys
+        sx, sy = self._pressed_point
+        ex, ey = event.x, event.y
+        if ex < 0:
+            ex = 0
+        elif ex > self._width:
+            ex = self._width
+        if ey < 0:
+            ey = 0
+        elif ey > self._height:
+            ey = self._height
+        if sx > ex:
+            sx, ex = ex, sx
+        if sy > ey:
+            sy, ey = ey, sy
 
-        logger.info(f"Touchscreen Area: (({xs}, {ys}), ({xe}, {ye}))")
-        self._touchscreen_area = ((xs, ys), (xe, ye))
+        logger.info(f"Touchscreen Area: (({sx}, {sy}), ({ex}, {ey}))")
+        self._touchscreen_area = ((sx, sy), (ex, ey))
         self._delete_tagged_item("select_area")
         self._pressed_point = (0, 0)
 
@@ -751,11 +751,11 @@ class Capture(AppFrame):
         logger.debug("Unbound mouse right functions")
 
     def _on_qingpi_mouse_pressed(self, pressed_point: tuple[int, int]) -> None:
-        (xs, ys), (xe, ye) = self._touchscreen_area
-        if xs < pressed_point[0] < xe and ys < pressed_point[1] < ye:
-            width, height = xe - xs, ye - ys
-            _pos_x = int(320.0 * (pressed_point[0] - xs) / width)
-            _pos_y = int(240.0 * (pressed_point[1] - ys) / height)
+        (sx, sy), (ex, ey) = self._touchscreen_area
+        if sx < pressed_point[0] < ex and sy < pressed_point[1] < ey:
+            width, height = ex - sx, ey - sy
+            _pos_x = int(320.0 * (pressed_point[0] - sx) / width)
+            _pos_y = int(240.0 * (pressed_point[1] - sy) / height)
             # FIXME
             # self._controller.state.touchscreen.touch((pos_x, pos_y))
 

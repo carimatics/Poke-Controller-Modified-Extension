@@ -110,10 +110,10 @@ class Camera:
         else:
             imagelib_utils.convert_to_default(c, crop_fmt)
             args = imagelib.ImageCropArgs(
-                ys=c[0],
-                ye=c[1],
-                xs=c[2],
-                xe=c[3],
+                sy=c[0],
+                ey=c[1],
+                sx=c[2],
+                ex=c[3],
             )
             image = imagelib.crop(src, args)
 

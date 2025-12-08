@@ -56,8 +56,8 @@ def crop_image_extend(  # noqa
         return image
 
     try:
-        ys, ye, xs, xe = convert_to_default((crop[0], crop[1], crop[2], crop[3]), fmt)
-        return imagelib.crop(image, ImageCropArgs(xs=xs, xe=xe, ys=ys, ye=ye))
+        sy, ey, sx, ex = convert_to_default((crop[0], crop[1], crop[2], crop[3]), fmt)
+        return imagelib.crop(image, ImageCropArgs(sx=sx, ex=ex, sy=sy, ey=ey))
     except Exception:  # noqa
         return image
 
