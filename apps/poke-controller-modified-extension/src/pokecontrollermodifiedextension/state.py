@@ -112,13 +112,21 @@ class AppGuiDiscordNotificationSettings:
 
 
 @dataclass
+class AppGuiWindowsNotificationSettings:
+    enabled_started: BooleanVar
+    enabled_ended: BooleanVar
+
+
+@dataclass
 class AppGuiNotificationSettings:
+    windows: AppGuiWindowsNotificationSettings
     line: AppGuiLineNotificationSettings
     discord: AppGuiDiscordNotificationSettings
 
     @classmethod
     def from_dict(cls, d: dict[str, Any]) -> Self:
         return cls(
+            windows=AppGuiWindowsNotificationSettings(**d["windows"]),
             line=AppGuiLineNotificationSettings(**d["line"]),
             discord=AppGuiDiscordNotificationSettings(**d["discord"]),
         )
@@ -187,17 +195,16 @@ class AppGuiState:
 def _convert_to_state_dict(data: dict[str, Any]) -> dict[str, Any]:
     result: dict[str, Any] = {}
     for k, v in data.items():
-        match v:
-            case dict(d):
-                result[k] = _convert_to_state_dict(d)
-            case int(i):
-                result[k] = IntVar(value=i)
-            case float(f):
-                result[k] = DoubleVar(value=f)
-            case str(s):
-                result[k] = StringVar(value=s)
-            case bool(b):
-                result[k] = BooleanVar(value=b)
-            case _:
-                raise ValueError(f"unsupported type: {type(v)}")
+        if isinstance(v, dict):
+            result[k] = _convert_to_state_dict(v)
+        elif v is True or v is False:
+            result[k] = BooleanVar(value=v)
+        elif isinstance(v, int):
+            result[k] = IntVar(value=v)
+        elif isinstance(v, float):
+            result[k] = DoubleVar(value=v)
+        elif isinstance(v, str):
+            result[k] = StringVar(value=v)
+        else:
+            raise ValueError(f"unsupported type: {type(v)}")
     return result

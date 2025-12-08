@@ -6,7 +6,7 @@ from ....context import PapicoExecContext, PapicoResult
 from ....exception import PapicoGuiStateLoadHandlerException
 from ....handlers.handler import PapicoHandler
 from .default import DEFAULT_SETTINGS
-from .utils import config_to_state
+from .utils import to_state
 
 
 class PapicoGuiStateLoadHandler(PapicoHandler):
@@ -20,7 +20,7 @@ class PapicoGuiStateLoadHandler(PapicoHandler):
             return PapicoResult(
                 success=True,
                 ctx=ctx,
-                data=config_to_state(config),
+                data=to_state(config),
             )
         except Exception as e:
             default = ConfigParser(allow_no_value=True)
@@ -28,7 +28,7 @@ class PapicoGuiStateLoadHandler(PapicoHandler):
             return PapicoResult(
                 success=False,
                 ctx=ctx,
-                data=config_to_state(default),
+                data=to_state(default),
                 error=PapicoGuiStateLoadHandlerException(
                     f"{e}",
                 ),

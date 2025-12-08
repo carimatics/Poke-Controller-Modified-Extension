@@ -2,8 +2,8 @@
 # fmt: off
 DEFAULT_SETTINGS = """
 [General Setting]
-theme = Default
 version = 0.1.8
+theme = default
 camera_id = 0
 camera_name =
 com_port = 0

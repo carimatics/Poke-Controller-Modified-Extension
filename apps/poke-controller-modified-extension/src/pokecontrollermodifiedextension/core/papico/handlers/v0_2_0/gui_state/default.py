@@ -4,7 +4,7 @@
 DEFAULT_GUI_STATE: str = """
 [general]
 theme = "default"
-version = "0.1.8"
+version = "0.2.0"
 
 [capture]
 camera_id = 0
@@ -43,28 +43,30 @@ mcu_command = ""
 number = 1
 
 [command.shortcut.registered_commands]
-1.name = "(empty)"
 1.klass = "None"
-2.name = "(empty)"
+1.name = "(empty)"
 2.klass = "None"
-3.name = "(empty)"
+2.name = "(empty)"
 3.klass = "None"
-4.name = "(empty)"
+3.name = "(empty)"
 4.klass = "None"
-5.name = "(empty)"
+4.name = "(empty)"
 5.klass = "None"
-6.name = "(empty)"
+5.name = "(empty)"
 6.klass = "None"
-7.name = "(empty)"
+6.name = "(empty)"
 7.klass = "None"
-8.name = "(empty)"
+7.name = "(empty)"
 8.klass = "None"
-9.name = "(empty)"
+8.name = "(empty)"
 9.klass = "None"
-10.name = "(empty)"
+9.name = "(empty)"
 10.klass = "None"
+10.name = "(empty)"
 
 [notification]
+windows.enabled_started = false
+windows.enabled_ended = false
 line.enabled_started = false
 line.enabled_ended = false
 discord.enabled_started = false
@@ -78,6 +80,6 @@ outputs.visible_output2 = true
 software_controller.position = "bottom"
 software_controller.visible = true
 dialog.confirm_buttons_position = "bottom"
-"""
+""".strip()
 # fmt: on
 # @formatter:on (for PyCharm)

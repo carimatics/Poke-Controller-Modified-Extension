@@ -1,17 +1,18 @@
-from configparser import ConfigParser
 from pathlib import Path
+
+from pokecontroller.core.string import substitute_nested
 
 from ......state import AppGuiState
 from ....context import PapicoExecContext, PapicoResult
 from ....exception import PapicoGuiStateLoadHandlerException
 from ....handlers.handler import PapicoHandler
-from .utils import to_config
+from .utils import SETTINGS_TEMPLATE, to_dict
 
 
 class PapicoGuiStateSaveHandler(PapicoHandler):
     _path: str
     _state: AppGuiState
-    _config: ConfigParser
+    _state_str: str
 
     def handle(self, ctx: PapicoExecContext) -> PapicoResult[AppGuiState]:
         try:
@@ -25,7 +26,7 @@ class PapicoGuiStateSaveHandler(PapicoHandler):
             self._path = params["path"]
             self._state = params["state"]
 
-            self._config = to_config(self._state)
+            self._state_str = self._state_to_string()
             self._save_setting()
 
             return PapicoResult(
@@ -41,6 +42,9 @@ class PapicoGuiStateSaveHandler(PapicoHandler):
                 ),
             )
 
+    def _state_to_string(self) -> str:
+        return substitute_nested(SETTINGS_TEMPLATE, to_dict(self._state))
+
     def _save_setting(self) -> None:
         path = Path(self._path)
 
@@ -50,5 +54,5 @@ class PapicoGuiStateSaveHandler(PapicoHandler):
         if not path.parent.exists():
             path.parent.mkdir(parents=True, exist_ok=True)
 
-        with open(self._path, "w") as f:
-            self._config.write(f)
+        with open(self._path, "wb") as f:
+            f.write(self._state_str.encode("utf-8"))

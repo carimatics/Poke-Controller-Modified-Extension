@@ -1,6 +1,7 @@
 from pathlib import Path
 from typing import Callable
 
+from ...state import AppGuiState
 from .context import PapicoExecContext, PapicoResult
 from .exception import PapicoExecException
 from .handlers import PapicoHandler, PapicoRegisterHandlerContext
@@ -63,6 +64,49 @@ class Papico:
                 operation="load_default",
             )
         )
+
+    def save_gui_state(self, state: AppGuiState) -> PapicoResult:
+        version = state.general.version.get()
+        if version == "0.2.0":
+            path = self._base_dir / "profiles" / self._profile / "settings.toml"
+            result = self._exec(
+                PapicoExecContext(
+                    api_version="0.2.0",
+                    domain="gui_state",
+                    operation="save",
+                    params={
+                        "path": str(path),
+                        "state": state,
+                    },
+                )
+            )
+        elif version == "0.1.8":
+            path = self._base_dir / "profiles" / self._profile / "settings.ini"
+            result = self._exec(
+                PapicoExecContext(
+                    api_version="0.1.8",
+                    domain="gui_state",
+                    operation="save",
+                    params={
+                        "path": str(path),
+                        "state": state,
+                    },
+                )
+            )
+        else:
+            path = self._base_dir / "profiles" / self._profile / "settings.toml"
+            result = self._exec(
+                PapicoExecContext(
+                    api_version=LATEST_API_VERSION,
+                    domain="gui_state",
+                    operation="save",
+                    params={
+                        "path": str(path),
+                        "state": state,
+                    },
+                )
+            )
+        return result
 
     def _exec(self, ctx: PapicoExecContext) -> PapicoResult:
         if self._current_handler is not None:

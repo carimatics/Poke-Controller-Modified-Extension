@@ -8,10 +8,12 @@ from .app import App
 from .core.logging import setup_logging
 from .core.papico.handlers.v0_1_8.gui_state import (
     PapicoGuiStateLoadHandler as PapicoGuiStateLoadHandler_v0_1_8,
+    PapicoGuiStateSaveHandler as PapicoGuiStateSaveHandler_v0_1_8,
 )
 from .core.papico.handlers.v0_2_0.gui_state import (
     PapicoGuiStateLoadDefaultHandler as PapicoGuiStateLoadDefaultHandler_v0_2_0,
     PapicoGuiStateLoadHandler as PapicoGuiStateLoadHandler_v0_2_0,
+    PapicoGuiStateSaveHandler as PapicoGuiStateSaveHandler_v0_2_0,
 )
 from .core.papico.papico import Papico, PapicoRegisterHandlerContext
 from .values import literals as l
@@ -54,13 +56,16 @@ def _register_handlers(papico: Papico) -> None:
     handlers: dict[str, Any] = {
         "gui_state": {
             "load": {
-                "0.1.8": PapicoGuiStateLoadHandler_v0_1_8,
                 "0.2.0": PapicoGuiStateLoadHandler_v0_2_0,
+                "0.1.8": PapicoGuiStateLoadHandler_v0_1_8,
             },
             "load_default": {
                 "0.2.0": PapicoGuiStateLoadDefaultHandler_v0_2_0,
             },
-            "save": {},
+            "save": {
+                "0.2.0": PapicoGuiStateSaveHandler_v0_2_0,
+                "0.1.8": PapicoGuiStateSaveHandler_v0_1_8,
+            },
         },
     }
 
