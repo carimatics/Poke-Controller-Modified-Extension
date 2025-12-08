@@ -11,7 +11,7 @@ from ....handlers.handler import PapicoHandler
 DEFAULT_SETTINGS = """
 [General Setting]
 theme = Default
-settings_version = 0.1.8
+version = 0.1.8
 camera_id = 0
 camera_name =
 com_port = 0
@@ -182,13 +182,25 @@ class PapicoGuiStateLoadHandler(PapicoHandler):
                 config[section].setdefault(key, value)
 
     def _config_to_state(self, config: ConfigParser) -> AppGuiState:
+        widget_mode = config["Output"]["widget_mode"]
+        visible_output1 = "ALL" in widget_mode or "Output#1" in widget_mode
+        visible_output2 = "ALL" in widget_mode or "Output#2" in widget_mode
+        visible_software_controller = "ALL" in widget_mode or "Software-Controller" in widget_mode
+        software_controller_position = config["Output"]["software_controller_position"]
+        dialogue_buttons_position = config["Output"]["dialogue_buttons_position"]
+        if dialogue_buttons_position == "1":
+            dialog_buttons_position = "top"
+        elif dialogue_buttons_position == "2":
+            dialog_buttons_position = "bottom"
+        else:
+            dialog_buttons_position = "both"
         state_dict = {
             "general": {
                 "theme": config["General Setting"]["theme"],
-                "settings_version": config["General Setting"]["settings_version"],
+                "version": config["General Setting"]["version"],
             },
             "capture": {
-                "camera_id": config["General Setting"]["camera_id"],
+                "camera_id": config["General Setting"].getint("camera_id"),
                 "camera_name": config["General Setting"]["camera_name"],
                 "fps": config["General Setting"].getint("fps"),
                 "size": config["General Setting"]["show_size"],
@@ -200,11 +212,18 @@ class PapicoGuiStateLoadHandler(PapicoHandler):
             },
             "serial": {
                 "port": config["General Setting"]["com_port"],
+                "port_name": config["General Setting"]["com_port_name"],
                 "baud_rate": config["General Setting"].getint("baud_rate"),
                 "data_format": config["General Setting"]["serial_data_format_name"],
                 "show_data": config["General Setting"].getboolean("is_show_serial"),
             },
             "device_input": {
+                "touchscreen": {
+                    "sx": config["General Setting"].getint("touchscreen_start_x"),
+                    "sy": config["General Setting"].getint("touchscreen_start_y"),
+                    "ex": config["General Setting"].getint("touchscreen_end_x"),
+                    "ey": config["General Setting"].getint("touchscreen_end_y"),
+                },
                 "enabled_keyboard": config["General Setting"].getboolean(
                     "is_use_keyboard"
                 ),
@@ -246,6 +265,14 @@ class PapicoGuiStateLoadHandler(PapicoHandler):
                         "is_line_notification_end"
                     ),
                 },
+                "windows": {
+                    "enabled_started": config["Notification"].getboolean(
+                        "is_win_notification_start"
+                    ),
+                    "enabled_ended": config["Notification"].getboolean(
+                        "is_win_notification_end"
+                    ),
+                },
                 "discord": {
                     "enabled_started": config["Notification"].getboolean(
                         "is_discord_notification_start"
@@ -259,15 +286,15 @@ class PapicoGuiStateLoadHandler(PapicoHandler):
                 "outputs": {
                     "size_balance": config["Output"].getfloat("area_size"),
                     "stdout": config["Output"].getint("stdout_destination"),
-                    "visible_output1": True,
-                    "visible_output2": True,
+                    "visible_output1": visible_output1,
+                    "visible_output2": visible_output2,
                 },
                 "software_controller": {
-                    "position": "bottom",
-                    "visible": True,
+                    "position": "top" if software_controller_position == "1" else "bottom",
+                    "visible": visible_software_controller,
                 },
                 "dialog": {
-                    "confirm_buttons_position": "bottom",
+                    "confirm_buttons_position": dialog_buttons_position,
                 },
             },
         }

@@ -8,7 +8,7 @@ from typing import Any, Self
 DEFAULT_GUI_STATE: str = """
 [general]
 theme = "default"
-settings_version = "0.1.8"
+version = "0.1.8"
 
 [capture]
 camera_id = 0
@@ -21,11 +21,16 @@ show_guide = false
 
 [serial]
 port = ""
+port_name = ""
 baud_rate = 9600
 data_format = "Default"
 show_data = false
 
 [device_input]
+touchscreen.sx = 1
+touchscreen.sy = 1
+touchscreen.ex = 320
+touchscreen.ey = 240
 enabled_keyboard = true
 enabled_lstick_mouse = true
 enabled_rstick_mouse = true
@@ -85,7 +90,7 @@ dialog.confirm_buttons_position = "bottom"
 @dataclass
 class AppGuiGeneralSettings:
     theme: StringVar
-    settings_version: StringVar
+    version: StringVar
 
 
 @dataclass
@@ -102,18 +107,37 @@ class AppGuiCaptureSettings:
 @dataclass
 class AppGuiSerialSettings:
     port: StringVar
+    port_name: StringVar
     baud_rate: IntVar
     data_format: StringVar
     show_data: BooleanVar
 
+@dataclass
+class AppGuiTouchscreenSettings:
+    sx: IntVar
+    sy: IntVar
+    ex: IntVar
+    ey: IntVar
 
 @dataclass
 class AppGuiDeviceInputSettings:
+    touchscreen: AppGuiTouchscreenSettings
     enabled_keyboard: BooleanVar
     enabled_lstick_mouse: BooleanVar
     enabled_rstick_mouse: BooleanVar
     enabled_pro_controller: BooleanVar
     enabled_record_pro_controller: BooleanVar
+
+    @classmethod
+    def from_dict(cls, d: dict[str, Any]) -> Self:
+        return cls(
+            touchscreen=AppGuiTouchscreenSettings(**d["touchscreen"]),
+            enabled_keyboard=d["enabled_keyboard"],
+            enabled_lstick_mouse=d["enabled_lstick_mouse"],
+            enabled_rstick_mouse=d["enabled_rstick_mouse"],
+            enabled_pro_controller=d["enabled_pro_controller"],
+            enabled_record_pro_controller=d["enabled_record_pro_controller"],
+        )
 
 
 @dataclass
@@ -235,7 +259,7 @@ class AppGuiState:
             general=AppGuiGeneralSettings(**sd["general"]),
             capture=AppGuiCaptureSettings(**sd["capture"]),
             serial=AppGuiSerialSettings(**sd["serial"]),
-            device_input=AppGuiDeviceInputSettings(**sd["device_input"]),
+            device_input=AppGuiDeviceInputSettings.from_dict(sd["device_input"]),
             command=AppGuiCommandSettings.from_dict(sd["command"]),
             notification=AppGuiNotificationSettings.from_dict(sd["notification"]),
             widget=AppGuiWidgetSettings.from_dict(sd["widget"]),
