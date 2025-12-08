@@ -43,6 +43,7 @@ def run_app(*, base_dir: str, profile: str) -> None:
         # run app
         app.mainloop()
 
+
 def _register_handlers(papico: Papico) -> None:
     # GUI State
     papico.register_handler(

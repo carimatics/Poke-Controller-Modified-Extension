@@ -106,7 +106,8 @@ class PapicoGuiStateLoadHandler(PapicoHandler):
             )
         except Exception as e:
             settings = {}
-            self._fill_by_default(settings)
+            default = tomllib.loads(DEFAULT_GUI_STATE)
+            self._fill_by_default(settings, default)
             return PapicoResult(
                 success=False,
                 ctx=ctx,
@@ -129,7 +130,9 @@ class PapicoGuiStateLoadHandler(PapicoHandler):
                 f"Settings could not read from '{path}': {e}",
             ) from e
 
-    def _fill_by_default(self, settings: dict[str, Any], default: dict[str, Any]) -> None:
+    def _fill_by_default(
+        self, settings: dict[str, Any], default: dict[str, Any]
+    ) -> None:
         for k, v in default.items():
             if isinstance(v, dict):
                 data = settings.setdefault(k, {})
