@@ -47,6 +47,8 @@ def run_app(*, base_dir: str, profile: str) -> None:
         main_window = MainWindow(app)
         main_window.pack(expand=True, fill=l.BOTH)
 
+        main_window.focus_force()
+
         # run app
         app.mainloop()
 
