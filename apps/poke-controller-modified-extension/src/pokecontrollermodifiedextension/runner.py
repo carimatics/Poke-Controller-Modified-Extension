@@ -1,12 +1,18 @@
 from pathlib import Path
+from typing import Any
 
 from pokecontroller.core.camera import use_camera
 from pokecontroller.core.serial import use_serial
 
 from .app import App
 from .core.logging import setup_logging
-from .core.papico.handlers.v0_1_8.gui_state import PapicoGuiStateLoadHandler_v0_1_8
-from .core.papico.handlers.v0_2_0.gui_state import PapicoGuiStateLoadHandler_v0_2_0
+from .core.papico.handlers.v0_1_8.gui_state import (
+    PapicoGuiStateLoadHandler as PapicoGuiStateLoadHandler_v0_1_8,
+)
+from .core.papico.handlers.v0_2_0.gui_state import (
+    PapicoGuiStateLoadDefaultHandler as PapicoGuiStateLoadDefaultHandler_v0_2_0,
+    PapicoGuiStateLoadHandler as PapicoGuiStateLoadHandler_v0_2_0,
+)
 from .core.papico.papico import Papico, PapicoRegisterHandlerContext
 from .values import literals as l
 from .widgets.menu import AppMenu
@@ -45,20 +51,28 @@ def run_app(*, base_dir: str, profile: str) -> None:
 
 
 def _register_handlers(papico: Papico) -> None:
-    # GUI State
-    papico.register_handler(
-        PapicoRegisterHandlerContext(
-            api_version="0.1.8",
-            domain="gui_state",
-            operation="load",
-            handler_generator=PapicoGuiStateLoadHandler_v0_1_8,
-        ),
-    )
-    papico.register_handler(
-        PapicoRegisterHandlerContext(
-            api_version="0.2.0",
-            domain="gui_state",
-            operation="load",
-            handler_generator=PapicoGuiStateLoadHandler_v0_2_0,
-        ),
-    )
+    handlers: dict[str, Any] = {
+        "gui_state": {
+            "load": {
+                "0.1.8": PapicoGuiStateLoadHandler_v0_1_8,
+                "0.2.0": PapicoGuiStateLoadHandler_v0_2_0,
+            },
+            "load_default": {
+                "0.2.0": PapicoGuiStateLoadDefaultHandler_v0_2_0,
+            },
+            "save": {},
+        },
+    }
+
+    # register handlers
+    for domain, operations in handlers.items():
+        for operation, versions in operations.items():
+            for version, handler_generator in versions.items():
+                papico.register_handler(
+                    PapicoRegisterHandlerContext(
+                        api_version=version,
+                        domain=domain,
+                        operation=operation,
+                        handler_generator=handler_generator,
+                    ),
+                )

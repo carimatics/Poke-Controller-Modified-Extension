@@ -13,7 +13,7 @@ class PapicoContext:
 
 @dataclass(frozen=True, kw_only=True)
 class PapicoExecContext(PapicoContext):
-    params: dict[str, Any]
+    params: dict[str, Any] | None = None
 
 
 @dataclass(frozen=True, kw_only=True)

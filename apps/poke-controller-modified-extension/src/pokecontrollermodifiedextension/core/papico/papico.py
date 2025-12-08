@@ -8,6 +8,8 @@ from .handlers import PapicoHandler, PapicoRegisterHandlerContext
 type PapicoContainer[T] = dict[str, dict[str, dict[str, T]]]
 PapicoHandlerGenerator = Callable[[], PapicoHandler]
 
+LATEST_API_VERSION = "0.2.0"
+
 
 class Papico:
     """Poke-Controller Public API Compatible Orchestrator
@@ -45,13 +47,22 @@ class Papico:
         else:
             result = self._exec(
                 PapicoExecContext(
-                    api_version="0.2.0",
+                    api_version=LATEST_API_VERSION,
                     domain="gui_state",
                     operation="load",
                     params={"path": str(path_v0_2)},
                 )
             )
         return result
+
+    def load_default_gui_state(self) -> PapicoResult:
+        return self._exec(
+            PapicoExecContext(
+                api_version=LATEST_API_VERSION,
+                domain="gui_state",
+                operation="load_default",
+            )
+        )
 
     def _exec(self, ctx: PapicoExecContext) -> PapicoResult:
         if self._current_handler is not None:

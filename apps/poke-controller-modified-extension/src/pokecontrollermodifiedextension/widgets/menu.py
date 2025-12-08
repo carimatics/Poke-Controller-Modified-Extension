@@ -108,12 +108,10 @@ class AppMenu(tk.Menu, AppAccessorMixIn):
         )
 
     def _on_menu_reset_window_size_pushed(self) -> None:
-        pass
-        # FIXME: すぐ直す
-        # logger.debug("Reset window size")
-        # default_gui_state = tomllib.loads(DEFAULT_GUI_STATE)
-        # default_size = default_gui_state["capture"]["size"]
-        # self.app.gui_state.capture.size.set(default_size)
+        result = self.app.papico.load_gui_state()
+        if not result.success or (data := result.data) is None:
+            raise RuntimeError("Failed to load derault GUI state.")
+        self.app.gui_state.capture.size.set(data.capture.size.get())
 
     def _on_command_line_settings_pushed(self) -> None:
         pass

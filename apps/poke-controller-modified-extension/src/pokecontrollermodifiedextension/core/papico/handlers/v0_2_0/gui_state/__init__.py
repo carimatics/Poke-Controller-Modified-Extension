@@ -1,3 +1,6 @@
 from .load import (
-    PapicoGuiStateLoadHandler as PapicoGuiStateLoadHandler_v0_2_0,
+    PapicoGuiStateLoadHandler as PapicoGuiStateLoadHandler,
+)
+from .load_default import (
+    PapicoGuiStateLoadDefaultHandler as PapicoGuiStateLoadDefaultHandler,
 )

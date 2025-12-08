@@ -66,6 +66,10 @@ class App(tk.Tk):
         return self._profile
 
     @property
+    def papico(self) -> Papico:
+        return self._papico
+
+    @property
     def camera(self) -> Camera:
         return self._camera
 
