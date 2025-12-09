@@ -629,7 +629,8 @@ class AppSettings:
     def apply_dict(self, d: dict[str, Any]) -> None:
         def apply(current: Any, new: Any) -> None:
             if isinstance(current, Variable):
-                current.set(new)
+                if current.get() != new:
+                    current.set(new)
                 return
 
             if isinstance(current, dict):
