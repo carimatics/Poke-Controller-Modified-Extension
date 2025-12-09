@@ -32,6 +32,7 @@ class SettingsWindow(AppDialog):
         self._trace_ids = []
         self._has_changes = tk.BooleanVar(value=False)
         self._register_hooks()
+        self.minsize(width=800, height=600)
 
         self.build_ui()
 
