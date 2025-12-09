@@ -23,15 +23,15 @@ jobs:
       - name: Install Mise
         uses: jdx/mise-action@v2
         with:
-          version: 2025.12.0
+          version: 2025.12.1
           install: true
           cache: true
       - name: Setup Runtime via uv
         run: uv sync
-      - name: CI (Lint/Format/Typecheck/Test)
+      - name: CI (Lint/Format/Typecheck)
         if: runner.os != 'Windows'
         run: mise run ci
-      - name: CI for windows (Lint/Format/Typecheck/Test)
+      - name: CI for windows (Lint/Format/Typecheck)
         if: runner.os == 'Windows'
         run: mise run ci
         env:
