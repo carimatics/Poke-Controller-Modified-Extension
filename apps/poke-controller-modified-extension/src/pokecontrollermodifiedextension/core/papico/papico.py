@@ -1,3 +1,4 @@
+import logging
 from pathlib import Path
 from typing import Callable
 
@@ -10,6 +11,8 @@ type PapicoContainer[T] = dict[str, dict[str, dict[str, T]]]
 PapicoHandlerGenerator = Callable[[], PapicoHandler]
 
 LATEST_API_VERSION = "0.2.0"
+
+logger = logging.getLogger(__name__)
 
 
 class Papico:
@@ -37,6 +40,7 @@ class Papico:
         path_v0_2 = self._base_dir / "profiles" / self._profile / "settings.json"
         path_v0_1 = self._base_dir / "profiles" / self._profile / "settings.ini"
         if path_v0_2.exists() and path_v0_2.is_file():
+            logger.info(f"Loading settings from {path_v0_2}")
             result = self._exec(
                 PapicoExecContext(
                     api_version="0.2.0",
@@ -46,6 +50,7 @@ class Papico:
                 )
             )
         elif path_v0_1.exists() and path_v0_1.is_file():
+            logger.info(f"Loading settings from {path_v0_1}")
             result = self._exec(
                 PapicoExecContext(
                     api_version="0.1.8",
@@ -55,6 +60,7 @@ class Papico:
                 )
             )
         else:
+            logger.info("Loading default settings from the latest version")
             result = self._exec(
                 PapicoExecContext(
                     api_version=LATEST_API_VERSION,
