@@ -6,6 +6,7 @@ from typing import Any
 from ..app import App
 from ..mixins import AppAccessorMixIn
 from ..settings import DEFAULT_SETTINGS
+from ..windows import SettingsWindow
 
 logger = logging.getLogger(__name__)
 
@@ -15,6 +16,8 @@ WEBBROWSER_OPEN_IN_NEW_TAB = 2
 
 
 class AppMenu(tk.Menu, AppAccessorMixIn):
+    _settings_window: SettingsWindow | None = None
+
     def __init__(self, master: App, *args: Any, **kwargs: Any) -> None:
         super().__init__(master, *args, **kwargs)
         self._app: App = master
@@ -32,7 +35,10 @@ class AppMenu(tk.Menu, AppAccessorMixIn):
     def _build_menu_cascade(self) -> None:
         menu_cascade = tk.Menu(self, tearoff=False)
         menu_cascade.add_separator()
-        menu_cascade.add_command(label="設定(dummy)")
+        menu_cascade.add_command(
+            label="設定",
+            command=self._on_menu_settings_pushed,
+        )
         menu_cascade.add_separator()
         menu_cascade.add_command(
             label="画面サイズのリセット",
@@ -108,6 +114,13 @@ class AppMenu(tk.Menu, AppAccessorMixIn):
             label="ヘルプ",
         )
 
+    def _on_menu_settings_pushed(self) -> None:
+        self._settings_window = SettingsWindow(self)
+        self._settings_window.protocol(
+            "WM_DELETE_WINDOW",
+            self._on_settings_window_closed,
+        )
+
     def _on_menu_reset_window_size_pushed(self) -> None:
         self.app.settings.capture.size.set(DEFAULT_SETTINGS["capture"]["size"])
 
@@ -151,3 +164,9 @@ class AppMenu(tk.Menu, AppAccessorMixIn):
 
     def _on_help_license_pushed(self) -> None:
         pass
+
+    def _on_settings_window_closed(self) -> None:
+        if (window := self._settings_window) is None:
+            return
+        window.destroy()
+        self._settings_window = None
