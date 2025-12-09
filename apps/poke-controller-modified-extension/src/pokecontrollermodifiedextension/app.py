@@ -10,8 +10,8 @@ from .core.papico import Papico
 from .info import AppInfo
 from .model import AppModel
 from .settings import AppSettings
-from .translation import setup_translation
 from .style import setup_style
+from .translation import setup_translation
 
 logger = logging.getLogger(__name__)
 
