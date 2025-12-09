@@ -1,5 +1,4 @@
 import tkinter as tk
-from typing import cast
 
 from ..app import App
 
@@ -7,4 +6,9 @@ from ..app import App
 class AppAccessorMixIn(tk.Misc):
     @property
     def app(self) -> App:
-        return cast(App, self.winfo_toplevel())
+        toplevel = self.winfo_toplevel()
+        if isinstance(toplevel, App):
+            return toplevel
+        if isinstance(toplevel, tk.Toplevel):
+            return toplevel.app  # type: ignore[attr-defined, no-any-return]
+        raise RuntimeError("AppAccessorMixIn can only be used in App or Toplevel")

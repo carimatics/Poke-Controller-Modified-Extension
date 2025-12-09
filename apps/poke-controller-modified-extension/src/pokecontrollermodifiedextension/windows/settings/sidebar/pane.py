@@ -16,7 +16,8 @@ class SettingsSidebarPane(AppFrame):
     _bg_color: str
     _canvas_window: int
     _current_button: tk.Button | None
-    _section_button: dict[str, tk.Button]
+    _section_buttons: dict[str, tk.Button]
+    _hook_ids: list[str]
 
     def __init__(
         self,
@@ -29,11 +30,18 @@ class SettingsSidebarPane(AppFrame):
         self._bg_color = self._get_parent_bg(master)
         logging.debug(f"Sidebar background color: {self._bg_color}")
 
+        self._theme = self.app.settings.general.theme
+
         self._on_section_selected = on_section_selected
+        self._hook_ids = []
+        self._register_hooks()
+
         self.build_ui()
 
     def build_ui(self) -> None:
-        self._canvas = tk.Canvas(self, bg=self._bg_color, highlightthickness=0)
+        self._canvas = tk.Canvas(
+            self, bg=self._bg_color, width=140, highlightthickness=0
+        )
         self._scrollbar = ttk.Scrollbar(
             self, orient="vertical", command=self._canvas.yview
         )
@@ -60,36 +68,39 @@ class SettingsSidebarPane(AppFrame):
         self._canvas.bind_all("<Button-5>", self._on_mouse_wheel)
 
         self._current_button: tk.Button | None = None
-        self._section_button: dict[str, tk.Button] = {}
-
-    def add_group(self, group_name: str) -> None:
-        bg_color = self._canvas.cget("background")
-        label = tk.Label(
-            self._scrollable_frame,
-            text=group_name,
-            font=("", 9, "bold"),
-            bg=bg_color,
-            anchor=l.W,
-            padx=10,
-        )
-        label.pack(fill=l.X)
+        self._section_buttons: dict[str, tk.Button] = {}
 
     def add_section(self, section_id: str, section_name: str) -> None:
+        bg_color = self._canvas.cget("background")
         btn = tk.Button(
             self._scrollable_frame,
             text=section_name,
-            font=("", 10),
-            bg="white",
+            bg=bg_color,
+            highlightbackground=bg_color,
             fg="black",
-            activebackground="#e0e0e0",
+            activebackground="#e6e6e6",
             relief=l.FLAT,
             anchor=l.W,
-            padx=15,
-            pady=8,
-            command=lambda: self._select_section(section_id),
+            padx=4,
+            pady=4,
+            command=lambda: self._on_section_pushed(section_id),
         )
         btn.pack(fill=l.X, padx=5, pady=1)
-        self._section_button[section_id] = btn
+        self._section_buttons[section_id] = btn
+
+    def select_section(self, section_id: str) -> None:
+        bg_color = self._canvas.cget("background")
+        if self._current_button is not None:
+            self._current_button.configure(bg=bg_color, fg="black", state=l.NORMAL)
+        self._current_button = self._section_buttons[section_id]
+        self._current_button.configure(bg=bg_color, fg="#6e6e6e", state=l.DISABLED)
+
+        self._on_section_selected(section_id)
+
+    def destroy(self) -> None:
+        for trace_id in self._hook_ids:
+            self._theme.trace_remove("write", trace_id)
+        super().destroy()
 
     def _on_frame_configure(self, event: tk.Event) -> None:
         self._update_scroll_region()
@@ -116,13 +127,8 @@ class SettingsSidebarPane(AppFrame):
             self._canvas.yview_moveto(0)
             self._scrollbar.pack_forget()
 
-    def _select_section(self, section_id: str) -> None:
-        if self._current_button is not None:
-            self._current_button.configure(bg="white", fg="black")
-        self._current_button = self._section_button[section_id]
-        self._current_button.configure(bg="#0078b4", fg="white")
-
-        self._on_section_selected(section_id)
+    def _on_section_pushed(self, section_id: str) -> None:
+        self.select_section(section_id)
 
     def _on_mouse_wheel(self, event: tk.Event) -> None:
         bbox = self._canvas.bbox("all")
@@ -149,3 +155,16 @@ class SettingsSidebarPane(AppFrame):
         except Exception:
             logger.exception("Failed to get parent background color")
             return "#f0f0f0"
+
+    def _apply_theme(self, *args: Any) -> None:
+        def apply() -> None:
+            self._bg_color = self._get_parent_bg(self)
+            self._canvas.configure(bg=self._bg_color)
+            self._scrollable_frame.configure(bg=self._bg_color)
+            for btn in self._section_buttons.values():
+                btn.configure(bg=self._bg_color)
+
+        self.after(10, apply)
+
+    def _register_hooks(self) -> None:
+        self._hook_ids.append(self._theme.trace_add("write", self._apply_theme))

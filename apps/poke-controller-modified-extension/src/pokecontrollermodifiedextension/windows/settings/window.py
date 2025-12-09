@@ -6,8 +6,9 @@ from typing import Any
 
 from ...mixins import AppAccessorMixIn
 from ...values import literals as l
-from ...widgets import AppDialog
+from ...widgets import AppDialog, AppFrame
 from .buttons import SettingsButtonsPane
+from .contents import GeneralSettingsPane
 from .sidebar import SettingsSidebarPane
 
 logger = logging.getLogger(__name__)
@@ -17,6 +18,9 @@ class SettingsWindow(AppDialog):
     _backup: dict[str, Any]
     _has_changes: tk.BooleanVar
     _trace_ids: list[tuple[tk.Variable, str]]
+    _content_labelframe: ttk.Labelframe
+    _contents: dict[str, AppFrame]
+    _current_content: AppFrame | None
 
     def __init__(
         self,
@@ -34,26 +38,39 @@ class SettingsWindow(AppDialog):
         self._register_hooks()
         self.minsize(width=800, height=600)
 
+        self._contents = {}
+        self._current_content = None
+
         self.build_ui()
 
     def build_ui(self) -> None:
         upper_frame = ttk.Frame(self)
+
+        # Sidebar
         sidebar = self._build_sidebar(master=upper_frame)
-        labelframe = ttk.Labelframe(upper_frame, text="Foo")
+
+        # Content
+        self._build_contents(master=upper_frame)
 
         lower_frame = ttk.Frame(self)
         buttons = SettingsButtonsPane(
             lower_frame,
             self._has_changes,
             self._on_apply_pushed,
+            self._on_cancel_pushed,
         )
 
         # Layout
-        sidebar.pack(expand=False, fill=l.Y, side=l.LEFT, padx=(0, 4))
-        labelframe.pack(expand=True, fill=l.BOTH, side=l.LEFT)
+        sidebar.pack(expand=False, fill=l.Y, side=l.LEFT, padx=(0, 4), pady=(4, 0))
+        self._content_labelframe.pack(
+            expand=True, fill=l.BOTH, side=l.LEFT, padx=(0, 8), pady=(8, 0)
+        )
         buttons.pack(fill=l.X)
         upper_frame.pack(expand=True, fill=l.BOTH, anchor=l.CENTER)
         lower_frame.pack(expand=False, fill=l.X, anchor=l.CENTER)
+
+        # Select first section
+        sidebar.select_section("general")
 
     def _build_sidebar(self, master: ttk.Frame) -> SettingsSidebarPane:
         sidebar = SettingsSidebarPane(
@@ -72,10 +89,18 @@ class SettingsWindow(AppDialog):
 
         return sidebar
 
+    def _build_contents(self, master: ttk.Frame) -> None:
+        self._content_labelframe = ttk.Labelframe(master)
+        self._contents["general"] = GeneralSettingsPane(self._content_labelframe)
+
     def _on_apply_pushed(self) -> None:
         logger.info("Settings saving.")
         # self.app.papico.save_settings(self.app.settings)
         logger.info("Settings saved.")
+
+    def _on_cancel_pushed(self) -> None:
+        self._settings.apply_dict(self._backup)
+        self.destroy()
 
     def _register_hooks(self) -> None:
         def add_hook(current: Any) -> None:
@@ -111,4 +136,8 @@ class SettingsWindow(AppDialog):
         )
 
     def _on_section_selected(self, section: str) -> None:
-        pass
+        self._content_labelframe.configure(text=f"{section.capitalize()} Settings")
+        if (content := self._current_content) is not None:
+            content.pack_forget()
+        self._current_content = self._contents[section]
+        self._current_content.pack(expand=True, fill=l.BOTH)

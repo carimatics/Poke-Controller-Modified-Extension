@@ -654,7 +654,6 @@ class AppSettings:
 
     def has_diff(self, d: dict[str, Any]) -> bool:
         def diff(current: Any, new: Any) -> bool:
-            logger.debug(f"diff: {current} {new}")
             if isinstance(current, Variable):
                 return current.get() != new  # type: ignore[no-any-return]
 

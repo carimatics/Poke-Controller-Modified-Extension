@@ -115,6 +115,9 @@ class AppMenu(tk.Menu, AppAccessorMixIn):
         )
 
     def _on_menu_settings_pushed(self) -> None:
+        if self._settings_window is not None:
+            self._settings_window.lift()
+            return
         self._settings_window = SettingsWindow(self)
         self._settings_window.protocol(
             "WM_DELETE_WINDOW",

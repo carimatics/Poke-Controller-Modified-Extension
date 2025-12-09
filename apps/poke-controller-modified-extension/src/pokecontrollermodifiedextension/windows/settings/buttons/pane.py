@@ -16,12 +16,14 @@ class SettingsButtonsPane(AppFrame):
         master: tk.Misc,
         has_changes: tk.BooleanVar,
         on_apply_pushed: Callable[[], None],
+        on_cancel_pushed: Callable[[], None],
         *args: Any,
         **kwargs: Any,
     ) -> None:
         super().__init__(master, *args, **kwargs)
         self._has_changes = has_changes
         self._on_apply_pushed = on_apply_pushed
+        self._on_cancel_pushed = on_cancel_pushed
         self._register_hooks()
         self.build_ui()
 
@@ -44,9 +46,6 @@ class SettingsButtonsPane(AppFrame):
 
     def _on_ok_pushed(self) -> None:
         self._on_apply_pushed()
-        self.master.destroy()
-
-    def _on_cancel_pushed(self) -> None:
         self.master.destroy()
 
     def _register_hooks(self) -> None:

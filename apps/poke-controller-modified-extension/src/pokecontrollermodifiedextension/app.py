@@ -18,6 +18,8 @@ logger = logging.getLogger(__name__)
 INFO = AppInfo(
     name="Poke-Controller Modified Extension",
     version="0.2.0",
+    latest_settings_version="0.2.0",
+    latest_api_version="0.2.0",
 )
 
 
