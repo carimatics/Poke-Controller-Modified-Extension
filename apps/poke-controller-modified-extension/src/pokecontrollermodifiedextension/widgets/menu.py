@@ -115,9 +115,10 @@ class AppMenu(tk.Menu, AppAccessorMixIn):
         )
 
     def _on_menu_settings_pushed(self) -> None:
-        if self._settings_window is not None:
-            self._settings_window.lift()
-            return
+        if (window := self._settings_window) is not None:
+            if window.winfo_exists():
+                window.lift()
+                return
         self._settings_window = SettingsWindow(self)
         self._settings_window.protocol(
             "WM_DELETE_WINDOW",
@@ -169,7 +170,9 @@ class AppMenu(tk.Menu, AppAccessorMixIn):
         pass
 
     def _on_settings_window_closed(self) -> None:
+        logger.info("Settings window closed.")
         if (window := self._settings_window) is None:
             return
-        window.destroy()
+        if window.winfo_exists():
+            window.destroy()
         self._settings_window = None

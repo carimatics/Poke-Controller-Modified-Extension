@@ -15,6 +15,7 @@ class SettingsButtonsPane(AppFrame):
         self,
         master: tk.Misc,
         has_changes: tk.BooleanVar,
+        on_ok_pushed: Callable[[], None],
         on_apply_pushed: Callable[[], None],
         on_cancel_pushed: Callable[[], None],
         *args: Any,
@@ -22,6 +23,7 @@ class SettingsButtonsPane(AppFrame):
     ) -> None:
         super().__init__(master, *args, **kwargs)
         self._has_changes = has_changes
+        self._on_ok_pushed = on_ok_pushed
         self._on_apply_pushed = on_apply_pushed
         self._on_cancel_pushed = on_cancel_pushed
         self._register_hooks()
@@ -43,10 +45,6 @@ class SettingsButtonsPane(AppFrame):
         self._apply_button.pack(side=l.RIGHT, padx=4)
         cancel_button.pack(side=l.RIGHT, padx=4)
         frame.pack(expand=True, fill=l.X, padx=16, pady=8)
-
-    def _on_ok_pushed(self) -> None:
-        self._on_apply_pushed()
-        self.master.destroy()
 
     def _register_hooks(self) -> None:
         self._has_changes.trace_add("write", self._on_has_changes_changed)
