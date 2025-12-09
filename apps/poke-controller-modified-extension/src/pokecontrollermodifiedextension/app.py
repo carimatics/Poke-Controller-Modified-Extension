@@ -10,6 +10,7 @@ from .core.papico import Papico
 from .info import AppInfo
 from .model import AppModel
 from .settings import AppSettings
+from .translation import setup_translation
 
 logger = logging.getLogger(__name__)
 
@@ -43,6 +44,11 @@ class App(tk.Tk):
         self._app_info = INFO
         self._settings = papico.load_settings().data  # type: ignore[assignment]
         self._app_model = AppModel(self._app_info, self._settings)
+
+        setup_translation(
+            base_dir=base_dir / "translations",
+            language=self._settings.general.language.get(),
+        )
 
         # Theme
         # style = ttk.Style(self)

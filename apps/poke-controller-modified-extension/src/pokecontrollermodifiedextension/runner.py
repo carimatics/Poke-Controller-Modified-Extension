@@ -28,9 +28,12 @@ def run_app(*, base_dir: str, profile: str) -> None:
         use_serial() as serial,
     ):
         base_dir_path = Path(base_dir)
+
+        # papico
         papico = Papico(base_dir=base_dir_path, profile=profile)
         _register_handlers(papico)
 
+        # app
         app = App(
             base_dir=base_dir_path,
             profile=profile,
@@ -39,11 +42,11 @@ def run_app(*, base_dir: str, profile: str) -> None:
             serial=serial,
         )
 
-        # config menubar
+        # menubar
         menu = AppMenu(app)
         app.config(menu=menu)
 
-        # create main window
+        # main window
         main_window = MainWindow(app)
         main_window.pack(expand=True, fill=l.BOTH)
 

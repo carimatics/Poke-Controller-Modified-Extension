@@ -9,6 +9,7 @@ SCHEMA: dict[str, Any] = {
     "general": {
         "version": str,
         "theme": str,
+        "language": str,
     },
     "capture": {
         "camera_id": int,
@@ -176,6 +177,7 @@ DEFAULT_SETTINGS: dict[str, Any] = {
     "general": {
         "version": "0.2.0",
         "theme": "default",
+        "language": "en",
     },
     "capture": {
         "camera_id": 0,
@@ -344,6 +346,7 @@ DEFAULT_SETTINGS: dict[str, Any] = {
 class GeneralSettings:
     version: StringVar
     theme: StringVar
+    language: StringVar
 
 
 @dataclass(kw_only=True, frozen=True)

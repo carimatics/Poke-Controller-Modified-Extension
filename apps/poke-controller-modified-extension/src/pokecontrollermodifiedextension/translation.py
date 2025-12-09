@@ -6,7 +6,7 @@ from pokecontroller.core.translation import Translation
 _translation: Translation | None = None
 
 
-def init_translation(base_dir: Path, language: str) -> None:
+def setup_translation(base_dir: Path, language: str) -> None:
     global _translation
     _translation = Translation(base_dir, language)
 
