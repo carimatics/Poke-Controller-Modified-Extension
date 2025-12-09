@@ -26,20 +26,21 @@ class SettingsButtonsPane(AppFrame):
         self.build_ui()
 
     def build_ui(self) -> None:
-        ok_button = ttk.Button(self, text="OK", command=self._on_ok_pushed)
+        frame = ttk.Frame(self)
+        ok_button = ttk.Button(frame, text="OK", command=self._on_ok_pushed)
         self._apply_button = ttk.Button(
-            self,
+            frame,
             text="Apply",
             state=l.NORMAL if self._has_changes.get() else l.DISABLED,
             command=self._on_apply_pushed,
         )
-        cancel_button = ttk.Button(self, text="Cancel", command=self._on_cancel_pushed)
+        cancel_button = ttk.Button(frame, text="Cancel", command=self._on_cancel_pushed)
 
         # Layout
         ok_button.pack(side=l.RIGHT, padx=(4, 0))
         self._apply_button.pack(side=l.RIGHT, padx=4)
         cancel_button.pack(side=l.RIGHT, padx=4)
-        self.pack(expand=True, fill=l.X, padx=4, pady=4)
+        frame.pack(expand=True, fill=l.X, padx=16, pady=8)
 
     def _on_ok_pushed(self) -> None:
         self._on_apply_pushed()

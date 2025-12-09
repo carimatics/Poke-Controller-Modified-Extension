@@ -8,6 +8,7 @@ from ...mixins import AppAccessorMixIn
 from ...values import literals as l
 from ...widgets import AppDialog
 from .buttons import SettingsButtonsPane
+from .sidebar import SettingsSidebarPane
 
 logger = logging.getLogger(__name__)
 
@@ -36,16 +37,39 @@ class SettingsWindow(AppDialog):
 
     def build_ui(self) -> None:
         upper_frame = ttk.Frame(self)
+        sidebar = self._build_sidebar(master=upper_frame)
+        labelframe = ttk.Labelframe(upper_frame, text="Foo")
 
         lower_frame = ttk.Frame(self)
         buttons = SettingsButtonsPane(
-            lower_frame, self._has_changes, self._on_apply_pushed
+            lower_frame,
+            self._has_changes,
+            self._on_apply_pushed,
         )
 
         # Layout
+        sidebar.pack(expand=False, fill=l.Y, side=l.LEFT, padx=(0, 4))
+        labelframe.pack(expand=True, fill=l.BOTH, side=l.LEFT)
         buttons.pack(fill=l.X)
-        upper_frame.pack(expand=True, fill=l.BOTH, anchor=l.CENTER, pady=4)
-        lower_frame.pack(expand=False, fill=l.X, anchor=l.CENTER, pady=4)
+        upper_frame.pack(expand=True, fill=l.BOTH, anchor=l.CENTER)
+        lower_frame.pack(expand=False, fill=l.X, anchor=l.CENTER)
+
+    def _build_sidebar(self, master: ttk.Frame) -> SettingsSidebarPane:
+        sidebar = SettingsSidebarPane(
+            master,
+            self._on_section_selected,
+        )
+
+        sidebar.add_section("general", "General")
+        sidebar.add_section("capture", "Capture")
+        sidebar.add_section("serial", "Serial")
+        sidebar.add_section("device_input", "Device Input")
+        sidebar.add_section("command", "Command")
+        sidebar.add_section("notification", "Notification")
+        sidebar.add_section("widget", "Widget")
+        sidebar.add_section("external", "External Tools")
+
+        return sidebar
 
     def _on_apply_pushed(self) -> None:
         logger.info("Settings saving.")

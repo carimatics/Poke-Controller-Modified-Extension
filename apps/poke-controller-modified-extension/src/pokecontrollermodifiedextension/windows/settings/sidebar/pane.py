@@ -1,0 +1,151 @@
+import logging
+import tkinter as tk
+import tkinter.ttk as ttk
+from typing import Any, Callable
+
+from ....values import literals as l
+from ....widgets import AppFrame
+
+logger = logging.getLogger(__name__)
+
+
+class SettingsSidebarPane(AppFrame):
+    _canvas: tk.Canvas
+    _scrollable_frame: tk.Frame
+    _scrollbar: ttk.Scrollbar
+    _bg_color: str
+    _canvas_window: int
+    _current_button: tk.Button | None
+    _section_button: dict[str, tk.Button]
+
+    def __init__(
+        self,
+        master: tk.Misc,
+        on_section_selected: Callable[[str], None],
+        *args: Any,
+        **kwargs: Any,
+    ) -> None:
+        super().__init__(master, *args, **kwargs)
+        self._bg_color = self._get_parent_bg(master)
+        logging.debug(f"Sidebar background color: {self._bg_color}")
+
+        self._on_section_selected = on_section_selected
+        self.build_ui()
+
+    def build_ui(self) -> None:
+        self._canvas = tk.Canvas(self, bg=self._bg_color, highlightthickness=0)
+        self._scrollbar = ttk.Scrollbar(
+            self, orient="vertical", command=self._canvas.yview
+        )
+        self._scrollable_frame = tk.Frame(self._canvas, bg=self._bg_color)
+        self._scrollable_frame.bind(
+            "<Configure>",
+            self._on_frame_configure,
+        )
+
+        self._canvas_window = self._canvas.create_window(
+            (0, 0), window=self._scrollable_frame, anchor=l.NW
+        )
+        self._canvas.configure(yscrollcommand=self._scrollbar.set)
+
+        self._canvas.bind(
+            "<Configure>",
+            self._on_canvas_configure,
+        )
+        self._canvas.pack(side=l.LEFT, fill=l.BOTH, expand=True)
+        self._scrollbar.pack(side=l.RIGHT, fill=l.Y)
+
+        self._canvas.bind_all("<MouseWheel>", self._on_mouse_wheel)
+        self._canvas.bind_all("<Button-4>", self._on_mouse_wheel)
+        self._canvas.bind_all("<Button-5>", self._on_mouse_wheel)
+
+        self._current_button: tk.Button | None = None
+        self._section_button: dict[str, tk.Button] = {}
+
+    def add_group(self, group_name: str) -> None:
+        bg_color = self._canvas.cget("background")
+        label = tk.Label(
+            self._scrollable_frame,
+            text=group_name,
+            font=("", 9, "bold"),
+            bg=bg_color,
+            anchor=l.W,
+            padx=10,
+        )
+        label.pack(fill=l.X)
+
+    def add_section(self, section_id: str, section_name: str) -> None:
+        btn = tk.Button(
+            self._scrollable_frame,
+            text=section_name,
+            font=("", 10),
+            bg="white",
+            fg="black",
+            activebackground="#e0e0e0",
+            relief=l.FLAT,
+            anchor=l.W,
+            padx=15,
+            pady=8,
+            command=lambda: self._select_section(section_id),
+        )
+        btn.pack(fill=l.X, padx=5, pady=1)
+        self._section_button[section_id] = btn
+
+    def _on_frame_configure(self, event: tk.Event) -> None:
+        self._update_scroll_region()
+
+    def _on_canvas_configure(self, event: tk.Event) -> None:
+        self._canvas.itemconfig(
+            self._canvas_window,
+            width=event.width,
+        )
+        self._update_scroll_region()
+
+    def _update_scroll_region(self) -> None:
+        self._canvas.update_idletasks()
+
+        bbox = self._canvas.bbox("all")
+        content_height = bbox[3] - bbox[1]
+        canvas_height = self._canvas.winfo_height()
+
+        if content_height > canvas_height:
+            self._canvas.configure(scrollregion=bbox)
+            self._scrollbar.pack(side=l.RIGHT, fill=l.Y)
+        else:
+            self._canvas.configure(scrollregion=(0, 0, 0, canvas_height))
+            self._canvas.yview_moveto(0)
+            self._scrollbar.pack_forget()
+
+    def _select_section(self, section_id: str) -> None:
+        if self._current_button is not None:
+            self._current_button.configure(bg="white", fg="black")
+        self._current_button = self._section_button[section_id]
+        self._current_button.configure(bg="#0078b4", fg="white")
+
+        self._on_section_selected(section_id)
+
+    def _on_mouse_wheel(self, event: tk.Event) -> None:
+        bbox = self._canvas.bbox("all")
+        if bbox and bbox[3] > self._canvas.winfo_height():
+            if event.num == 5 or event.delta < 0:
+                self._canvas.yview_scroll(1, "units")
+            if event.num == 4 or event.delta > 0:
+                self._canvas.yview_scroll(-1, "units")
+
+    def _get_parent_bg(self, widget: tk.Misc) -> str:
+        try:
+            bg = None
+            if isinstance(widget, (tk.Frame, tk.Tk, tk.Toplevel)):
+                bg = widget.cget("background")
+            elif isinstance(widget, ttk.Frame):
+                style = ttk.Style(widget)
+                bg = style.lookup("TFrame", "background")
+            if bg:
+                rgb = widget.winfo_rgb(bg)
+                r, g, b = [x >> 8 for x in rgb]
+                return f"#{r:02x}{g:02x}{b:02x}"
+            logger.warning("Failed to get parent background color")
+            return "#f0f0f0"
+        except Exception:
+            logger.exception("Failed to get parent background color")
+            return "#f0f0f0"
