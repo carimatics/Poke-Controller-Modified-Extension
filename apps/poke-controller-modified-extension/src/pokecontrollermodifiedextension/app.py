@@ -10,7 +10,7 @@ from .core.papico import Papico
 from .info import AppInfo
 from .model import AppModel
 from .settings import AppSettings
-from .style import setup_style
+from .style import apply_theme, setup_style
 from .translation import setup_translation
 
 logger = logging.getLogger(__name__)
@@ -51,7 +51,10 @@ class App(tk.Tk):
             language=self._settings.general.language.get(),
         )
 
-        setup_style(theme=self._settings.general.theme.get())
+        setup_style(
+            app=self,
+            theme=self._settings.general.theme.get(),
+        )
 
         # Title
         self.title(f"{INFO.name}(v{INFO.version})")
@@ -99,6 +102,10 @@ class App(tk.Tk):
 
     def _register_hooks(self) -> None:
         self._camera_id.trace_add("write", self._on_camera_id_changed)
+        self._settings.general.theme.trace_add("write", self._apply_theme)
+
+    def _apply_theme(self, *_: Any) -> None:
+        apply_theme(self, self._settings.general.theme.get())
 
     def _on_camera_id_changed(self, *_: Any) -> None:
         self._camera.open(camera_id=int(self._camera_id.get()))

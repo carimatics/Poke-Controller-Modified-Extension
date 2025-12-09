@@ -656,7 +656,7 @@ class AppSettings:
         def diff(current: Any, new: Any) -> bool:
             logger.debug(f"diff: {current} {new}")
             if isinstance(current, Variable):
-                return current.get() != new
+                return current.get() != new  # type: ignore[no-any-return]
 
             if isinstance(current, dict):
                 for k, v in current.items():
