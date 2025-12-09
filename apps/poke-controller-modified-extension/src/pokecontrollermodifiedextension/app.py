@@ -11,6 +11,7 @@ from .info import AppInfo
 from .model import AppModel
 from .settings import AppSettings
 from .translation import setup_translation
+from .style import setup_style
 
 logger = logging.getLogger(__name__)
 
@@ -50,9 +51,7 @@ class App(tk.Tk):
             language=self._settings.general.language.get(),
         )
 
-        # Theme
-        # style = ttk.Style(self)
-        # style.theme_use(self._gui_state.general.theme.get())
+        setup_style(theme=self._settings.general.theme.get())
 
         # Title
         self.title(f"{INFO.name}(v{INFO.version})")

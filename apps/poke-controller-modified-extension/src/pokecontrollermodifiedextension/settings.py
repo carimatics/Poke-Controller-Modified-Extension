@@ -652,6 +652,31 @@ class AppSettings:
 
         apply(self, d)
 
+    def has_diff(self, d: dict[str, Any]) -> bool:
+        def diff(current: Any, new: Any) -> bool:
+            logger.debug(f"diff: {current} {new}")
+            if isinstance(current, Variable):
+                return current.get() != new
+
+            if isinstance(current, dict):
+                for k, v in current.items():
+                    if k in new:
+                        if diff(v, new[k]):
+                            return True
+                return False
+
+            if not is_dataclass(current):
+                raise ValueError(f"unsupported type: {type(current)}")
+
+            for field in fields(current):
+                k, v = field.name, getattr(current, field.name)
+                if k in new:
+                    if diff(v, new[k]):
+                        return True
+            return False
+
+        return diff(self, d)
+
 
 def settings_to_dict(settings: AppSettings) -> dict[str, Any]:
     def convert(s: Any) -> Any:
