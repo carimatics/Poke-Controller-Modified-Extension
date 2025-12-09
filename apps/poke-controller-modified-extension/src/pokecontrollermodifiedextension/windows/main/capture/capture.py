@@ -213,7 +213,7 @@ class Capture(AppFrame):
         self._image = self._disabled_image
         self._image_id = self._canvas.create_image(0, 0, anchor=l.NW, image=self._image)
         self._is_disabled = False
-        self._canvas.pack(expand=True, fill=l.BOTH)
+        self._canvas.pack(expand=True, fill=l.BOTH, anchor=l.CENTER)
         logger.info("Canvas recreated")
 
     def _load_frame(self) -> None:
