@@ -1,5 +1,6 @@
 import tkinter.ttk as ttk
 
+
 def setup_style(theme: str):
     style = ttk.Style()
 
