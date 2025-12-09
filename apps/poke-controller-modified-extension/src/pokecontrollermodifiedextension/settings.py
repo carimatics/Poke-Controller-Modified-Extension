@@ -623,14 +623,39 @@ class AppSettings:
             external=ExternalSettings.from_dict(d["external"]),
         )
 
+    def to_dict(self) -> dict[str, Any]:
+        return settings_to_dict(self)
+
+    def apply_dict(self, d: dict[str, Any]) -> None:
+        def apply(current: Any, new: Any) -> None:
+            if isinstance(current, Variable):
+                current.set(new)
+                return
+
+            if isinstance(current, dict):
+                for k, v in current.items():
+                    if k in new:
+                        apply(v, new[k])
+                return
+
+            if not is_dataclass(current):
+                raise ValueError(f"unsupported type: {type(current)}")
+
+            for field in fields(current):
+                k, v = field.name, getattr(current, field.name)
+                if k in new:
+                    apply(v, new[k])
+
+        apply(self, d)
+
 
 def settings_to_dict(settings: AppSettings) -> dict[str, Any]:
     def convert(s: Any) -> Any:
-        if isinstance(s, dict):
-            return {k: convert(v) for k, v in s.items()}
-
         if isinstance(s, Variable):
             return s.get()
+
+        if isinstance(s, dict):
+            return {k: convert(v) for k, v in s.items()}
 
         if not is_dataclass(s):
             raise ValueError(f"unsupported type: {type(s)}")

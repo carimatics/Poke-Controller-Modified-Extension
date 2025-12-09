@@ -39,6 +39,8 @@ class MainWindow(AppFrame):
         self._register_hooks()
         self.build_ui()
 
+        master.after(0, self._adjust_outputs_size)
+
     @property
     def settings(self) -> AppSettings:
         return self.app.settings
