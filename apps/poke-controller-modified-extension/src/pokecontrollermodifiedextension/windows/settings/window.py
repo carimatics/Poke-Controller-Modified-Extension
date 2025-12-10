@@ -94,17 +94,20 @@ class SettingsWindow(AppDialog):
         self._content_labelframe = ttk.Labelframe(master)
         self._contents["general"] = GeneralSettingsPane(self._content_labelframe)
 
-    def _on_ok_pushed(self) -> None:
-        self._on_apply_pushed()
-        self.destroy()
-
-    def _on_apply_pushed(self) -> None:
+    def _save_settings(self) -> None:
         logger.info("Settings saving.")
         self._settings.general.version.set(self.app.app_info.latest_settings_version)
         self.app.papico.save_settings(self.app.settings)
+        logger.info("Settings saved.")
+
+    def _on_ok_pushed(self) -> None:
+        self._save_settings()
+        self.destroy()
+
+    def _on_apply_pushed(self) -> None:
+        self._save_settings()
         self._backup = self._settings.to_dict()
         self._on_settings_changed()
-        logger.info("Settings saved.")
 
     def _on_cancel_pushed(self) -> None:
         self._settings.apply_dict(self._backup)
