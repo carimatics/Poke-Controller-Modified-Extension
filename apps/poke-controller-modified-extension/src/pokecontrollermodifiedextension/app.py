@@ -65,6 +65,14 @@ class App(tk.Tk):
         self._camera_id = self._settings.capture.camera_id
         self._camera.open(camera_id=int(self._camera_id.get()))
 
+        # Serial
+        self._serial_port = self._settings.serial.port
+        self._serial_baud_rate = self._settings.serial.baud_rate
+        self._serial.open(
+            port_path=self._serial_port.get(),
+            baud_rate=self._serial_baud_rate.get(),
+        )
+
         self._register_hooks()
 
     @property

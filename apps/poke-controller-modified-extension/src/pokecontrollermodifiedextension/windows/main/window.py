@@ -34,9 +34,13 @@ class MainWindow(AppFrame):
         self._visible_controller = self.settings.widget.software_controller.visible
         self._controller_position = self.settings.widget.software_controller.position
 
+        # for trace
+        self._serial_port = self.settings.serial.port
+        self._serial_port_name = self.settings.serial.port_name
+
         self._panes: dict[str, ttk.Frame] = {}
         self._frames: dict[str, ttk.Frame] = {}
-        self._register_hooks()
+        self._register_traces()
         self.build_ui()
 
         master.after(0, self._adjust_outputs_size)
@@ -76,7 +80,7 @@ class MainWindow(AppFrame):
         self._layout_left_frame()
         self._layout_right_frame()
 
-    def _register_hooks(self) -> None:
+    def _register_traces(self) -> None:
         self._outputs_size.trace_add("write", self._on_outputs_size_changed)
         self._visible_output1.trace_add("write", self._on_widget_visibility_changed)
         self._visible_output2.trace_add("write", self._on_widget_visibility_changed)
@@ -84,6 +88,7 @@ class MainWindow(AppFrame):
         self._controller_position.trace_add(
             "write", self._on_controller_position_changed
         )
+        self._serial_port.trace_add("write", self._on_serial_port_changed)
 
     def _layout_left_frame(self) -> None:
         self._panes[CAPTURE].pack(expand=True, fill=l.BOTH, anchor=l.CENTER)
@@ -180,3 +185,11 @@ class MainWindow(AppFrame):
 
     def _on_controller_position_changed(self, *_: Any) -> None:
         self._repack_right_panes()
+
+    def _on_serial_port_changed(self, *_: Any) -> None:
+        serial_ports = self.app.app_model.load_serial_ports()
+        for port in serial_ports:
+            if port.path == self._serial_port.get():
+                self._serial_port_name.set(port.name)
+        if serial_ports:
+            self._serial_port_name.set(serial_ports[0].name)

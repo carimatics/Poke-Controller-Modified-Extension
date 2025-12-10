@@ -15,7 +15,6 @@ class GeneralSettingsPane(AppFrame):
     def __init__(self, master: tk.Misc, *args: Any, **kwargs: Any) -> None:
         super().__init__(master, *args, **kwargs)
 
-        logger.debug(f"GeneralSettingsPane init: {self.app}")
         self._current_version = self.app.settings.general.version
         self._latest_settings_version = self.app.app_info.latest_settings_version
 
