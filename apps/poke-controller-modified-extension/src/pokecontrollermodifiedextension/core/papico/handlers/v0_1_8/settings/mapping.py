@@ -21,7 +21,7 @@ MAPPING: dict[str, Any] = {
         "data_format": "General Setting/serial_data_format_name",
         "show_data": "General Setting/is_show_serial",
     },
-    "device_input": {
+    "device": {
         "touchscreen": {
             "sx": "General Setting/touchscreen_start_x",
             "sy": "General Setting/touchscreen_start_y",
