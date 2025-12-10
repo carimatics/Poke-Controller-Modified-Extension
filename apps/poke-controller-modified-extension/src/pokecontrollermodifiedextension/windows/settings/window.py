@@ -158,4 +158,4 @@ class SettingsWindow(AppDialog):
         if (content := self._current_content) is not None:
             content.pack_forget()
         self._current_content = self._contents[section]
-        self._current_content.pack(expand=True, fill=l.BOTH)
+        self._current_content.pack(expand=True, fill=l.BOTH, padx=4, pady=4)
