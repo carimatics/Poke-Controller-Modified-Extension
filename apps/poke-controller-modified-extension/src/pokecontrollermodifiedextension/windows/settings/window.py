@@ -137,9 +137,10 @@ class SettingsWindow(AppDialog):
         self._check_has_changes()
 
     def _on_cancel_pushed(self) -> None:
-        self.app.settings.capture.show_realtime.set(False)
+        show_realtime = self.app.settings.capture.show_realtime
+        show_realtime.set(False)
         self._revert_settings()
-        self.app.settings.capture.show_realtime.set(True)
+        show_realtime.set(True)
         self.destroy()
 
     def _register_hooks(self) -> None:
