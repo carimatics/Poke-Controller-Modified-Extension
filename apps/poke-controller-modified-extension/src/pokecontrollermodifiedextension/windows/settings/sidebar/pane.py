@@ -22,7 +22,7 @@ class SettingsSidebarPane(AppFrame):
     def __init__(
         self,
         master: tk.Misc,
-        on_section_selected: Callable[[str], None],
+        on_section_selected: Callable[[str, str], None],
         *args: Any,
         **kwargs: Any,
     ) -> None:
@@ -83,26 +83,26 @@ class SettingsSidebarPane(AppFrame):
             anchor=l.W,
             padx=4,
             pady=4,
-            command=lambda: self._on_section_pushed(section_id),
+            command=lambda: self._on_section_pushed(section_id, section_name),
         )
         btn.pack(fill=l.X, padx=5, pady=1)
         self._section_buttons[section_id] = btn
 
-    def select_section(self, section_id: str) -> None:
+    def select_section(self, section_id: str, section_name: str) -> None:
         bg_color = self._canvas.cget("background")
         if self._current_button is not None:
             self._current_button.configure(bg=bg_color, fg="black", state=l.NORMAL)
         self._current_button = self._section_buttons[section_id]
         self._current_button.configure(bg=bg_color, fg="#6e6e6e", state=l.DISABLED)
 
-        self._on_section_selected(section_id)
+        self._on_section_selected(section_id, section_name)
 
     def destroy(self) -> None:
         for trace_id in self._hook_ids:
             self._theme.trace_remove("write", trace_id)
         super().destroy()
 
-    def _on_frame_configure(self, event: tk.Event) -> None:
+    def _on_frame_configure(self, _: tk.Event) -> None:
         self._update_scroll_region()
 
     def _on_canvas_configure(self, event: tk.Event) -> None:
@@ -127,8 +127,8 @@ class SettingsSidebarPane(AppFrame):
             self._canvas.yview_moveto(0)
             self._scrollbar.pack_forget()
 
-    def _on_section_pushed(self, section_id: str) -> None:
-        self.select_section(section_id)
+    def _on_section_pushed(self, section_id: str, section_name: str) -> None:
+        self.select_section(section_id, section_name)
 
     def _on_mouse_wheel(self, event: tk.Event) -> None:
         bbox = self._canvas.bbox("all")
@@ -156,7 +156,7 @@ class SettingsSidebarPane(AppFrame):
             logger.exception("Failed to get parent background color")
             return "#f0f0f0"
 
-    def _apply_theme(self, *args: Any) -> None:
+    def _apply_theme(self, *_: Any) -> None:
         def apply() -> None:
             self._bg_color = self._get_parent_bg(self)
             self._canvas.configure(bg=self._bg_color)

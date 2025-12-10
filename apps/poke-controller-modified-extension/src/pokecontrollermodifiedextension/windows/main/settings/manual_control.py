@@ -12,12 +12,12 @@ class ManualControlSettings(AppFrame):
     def __init__(self, master: tk.Misc, *args: Any, **kwargs: Any) -> None:
         super().__init__(master, *args, **kwargs)
 
-        self._enabled_keyboard = self.settings.device_input.keyboard.enabled
-        self._enabled_lstick_mouse = self.settings.device_input.mouse.enabled_lclick
-        self._enabled_rstick_mouse = self.settings.device_input.mouse.enabled_rclick
-        self._enabled_pro_controller = self.settings.device_input.pro_controller.enabled
+        self._enabled_keyboard = self.settings.device.keyboard.enabled
+        self._enabled_lstick_mouse = self.settings.device.mouse.enabled_lclick
+        self._enabled_rstick_mouse = self.settings.device.mouse.enabled_rclick
+        self._enabled_pro_controller = self.settings.device.pro_controller.enabled
         self._enabled_record_pro_controller = (
-            self.settings.device_input.pro_controller.enabled_record
+            self.settings.device.pro_controller.enabled_record
         )
 
         self.build_ui()

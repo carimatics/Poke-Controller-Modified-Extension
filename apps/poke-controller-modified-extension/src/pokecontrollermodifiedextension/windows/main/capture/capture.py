@@ -57,8 +57,8 @@ class Capture(AppFrame):
         self._data_format = self.app.settings.serial.data_format
         self._mouse_right_mode = "Default"
         self._controller = switch.SwitchController(self._serial)
-        self._enabled_lstick_mouse = self.app.settings.device_input.mouse.enabled_lclick
-        self._enabled_rstick_mouse = self.app.settings.device_input.mouse.enabled_rclick
+        self._enabled_lstick_mouse = self.app.settings.device.mouse.enabled_lclick
+        self._enabled_rstick_mouse = self.app.settings.device.mouse.enabled_rclick
         self._mouse_circle_radius = 60
         self._pressed_point = (0, 0)
         self._right_stick_mode = self._data_format.get()

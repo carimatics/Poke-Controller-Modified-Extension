@@ -8,7 +8,16 @@ from ...mixins import AppAccessorMixIn
 from ...values import literals as l
 from ...widgets import AppDialog, AppFrame
 from .buttons import SettingsButtonsPane
-from .contents import GeneralSettingsPane
+from .contents import (
+    CaptureSettingsPane,
+    CommandSettingsPane,
+    DeviceSettingsPane,
+    ExternalSettingsPane,
+    GeneralSettingsPane,
+    NotificationSettingsPane,
+    SerialSettingsPane,
+    WidgetSettingsPane,
+)
 from .sidebar import SettingsSidebarPane
 
 logger = logging.getLogger(__name__)
@@ -71,7 +80,7 @@ class SettingsWindow(AppDialog):
         lower_frame.pack(expand=False, fill=l.X, anchor=l.CENTER)
 
         # Select first section
-        sidebar.select_section("general")
+        sidebar.select_section("general", "General")
 
     def _build_sidebar(self, master: ttk.Frame) -> SettingsSidebarPane:
         sidebar = SettingsSidebarPane(
@@ -82,17 +91,26 @@ class SettingsWindow(AppDialog):
         sidebar.add_section("general", "General")
         sidebar.add_section("capture", "Capture")
         sidebar.add_section("serial", "Serial")
-        sidebar.add_section("device_input", "Device Input")
+        sidebar.add_section("device", "Device")
         sidebar.add_section("command", "Command")
         sidebar.add_section("notification", "Notification")
         sidebar.add_section("widget", "Widget")
-        sidebar.add_section("external", "External Tools")
+        sidebar.add_section("external", "External")
 
         return sidebar
 
     def _build_contents(self, master: ttk.Frame) -> None:
         self._content_labelframe = ttk.Labelframe(master)
         self._contents["general"] = GeneralSettingsPane(self._content_labelframe)
+        self._contents["capture"] = CaptureSettingsPane(self._content_labelframe)
+        self._contents["serial"] = SerialSettingsPane(self._content_labelframe)
+        self._contents["device"] = DeviceSettingsPane(self._content_labelframe)
+        self._contents["command"] = CommandSettingsPane(self._content_labelframe)
+        self._contents["notification"] = NotificationSettingsPane(
+            self._content_labelframe
+        )
+        self._contents["widget"] = WidgetSettingsPane(self._content_labelframe)
+        self._contents["external"] = ExternalSettingsPane(self._content_labelframe)
 
     def _save_settings(self) -> None:
         logger.info("Settings saving.")
@@ -119,7 +137,9 @@ class SettingsWindow(AppDialog):
         self._check_has_changes()
 
     def _on_cancel_pushed(self) -> None:
+        self.app.settings.capture.show_realtime.set(False)
         self._revert_settings()
+        self.app.settings.capture.show_realtime.set(True)
         self.destroy()
 
     def _register_hooks(self) -> None:
@@ -153,9 +173,9 @@ class SettingsWindow(AppDialog):
     def _on_settings_changed(self, *_: Any) -> None:
         self._check_has_changes()
 
-    def _on_section_selected(self, section: str) -> None:
-        self._content_labelframe.configure(text=f"{section.capitalize()} Settings")
+    def _on_section_selected(self, section_id: str, section_name: str) -> None:
+        self._content_labelframe.configure(text=f"{section_name} Settings")
         if (content := self._current_content) is not None:
             content.pack_forget()
-        self._current_content = self._contents[section]
+        self._current_content = self._contents[section_id]
         self._current_content.pack(expand=True, fill=l.BOTH, padx=4, pady=4)

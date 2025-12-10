@@ -27,7 +27,7 @@ SCHEMA: dict[str, Any] = {
         "data_format": str,
         "show_data": bool,
     },
-    "device_input": {
+    "device": {
         "touchscreen": {
             "sx": int,
             "sy": int,
@@ -195,7 +195,7 @@ DEFAULT_SETTINGS: dict[str, Any] = {
         "data_format": "default",
         "show_data": False,
     },
-    "device_input": {
+    "device": {
         "touchscreen": {
             "sx": 1,
             "sy": 1,
@@ -461,7 +461,7 @@ class ProControllerSettings:
 
 
 @dataclass(kw_only=True, frozen=True)
-class DeviceInputSettings:
+class DeviceSettings:
     touchscreen: TouchscreenSettings
     keyboard: KeyboardSettings
     mouse: MouseSettings
@@ -607,7 +607,7 @@ class AppSettings:
     general: GeneralSettings
     capture: CaptureSettings
     serial: SerialSettings
-    device_input: DeviceInputSettings
+    device: DeviceSettings
     command: CommandSettings
     notification: NotificationSettings
     widget: WidgetSettings
@@ -619,7 +619,7 @@ class AppSettings:
             general=GeneralSettings(**d["general"]),
             capture=CaptureSettings(**d["capture"]),
             serial=SerialSettings(**d["serial"]),
-            device_input=DeviceInputSettings.from_dict(d["device_input"]),
+            device=DeviceSettings.from_dict(d["device"]),
             command=CommandSettings.from_dict(d["command"]),
             notification=NotificationSettings.from_dict(d["notification"]),
             widget=WidgetSettings.from_dict(d["widget"]),
