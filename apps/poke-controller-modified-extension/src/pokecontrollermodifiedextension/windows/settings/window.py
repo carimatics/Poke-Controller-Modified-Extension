@@ -100,17 +100,26 @@ class SettingsWindow(AppDialog):
         self.app.papico.save_settings(self.app.settings)
         logger.info("Settings saved.")
 
+    def _check_has_changes(self) -> None:
+        self._has_changes.set(self._settings.has_diff(self._backup))
+
+    def _backup_settings(self) -> None:
+        self._backup = self._settings.to_dict()
+
+    def _revert_settings(self) -> None:
+        self._settings.apply_dict(self._backup)
+
     def _on_ok_pushed(self) -> None:
         self._save_settings()
         self.destroy()
 
     def _on_apply_pushed(self) -> None:
         self._save_settings()
-        self._backup = self._settings.to_dict()
-        self._on_settings_changed()
+        self._backup_settings()
+        self._check_has_changes()
 
     def _on_cancel_pushed(self) -> None:
-        self._settings.apply_dict(self._backup)
+        self._revert_settings()
         self.destroy()
 
     def _register_hooks(self) -> None:
@@ -142,9 +151,7 @@ class SettingsWindow(AppDialog):
         super().destroy()
 
     def _on_settings_changed(self, *_: Any) -> None:
-        self._has_changes.set(
-            self._settings.has_diff(self._backup),
-        )
+        self._check_has_changes()
 
     def _on_section_selected(self, section: str) -> None:
         self._content_labelframe.configure(text=f"{section.capitalize()} Settings")
