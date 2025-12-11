@@ -15,7 +15,7 @@ from pokecontroller.utils import platform
 from pokecontroller.utils.math import clamp
 
 from ....values import literals as l
-from ....widgets import AppFrame
+from ....widgets.app import AppFrame
 
 logger = logging.getLogger(__name__)
 

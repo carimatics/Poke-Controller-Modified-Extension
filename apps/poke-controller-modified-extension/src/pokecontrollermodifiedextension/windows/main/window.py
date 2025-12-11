@@ -5,7 +5,7 @@ from typing import Any, Literal
 
 from ...settings import AppSettings
 from ...values import literals as l
-from ...widgets import AppFrame
+from ...widgets.app import AppFrame
 from .capture import CapturePane
 from .controller import ControllerPane
 from .outputs import OutputsPane

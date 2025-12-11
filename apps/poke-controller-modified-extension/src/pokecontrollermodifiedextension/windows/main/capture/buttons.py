@@ -5,7 +5,7 @@ from typing import Any
 
 from ....model import AppModel
 from ....values import literals as l
-from ....widgets import AppDialog, AppFrame
+from ....widgets.app import AppDialog, AppFrame
 from ...controller import ControllerWindow
 
 logger = logging.getLogger(__name__)

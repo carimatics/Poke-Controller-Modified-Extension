@@ -3,7 +3,7 @@ import tkinter as tk
 import tkinter.ttk as ttk
 from typing import Any
 
-from ....widgets import AppFrame
+from ....widgets.app import AppFrame
 
 logger = logging.getLogger(__name__)
 

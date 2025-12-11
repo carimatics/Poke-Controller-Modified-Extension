@@ -6,7 +6,7 @@ from pokecontroller.core.controller import switch
 
 from ...mixins import AppAccessorMixIn
 from ...values import literals as l
-from ...widgets import AppDialog
+from ...widgets.app import AppDialog
 
 logger = logging.getLogger(__name__)
 

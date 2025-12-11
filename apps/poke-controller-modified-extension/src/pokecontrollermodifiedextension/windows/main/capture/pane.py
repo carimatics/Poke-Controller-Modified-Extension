@@ -4,7 +4,7 @@ from typing import Any
 
 from ....settings import AppSettings
 from ....values import literals as l
-from ....widgets import AppFrame
+from ....widgets.app import AppFrame
 from .buttons import Buttons
 from .capture import Capture
 

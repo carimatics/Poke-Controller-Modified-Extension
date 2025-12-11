@@ -5,7 +5,7 @@ from typing import Any, Callable
 from ....model import AppModel
 from ....settings import AppSettings
 from ....values import literals as l
-from ....widgets import AppFrame
+from ....widgets.app import AppFrame
 
 PYTHON = "python"
 MCU = "mcu"

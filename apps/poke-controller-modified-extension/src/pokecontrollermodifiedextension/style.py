@@ -16,21 +16,30 @@ class VariantStyle:
     error: dict[str, Any] = field(default_factory=dict)
 
     def to_dict(self, class_name: str) -> dict[str, Any]:
-        result = {class_name: self.base}
+        result = {f"PokeController.{class_name}": self.base}
         if self.primary:
-            result[f"Primary.{class_name}"] = deep_merge(self.base, self.primary)
+            result[f"PokeController.Primary.{class_name}"] = deep_merge(
+                self.base, self.primary
+            )
         if self.success:
-            result[f"Success.{class_name}"] = deep_merge(self.base, self.success)
+            result[f"PokeController.Success.{class_name}"] = deep_merge(
+                self.base, self.success
+            )
         if self.warning:
-            result[f"Warning.{class_name}"] = deep_merge(self.base, self.warning)
+            result[f"PokeController.Warning.{class_name}"] = deep_merge(
+                self.base, self.warning
+            )
         if self.error:
-            result[f"Error.{class_name}"] = deep_merge(self.base, self.error)
+            result[f"PokeController.Error.{class_name}"] = deep_merge(
+                self.base, self.error
+            )
         return result
 
 
 @dataclass
 class VariantStyleSettings:
     button: VariantStyle = field(default_factory=VariantStyle)
+    text: VariantStyle = field(default_factory=VariantStyle)
     label: VariantStyle = field(default_factory=VariantStyle)
     entry: VariantStyle = field(default_factory=VariantStyle)
     combobox: VariantStyle = field(default_factory=VariantStyle)
@@ -40,19 +49,22 @@ class VariantStyleSettings:
     scale: VariantStyle = field(default_factory=VariantStyle)
     frame: VariantStyle = field(default_factory=VariantStyle)
     labelframe: VariantStyle = field(default_factory=VariantStyle)
+    scrollbar: VariantStyle = field(default_factory=VariantStyle)
 
     def to_dict(self) -> dict[str, Any]:
         return {
-            **self.button.to_dict("TButton"),
-            **self.label.to_dict("TLabel"),
-            **self.entry.to_dict("TEntry"),
-            **self.combobox.to_dict("TCombobox"),
-            **self.spinbox.to_dict("TSpinbox"),
-            **self.radiobutton.to_dict("TRadiobutton"),
-            **self.checkbutton.to_dict("TCheckbutton"),
-            **self.scale.to_dict("TScale"),
-            **self.frame.to_dict("TFrame"),
-            **self.labelframe.to_dict("TLabelframe"),
+            **self.button.to_dict("Button"),
+            **self.text.to_dict("Text"),
+            **self.label.to_dict("Label"),
+            **self.entry.to_dict("Entry"),
+            **self.combobox.to_dict("Combobox"),
+            **self.spinbox.to_dict("Spinbox"),
+            **self.radiobutton.to_dict("Radiobutton"),
+            **self.checkbutton.to_dict("Checkbutton"),
+            **self.scale.to_dict("Scale"),
+            **self.frame.to_dict("Frame"),
+            **self.labelframe.to_dict("Labelframe"),
+            **self.scrollbar.to_dict("Scrollbar"),
         }
 
 

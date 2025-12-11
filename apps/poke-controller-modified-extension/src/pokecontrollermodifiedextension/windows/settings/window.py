@@ -6,7 +6,7 @@ from typing import Any
 
 from ...mixins import AppAccessorMixIn
 from ...values import literals as l
-from ...widgets import AppDialog, AppFrame
+from ...widgets.app import AppDialog, AppFrame
 from .buttons import SettingsButtonsPane
 from .contents import (
     CaptureSettingsPane,

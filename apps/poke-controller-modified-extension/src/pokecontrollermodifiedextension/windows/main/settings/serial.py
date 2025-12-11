@@ -6,7 +6,7 @@ from typing import Any
 from ....model import AppModel
 from ....settings import AppSettings
 from ....values import literals as l
-from ....widgets import AppFrame
+from ....widgets.app import AppFrame
 
 
 class SerialSettings(AppFrame):

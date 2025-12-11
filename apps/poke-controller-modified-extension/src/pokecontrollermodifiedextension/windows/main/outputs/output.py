@@ -3,7 +3,7 @@ import tkinter.ttk as ttk
 from typing import Any
 
 from ....values import literals as l
-from ....widgets import AppFrame
+from ....widgets.app import AppFrame
 
 
 class Output(AppFrame):

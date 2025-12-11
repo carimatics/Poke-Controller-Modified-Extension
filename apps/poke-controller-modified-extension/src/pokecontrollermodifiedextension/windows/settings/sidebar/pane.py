@@ -4,7 +4,7 @@ import tkinter.ttk as ttk
 from typing import Any, Callable
 
 from ....values import literals as l
-from ....widgets import AppFrame
+from ....widgets.app import AppFrame
 
 logger = logging.getLogger(__name__)
 
