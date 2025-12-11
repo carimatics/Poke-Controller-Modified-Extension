@@ -1,8 +1,8 @@
 import tkinter as tk
 from typing import Any
 
-from ..app import App
-from ..mixins import AppAccessorMixIn
+from pokecontrollermodifiedextension.app import App
+from pokecontrollermodifiedextension.mixins import AppAccessorMixIn
 
 
 class AppDialog(tk.Toplevel, AppAccessorMixIn):

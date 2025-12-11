@@ -5,7 +5,7 @@ from typing import Any, Literal, Self, overload
 
 from ...mixins import AppAccessorMixIn
 from ...values import literals as l
-from ..dialog import AppDialog
+from ..app.dialog import AppDialog
 
 type WidgetType = Literal[
     "checkbutton",

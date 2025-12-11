@@ -1,2 +1,5 @@
-from .dialog import AppDialog as AppDialog
-from .frame import AppFrame as AppFrame
+from .app import (
+    AppDialog as AppDialog,
+    AppFrame as AppFrame,
+    AppMenu as AppMenu,
+)

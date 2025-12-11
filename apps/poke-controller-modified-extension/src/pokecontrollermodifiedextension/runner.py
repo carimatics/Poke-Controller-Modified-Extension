@@ -16,7 +16,7 @@ from .core.papico.handlers.v0_2_0.settings import (
 )
 from .core.papico.papico import Papico, PapicoRegisterHandlerContext
 from .values import literals as l
-from .widgets.menu import AppMenu
+from .widgets import AppMenu
 from .windows import MainWindow
 
 

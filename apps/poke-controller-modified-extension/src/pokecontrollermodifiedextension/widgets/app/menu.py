@@ -3,10 +3,10 @@ import tkinter as tk
 import webbrowser
 from typing import Any
 
-from ..app import App
-from ..mixins import AppAccessorMixIn
-from ..settings import DEFAULT_SETTINGS
-from ..windows import SettingsWindow
+from pokecontrollermodifiedextension.app import App
+from pokecontrollermodifiedextension.mixins import AppAccessorMixIn
+from pokecontrollermodifiedextension.settings import DEFAULT_SETTINGS
+from pokecontrollermodifiedextension.windows import SettingsWindow
 
 logger = logging.getLogger(__name__)
 
