@@ -180,3 +180,4 @@ class SettingsWindow(AppDialog):
             content.pack_forget()
         self._current_content = self._contents[section_id]
         self._current_content.pack(expand=True, fill=l.BOTH, padx=4, pady=4)
+        self._content_labelframe.update_idletasks()
