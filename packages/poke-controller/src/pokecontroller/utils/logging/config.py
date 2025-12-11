@@ -28,15 +28,7 @@ def setup_logging(
     elif Path(config_path).exists():
         _load_from_file(config_path)
     else:
-        raise FileNotFoundError(
-            os.linesep.join(
-                [
-                    f"Logging config file not found: {config_path}",
-                    "To generate a default config file, run:",
-                    f"python -m pokecontroller.core.logging.config {config_path}",  # FIXME: command
-                ]
-            )
-        )
+        raise FileNotFoundError(f"Logging config file not found: {config_path}")
 
     if _should_enable_debug(debug=debug):
         _enable_debug_mode()

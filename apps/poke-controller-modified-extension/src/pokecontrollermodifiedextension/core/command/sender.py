@@ -4,7 +4,7 @@ import time
 from typing import Protocol
 
 import serial
-from pokecontroller.core import platform
+from pokecontroller.utils import platform
 
 logger = logging.getLogger(__name__)
 

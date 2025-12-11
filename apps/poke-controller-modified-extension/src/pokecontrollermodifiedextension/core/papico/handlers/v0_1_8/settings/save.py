@@ -2,7 +2,7 @@ import logging
 from pathlib import Path
 from typing import Any
 
-from pokecontroller.core.config import Config
+from pokecontroller.utils.config import Config
 
 from pokecontrollermodifiedextension.settings import AppSettings, settings_to_dict
 

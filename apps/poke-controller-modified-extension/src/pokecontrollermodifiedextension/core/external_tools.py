@@ -6,7 +6,7 @@ import time
 from functools import wraps
 from typing import Callable
 
-from pokecontroller.core.config import Config
+from pokecontroller.utils.config import Config
 
 try:
     import paho.mqtt

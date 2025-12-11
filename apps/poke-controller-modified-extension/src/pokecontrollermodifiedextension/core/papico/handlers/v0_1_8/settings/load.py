@@ -3,7 +3,7 @@ from pathlib import Path
 from tkinter import BooleanVar, DoubleVar, IntVar, StringVar
 from typing import Any
 
-from pokecontroller.core.config import Config
+from pokecontroller.utils.config import Config
 
 from pokecontrollermodifiedextension.settings import (
     DEFAULT_SETTINGS,

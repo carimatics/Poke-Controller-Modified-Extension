@@ -2,7 +2,7 @@ import os
 import tomllib
 from pathlib import Path
 
-from pokecontroller.core import logging as logginglib
+from pokecontroller.utils import logging as logginglib
 
 # FIXME: PR出す前にロギングの調整する
 # @formatter:off (for PyCharm)
@@ -23,7 +23,7 @@ format = "%(asctime)s [%(levelname)8s] %(name)s#%(funcName)s: %(message)s"
 datefmt = "%Y-%m-%d %H:%M:%S"
 
 [formatters.pokeconExtensionColored]
-class = "pokecontroller.core.logging.ColoredFormatter"
+class = "pokecontroller.utils.logging.ColoredFormatter"
 format = "%(asctime)s [%(levelname)8s] %(name)s#%(funcName)s: %(message)s"
 datefmt = "%Y-%m-%d %H:%M:%S"
 

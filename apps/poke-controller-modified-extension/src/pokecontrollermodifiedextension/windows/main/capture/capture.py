@@ -9,9 +9,10 @@ from typing import Any
 
 import cv2
 from PIL import Image, ImageTk
-from pokecontroller.core import image, platform
+from pokecontroller.core import image
 from pokecontroller.core.controller import switch
-from pokecontroller.core.math import clamp
+from pokecontroller.utils import platform
+from pokecontroller.utils.math import clamp
 
 from ....values import literals as l
 from ....widgets import AppFrame

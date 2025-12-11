@@ -1,7 +1,7 @@
 from pathlib import Path
 from typing import Any
 
-from pokecontroller.core.translation import Translation
+from pokecontroller.utils.translation import Translation
 
 _translation: Translation | None = None
 

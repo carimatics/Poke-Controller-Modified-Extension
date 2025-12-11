@@ -5,10 +5,12 @@ from typing import Generator, Sequence
 
 from pokecontroller.core import (
     camera as cameralib,
-    datetime as datetimelib,
     image as imagelib,
 )
 from pokecontroller.core.image import utils as imagelib_utils
+from pokecontroller.utils import (
+    datetime as datetimelib,
+)
 
 logger = logging.getLogger(__name__)
 

@@ -3,8 +3,8 @@ from typing import Any
 
 import requests
 
-from ..config import Config
-from ..datetime import from_timestamp
+from ...utils.config import Config
+from ...utils.datetime import from_timestamp
 from ..image import RawImage, to_bytes
 from .notifier import Notifier, RateLimit
 
