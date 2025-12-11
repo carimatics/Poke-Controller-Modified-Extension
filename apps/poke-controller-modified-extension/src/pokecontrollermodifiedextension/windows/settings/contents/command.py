@@ -3,7 +3,6 @@ import tkinter as tk
 import tkinter.ttk as ttk
 from typing import Any
 
-from ....style import get_themes
 from ....widgets import AppFrame
 
 logger = logging.getLogger(__name__)
@@ -20,6 +19,7 @@ class CommandSettingsPane(AppFrame):
         self._latest_settings_version = self.app.app_info.latest_settings_version
 
         self._theme = self.app.settings.general.theme
+        self._style_manager = self.app.style_manager
         self._language = self.app.settings.general.language
 
         self.build_ui()
@@ -36,7 +36,9 @@ class CommandSettingsPane(AppFrame):
         theme_frame = ttk.Frame(frame)
         theme_label = ttk.Label(theme_frame, width=16, text="Theme:")
         theme_combobox = ttk.Combobox(
-            theme_frame, textvariable=self._theme, values=get_themes()
+            theme_frame,
+            textvariable=self._theme,
+            values=self._style_manager.get_themes(),
         )
 
         # language
