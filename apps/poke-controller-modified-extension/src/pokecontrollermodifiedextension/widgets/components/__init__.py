@@ -12,3 +12,7 @@ from .dynamic_form import (
     DynamicFormBuilder as DynamicFormBuilder,
     DynamicFormItem as DynamicFormItem,
 )
+from .dynamic_form_dialog import (
+    DynamicFormDialog as DynamicFormDialog,
+    DynamicFormDialogBuilder as DynamicFormDialogBuilder,
+)

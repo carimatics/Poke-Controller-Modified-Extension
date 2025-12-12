@@ -5,7 +5,7 @@ from typing import Any, Literal, Self, overload
 
 from ...mixins import AppAccessorMixIn
 from ...values import literals as l
-from ..app.dialog import AppDialog
+from ..app.frame import AppFrame
 
 type WidgetType = Literal[
     "checkbutton",
@@ -21,99 +21,31 @@ type WidgetType = Literal[
 class DynamicFormItem:
     widget: WidgetType
     name: str
-    value: int | float | bool | str
+    variable: tk.Variable
     kwargs: dict[str, Any] = field(default_factory=dict)
 
 
-class DynamicForm(AppDialog):
+class DynamicForm(AppFrame):
     def __init__(
         self,
-        master: AppAccessorMixIn,
-        title: str,
+        master: tk.Misc,
         items: list[DynamicFormItem],
         *args: Any,
         **kwargs: Any,
     ) -> None:
         super().__init__(master, *args, **kwargs)
-        self._is_ok = False
         self._items = items
         self._variables: dict[str, tk.Variable] = {}
-        self.protocol("WM_DELETE_WINDOW", self._on_close)
-        self.title(title)
         self.build_ui()
-        self.master.wait_window(self)
 
     def build_ui(self) -> None:
-        confirm_button_position = (
-            self.app.settings.widget.dialog.confirm_buttons_position.get()
-        )
-
         frame = tk.Frame(self)
-        if confirm_button_position in ["top", "both"]:
-            self._build_confirm_button(frame)
         for item in self._items:
             self._build_dynamic_widgets(frame, item)
-        if confirm_button_position in ["bottom", "both"]:
-            self._build_confirm_button(frame)
         frame.pack(expand=True, fill=l.BOTH)
 
     def as_dict(self) -> dict[str, bool | int | float | str] | None:
-        if not self._is_ok:
-            return None
         return {name: var.get() for name, var in self._variables.items()}
-
-    def _build_confirm_button(
-        self,
-        master: tk.Frame,
-    ) -> None:
-        frame = tk.Frame(master)
-        ok_button = ttk.Button(
-            frame,
-            text="OK",
-            command=self._on_ok_pressed,
-        )
-        cancel_button = ttk.Button(
-            frame,
-            text="Cancel",
-            command=self._on_cancel_pressed,
-        )
-
-        ok_button.pack(
-            expand=True,
-            side=l.LEFT,
-            fill=l.BOTH,
-            anchor=l.CENTER,
-            padx=5,
-            pady=5,
-        )
-        cancel_button.pack(
-            expand=True,
-            side=l.LEFT,
-            fill=l.BOTH,
-            anchor=l.CENTER,
-            padx=5,
-            pady=5,
-        )
-        frame.pack(
-            expand=True,
-            side=l.TOP,
-            fill=l.BOTH,
-            anchor=l.CENTER,
-            padx=5,
-            pady=5,
-        )
-
-    def _on_close(self) -> None:
-        self.destroy()
-        self._is_ok = False
-
-    def _on_ok_pressed(self) -> None:
-        self.destroy()
-        self._is_ok = True
-
-    def _on_cancel_pressed(self) -> None:
-        self.destroy()
-        self._is_ok = False
 
     def _build_dynamic_widgets(self, master: tk.Frame, item: DynamicFormItem) -> None:
         labelframe = ttk.LabelFrame(master, text=item.name, padding=(5, 5))
@@ -121,10 +53,9 @@ class DynamicForm(AppDialog):
             case DynamicFormItem(
                 widget="checkbutton",
                 name=str(name),
-                value=bool(value),
+                variable=variable,
                 kwargs=checkbutton_kwargs,
-            ):
-                variable: tk.Variable = tk.BooleanVar(value=value)
+            ) if isinstance(variable, tk.BooleanVar):
                 self._variables[name] = variable
                 widget: tk.Widget = ttk.Checkbutton(
                     labelframe,
@@ -142,10 +73,9 @@ class DynamicForm(AppDialog):
             case DynamicFormItem(
                 widget="combobox",
                 name=str(name),
-                value=str(value),
+                variable=variable,
                 kwargs=checkbox_kwargs,
-            ):
-                variable = tk.StringVar(value=value)
+            ) if isinstance(variable, tk.StringVar):
                 self._variables[name] = variable
                 widget = ttk.Combobox(
                     labelframe,
@@ -163,10 +93,9 @@ class DynamicForm(AppDialog):
             case DynamicFormItem(
                 widget="entry",
                 name=str(name),
-                value=str(value),
+                variable=variable,
                 kwargs=entry_kwargs,
-            ):
-                variable = tk.StringVar(value=value)
+            ) if isinstance(variable, tk.StringVar):
                 self._variables[name] = variable
                 widget = ttk.Entry(
                     labelframe,
@@ -184,15 +113,13 @@ class DynamicForm(AppDialog):
             case DynamicFormItem(
                 widget="radiobutton",
                 name=str(name),
-                value=str(value),
+                variable=variable,
                 kwargs={"values": values, **radiobutton_kwargs},
-            ):
-                variable = tk.StringVar(value=value)
-                self._variables[name] = variable
+            ) if isinstance(variable, tk.StringVar):
                 for column_index, value in enumerate(values):
                     radio = ttk.Radiobutton(
                         labelframe,
-                        text=value,
+                        text=name,
                         variable=variable,
                         value=value,
                         **radiobutton_kwargs,
@@ -208,10 +135,9 @@ class DynamicForm(AppDialog):
             case DynamicFormItem(
                 widget="spinbox",
                 name=str(name),
-                value=str(value),
+                variable=variable,
                 kwargs=spinbox_kwargs,
-            ):
-                variable = tk.StringVar(value=value)
+            ) if isinstance(variable, tk.StringVar):
                 self._variables[name] = variable
                 widget = ttk.Spinbox(
                     labelframe,
@@ -229,14 +155,13 @@ class DynamicForm(AppDialog):
             case DynamicFormItem(
                 widget="scale",
                 name=str(name),
-                value=int(value),
+                variable=variable,
                 kwargs={
                     "to": int(to),
                     "from_": int(from_),
                     **int_scale_kwargs,
                 },
-            ):
-                variable = tk.IntVar(value=value)
+            ) if isinstance(variable, tk.IntVar):
                 self._variables[name] = variable
                 label = ttk.Label(labelframe, text=variable.get())
                 variable.trace(
@@ -250,7 +175,6 @@ class DynamicForm(AppDialog):
                 )
                 widget = ttk.Scale(
                     labelframe,
-                    value=value,
                     variable=variable,
                     to=to,
                     from_=from_,
@@ -267,14 +191,13 @@ class DynamicForm(AppDialog):
             case DynamicFormItem(
                 widget="scale",
                 name=str(name),
-                value=float(value),
+                variable=variable,
                 kwargs={
                     "to": float(to),
                     "from_": float(from_),
                     **float_scale_kwargs,
                 },
-            ):
-                variable = tk.DoubleVar(value=value)
+            ) if isinstance(variable, tk.DoubleVar):
                 self._variables[name] = variable
                 label = ttk.Label(labelframe, text=f"{variable.get():.2f}")
                 variable.trace(
@@ -288,7 +211,6 @@ class DynamicForm(AppDialog):
                 )
                 widget = ttk.Scale(
                     labelframe,
-                    value=value,
                     variable=variable,
                     to=to,
                     from_=from_,
@@ -314,13 +236,14 @@ class DynamicFormBuilder:
         self.items: list[DynamicFormItem] = []
 
     def build(self) -> DynamicForm:
-        return DynamicForm(self.master, self.title, self.items)
+        return DynamicForm(self.master, self.items)
 
     def add_checkbutton_row(self, name: str, text: str, initial_value: bool) -> Self:
+        variable = tk.BooleanVar(value=initial_value)
         self.items.append(
             DynamicFormItem(
                 name=name,
-                value=initial_value,
+                variable=variable,
                 widget="checkbutton",
                 kwargs={"text": text},
             )
@@ -333,10 +256,11 @@ class DynamicFormBuilder:
         initial_value: str,
         values: list[str],
     ) -> Self:
+        variable = tk.StringVar(value=initial_value)
         self.items.append(
             DynamicFormItem(
                 name=name,
-                value=initial_value,
+                variable=variable,
                 widget="combobox",
                 kwargs={
                     "values": values,
@@ -346,10 +270,11 @@ class DynamicFormBuilder:
         return self
 
     def add_entry_row(self, name: str, initial_value: str) -> Self:
+        variable = tk.StringVar(value=initial_value)
         self.items.append(
             DynamicFormItem(
                 name=name,
-                value=initial_value,
+                variable=variable,
                 widget="entry",
             )
         )
@@ -361,10 +286,11 @@ class DynamicFormBuilder:
         initial_value: str,
         values: list[str],
     ) -> Self:
+        variable = tk.StringVar(value=initial_value)
         self.items.append(
             DynamicFormItem(
                 name=name,
-                value=initial_value,
+                variable=variable,
                 widget="radiobutton",
                 kwargs={
                     "values": values,
@@ -379,10 +305,11 @@ class DynamicFormBuilder:
         initial_value: str,
         values: list[str],
     ) -> Self:
+        variable = tk.StringVar(value=initial_value)
         self.items.append(
             DynamicFormItem(
                 name=name,
-                value=initial_value,
+                variable=variable,
                 widget="spinbox",
                 kwargs={
                     "values": values,
@@ -408,10 +335,14 @@ class DynamicFormBuilder:
         to: int | float,
         from_: int | float,
     ) -> Self:
+        if isinstance(initial_value, int):
+            variable: tk.Variable = tk.IntVar(self.master)
+        else:
+            variable = tk.DoubleVar(self.master)
         self.items.append(
             DynamicFormItem(
                 name=name,
-                value=initial_value,
+                variable=variable,
                 widget="scale",
                 kwargs={
                     "to": to,
