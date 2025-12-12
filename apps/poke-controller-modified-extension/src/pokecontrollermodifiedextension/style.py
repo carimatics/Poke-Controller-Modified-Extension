@@ -8,48 +8,49 @@ from pokecontroller.utils.collection import deep_merge
 
 
 @dataclass
-class VariantStyle:
+class ComponentStyle:
     base: dict[str, Any] = field(default_factory=dict)
-    primary: dict[str, Any] = field(default_factory=dict)
-    success: dict[str, Any] = field(default_factory=dict)
-    warning: dict[str, Any] = field(default_factory=dict)
-    error: dict[str, Any] = field(default_factory=dict)
+    variants: dict[str, dict[str, Any]] = field(default_factory=dict)
+    sizes: dict[str, dict[str, Any]] = field(default_factory=dict)
 
     def to_dict(self, class_name: str) -> dict[str, Any]:
-        result = {f"PokeController.{class_name}": self.base}
-        if self.primary:
-            result[f"PokeController.Primary.{class_name}"] = deep_merge(
-                self.base, self.primary
-            )
-        if self.success:
-            result[f"PokeController.Success.{class_name}"] = deep_merge(
-                self.base, self.success
-            )
-        if self.warning:
-            result[f"PokeController.Warning.{class_name}"] = deep_merge(
-                self.base, self.warning
-            )
-        if self.error:
-            result[f"PokeController.Error.{class_name}"] = deep_merge(
-                self.base, self.error
-            )
+        result: dict[str, Any] = {f"PokeController.{class_name}": self.base}
+
+        for variant_name, variant_style in self.variants.items():
+            if variant_style:
+                k = f"PokeController.{variant_name.capitalize()}.{class_name}"
+                result[k] = deep_merge(self.base, variant_style)
+
+        for size_name, size_style in self.sizes.items():
+            if size_style:
+                k = f"PokeController.{size_name.capitalize()}.{class_name}"
+                result[k] = deep_merge(self.base, size_style)
+
+        for variant_name, variant_style in self.variants.items():
+            for size_name, size_style in self.sizes.items():
+                if variant_style and size_style:
+                    k = f"PokeController.{size_name.capitalize()}.{variant_name.capitalize()}.{class_name}"
+                    merged = deep_merge(self.base, size_style)
+                    merged = deep_merge(merged, variant_style)
+                    result[k] = merged
+
         return result
 
 
 @dataclass
-class VariantStyleSettings:
-    button: VariantStyle = field(default_factory=VariantStyle)
-    text: VariantStyle = field(default_factory=VariantStyle)
-    label: VariantStyle = field(default_factory=VariantStyle)
-    entry: VariantStyle = field(default_factory=VariantStyle)
-    combobox: VariantStyle = field(default_factory=VariantStyle)
-    spinbox: VariantStyle = field(default_factory=VariantStyle)
-    radiobutton: VariantStyle = field(default_factory=VariantStyle)
-    checkbutton: VariantStyle = field(default_factory=VariantStyle)
-    scale: VariantStyle = field(default_factory=VariantStyle)
-    frame: VariantStyle = field(default_factory=VariantStyle)
-    labelframe: VariantStyle = field(default_factory=VariantStyle)
-    scrollbar: VariantStyle = field(default_factory=VariantStyle)
+class StyleSettings:
+    button: ComponentStyle = field(default_factory=ComponentStyle)
+    text: ComponentStyle = field(default_factory=ComponentStyle)
+    label: ComponentStyle = field(default_factory=ComponentStyle)
+    entry: ComponentStyle = field(default_factory=ComponentStyle)
+    combobox: ComponentStyle = field(default_factory=ComponentStyle)
+    spinbox: ComponentStyle = field(default_factory=ComponentStyle)
+    radiobutton: ComponentStyle = field(default_factory=ComponentStyle)
+    checkbutton: ComponentStyle = field(default_factory=ComponentStyle)
+    scale: ComponentStyle = field(default_factory=ComponentStyle)
+    frame: ComponentStyle = field(default_factory=ComponentStyle)
+    labelframe: ComponentStyle = field(default_factory=ComponentStyle)
+    scrollbar: ComponentStyle = field(default_factory=ComponentStyle)
 
     def to_dict(self) -> dict[str, Any]:
         return {
@@ -72,8 +73,8 @@ class StyleManager:
     _root: tk.Tk
     _style: ttk.Style
     _os_name: str
-    _base_style: VariantStyleSettings
-    _theme_styles: dict[str, VariantStyleSettings]
+    _base_style: StyleSettings
+    _theme_styles: dict[str, StyleSettings]
 
     def __init__(self, root: tk.Tk) -> None:
         self._root = root
@@ -118,29 +119,29 @@ class StyleManager:
             self._style.theme_settings(theme, s)
 
     def _initialize_fundamental_styles(self) -> None:
-        self._base_style = VariantStyleSettings()
+        self._base_style = StyleSettings()
 
     def _initialize_styles_for_windows(self) -> None:
         self._theme_styles = {
-            "clam": VariantStyleSettings(),
-            "default": VariantStyleSettings(),
-            "alt": VariantStyleSettings(),
-            "classic": VariantStyleSettings(),
+            "clam": StyleSettings(),
+            "default": StyleSettings(),
+            "alt": StyleSettings(),
+            "classic": StyleSettings(),
         }
 
     def _initialize_styles_for_macos(self) -> None:
         self._theme_styles = {
-            "aqua": VariantStyleSettings(),
-            "clam": VariantStyleSettings(),
-            "default": VariantStyleSettings(),
-            "alt": VariantStyleSettings(),
-            "classic": VariantStyleSettings(),
+            "aqua": StyleSettings(),
+            "clam": StyleSettings(),
+            "default": StyleSettings(),
+            "alt": StyleSettings(),
+            "classic": StyleSettings(),
         }
 
     def _initialize_styles_for_linux(self) -> None:
         self._theme_styles = {
-            "clam": VariantStyleSettings(),
-            "default": VariantStyleSettings(),
-            "alt": VariantStyleSettings(),
-            "classic": VariantStyleSettings(),
+            "clam": StyleSettings(),
+            "default": StyleSettings(),
+            "alt": StyleSettings(),
+            "classic": StyleSettings(),
         }
