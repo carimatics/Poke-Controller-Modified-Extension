@@ -15,18 +15,14 @@ class Button(ttk.Button):
         size: SizeType = "md",
         **kwargs: Any,
     ) -> None:
-        self._style = self._construct_style(variant, size)
-        kwargs["style"] = self._style
+        self._pokecon_style = self._construct_style(variant, size)
+        kwargs["style"] = self._pokecon_style
         super().__init__(master, **kwargs)
-        self._variant = variant
-        self._size = size
 
-    def apply_style(self, variant: VariantType, size: SizeType) -> None:
+    def configure_style(self, variant: VariantType, size: SizeType) -> None:
         style = self._construct_style(variant, size)
         self.configure(style=style)
-        self._style = style
-        self._variant = variant
-        self._size = size
+        self._pokecon_style = style
 
     @staticmethod
     def _construct_style(variant: VariantType, size: SizeType) -> str:
