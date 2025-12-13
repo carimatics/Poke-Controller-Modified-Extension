@@ -12,61 +12,100 @@ class ScrollableFrame(Frame):
     _canvas: tk.Canvas
     _scrollbar: Scrollbar
     _canvas_window: int
+    _updating: bool
 
     def __init__(
         self,
         master: tk.Misc,
         **kwargs: Any,
     ) -> None:
-        self._canvas = tk.Canvas(master, highlightthickness=0)
+        super().__init__(master)
+
+        self._canvas = tk.Canvas(self, highlightthickness=0)
         self._scrollbar = Scrollbar(
             master, orient="vertical", command=self._canvas.yview
         )
-        super().__init__(self._canvas, **kwargs)
+        self.scrollable_frame = Frame(self._canvas, **kwargs)
 
+        self._updating = False
         self.build_ui()
 
     def build_ui(self) -> None:
-        self.bind("<<Configure>>", self._on_frame_configure)
+        self.scrollable_frame.bind("<Configure>", self._on_frame_configure)
         self._canvas_window = self._canvas.create_window(
-            (0, 0), window=self, anchor=tk.NW
+            (0, 0), window=self.scrollable_frame, anchor=tk.NW
         )
         self._canvas.configure(yscrollcommand=self._scrollbar.set)
         self._canvas.bind(
             "<Configure>",
             self._on_canvas_configure,
         )
+
         self._canvas.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
         self._scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
 
+        self._canvas.bind("<Enter>", lambda _: self._bind_mouse_wheel())
+        self._canvas.bind("<Leave>", lambda _: self._unbind_mouse_wheel())
+
+    def refresh(self) -> None:
+        self.update_idletasks()
+        self._canvas.update_idletasks()
+        self.scrollable_frame.update_idletasks()
+        self._update_scroll_region()
+
+    def _bind_mouse_wheel(self) -> None:
         self._canvas.bind_all("<MouseWheel>", self._on_mouse_wheel)
         self._canvas.bind_all("<Button-4>", self._on_mouse_wheel)
         self._canvas.bind_all("<Button-5>", self._on_mouse_wheel)
 
+    def _unbind_mouse_wheel(self) -> None:
+        self._canvas.unbind_all("<MouseWheel>")
+        self._canvas.unbind_all("<Button-4>")
+        self._canvas.unbind_all("<Button-5>")
+
     def _on_frame_configure(self, _: tk.Event) -> None:
-        self._update_scroll_region()
+        if not self._updating:
+            self._update_scroll_region()
 
     def _on_canvas_configure(self, event: tk.Event) -> None:
-        self._canvas.itemconfig(
-            self._canvas_window,
-            width=event.width,
-        )
-        self._update_scroll_region()
+        if self._updating:
+            return
+
+        self._updating = True
+        try:
+            self._canvas.itemconfig(
+                self._canvas_window,
+                width=event.width,
+            )
+            self._update_scroll_region()
+        finally:
+            self._updating = False
 
     def _update_scroll_region(self) -> None:
-        self._canvas.update_idletasks()
+        if self._updating:
+            return
 
-        bbox = self._canvas.bbox("all")
-        content_height = bbox[3] - bbox[1]
-        canvas_height = self._canvas.winfo_height()
+        self._updating = True
+        try:
+            self._canvas.update_idletasks()
 
-        if content_height > canvas_height:
-            self._canvas.configure(scrollregion=bbox)
-            self._scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
-        else:
-            self._canvas.configure(scrollregion=(0, 0, 0, canvas_height))
-            self._canvas.yview_moveto(0)
-            self._scrollbar.pack_forget()
+            bbox = self._canvas.bbox("all")
+
+            content_height = bbox[3] - bbox[1]
+            canvas_height = self._canvas.winfo_height()
+
+            if content_height > canvas_height:
+                self._canvas.configure(scrollregion=bbox)
+                if not self._scrollbar.winfo_ismapped():
+                    self._scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
+            else:
+                self._canvas.configure(scrollregion=bbox)
+                self._canvas.yview_moveto(0)
+                if self._scrollbar.winfo_ismapped():
+                    self._scrollbar.pack_forget()
+        finally:
+            self._updating = False
+            self.update_idletasks()
 
     def _on_mouse_wheel(self, event: tk.Event) -> None:
         bbox = self._canvas.bbox("all")

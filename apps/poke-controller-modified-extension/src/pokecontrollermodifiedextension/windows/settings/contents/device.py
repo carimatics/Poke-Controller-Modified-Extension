@@ -1,66 +1,91 @@
 import logging
 import tkinter as tk
-import tkinter.ttk as ttk
+from dataclasses import fields
 from typing import Any
 
+from ....widgets import Frame, Labelframe, ScrollableFrame
 from ....widgets.app import AppFrame
+from ....widgets.components import ComponentPackBuilder
 
 logger = logging.getLogger(__name__)
 
 
 class DeviceSettingsPane(AppFrame):
-    _current_version: tk.StringVar
+    _frame: Frame | Labelframe | ScrollableFrame
 
     def __init__(self, master: tk.Misc, *args: Any, **kwargs: Any) -> None:
         super().__init__(master, *args, **kwargs)
 
-        logger.debug(f"GeneralSettingsPane init: {self.app}")
-        self._current_version = self.app.settings.general.version
-        self._latest_settings_version = self.app.app_info.latest_settings_version
-
-        self._style_manager = self.app.style_manager
-        self._theme = self.app.settings.general.theme
-        self._language = self.app.settings.general.language
+        self._touchscreen = self.app.settings.device.touchscreen
+        self._keyboard = self.app.settings.device.keyboard
+        self._mouse = self.app.settings.device.mouse
+        self._pro_controller = self.app.settings.device.pro_controller
 
         self.build_ui()
 
     def build_ui(self) -> None:
-        frame = ttk.Frame(self)
-
-        # settings version
-        version_frame = ttk.Frame(frame)
-        version_label = ttk.Label(version_frame, width=16, text="Settings Version:")
-        version_value = ttk.Label(version_frame, textvariable=self._current_version)
-
-        # theme
-        theme_frame = ttk.Frame(frame)
-        theme_label = ttk.Label(theme_frame, width=16, text="Theme:")
-        theme_combobox = ttk.Combobox(
-            theme_frame,
-            textvariable=self._theme,
-            values=self._style_manager.get_themes(),
+        builder: Any = (
+            ComponentPackBuilder(self)
+            .add_scrollable_frame_row()
+            # touchscreen
+            .add_labelframe_row("Touchscreen")
+            .add_frame_row()
+            .add_label(text="Start:", width=8)
+            .add_label(text="x")
+            .add_spinbox(variable=self._touchscreen.sx, from_=1, to=320)
+            .add_label(text="y")
+            .add_spinbox(variable=self._touchscreen.sy, from_=1, to=240)
+            .end()
+            .add_frame_row()
+            .add_label(text="End:", width=8)
+            .add_label(text="x")
+            .add_spinbox(variable=self._touchscreen.ex, from_=1, to=320)
+            .add_label(text="y")
+            .add_spinbox(variable=self._touchscreen.ey, from_=1, to=240)
+            .end()
+            .end()
+            # keymap
+            .add_labelframe_row("Keymap")
+            .add_frame_row()
+            .add_label(text="Enabled:", width=8)
+            .add_checkbutton(self._keyboard.enabled, "")
+            .end()
         )
 
-        # language
-        language_frame = ttk.Frame(frame)
-        language_label = ttk.Label(language_frame, width=16, text="Language:")
-        language_combobox = ttk.Combobox(
-            language_frame, textvariable=self._language, values=["ja", "en"]
+        keymaps: list[tuple[str, Any]] = [
+            ("Button", self._keyboard.keymap.button),
+            ("Direction", self._keyboard.keymap.direction),
+            ("D-pad", self._keyboard.keymap.dpad),
+        ]
+        for name, keymap in keymaps:
+            builder = builder.add_labelframe_row(name)
+            for field in fields(keymap):
+                var = getattr(keymap, field.name)
+                builder = (
+                    builder.add_frame_row()
+                    .add_label(text=field.name.upper(), width=12)
+                    .add_entry(variable=var)
+                    .end()
+                )
+            builder = builder.end()
+
+        builder = (
+            builder.add_labelframe_row("Mouse")
+            .add_checkbutton(self._mouse.enabled_lclick, "left click")
+            .add_checkbutton(self._mouse.enabled_rclick, "right click")
+            .end()
         )
-        language_caption = ttk.Label(language_frame, text="(Restart required)")
+        builder = (
+            builder.add_labelframe_row("Pro-Controller")
+            .add_checkbutton(self._pro_controller.enabled, "enabled")
+            .add_checkbutton(self._pro_controller.enabled_record, "record")
+            .end()
+        )
 
-        # Layout
-        version_label.pack(side=tk.LEFT)
-        version_value.pack(side=tk.LEFT, padx=4)
-        version_frame.pack(expand=False, fill=tk.X)
+        self._frame = builder.end().end().build()
+        self._frame.pack(expand=True, fill=tk.BOTH, anchor=tk.CENTER)
 
-        theme_label.pack(side=tk.LEFT)
-        theme_combobox.pack(side=tk.LEFT, padx=4)
-        theme_frame.pack(expand=False, fill=tk.X, pady=(8, 0))
-
-        language_label.pack(side=tk.LEFT)
-        language_combobox.pack(side=tk.LEFT, padx=4)
-        language_caption.pack(side=tk.LEFT, padx=4)
-        language_frame.pack(expand=False, fill=tk.X, pady=(8, 0))
-
-        frame.pack(expand=True, fill=tk.BOTH, anchor=tk.CENTER)
+    def refresh(self) -> None:
+        if isinstance((frame := self._frame), ScrollableFrame):
+            frame.refresh()
+        super().refresh()

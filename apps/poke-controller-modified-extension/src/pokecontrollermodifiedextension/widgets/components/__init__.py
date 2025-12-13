@@ -1,3 +1,6 @@
+from .component_pack import (
+    ComponentPackBuilder as ComponentPackBuilder,
+)
 from .dialogue import (
     PokeConDialogue as PokeConDialogue,
     check_widget_name as check_widget_name,
@@ -15,7 +18,4 @@ from .dynamic_form import (
 from .dynamic_form_dialog import (
     DynamicFormDialog as DynamicFormDialog,
     DynamicFormDialogBuilder as DynamicFormDialogBuilder,
-)
-from .dynamic_pack import (
-    ComponentPackBuilder as ComponentPackBuilder,
 )

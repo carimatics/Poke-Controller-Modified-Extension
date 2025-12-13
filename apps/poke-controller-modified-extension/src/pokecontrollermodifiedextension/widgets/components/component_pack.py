@@ -15,6 +15,10 @@ from ..scrollable_frame import ScrollableFrame
 from ..spinbox import Spinbox
 
 
+class Refreshable(Protocol):
+    def refresh(self) -> None: ...
+
+
 class TraceRegisterable(Protocol):
     def register_trace(
         self,
@@ -23,15 +27,21 @@ class TraceRegisterable(Protocol):
         callback: Callable[[str, str, str], None],
     ) -> None: ...
 
+    def register_refreshable(self, refreshable: Refreshable) -> None: ...
+
 
 class ComponentPackRowBuilder[T: TraceRegisterable]:
     def __init__(
         self,
-        parent: T,
-        master: Frame | Labelframe | ScrollableFrame,
+        caller: T,
+        container: Frame | Labelframe | ScrollableFrame,
     ) -> None:
-        self._parent = parent
-        self._master = master
+        self._caller = caller
+        self._container = container
+        if isinstance(container, ScrollableFrame):
+            self._master: ttk.Widget = container.scrollable_frame
+        else:
+            self._master = container
 
     def add_button(
         self,
@@ -77,7 +87,7 @@ class ComponentPackRowBuilder[T: TraceRegisterable]:
         variable: tk.StringVar,
         disabled: tk.BooleanVar | None = None,
     ) -> Self:
-        entry = Entry(self._master, variable=variable)
+        entry = Entry(self._master, textvariable=variable)
         entry.pack(side=tk.LEFT)
         if disabled is not None:
             entry.configure(state=tk.DISABLED if disabled.get() else tk.NORMAL)
@@ -182,15 +192,17 @@ class ComponentPackRowBuilder[T: TraceRegisterable]:
     def add_frame_row(self) -> "ComponentPackRowBuilder[Self]":
         return ComponentPackRowBuilder(self, Frame(self._master))
 
-    def add_labelframe_row(self) -> "ComponentPackRowBuilder[Self]":
-        return ComponentPackRowBuilder(self, Labelframe(self._master))
+    def add_labelframe_row(self, label: str) -> "ComponentPackRowBuilder[Self]":
+        return ComponentPackRowBuilder(self, Labelframe(self._master, text=label))
 
     def add_scrollable_frame_row(self) -> "ComponentPackRowBuilder[Self]":
-        return ComponentPackRowBuilder(self, ScrollableFrame(self._master))
+        container = ScrollableFrame(self._master)
+        self._caller.register_refreshable(container)
+        return ComponentPackRowBuilder(self, container)
 
     def end(self) -> T:
-        self._master.pack(expand=False, side=tk.TOP, fill=tk.X)
-        return self._parent
+        self._container.pack(expand=False, side=tk.TOP, fill=tk.BOTH)
+        return self._caller
 
     def register_trace(
         self,
@@ -198,20 +210,23 @@ class ComponentPackRowBuilder[T: TraceRegisterable]:
         variable: tk.Variable,
         callback: Callable[[str, str, str], None],
     ) -> None:
-        self._parent.register_trace(mode, variable, callback)
+        self._caller.register_trace(mode, variable, callback)
 
     def _register_disable_trace(
         self,
         widget: ttk.Widget,
         disabled: tk.BooleanVar,
     ) -> None:
-        self._parent.register_trace(
+        self._caller.register_trace(
             "write",
             disabled,
             lambda *_: widget.configure(  # type: ignore[call-arg]
                 state=tk.DISABLED if disabled.get() else tk.NORMAL,
             ),
         )
+
+    def register_refreshable(self, refreshable: Refreshable) -> None:
+        self._caller.register_refreshable(refreshable)
 
 
 class ComponentPackBuilder:
@@ -220,22 +235,29 @@ class ComponentPackBuilder:
     def __init__(self, master: Frame | Labelframe | ScrollableFrame) -> None:
         self._master = master
         self._container = None
+        self._refreshables: list[Refreshable] = []
+
+    def refresh(self) -> None:
+        for refreshable in self._refreshables:
+            refreshable.refresh()
 
     def add_frame_row(self) -> ComponentPackRowBuilder[Self]:
         self._container = Frame(self._master)
         return ComponentPackRowBuilder(self, self._container)
 
-    def add_labelframe_row(self) -> ComponentPackRowBuilder[Self]:
-        self._container = Labelframe(self._master)
+    def add_labelframe_row(self, label: str) -> ComponentPackRowBuilder[Self]:
+        self._container = Labelframe(self._master, text=label)
         return ComponentPackRowBuilder(self, self._container)
 
     def add_scrollable_frame_row(self) -> ComponentPackRowBuilder[Self]:
         self._container = ScrollableFrame(self._master)
+        self._refreshables.append(self._container)
         return ComponentPackRowBuilder(self, self._container)
 
     def build(self) -> Frame | Labelframe | ScrollableFrame:
         if self._container is None:
             return self._master
+        self._container.update_idletasks()
         return self._container
 
     def register_trace(
@@ -245,3 +267,6 @@ class ComponentPackBuilder:
         callback: Callable[[str, str, str], None],
     ) -> None:
         self._master.register_trace(mode, variable, callback)
+
+    def register_refreshable(self, refreshable: Refreshable) -> None:
+        self._refreshables.append(refreshable)

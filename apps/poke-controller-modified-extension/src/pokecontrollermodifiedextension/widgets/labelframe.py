@@ -2,29 +2,20 @@ import tkinter as tk
 import tkinter.ttk as ttk
 from typing import Any, Callable, Literal
 
-type SizeType = Literal["xs", "s", "md", "l", "xl"]
-
 
 class Labelframe(ttk.Labelframe):
     def __init__(
         self,
         master: tk.Misc,
-        *,
-        size: SizeType = "md",
         **kwargs: Any,
     ) -> None:
-        self._pokecon_size = size
-        self._pokecon_style = self._construct_style(size)
+        self._pokecon_style = self._construct_style()
         kwargs["style"] = self._pokecon_style
         super().__init__(master, **kwargs)
 
         self._trace_ids: list[
             tuple[tk.Variable, Literal["array", "read", "write", "unset"], str]
         ] = []
-
-    def configure_style(self, *, size: SizeType) -> None:
-        self._pokecon_style = self._construct_style(size)
-        self.configure(style=self._pokecon_style)
 
     def register_trace(
         self,
@@ -43,9 +34,5 @@ class Labelframe(ttk.Labelframe):
             variable.trace_remove(mode, trace_id)
 
     @staticmethod
-    def _construct_style(size: SizeType) -> str:
-        styles = ["PokeController"]
-        if size != "md":
-            styles.append(size.capitalize())
-        styles.append("TLabelframe")
-        return ".".join(styles)
+    def _construct_style() -> str:
+        return "PokeController.TLabelframe"
