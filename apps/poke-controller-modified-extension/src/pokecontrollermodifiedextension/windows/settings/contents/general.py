@@ -1,9 +1,9 @@
 import logging
 import tkinter as tk
-import tkinter.ttk as ttk
 from typing import Any
 
 from ....widgets.app import AppFrame
+from .dynamic_input import DynamicInputsBuilder
 
 logger = logging.getLogger(__name__)
 
@@ -24,42 +24,13 @@ class GeneralSettingsPane(AppFrame):
         self.build_ui()
 
     def build_ui(self) -> None:
-        frame = ttk.Frame(self)
-
-        # settings version
-        version_frame = ttk.Frame(frame)
-        version_label = ttk.Label(version_frame, width=16, text="Settings Version:")
-        version_value = ttk.Label(version_frame, textvariable=self._current_version)
-
-        # theme
-        theme_frame = ttk.Frame(frame)
-        theme_label = ttk.Label(theme_frame, width=16, text="Theme:")
-        theme_combobox = ttk.Combobox(
-            theme_frame,
-            textvariable=self._theme,
-            values=self._style_manager.get_themes(),
+        frame = (
+            DynamicInputsBuilder(self, label_width=16)
+            .add_label_row("Version:", self._current_version)
+            .add_combobox_row(
+                "Theme:", self._theme, values=list(self._style_manager.get_themes())
+            )
+            .add_combobox_row("Language:", self._language, values=["ja", "en"])
+            .build()
         )
-
-        # language
-        language_frame = ttk.Frame(frame)
-        language_label = ttk.Label(language_frame, width=16, text="Language:")
-        language_combobox = ttk.Combobox(
-            language_frame, textvariable=self._language, values=["ja", "en"]
-        )
-        language_caption = ttk.Label(language_frame, text="(Restart required)")
-
-        # Layout
-        version_label.pack(side=tk.LEFT)
-        version_value.pack(side=tk.LEFT, padx=4)
-        version_frame.pack(expand=False, fill=tk.X)
-
-        theme_label.pack(side=tk.LEFT)
-        theme_combobox.pack(side=tk.LEFT, padx=4)
-        theme_frame.pack(expand=False, fill=tk.X, pady=(8, 0))
-
-        language_label.pack(side=tk.LEFT)
-        language_combobox.pack(side=tk.LEFT, padx=4)
-        language_caption.pack(side=tk.LEFT, padx=4)
-        language_frame.pack(expand=False, fill=tk.X, pady=(8, 0))
-
         frame.pack(expand=True, fill=tk.BOTH, anchor=tk.CENTER)

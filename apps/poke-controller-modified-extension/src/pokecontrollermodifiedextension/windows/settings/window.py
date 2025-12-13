@@ -166,6 +166,8 @@ class SettingsWindow(AppDialog):
         add_hook(self._settings)
 
     def destroy(self) -> None:
+        if self._has_changes.get():
+            self._revert_settings()
         for var, trace_id in self._trace_ids:
             var.trace_remove("write", trace_id)
         logger.debug("SettingsWindow destroyed.")

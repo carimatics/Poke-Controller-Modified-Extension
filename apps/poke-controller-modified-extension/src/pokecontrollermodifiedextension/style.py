@@ -1,6 +1,7 @@
 import tkinter as tk
 import tkinter.ttk as ttk
 from dataclasses import dataclass, field
+from itertools import combinations
 from typing import Any
 
 from pokecontroller.utils import platform
@@ -12,35 +13,52 @@ class ComponentStyle:
     base: dict[str, Any] = field(default_factory=dict)
     variants: dict[str, dict[str, Any]] = field(default_factory=dict)
     sizes: dict[str, dict[str, Any]] = field(default_factory=dict)
+    orient: dict[str, dict[str, Any]] = field(default_factory=dict)
 
     def to_dict(self, class_name: str) -> dict[str, Any]:
-        result: dict[str, Any] = {f"PokeController.{class_name}": self.base}
+        result: dict[str, Any] = {f"PokeController.T{class_name}": self.base}
 
-        for variant_name, variant_style in self.variants.items():
-            if variant_style:
-                k = f"PokeController.{variant_name.capitalize()}.{class_name}"
-                result[k] = deep_merge(self.base, variant_style)
+        axes = (
+            ("V", self.variants),
+            ("S", self.sizes),
+            ("O", self.orient),
+        )
 
-        for size_name, size_style in self.sizes.items():
-            if size_style:
-                k = f"PokeController.{size_name.capitalize()}.{class_name}"
-                result[k] = deep_merge(self.base, size_style)
-
-        for variant_name, variant_style in self.variants.items():
-            for size_name, size_style in self.sizes.items():
-                if variant_style and size_style:
-                    k = f"PokeController.{size_name.capitalize()}.{variant_name.capitalize()}.{class_name}"
-                    merged = deep_merge(self.base, size_style)
-                    merged = deep_merge(merged, variant_style)
-                    result[k] = merged
+        for r in range(1, len(axes) + 1):
+            for combo in combinations(range(len(axes)), r):
+                self._generate_styles(result, class_name, axes, combo)
 
         return result
+
+    def _generate_styles(
+        self,
+        result: dict[str, Any],
+        class_name: str,
+        axes: Any,
+        indices: tuple[int, ...],
+    ) -> None:
+        selected = [axes[i] for i in indices]
+
+        def recurse(idx: int, names: list[str], styles: list[dict[str, Any]]) -> None:
+            if idx == len(selected):
+                if styles:
+                    key = f"{'.'.join(names)}.T{class_name}"
+                    merged = self.base
+                    for style in styles:
+                        merged = deep_merge(merged, style)
+                    result[key] = merged
+                return
+            _, axis_dict = selected[idx]
+            for name, style in axis_dict.items():
+                if style:
+                    recurse(idx + 1, names + [name.capitalize()], styles + [style])
+
+        recurse(0, ["PokeController"], [])
 
 
 @dataclass
 class StyleSettings:
     button: ComponentStyle = field(default_factory=ComponentStyle)
-    text: ComponentStyle = field(default_factory=ComponentStyle)
     label: ComponentStyle = field(default_factory=ComponentStyle)
     entry: ComponentStyle = field(default_factory=ComponentStyle)
     combobox: ComponentStyle = field(default_factory=ComponentStyle)
@@ -55,7 +73,6 @@ class StyleSettings:
     def to_dict(self) -> dict[str, Any]:
         return {
             **self.button.to_dict("Button"),
-            **self.text.to_dict("Text"),
             **self.label.to_dict("Label"),
             **self.entry.to_dict("Entry"),
             **self.combobox.to_dict("Combobox"),
@@ -103,7 +120,7 @@ class StyleManager:
         return self._style.theme_names()
 
     def _initialize_styles(self) -> None:
-        self._initialize_fundamental_styles()
+        self._initialize_base_styles()
         if platform.is_windows():
             self._initialize_styles_for_windows()
         elif platform.is_macos():
@@ -118,8 +135,65 @@ class StyleManager:
             s = deep_merge(self._base_style.to_dict(), settings.to_dict())
             self._style.theme_settings(theme, s)
 
-    def _initialize_fundamental_styles(self) -> None:
-        self._base_style = StyleSettings()
+    def _initialize_base_styles(self) -> None:
+        bg = "#f0f0f0"
+        combobox_default_layout = self._style.layout("TCombobox")
+        print(combobox_default_layout)
+        self._base_style = StyleSettings(
+            button=ComponentStyle(),
+            label=ComponentStyle(
+                base={
+                    "configure": {
+                        "background": bg,
+                    },
+                },
+            ),
+            entry=ComponentStyle(),
+            combobox=ComponentStyle(
+                base={
+                    "configure": {
+                        "state": "readonly",
+                    },
+                },
+            ),
+            spinbox=ComponentStyle(),
+            radiobutton=ComponentStyle(),
+            checkbutton=ComponentStyle(),
+            scale=ComponentStyle(
+                orient={
+                    "horizontal": {
+                        "configure": {"padx": 0, "pady": 0},
+                    },
+                    "vertical": {
+                        "configure": {"padx": 0, "pady": 0},
+                    },
+                },
+            ),
+            frame=ComponentStyle(
+                base={
+                    "configure": {
+                        "background": bg,
+                    },
+                },
+            ),
+            labelframe=ComponentStyle(
+                base={
+                    "configure": {
+                        "background": bg,
+                    },
+                },
+            ),
+            scrollbar=ComponentStyle(
+                orient={
+                    "horizontal": {
+                        "configure": {"padx": 0, "pady": 0},
+                    },
+                    "vertical": {
+                        "configure": {"padx": 0, "pady": 0},
+                    },
+                },
+            ),
+        )
 
     def _initialize_styles_for_windows(self) -> None:
         self._theme_styles = {
@@ -145,3 +219,11 @@ class StyleManager:
             "alt": StyleSettings(),
             "classic": StyleSettings(),
         }
+
+    def _get_background(self, default: str) -> str:
+        bg = self._root.cget("background")
+        if bg:
+            rgb = self._root.winfo_rgb(bg)
+            r, g, b = [x >> 8 for x in rgb]
+            return f"#{r:02x}{g:02x}{b:02x}"
+        return default

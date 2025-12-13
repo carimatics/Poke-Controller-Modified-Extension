@@ -47,5 +47,5 @@ class Button(ttk.Button):
             styles.append(size.capitalize())
         if variant != "base":
             styles.append(variant.capitalize())
-        styles.append("Button")
+        styles.append("TButton")
         return ".".join(styles)
