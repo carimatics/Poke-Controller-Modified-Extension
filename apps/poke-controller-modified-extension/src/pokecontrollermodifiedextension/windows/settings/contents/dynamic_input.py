@@ -74,9 +74,9 @@ class DynamicInputs(AppFrame):
                     anchor=l.W,
                 )
                 widget.pack(
-                    expand=True,
+                    expand=False,
                     side=l.LEFT,
-                    fill=l.BOTH,
+                    fill=l.NONE,
                     anchor=l.CENTER,
                 )
             case DynamicInputItem(
@@ -101,9 +101,9 @@ class DynamicInputs(AppFrame):
                     anchor=l.W,
                 )
                 widget.pack(
-                    expand=True,
+                    expand=False,
                     side=l.LEFT,
-                    fill=l.BOTH,
+                    fill=l.NONE,
                     anchor=l.CENTER,
                 )
             case DynamicInputItem(
@@ -128,9 +128,9 @@ class DynamicInputs(AppFrame):
                     anchor=l.W,
                 )
                 widget.pack(
-                    expand=True,
+                    expand=False,
                     side=l.LEFT,
-                    fill=l.BOTH,
+                    fill=l.NONE,
                     anchor=l.CENTER,
                 )
             case DynamicInputItem(
@@ -155,9 +155,9 @@ class DynamicInputs(AppFrame):
                     anchor=l.W,
                 )
                 widget.pack(
-                    expand=True,
+                    expand=False,
                     side=l.LEFT,
-                    fill=l.BOTH,
+                    fill=l.NONE,
                     anchor=l.CENTER,
                 )
             case DynamicInputItem(
@@ -183,9 +183,9 @@ class DynamicInputs(AppFrame):
                         **radiobutton_kwargs,
                     )
                     radio.pack(
-                        expand=True,
+                        expand=False,
                         side=l.LEFT,
-                        fill=l.BOTH,
+                        fill=l.NONE,
                         anchor=l.CENTER,
                     )
             case DynamicInputItem(
@@ -222,9 +222,9 @@ class DynamicInputs(AppFrame):
                     anchor=l.W,
                 )
                 widget.pack(
-                    expand=True,
+                    expand=False,
                     side=l.LEFT,
-                    fill=l.BOTH,
+                    fill=l.NONE,
                     anchor=l.CENTER,
                 )
             case DynamicInputItem(
