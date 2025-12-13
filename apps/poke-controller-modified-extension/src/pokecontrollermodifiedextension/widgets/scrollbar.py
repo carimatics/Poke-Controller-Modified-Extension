@@ -15,12 +15,12 @@ class Scrollbar(ttk.Scrollbar):
         orient: OrientType = "vertical",
         **kwargs: Any,
     ) -> None:
+        self._pokecon_orient = orient
         self._pokecon_style = self._construct_style(size)
         kwargs["style"] = self._pokecon_style
         kwargs["orient"] = orient
         super().__init__(master, **kwargs)
         self._pokecon_size = size
-        self._pokecon_orient = orient
 
     def configure_style(self, *, size: SizeType) -> None:
         self._pokecon_style = self._construct_style(size)

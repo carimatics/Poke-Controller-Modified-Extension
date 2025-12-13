@@ -1,4 +1,5 @@
 import tkinter as tk
+import tkinter.ttk as ttk
 from dataclasses import dataclass, field
 from typing import Any, Literal, Self, overload
 
@@ -37,6 +38,7 @@ class DynamicInputs(AppFrame):
     ) -> None:
         super().__init__(master, *args, **kwargs)
         self._items = items
+        self._variable_traces: list[tuple[tk.Variable, str]] = []
         self.build_ui()
 
     def build_ui(self) -> None:
@@ -58,7 +60,7 @@ class DynamicInputs(AppFrame):
                 kwargs=label_kwargs,
             ) if isinstance(variable, tk.StringVar):
                 label = widgets.Label(frame, text=label_text, width=label_width)
-                widget: tk.Widget = widgets.Label(
+                widget: ttk.Widget = widgets.Label(
                     frame,
                     textvariable=variable,
                     **label_kwargs,
@@ -110,7 +112,7 @@ class DynamicInputs(AppFrame):
                 label_width=label_width,
                 variable=variable,
                 kwargs=checkbox_kwargs,
-            ) if isinstance(variable, tk.StringVar):
+            ) if isinstance(variable, (tk.StringVar, tk.IntVar)):
                 label = widgets.Label(frame, text=label_text, width=label_width)
                 widget = widgets.Combobox(
                     frame,
@@ -191,14 +193,26 @@ class DynamicInputs(AppFrame):
                 label_text=label_text,
                 label_width=label_width,
                 variable=variable,
-                kwargs=spinbox_kwargs,
-            ) if isinstance(variable, tk.StringVar):
+                kwargs={
+                    "disabled": disabled,
+                    **spinbox_kwargs,
+                },
+            ) if all(
+                (
+                    isinstance(variable, tk.IntVar),
+                    isinstance(disabled, tk.BooleanVar),
+                )
+            ):
                 label = widgets.Label(frame, text=label_text, width=label_width)
                 widget = widgets.Spinbox(
                     frame,
                     textvariable=variable,
+                    state=l.DISABLED if disabled.get() else l.NORMAL,
                     **spinbox_kwargs,
                 )
+
+                # trace
+                self._trace_disabled(widget, disabled)
 
                 # Layout
                 label.pack(
@@ -221,23 +235,41 @@ class DynamicInputs(AppFrame):
                 kwargs={
                     "to": int(to),
                     "from_": int(from_),
+                    "disabled": disabled,
                     **int_scale_kwargs,
                 },
-            ) if isinstance(variable, tk.IntVar):
+            ) if all(
+                (
+                    isinstance(variable, tk.IntVar),
+                    isinstance(disabled, tk.BooleanVar),
+                )
+            ):
                 label = widgets.Label(frame, text=label_text, width=label_width)
-                scale_label = widgets.Label(frame, text=variable.get())
+                scale_label = widgets.Label(
+                    frame,
+                    width=3,
+                    text=variable.get(),
+                )
                 widget = widgets.Scale(
                     frame,
                     variable=variable,
                     to=to,
                     from_=from_,
+                    state=l.DISABLED if disabled.get() else l.NORMAL,
                     **int_scale_kwargs,
                 )
 
                 # trace
-                variable.trace_add(
-                    "write", lambda *_: scale_label.configure(text=int(variable.get()))
+                self._variable_traces.append(
+                    (
+                        variable,
+                        variable.trace_add(
+                            "write",
+                            lambda *_: scale_label.configure(text=int(variable.get())),
+                        ),
+                    )
                 )
+                self._trace_disabled(widget, disabled)
 
                 # Layout
                 label.pack(
@@ -266,24 +298,43 @@ class DynamicInputs(AppFrame):
                 kwargs={
                     "to": float(to),
                     "from_": float(from_),
+                    "disabled": disabled,
                     **float_scale_kwargs,
                 },
-            ) if isinstance(variable, tk.DoubleVar):
+            ) if all(
+                (
+                    isinstance(variable, tk.DoubleVar),
+                    isinstance(disabled, tk.BooleanVar),
+                )
+            ):
                 label = widgets.Label(frame, text=label_text, width=label_width)
-                scale_label = widgets.Label(frame, text=f"{variable.get():.2f}")
+                scale_label = widgets.Label(
+                    frame,
+                    width=3,
+                    text=f"{variable.get():.2f}",
+                )
                 widget = widgets.Scale(
                     frame,
                     variable=variable,
                     to=to,
                     from_=from_,
+                    state=l.DISABLED if disabled.get() else l.NORMAL,
                     **float_scale_kwargs,
                 )
 
                 # trace
-                variable.trace_add(
-                    "write",
-                    lambda *_: scale_label.configure(text=f"{variable.get():.2f}"),
+                self._variable_traces.append(
+                    (
+                        variable,
+                        variable.trace_add(
+                            "write",
+                            lambda *_: scale_label.configure(
+                                text=f"{variable.get():.2f}"
+                            ),
+                        ),
+                    )
                 )
+                self._trace_disabled(widget, disabled)
 
                 # Layout
                 label.pack(
@@ -296,6 +347,7 @@ class DynamicInputs(AppFrame):
                     expand=False,
                     side=l.LEFT,
                     fill=l.BOTH,
+                    anchor=l.CENTER,
                 )
                 widget.pack(
                     expand=True,
@@ -306,6 +358,24 @@ class DynamicInputs(AppFrame):
             case _:
                 raise ValueError(f"Unsupported widget: {item}")
         frame.pack(expand=False, side=l.TOP, fill=l.BOTH, padx=5, pady=5)
+
+    def destroy(self) -> None:
+        for variable, trace_id in self._variable_traces:
+            variable.trace_remove("write", trace_id)
+        super().destroy()
+
+    def _trace_disabled(self, widget: ttk.Widget, disabled: tk.BooleanVar) -> None:
+        self._variable_traces.append(
+            (
+                disabled,
+                disabled.trace_add(
+                    "write",
+                    lambda *_: widget.configure(  # type: ignore[call-arg]
+                        state=l.DISABLED if disabled.get() else l.NORMAL,
+                    ),
+                ),
+            )
+        )
 
 
 class DynamicInputsBuilder:
@@ -352,7 +422,7 @@ class DynamicInputsBuilder:
     def add_combobox_row(
         self,
         label_text: str,
-        variable: tk.StringVar,
+        variable: tk.StringVar | tk.IntVar,
         values: list[str],
     ) -> Self:
         self.items.append(
@@ -405,8 +475,11 @@ class DynamicInputsBuilder:
     def add_spinbox_row(
         self,
         label_text: str,
-        variable: tk.StringVar,
-        values: list[str],
+        variable: tk.IntVar,
+        to: int,
+        from_: int,
+        increment: int = 1,
+        disabled: tk.BooleanVar | None = None,
     ) -> Self:
         self.items.append(
             DynamicInputItem(
@@ -415,7 +488,10 @@ class DynamicInputsBuilder:
                 variable=variable,
                 widget="spinbox",
                 kwargs={
-                    "values": values,
+                    "to": to,
+                    "from_": from_,
+                    "increment": increment,
+                    "disabled": disabled,
                 },
             )
         )
@@ -429,6 +505,7 @@ class DynamicInputsBuilder:
         to: int,
         from_: int,
         orient: Literal["horizontal", "vertical"] = "horizontal",
+        disabled: tk.BooleanVar | None = None,
     ) -> Self: ...
 
     @overload
@@ -439,6 +516,7 @@ class DynamicInputsBuilder:
         to: float,
         from_: float,
         orient: Literal["horizontal", "vertical"] = "horizontal",
+        disabled: tk.BooleanVar | None = None,
     ) -> Self: ...
 
     def add_scale_row(
@@ -448,6 +526,7 @@ class DynamicInputsBuilder:
         to: int | float,
         from_: int | float,
         orient: Literal["horizontal", "vertical"] = "horizontal",
+        disabled: tk.BooleanVar | None = None,
     ) -> Self:
         self.items.append(
             DynamicInputItem(
@@ -459,6 +538,7 @@ class DynamicInputsBuilder:
                     "to": to,
                     "from_": from_,
                     "orient": orient,
+                    "disabled": disabled,
                 },
             )
         )

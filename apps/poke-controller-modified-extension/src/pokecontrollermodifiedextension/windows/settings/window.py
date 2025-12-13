@@ -125,6 +125,10 @@ class SettingsWindow(AppDialog):
         self._backup = self._settings.to_dict()
 
     def _revert_settings(self) -> None:
+        show_realtime = self._settings.capture.show_realtime
+        if show_realtime.get():
+            show_realtime.set(False)
+            self.update_idletasks()
         self._settings.apply_dict(self._backup)
 
     def _on_ok_pushed(self) -> None:
@@ -137,10 +141,7 @@ class SettingsWindow(AppDialog):
         self._check_has_changes()
 
     def _on_cancel_pushed(self) -> None:
-        show_realtime = self.app.settings.capture.show_realtime
-        show_realtime.set(False)
         self._revert_settings()
-        show_realtime.set(True)
         self.destroy()
 
     def _register_hooks(self) -> None:
