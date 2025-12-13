@@ -4,7 +4,6 @@ from typing import Any
 
 from ....model import AppModel
 from ....settings import AppSettings
-from ....values import literals as l
 from ....widgets.app import AppFrame
 
 
@@ -36,8 +35,8 @@ class ManualControlSettings(AppFrame):
         hardware_settings = self._build_hardware_settings()
 
         # Layout
-        software_settings.pack(expand=False, fill=l.X, anchor=l.N, pady=4)
-        hardware_settings.pack(expand=False, fill=l.X, anchor=l.N, pady=4)
+        software_settings.pack(expand=False, fill=tk.X, anchor=tk.N, pady=4)
+        hardware_settings.pack(expand=False, fill=tk.X, anchor=tk.N, pady=4)
 
     def _build_software_settings(self) -> ttk.Labelframe:
         labelframe = ttk.Labelframe(self, text="Software")
@@ -78,12 +77,12 @@ class ManualControlSettings(AppFrame):
         )
 
         # Layout
-        controller_button.pack(expand=False, fill=l.NONE, side=l.LEFT, padx=4, pady=4)
-        use_keyboard_checkbutton.pack(expand=False, fill=l.X, side=l.LEFT, padx=4)
-        use_lstick_mouse_checkbutton.pack(expand=False, fill=l.X, side=l.LEFT, padx=8)
-        use_rstick_mouse_checkbutton.pack(expand=False, fill=l.X, side=l.LEFT, padx=4)
-        upper_frame.pack(expand=False, fill=l.X, anchor=l.N)
-        lower_frame.pack(expand=False, fill=l.X, anchor=l.N, pady=4)
+        controller_button.pack(expand=False, fill=tk.NONE, side=tk.LEFT, padx=4, pady=4)
+        use_keyboard_checkbutton.pack(expand=False, fill=tk.X, side=tk.LEFT, padx=4)
+        use_lstick_mouse_checkbutton.pack(expand=False, fill=tk.X, side=tk.LEFT, padx=8)
+        use_rstick_mouse_checkbutton.pack(expand=False, fill=tk.X, side=tk.LEFT, padx=4)
+        upper_frame.pack(expand=False, fill=tk.X, anchor=tk.N)
+        lower_frame.pack(expand=False, fill=tk.X, anchor=tk.N, pady=4)
 
         return labelframe
 
@@ -109,15 +108,15 @@ class ManualControlSettings(AppFrame):
         # Layout
         use_pro_controller_checkbutton.pack(
             expand=False,
-            fill=l.X,
-            side=l.LEFT,
+            fill=tk.X,
+            side=tk.LEFT,
             padx=4,
             pady=4,
         )
         record_pro_controller_checkbutton.pack(
             expand=False,
-            fill=l.X,
-            side=l.LEFT,
+            fill=tk.X,
+            side=tk.LEFT,
             padx=8,
             pady=4,
         )

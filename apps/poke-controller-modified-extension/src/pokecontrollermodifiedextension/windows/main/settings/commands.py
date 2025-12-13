@@ -4,7 +4,6 @@ from typing import Any, Callable
 
 from ....model import AppModel
 from ....settings import AppSettings
-from ....values import literals as l
 from ....widgets.app import AppFrame
 
 PYTHON = "python"
@@ -101,20 +100,20 @@ class CommandsSettings(AppFrame):
         )
 
         # Layout
-        notebook.pack(expand=True, fill=l.X, side=l.LEFT)
-        open_dir_button.pack(expand=False, fill=l.X, side=l.LEFT, padx=(8, 0))
-        upper_frame.pack(expand=True, fill=l.X, side=l.TOP, padx=4)
+        notebook.pack(expand=True, fill=tk.X, side=tk.LEFT)
+        open_dir_button.pack(expand=False, fill=tk.X, side=tk.LEFT, padx=(8, 0))
+        upper_frame.pack(expand=True, fill=tk.X, side=tk.TOP, padx=4)
 
-        shortcut_label.pack(expand=False, fill=l.X, side=l.LEFT)
-        shortcut_spinbox.pack(expand=False, fill=l.X, side=l.LEFT)
-        shortcut_set_button.pack(expand=False, fill=l.X, side=l.LEFT, padx=4)
-        ttk.Separator(master=lower_frame, orient=l.VERTICAL).pack(
-            expand=False, fill=l.Y, side=l.LEFT, padx=5, pady=8
+        shortcut_label.pack(expand=False, fill=tk.X, side=tk.LEFT)
+        shortcut_spinbox.pack(expand=False, fill=tk.X, side=tk.LEFT)
+        shortcut_set_button.pack(expand=False, fill=tk.X, side=tk.LEFT, padx=4)
+        ttk.Separator(master=lower_frame, orient=tk.VERTICAL).pack(
+            expand=False, fill=tk.Y, side=tk.LEFT, padx=5, pady=8
         )
-        command_reload_button.pack(expand=False, fill=l.X, side=l.LEFT, padx=4)
-        start_button.pack(expand=False, fill=l.X, side=l.LEFT, padx=4)
-        pause_button.pack(expand=False, fill=l.X, side=l.LEFT, padx=4)
-        lower_frame.pack(expand=False, fill=l.BOTH, side=l.TOP, padx=4, pady=4)
+        command_reload_button.pack(expand=False, fill=tk.X, side=tk.LEFT, padx=4)
+        start_button.pack(expand=False, fill=tk.X, side=tk.LEFT, padx=4)
+        pause_button.pack(expand=False, fill=tk.X, side=tk.LEFT, padx=4)
+        lower_frame.pack(expand=False, fill=tk.BOTH, side=tk.TOP, padx=4, pady=4)
 
     def _build_commands_notebook(self, master: ttk.Frame) -> ttk.Notebook:
         notebook = ttk.Notebook(master)
@@ -128,7 +127,7 @@ class CommandsSettings(AppFrame):
         commands: dict[str, ttk.Frame] = {}
         for (name, tag_text), frame in zip(COMMANDS, command_frames):
             commands[name] = frame
-            notebook.add(frame, text=tag_text, padding=5, sticky=l.NSEW)
+            notebook.add(frame, text=tag_text, padding=5, sticky=tk.NSEW)
 
         return notebook
 
@@ -178,15 +177,15 @@ class CommandsSettings(AppFrame):
             label = ttk.Label(combobox_frame, text=text, width=8)
             combobox = ttk.Combobox(
                 combobox_frame,
-                state=l.READONLY,
+                state="readonly",
                 textvariable=var,
                 values=values,
             )
             combobox.bind("<<ComboboxSelected>>", func=on_changed, add="")
 
             # Layout
-            label.pack(expand=False, fill=l.X, side=l.LEFT)
-            combobox.pack(expand=True, fill=l.X, side=l.LEFT)
+            label.pack(expand=False, fill=tk.X, side=tk.LEFT)
+            combobox.pack(expand=True, fill=tk.X, side=tk.LEFT)
 
             return combobox_frame
 
@@ -207,8 +206,8 @@ class CommandsSettings(AppFrame):
         )
 
         # Layout
-        upper_frame.pack(expand=False, fill=l.X, side=l.TOP, padx=4, pady=4)
-        lower_frame.pack(expand=False, fill=l.X, side=l.TOP, padx=4, pady=4)
+        upper_frame.pack(expand=False, fill=tk.X, side=tk.TOP, padx=4, pady=4)
+        lower_frame.pack(expand=False, fill=tk.X, side=tk.TOP, padx=4, pady=4)
 
         return frame
 
@@ -236,9 +235,9 @@ class CommandsSettings(AppFrame):
 
         # Layout
         for b in shortcut_buttons:
-            b.pack(expand=True, fill=l.X, side=l.LEFT, padx=4, pady=2)
-        upper_frame.pack(expand=False, fill=l.X, side=l.TOP, padx=4)
-        lower_frame.pack(expand=False, fill=l.X, side=l.TOP, padx=4)
+            b.pack(expand=True, fill=tk.X, side=tk.LEFT, padx=4, pady=2)
+        upper_frame.pack(expand=False, fill=tk.X, side=tk.TOP, padx=4)
+        lower_frame.pack(expand=False, fill=tk.X, side=tk.TOP, padx=4)
 
         return frame
 

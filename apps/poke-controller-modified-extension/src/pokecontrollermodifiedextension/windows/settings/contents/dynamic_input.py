@@ -4,7 +4,6 @@ from dataclasses import dataclass, field
 from typing import Any, Literal, Self, overload
 
 from .... import widgets
-from ....values import literals as l
 from ....widgets.app.frame import AppFrame
 
 type WidgetType = Literal[
@@ -44,7 +43,7 @@ class DynamicInputs(AppFrame):
         frame = widgets.Frame(self)
         for item in self._items:
             self._build_dynamic_widgets(frame, item)
-        frame.pack(expand=True, fill=l.BOTH)
+        frame.pack(expand=True, fill=tk.BOTH)
 
     def _build_dynamic_widgets(
         self, master: widgets.Frame, item: DynamicInputItem
@@ -68,15 +67,15 @@ class DynamicInputs(AppFrame):
                 # Layout
                 label.pack(
                     expand=False,
-                    side=l.LEFT,
-                    fill=l.BOTH,
-                    anchor=l.W,
+                    side=tk.LEFT,
+                    fill=tk.BOTH,
+                    anchor=tk.W,
                 )
                 widget.pack(
                     expand=False,
-                    side=l.LEFT,
-                    fill=l.NONE,
-                    anchor=l.CENTER,
+                    side=tk.LEFT,
+                    fill=tk.NONE,
+                    anchor=tk.CENTER,
                 )
             case DynamicInputItem(
                 widget="checkbutton",
@@ -95,15 +94,15 @@ class DynamicInputs(AppFrame):
                 # Layout
                 label.pack(
                     expand=False,
-                    side=l.LEFT,
-                    fill=l.BOTH,
-                    anchor=l.W,
+                    side=tk.LEFT,
+                    fill=tk.BOTH,
+                    anchor=tk.W,
                 )
                 widget.pack(
                     expand=False,
-                    side=l.LEFT,
-                    fill=l.NONE,
-                    anchor=l.CENTER,
+                    side=tk.LEFT,
+                    fill=tk.NONE,
+                    anchor=tk.CENTER,
                 )
             case DynamicInputItem(
                 widget="combobox",
@@ -122,15 +121,15 @@ class DynamicInputs(AppFrame):
                 # Layout
                 label.pack(
                     expand=False,
-                    side=l.LEFT,
-                    fill=l.BOTH,
-                    anchor=l.W,
+                    side=tk.LEFT,
+                    fill=tk.BOTH,
+                    anchor=tk.W,
                 )
                 widget.pack(
                     expand=False,
-                    side=l.LEFT,
-                    fill=l.NONE,
-                    anchor=l.CENTER,
+                    side=tk.LEFT,
+                    fill=tk.NONE,
+                    anchor=tk.CENTER,
                 )
             case DynamicInputItem(
                 widget="entry",
@@ -149,15 +148,15 @@ class DynamicInputs(AppFrame):
                 # Layout
                 label.pack(
                     expand=False,
-                    side=l.LEFT,
-                    fill=l.BOTH,
-                    anchor=l.W,
+                    side=tk.LEFT,
+                    fill=tk.BOTH,
+                    anchor=tk.W,
                 )
                 widget.pack(
                     expand=False,
-                    side=l.LEFT,
-                    fill=l.NONE,
-                    anchor=l.CENTER,
+                    side=tk.LEFT,
+                    fill=tk.NONE,
+                    anchor=tk.CENTER,
                 )
             case DynamicInputItem(
                 widget="radiobutton",
@@ -169,9 +168,9 @@ class DynamicInputs(AppFrame):
                 label = widgets.Label(frame, text=label_text, width=label_width)
                 label.pack(
                     expand=False,
-                    side=l.LEFT,
-                    fill=l.BOTH,
-                    anchor=l.W,
+                    side=tk.LEFT,
+                    fill=tk.BOTH,
+                    anchor=tk.W,
                 )
                 for column_index, value in enumerate(values):
                     radio = widgets.Radiobutton(
@@ -183,9 +182,9 @@ class DynamicInputs(AppFrame):
                     )
                     radio.pack(
                         expand=False,
-                        side=l.LEFT,
-                        fill=l.NONE,
-                        anchor=l.CENTER,
+                        side=tk.LEFT,
+                        fill=tk.NONE,
+                        anchor=tk.CENTER,
                     )
             case DynamicInputItem(
                 widget="spinbox",
@@ -206,7 +205,7 @@ class DynamicInputs(AppFrame):
                 widget = widgets.Spinbox(
                     frame,
                     textvariable=variable,
-                    state=l.DISABLED if disabled.get() else l.NORMAL,
+                    state=tk.DISABLED if disabled.get() else tk.NORMAL,
                     **spinbox_kwargs,
                 )
 
@@ -216,15 +215,15 @@ class DynamicInputs(AppFrame):
                 # Layout
                 label.pack(
                     expand=False,
-                    side=l.LEFT,
-                    fill=l.BOTH,
-                    anchor=l.W,
+                    side=tk.LEFT,
+                    fill=tk.BOTH,
+                    anchor=tk.W,
                 )
                 widget.pack(
                     expand=False,
-                    side=l.LEFT,
-                    fill=l.NONE,
-                    anchor=l.CENTER,
+                    side=tk.LEFT,
+                    fill=tk.NONE,
+                    anchor=tk.CENTER,
                 )
             case DynamicInputItem(
                 widget="scale",
@@ -254,7 +253,7 @@ class DynamicInputs(AppFrame):
                     variable=variable,
                     to=to,
                     from_=from_,
-                    state=l.DISABLED if disabled.get() else l.NORMAL,
+                    state=tk.DISABLED if disabled.get() else tk.NORMAL,
                     **int_scale_kwargs,
                 )
 
@@ -273,21 +272,21 @@ class DynamicInputs(AppFrame):
                 # Layout
                 label.pack(
                     expand=False,
-                    side=l.LEFT,
-                    fill=l.BOTH,
-                    anchor=l.W,
+                    side=tk.LEFT,
+                    fill=tk.BOTH,
+                    anchor=tk.W,
                 )
                 scale_label.pack(
                     expand=False,
-                    side=l.LEFT,
-                    fill=l.BOTH,
-                    anchor=l.CENTER,
+                    side=tk.LEFT,
+                    fill=tk.BOTH,
+                    anchor=tk.CENTER,
                 )
                 widget.pack(
                     expand=True,
-                    side=l.LEFT,
-                    fill=l.BOTH,
-                    anchor=l.CENTER,
+                    side=tk.LEFT,
+                    fill=tk.BOTH,
+                    anchor=tk.CENTER,
                 )
             case DynamicInputItem(
                 widget="scale",
@@ -317,7 +316,7 @@ class DynamicInputs(AppFrame):
                     variable=variable,
                     to=to,
                     from_=from_,
-                    state=l.DISABLED if disabled.get() else l.NORMAL,
+                    state=tk.DISABLED if disabled.get() else tk.NORMAL,
                     **float_scale_kwargs,
                 )
 
@@ -338,25 +337,25 @@ class DynamicInputs(AppFrame):
                 # Layout
                 label.pack(
                     expand=False,
-                    side=l.LEFT,
-                    fill=l.BOTH,
-                    anchor=l.W,
+                    side=tk.LEFT,
+                    fill=tk.BOTH,
+                    anchor=tk.W,
                 )
                 scale_label.pack(
                     expand=False,
-                    side=l.LEFT,
-                    fill=l.BOTH,
-                    anchor=l.CENTER,
+                    side=tk.LEFT,
+                    fill=tk.BOTH,
+                    anchor=tk.CENTER,
                 )
                 widget.pack(
                     expand=True,
-                    side=l.LEFT,
-                    fill=l.BOTH,
-                    anchor=l.CENTER,
+                    side=tk.LEFT,
+                    fill=tk.BOTH,
+                    anchor=tk.CENTER,
                 )
             case _:
                 raise ValueError(f"Unsupported widget: {item}")
-        frame.pack(expand=False, side=l.TOP, fill=l.BOTH, padx=5, pady=5)
+        frame.pack(expand=False, side=tk.TOP, fill=tk.BOTH, padx=5, pady=5)
 
     def destroy(self) -> None:
         for variable, trace_id in self._variable_traces:
@@ -370,7 +369,7 @@ class DynamicInputs(AppFrame):
                 disabled.trace_add(
                     "write",
                     lambda *_: widget.configure(  # type: ignore[call-arg]
-                        state=l.DISABLED if disabled.get() else l.NORMAL,
+                        state=tk.DISABLED if disabled.get() else tk.NORMAL,
                     ),
                 ),
             )

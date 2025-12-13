@@ -2,7 +2,6 @@ import tkinter as tk
 import tkinter.ttk as ttk
 from typing import Any
 
-from ....values import literals as l
 from ....widgets.app import AppFrame
 from .capture import CameraSettings
 from .commands import CommandsSettings
@@ -41,7 +40,7 @@ class SettingsPane(AppFrame):
         settings: dict[str, ttk.Frame] = {}
         for name, settings_class, tag_text in SETTINGS:
             settings[name] = settings_class(notebook)
-            notebook.add(settings[name], text=tag_text, padding=5, sticky=l.NSEW)
+            notebook.add(settings[name], text=tag_text, padding=5, sticky=tk.NSEW)
 
         # Layout
-        notebook.pack(expand=True, fill=l.BOTH, padx=0)
+        notebook.pack(expand=True, fill=tk.BOTH, padx=0)

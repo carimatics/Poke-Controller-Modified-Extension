@@ -4,7 +4,6 @@ from typing import Any
 
 from ....model import AppModel
 from ....settings import AppSettings
-from ....values import literals as l
 from ....widgets.app import AppFrame
 
 
@@ -39,8 +38,8 @@ class CameraSettings(AppFrame):
         display_settings = self._build_display_settings()
 
         # Layout
-        camera_settings.pack(expand=False, fill=l.BOTH, pady=4)
-        display_settings.pack(expand=False, fill=l.BOTH, pady=4)
+        camera_settings.pack(expand=False, fill=tk.BOTH, pady=4)
+        display_settings.pack(expand=False, fill=tk.BOTH, pady=4)
 
     def _build_camera_settings(self) -> ttk.Labelframe:
         labelframe = ttk.Labelframe(self, text="Camera Settings")
@@ -53,11 +52,11 @@ class CameraSettings(AppFrame):
             upper_frame,
             text="Camera Name: ",
             width=11,
-            anchor=l.CENTER,
+            anchor=tk.CENTER,
         )
         name_combobox = ttk.Combobox(
             upper_frame,
-            state=l.READONLY,
+            state="readonly",
             textvariable=self._camera_name,
             values=self._name_list,
         )
@@ -77,12 +76,12 @@ class CameraSettings(AppFrame):
             lower_frame,
             text="Camera ID: ",
             width=11,
-            anchor=l.W,
+            anchor=tk.W,
         )
         id_entry = ttk.Entry(
             lower_frame,
             width=3,
-            state=l.DISABLED,
+            state=tk.DISABLED,
             textvariable=self._camera_id,
         )
 
@@ -92,8 +91,8 @@ class CameraSettings(AppFrame):
         fps_combobox = ttk.Combobox(
             lower_frame,
             width=3,
-            justify=l.LEFT,
-            state=l.READONLY,
+            justify=tk.LEFT,
+            state="readonly",
             textvariable=self._fps,
             values=[str(f) for f in fps_list],
         )
@@ -105,7 +104,7 @@ class CameraSettings(AppFrame):
         size_combobox = ttk.Combobox(
             lower_frame,
             width=8,
-            state=l.READONLY,
+            state="readonly",
             textvariable=self._size,
             values=self._size_list,
         )
@@ -125,29 +124,29 @@ class CameraSettings(AppFrame):
         )
 
         # Layout
-        name_label.pack(expand=False, fill=l.X, side=l.LEFT)
-        name_combobox.pack(expand=True, fill=l.X, side=l.LEFT)
-        upper_frame.pack(expand=True, fill=l.X, side=l.TOP, padx=4, pady=4)
+        name_label.pack(expand=False, fill=tk.X, side=tk.LEFT)
+        name_combobox.pack(expand=True, fill=tk.X, side=tk.LEFT)
+        upper_frame.pack(expand=True, fill=tk.X, side=tk.TOP, padx=4, pady=4)
 
-        id_label.pack(expand=False, fill=l.X, side=l.LEFT)
-        id_entry.pack(expand=True, fill=l.X, side=l.LEFT)
+        id_label.pack(expand=False, fill=tk.X, side=tk.LEFT)
+        id_entry.pack(expand=True, fill=tk.X, side=tk.LEFT)
         # noinspection DuplicatedCode
-        ttk.Separator(master=lower_frame, orient=l.VERTICAL).pack(
-            expand=False, fill=l.Y, side=l.LEFT, padx=5, pady=8
+        ttk.Separator(master=lower_frame, orient=tk.VERTICAL).pack(
+            expand=False, fill=tk.Y, side=tk.LEFT, padx=5, pady=8
         )
-        fps_label.pack(expand=False, fill=l.X, side=l.LEFT)
-        fps_combobox.pack(expand=False, fill=l.X, side=l.LEFT)
+        fps_label.pack(expand=False, fill=tk.X, side=tk.LEFT)
+        fps_combobox.pack(expand=False, fill=tk.X, side=tk.LEFT)
         # noinspection DuplicatedCode
-        ttk.Separator(master=lower_frame, orient=l.VERTICAL).pack(
-            expand=False, fill=l.Y, side=l.LEFT, padx=5, pady=8
+        ttk.Separator(master=lower_frame, orient=tk.VERTICAL).pack(
+            expand=False, fill=tk.Y, side=tk.LEFT, padx=5, pady=8
         )
-        size_label.pack(expand=False, fill=l.X, side=l.LEFT)
-        size_combobox.pack(expand=False, fill=l.X, side=l.LEFT)
-        ttk.Separator(master=lower_frame, orient=l.VERTICAL).pack(
-            expand=False, fill=l.Y, side=l.LEFT, padx=5, pady=8
+        size_label.pack(expand=False, fill=tk.X, side=tk.LEFT)
+        size_combobox.pack(expand=False, fill=tk.X, side=tk.LEFT)
+        ttk.Separator(master=lower_frame, orient=tk.VERTICAL).pack(
+            expand=False, fill=tk.Y, side=tk.LEFT, padx=5, pady=8
         )
-        reload_button.pack(expand=False, fill=l.X, side=l.LEFT, padx=4)
-        lower_frame.pack(expand=True, fill=l.BOTH, side=l.TOP, padx=4, pady=4)
+        reload_button.pack(expand=False, fill=tk.X, side=tk.LEFT, padx=4)
+        lower_frame.pack(expand=True, fill=tk.BOTH, side=tk.TOP, padx=4, pady=4)
 
         return labelframe
 
@@ -180,12 +179,14 @@ class CameraSettings(AppFrame):
 
         # Layout
         show_realtime_checkbutton.pack(
-            expand=False, fill=l.X, side=l.LEFT, padx=4, pady=4
+            expand=False, fill=tk.X, side=tk.LEFT, padx=4, pady=4
         )
         show_matched_checkbutton.pack(
-            expand=False, fill=l.X, side=l.LEFT, padx=8, pady=4
+            expand=False, fill=tk.X, side=tk.LEFT, padx=8, pady=4
         )
-        show_guide_checkbutton.pack(expand=False, fill=l.X, side=l.LEFT, padx=4, pady=4)
+        show_guide_checkbutton.pack(
+            expand=False, fill=tk.X, side=tk.LEFT, padx=4, pady=4
+        )
 
         return labelframe
 

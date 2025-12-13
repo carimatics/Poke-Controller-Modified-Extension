@@ -8,7 +8,6 @@ from pokecontrollermodifiedextension.api.v0_1_8.external_tools import (
     MQTTCommunications,
     SocketCommunications,
 )
-from pokecontrollermodifiedextension.values import literals as l
 from pokecontrollermodifiedextension.widgets.components.dialogue import (
     Message,
     MessageMode1,
@@ -755,7 +754,7 @@ class Command(ABC):
         """
         txt = f"{sep.join([str(obj) for obj in objects])}{end}"
         try:
-            text_area.config(state=l.NORMAL)
+            text_area.config(state=tk.NORMAL)
             if mode in ["w", "d"]:
                 text_area.delete("1.0", "end")
             if mode == "w":
@@ -763,7 +762,7 @@ class Command(ABC):
             elif mode == "a":
                 text_area.insert("end", txt)
             text_area.insert("end", txt)
-            text_area.config(state=l.DISABLED)
+            text_area.config(state=tk.DISABLED)
             text_area.see("end")
         except Exception:
             logger.error(txt)

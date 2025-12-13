@@ -1,3 +1,4 @@
+import tkinter as tk
 from pathlib import Path
 from typing import Any
 
@@ -15,7 +16,6 @@ from .core.papico.handlers.v0_2_0.settings import (
     PapicoSettingsSaveHandler as PapicoSettingsSaveHandler_v0_2_0,
 )
 from .core.papico.papico import Papico, PapicoRegisterHandlerContext
-from .values import literals as l
 from .widgets.app import AppMenu
 from .windows import MainWindow
 
@@ -48,7 +48,7 @@ def run_app(*, base_dir: str, profile: str) -> None:
 
         # main window
         main_window = MainWindow(app)
-        main_window.pack(expand=True, fill=l.BOTH)
+        main_window.pack(expand=True, fill=tk.BOTH)
 
         main_window.focus_force()
 

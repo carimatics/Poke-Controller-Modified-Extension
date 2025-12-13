@@ -4,7 +4,6 @@ import tkinter.ttk as ttk
 from typing import Any
 
 from ....model import AppModel
-from ....values import literals as l
 from ....widgets.app import AppDialog, AppFrame
 from ...controller import ControllerWindow
 
@@ -64,7 +63,7 @@ class Buttons(AppFrame):
 
         # Layout
         for button in BUTTONS:
-            buttons[button].pack(expand=True, anchor=l.CENTER, side=l.LEFT, padx=4)
+            buttons[button].pack(expand=True, anchor=tk.CENTER, side=tk.LEFT, padx=4)
 
     def _on_start_pushed(self) -> None:
         # FIXME: あとで消す

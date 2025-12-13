@@ -5,7 +5,6 @@ from typing import Any
 
 from ....model import AppModel
 from ....settings import AppSettings
-from ....values import literals as l
 from ....widgets.app import AppFrame
 
 
@@ -38,8 +37,8 @@ class SerialSettings(AppFrame):
         data_settings = self._build_data_settings()
 
         # Layout
-        serial_settings.pack(expand=False, fill=l.X, anchor=l.N, pady=4)
-        data_settings.pack(expand=False, fill=l.X, anchor=l.N, pady=4)
+        serial_settings.pack(expand=False, fill=tk.X, anchor=tk.N, pady=4)
+        data_settings.pack(expand=False, fill=tk.X, anchor=tk.N, pady=4)
 
     def _build_serial_settings(self) -> ttk.Labelframe:
         labelframe = ttk.Labelframe(self, text="Port Settings")
@@ -52,7 +51,7 @@ class SerialSettings(AppFrame):
         port_entry = ttk.Combobox(
             labelframe,
             width=5,
-            state=l.READONLY,
+            state="readonly",
             textvariable=self._port,
             values=self._port_list,
         )
@@ -64,8 +63,8 @@ class SerialSettings(AppFrame):
         baud_rate_combobox = ttk.Combobox(
             labelframe,
             width=6,
-            justify=l.RIGHT,
-            state=l.READONLY,
+            justify=tk.RIGHT,
+            state="readonly",
             textvariable=self._baud_rate,
             values=[str(i) for i in self._baud_rate_list],
         )
@@ -85,18 +84,18 @@ class SerialSettings(AppFrame):
         )
 
         # Layout
-        port_label.pack(expand=False, side=l.LEFT, padx=4)
-        port_entry.pack(expand=True, fill=l.X, side=l.LEFT)
-        ttk.Separator(master=labelframe, orient=l.VERTICAL).pack(
-            expand=False, fill=l.Y, side=l.LEFT, padx=5, pady=8
+        port_label.pack(expand=False, side=tk.LEFT, padx=4)
+        port_entry.pack(expand=True, fill=tk.X, side=tk.LEFT)
+        ttk.Separator(master=labelframe, orient=tk.VERTICAL).pack(
+            expand=False, fill=tk.Y, side=tk.LEFT, padx=5, pady=8
         )
-        baud_rate_label.pack(expand=False, side=l.LEFT)
-        baud_rate_combobox.pack(expand=False, fill=l.X, side=l.LEFT)
-        ttk.Separator(master=labelframe, orient=l.VERTICAL).pack(
-            expand=False, fill=l.Y, side=l.LEFT, padx=5, pady=8
+        baud_rate_label.pack(expand=False, side=tk.LEFT)
+        baud_rate_combobox.pack(expand=False, fill=tk.X, side=tk.LEFT)
+        ttk.Separator(master=labelframe, orient=tk.VERTICAL).pack(
+            expand=False, fill=tk.Y, side=tk.LEFT, padx=5, pady=8
         )
-        reconnect_button.pack(expand=False, fill=l.X, side=l.LEFT, padx=4, pady=4)
-        disconnect_button.pack(expand=False, fill=l.X, side=l.LEFT, padx=4, pady=4)
+        reconnect_button.pack(expand=False, fill=tk.X, side=tk.LEFT, padx=4, pady=4)
+        disconnect_button.pack(expand=False, fill=tk.X, side=tk.LEFT, padx=4, pady=4)
 
         return labelframe
 
@@ -104,10 +103,12 @@ class SerialSettings(AppFrame):
         labelframe = ttk.Labelframe(self, text="Data")
 
         # Data Format
-        data_format_label = ttk.Label(labelframe, text="Data Format: ", anchor=l.CENTER)
+        data_format_label = ttk.Label(
+            labelframe, text="Data Format: ", anchor=tk.CENTER
+        )
         data_format_combobox = ttk.Combobox(
             labelframe,
-            state=l.NORMAL,
+            state=tk.NORMAL,
             textvariable=self._data_format,
             values=self._data_format_list,
         )
@@ -125,9 +126,9 @@ class SerialSettings(AppFrame):
         )
 
         # Layout
-        data_format_label.pack(expand=False, side=l.LEFT, padx=4, pady=(0, 4))
-        data_format_combobox.pack(expand=False, side=l.LEFT, padx=4, pady=(0, 4))
-        show_serial_checkbutton.pack(expand=False, side=l.LEFT, padx=4, pady=(0, 4))
+        data_format_label.pack(expand=False, side=tk.LEFT, padx=4, pady=(0, 4))
+        data_format_combobox.pack(expand=False, side=tk.LEFT, padx=4, pady=(0, 4))
+        show_serial_checkbutton.pack(expand=False, side=tk.LEFT, padx=4, pady=(0, 4))
 
         return labelframe
 

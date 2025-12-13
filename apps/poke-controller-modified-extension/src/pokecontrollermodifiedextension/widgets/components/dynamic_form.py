@@ -4,7 +4,6 @@ from dataclasses import dataclass, field
 from typing import Any, Literal, Self, overload
 
 from ...mixins import AppAccessorMixIn
-from ...values import literals as l
 from ..app.frame import AppFrame
 
 type WidgetType = Literal[
@@ -42,7 +41,7 @@ class DynamicForm(AppFrame):
         frame = tk.Frame(self)
         for item in self._items:
             self._build_dynamic_widgets(frame, item)
-        frame.pack(expand=True, fill=l.BOTH)
+        frame.pack(expand=True, fill=tk.BOTH)
 
     def as_dict(self) -> dict[str, bool | int | float | str] | None:
         return {name: var.get() for name, var in self._variables.items()}
@@ -64,9 +63,9 @@ class DynamicForm(AppFrame):
                 )
                 widget.pack(
                     expand=True,
-                    side=l.LEFT,
-                    fill=l.BOTH,
-                    anchor=l.CENTER,
+                    side=tk.LEFT,
+                    fill=tk.BOTH,
+                    anchor=tk.CENTER,
                     padx=3,
                     pady=3,
                 )
@@ -84,9 +83,9 @@ class DynamicForm(AppFrame):
                 )
                 widget.pack(
                     expand=True,
-                    side=l.LEFT,
-                    fill=l.BOTH,
-                    anchor=l.CENTER,
+                    side=tk.LEFT,
+                    fill=tk.BOTH,
+                    anchor=tk.CENTER,
                     padx=3,
                     pady=3,
                 )
@@ -104,9 +103,9 @@ class DynamicForm(AppFrame):
                 )
                 widget.pack(
                     expand=True,
-                    side=l.LEFT,
-                    fill=l.BOTH,
-                    anchor=l.CENTER,
+                    side=tk.LEFT,
+                    fill=tk.BOTH,
+                    anchor=tk.CENTER,
                     padx=3,
                     pady=3,
                 )
@@ -126,9 +125,9 @@ class DynamicForm(AppFrame):
                     )
                     radio.pack(
                         expand=True,
-                        side=l.LEFT,
-                        fill=l.BOTH,
-                        anchor=l.CENTER,
+                        side=tk.LEFT,
+                        fill=tk.BOTH,
+                        anchor=tk.CENTER,
                         padx=3,
                         pady=3,
                     )
@@ -146,9 +145,9 @@ class DynamicForm(AppFrame):
                 )
                 widget.pack(
                     expand=True,
-                    side=l.LEFT,
-                    fill=l.BOTH,
-                    anchor=l.CENTER,
+                    side=tk.LEFT,
+                    fill=tk.BOTH,
+                    anchor=tk.CENTER,
                     padx=3,
                     pady=3,
                 )
@@ -169,9 +168,9 @@ class DynamicForm(AppFrame):
                 )
                 label.pack(
                     expand=False,
-                    side=l.LEFT,
-                    fill=l.BOTH,
-                    anchor=l.CENTER,
+                    side=tk.LEFT,
+                    fill=tk.BOTH,
+                    anchor=tk.CENTER,
                 )
                 widget = ttk.Scale(
                     labelframe,
@@ -182,9 +181,9 @@ class DynamicForm(AppFrame):
                 )
                 widget.pack(
                     expand=True,
-                    side=l.LEFT,
-                    fill=l.BOTH,
-                    anchor=l.CENTER,
+                    side=tk.LEFT,
+                    fill=tk.BOTH,
+                    anchor=tk.CENTER,
                     padx=3,
                     pady=3,
                 )
@@ -205,9 +204,9 @@ class DynamicForm(AppFrame):
                 )
                 label.pack(
                     expand=False,
-                    side=l.LEFT,
-                    fill=l.BOTH,
-                    anchor=l.CENTER,
+                    side=tk.LEFT,
+                    fill=tk.BOTH,
+                    anchor=tk.CENTER,
                 )
                 widget = ttk.Scale(
                     labelframe,
@@ -218,15 +217,15 @@ class DynamicForm(AppFrame):
                 )
                 widget.pack(
                     expand=True,
-                    side=l.LEFT,
-                    fill=l.BOTH,
-                    anchor=l.CENTER,
+                    side=tk.LEFT,
+                    fill=tk.BOTH,
+                    anchor=tk.CENTER,
                     padx=3,
                     pady=3,
                 )
             case _:
                 raise ValueError(f"Unsupported widget: {item}")
-        labelframe.pack(expand=False, side=l.TOP, fill=l.BOTH, padx=5, pady=5)
+        labelframe.pack(expand=False, side=tk.TOP, fill=tk.BOTH, padx=5, pady=5)
 
 
 class DynamicFormBuilder:

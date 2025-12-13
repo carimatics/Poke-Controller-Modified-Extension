@@ -3,7 +3,6 @@ import tkinter.ttk as ttk
 from typing import Any
 
 from ....settings import AppSettings
-from ....values import literals as l
 from ....widgets.app import AppFrame
 from .buttons import Buttons
 from .capture import Capture
@@ -36,9 +35,9 @@ class CapturePane(AppFrame):
         # Capture Area
         width, height = self._camera_size
         capture = Capture(labelframe)
-        capture.configure(width=width, height=height, relief=l.GROOVE)
+        capture.configure(width=width, height=height, relief=tk.GROOVE)
 
         # Layout
-        buttons.pack(expand=True, fill=l.NONE, anchor=l.CENTER)
-        capture.pack(expand=True, fill=l.NONE, anchor=l.CENTER, pady=4)
-        labelframe.pack(expand=True, fill=l.BOTH)
+        buttons.pack(expand=True, fill=tk.NONE, anchor=tk.CENTER)
+        capture.pack(expand=True, fill=tk.NONE, anchor=tk.CENTER, pady=4)
+        labelframe.pack(expand=True, fill=tk.BOTH)

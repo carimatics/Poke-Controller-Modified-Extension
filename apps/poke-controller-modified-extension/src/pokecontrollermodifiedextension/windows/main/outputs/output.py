@@ -2,7 +2,6 @@ import tkinter as tk
 import tkinter.ttk as ttk
 from typing import Any
 
-from ....values import literals as l
 from ....widgets.app import AppFrame
 
 
@@ -18,27 +17,29 @@ class Output(AppFrame):
         self.build_ui()
 
     def build_ui(self) -> None:
-        labelframe = ttk.Labelframe(self, text=f"Output#{self._id}", relief=l.GROOVE)
+        labelframe = ttk.Labelframe(self, text=f"Output#{self._id}", relief=tk.GROOVE)
 
         # Text Area
         self.text_area = tk.Text(
             labelframe,
             width=62,
             blockcursor=True,
-            insertunfocussed=l.NONE,
+            insertunfocussed=tk.NONE,
             undo=False,
             maxundo=0,
-            relief=l.FLAT,
-            state=l.DISABLED,
+            relief=tk.FLAT,
+            state=tk.DISABLED,
         )
         scroll = tk.Scrollbar(
             labelframe,
-            orient=l.VERTICAL,
+            orient=tk.VERTICAL,
             command=self.text_area.yview,
         )
         self.text_area.configure(yscrollcommand=scroll.set)
 
         # Layout
-        self.text_area.pack(expand=True, fill=l.BOTH, side=l.LEFT, padx=(5, 0), pady=5)
-        scroll.pack(expand=False, fill=l.Y, side=l.LEFT, pady=5)
-        labelframe.pack(expand=True, fill=l.BOTH)
+        self.text_area.pack(
+            expand=True, fill=tk.BOTH, side=tk.LEFT, padx=(5, 0), pady=5
+        )
+        scroll.pack(expand=False, fill=tk.Y, side=tk.LEFT, pady=5)
+        labelframe.pack(expand=True, fill=tk.BOTH)

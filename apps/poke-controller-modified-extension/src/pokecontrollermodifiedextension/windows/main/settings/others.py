@@ -4,7 +4,6 @@ from typing import Any
 
 from ....model import AppModel
 from ....settings import AppSettings
-from ....values import literals as l
 from ....widgets.app import AppFrame
 
 
@@ -52,41 +51,41 @@ class OthersSettings(AppFrame):
         )
 
         # Layout
-        size_adjuster.pack(expand=True, fill=l.X, side=l.LEFT, padx=4, pady=4)
+        size_adjuster.pack(expand=True, fill=tk.X, side=tk.LEFT, padx=4, pady=4)
         standard_output_destination_settings.pack(
             expand=False,
-            fill=l.BOTH,
-            side=l.LEFT,
+            fill=tk.BOTH,
+            side=tk.LEFT,
             padx=7,
             pady=4,
         )
-        clear_outputs.pack(expand=False, fill=l.X, side=l.LEFT, padx=4, pady=4)
-        upper_frame.pack(expand=False, fill=l.X, side=l.TOP, padx=4, pady=4)
+        clear_outputs.pack(expand=False, fill=tk.X, side=tk.LEFT, padx=4, pady=4)
+        upper_frame.pack(expand=False, fill=tk.X, side=tk.TOP, padx=4, pady=4)
 
         widget_mode.pack(
             expand=False,
-            fill=l.X,
-            side=l.LEFT,
-            anchor=l.CENTER,
+            fill=tk.X,
+            side=tk.LEFT,
+            anchor=tk.CENTER,
             padx=4,
             pady=4,
         )
         software_controller_position_settings.pack(
             expand=False,
-            fill=l.NONE,
-            side=l.LEFT,
-            anchor=l.CENTER,
+            fill=tk.NONE,
+            side=tk.LEFT,
+            anchor=tk.CENTER,
             padx=7,
             pady=4,
         )
         dialogue_confirm_buttons_position_settings.pack(
             expand=False,
-            fill=l.X,
-            side=l.LEFT,
+            fill=tk.X,
+            side=tk.LEFT,
             padx=4,
             pady=4,
         )
-        lower_frame.pack(expand=False, fill=l.X, side=l.TOP, padx=4, pady=4)
+        lower_frame.pack(expand=False, fill=tk.X, side=tk.TOP, padx=4, pady=4)
 
     def _build_size_adjuster(self, master: tk.Misc) -> ttk.Labelframe:
         labelframe = ttk.Labelframe(master, text="Size Adjuster")
@@ -95,7 +94,7 @@ class OthersSettings(AppFrame):
         size_scale = ttk.Scale(
             labelframe,
             length=200,
-            orient=l.HORIZONTAL,
+            orient=tk.HORIZONTAL,
             from_=0,
             to=100,
             variable=self._output_size,
@@ -105,9 +104,9 @@ class OthersSettings(AppFrame):
         # Layout
         size_scale.pack(
             expand=True,
-            fill=l.X,
-            side=l.LEFT,
-            anchor=l.CENTER,
+            fill=tk.X,
+            side=tk.LEFT,
+            anchor=tk.CENTER,
             padx=4,
             pady=(5, 12),
         )
@@ -131,7 +130,7 @@ class OthersSettings(AppFrame):
 
         # Layout
         for radiobutton in stdout_radiobuttons:
-            radiobutton.pack(expand=False, fill=l.X, side=l.LEFT, padx=4)
+            radiobutton.pack(expand=False, fill=tk.X, side=tk.LEFT, padx=4)
 
         return labelframe
 
@@ -150,7 +149,7 @@ class OthersSettings(AppFrame):
 
         # Layout
         for button in buttons:
-            button.pack(expand=False, fill=l.X, side=l.LEFT, padx=4, pady=(3, 5))
+            button.pack(expand=False, fill=tk.X, side=tk.LEFT, padx=4, pady=(3, 5))
 
         return labelframe
 
@@ -186,7 +185,7 @@ class OthersSettings(AppFrame):
 
         # Layout
         for checkbutton in checkbuttons:
-            checkbutton.pack(expand=False, fill=l.X, side=l.LEFT, padx=4, pady=4)
+            checkbutton.pack(expand=False, fill=tk.X, side=tk.LEFT, padx=4, pady=4)
 
         return labelframe
 
@@ -210,7 +209,7 @@ class OthersSettings(AppFrame):
 
         # Layout
         for radiobutton in position_radiobuttons:
-            radiobutton.pack(expand=False, fill=l.X, side=l.LEFT, padx=4, pady=4)
+            radiobutton.pack(expand=False, fill=tk.X, side=tk.LEFT, padx=4, pady=4)
 
         return labelframe
 
@@ -234,7 +233,7 @@ class OthersSettings(AppFrame):
 
         # Layout
         for radiobutton in position_radiobuttons:
-            radiobutton.pack(expand=False, fill=l.X, side=l.LEFT, padx=4, pady=4)
+            radiobutton.pack(expand=False, fill=tk.X, side=tk.LEFT, padx=4, pady=4)
 
         return labelframe
 

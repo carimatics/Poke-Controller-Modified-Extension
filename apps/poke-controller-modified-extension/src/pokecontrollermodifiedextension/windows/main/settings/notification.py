@@ -4,7 +4,6 @@ from typing import Any, Callable
 
 from ....model import AppModel
 from ....settings import AppSettings
-from ....values import literals as l
 from ....widgets.app import AppFrame
 
 
@@ -36,16 +35,16 @@ class NotificationSettings(AppFrame):
         # Layout
         windows_notification.pack(
             expand=False,
-            fill=l.NONE,
-            anchor=l.NE,
-            side=l.LEFT,
+            fill=tk.NONE,
+            anchor=tk.NE,
+            side=tk.LEFT,
             padx=4,
         )
         discord_notification.pack(
             expand=False,
-            fill=l.NONE,
-            anchor=l.NE,
-            side=l.LEFT,
+            fill=tk.NONE,
+            anchor=tk.NE,
+            side=tk.LEFT,
             padx=8,
         )
 
@@ -100,9 +99,9 @@ class NotificationSettings(AppFrame):
         test_button = ttk.Button(labelframe, text="Test", command=on_test_pushed)
 
         # Layout
-        enable_start_checkbutton.pack(expand=False, fill=l.NONE, side=l.LEFT, padx=4)
-        enable_end_checkbutton.pack(expand=False, fill=l.NONE, side=l.LEFT, padx=8)
-        test_button.pack(expand=False, fill=l.NONE, side=l.LEFT, padx=4, pady=4)
+        enable_start_checkbutton.pack(expand=False, fill=tk.NONE, side=tk.LEFT, padx=4)
+        enable_end_checkbutton.pack(expand=False, fill=tk.NONE, side=tk.LEFT, padx=8)
+        test_button.pack(expand=False, fill=tk.NONE, side=tk.LEFT, padx=4, pady=4)
 
         return labelframe
 

@@ -3,7 +3,6 @@ import tkinter.ttk as ttk
 from typing import Any, Self, overload
 
 from ...mixins import AppAccessorMixIn
-from ...values import literals as l
 from ..app.dialog import AppDialog
 from .dynamic_form import DynamicForm, DynamicFormItem
 
@@ -38,10 +37,10 @@ class DynamicFormDialog(AppDialog):
         if confirm_button_position in ["top", "both"]:
             self._build_confirm_button(frame)
         self._form = DynamicForm(frame, self._items)
-        self._form.pack(expand=True, fill=l.BOTH)
+        self._form.pack(expand=True, fill=tk.BOTH)
         if confirm_button_position in ["bottom", "both"]:
             self._build_confirm_button(frame)
-        frame.pack(expand=True, fill=l.BOTH)
+        frame.pack(expand=True, fill=tk.BOTH)
 
     def as_dict(self) -> dict[str, bool | int | float | str] | None:
         if not self._is_ok:
@@ -66,25 +65,25 @@ class DynamicFormDialog(AppDialog):
 
         ok_button.pack(
             expand=True,
-            side=l.LEFT,
-            fill=l.BOTH,
-            anchor=l.CENTER,
+            side=tk.LEFT,
+            fill=tk.BOTH,
+            anchor=tk.CENTER,
             padx=5,
             pady=5,
         )
         cancel_button.pack(
             expand=True,
-            side=l.LEFT,
-            fill=l.BOTH,
-            anchor=l.CENTER,
+            side=tk.LEFT,
+            fill=tk.BOTH,
+            anchor=tk.CENTER,
             padx=5,
             pady=5,
         )
         frame.pack(
             expand=True,
-            side=l.TOP,
-            fill=l.BOTH,
-            anchor=l.CENTER,
+            side=tk.TOP,
+            fill=tk.BOTH,
+            anchor=tk.CENTER,
             padx=5,
             pady=5,
         )

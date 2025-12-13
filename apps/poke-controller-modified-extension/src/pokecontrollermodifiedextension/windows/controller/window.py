@@ -5,7 +5,6 @@ from typing import Any
 from pokecontroller.core.controller import switch
 
 from ...mixins import AppAccessorMixIn
-from ...values import literals as l
 from ...widgets.app import AppDialog
 
 logger = logging.getLogger(__name__)
@@ -390,17 +389,19 @@ class ControllerWindow(AppDialog):
 
     def build_ui(self) -> None:
         # Left
-        left_frame = tk.Frame(self, relief=l.FLAT, padx=8, bg=STYLES["frame"]["left"])
+        left_frame = tk.Frame(self, relief=tk.FLAT, padx=8, bg=STYLES["frame"]["left"])
         left_buttons = [bs[:LEFT_FRAME_COLUMNS] for bs in BUTTONS_LAYOUT]
         self._build_grid_frame(left_frame, left_buttons)
 
         # Right
-        right_frame = tk.Frame(self, relief=l.FLAT, padx=8, bg=STYLES["frame"]["right"])
+        right_frame = tk.Frame(
+            self, relief=tk.FLAT, padx=8, bg=STYLES["frame"]["right"]
+        )
         right_buttons = [bs[LEFT_FRAME_COLUMNS:] for bs in BUTTONS_LAYOUT]
         self._build_grid_frame(right_frame, right_buttons)
 
-        left_frame.pack(expand=False, fill=l.BOTH, side=l.LEFT)
-        right_frame.pack(expand=False, fill=l.BOTH, side=l.LEFT)
+        left_frame.pack(expand=False, fill=tk.BOTH, side=tk.LEFT)
+        right_frame.pack(expand=False, fill=tk.BOTH, side=tk.LEFT)
         logger.info("Controller window built.")
 
     def _build_grid_frame(

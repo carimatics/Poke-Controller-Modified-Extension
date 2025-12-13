@@ -5,7 +5,6 @@ from typing import Any
 
 from ... import widgets
 from ...mixins import AppAccessorMixIn
-from ...values import literals as l
 from ...widgets.app import AppDialog, AppFrame
 from .buttons import SettingsButtonsPane
 from .contents import (
@@ -69,13 +68,13 @@ class SettingsWindow(AppDialog):
         )
 
         # Layout
-        sidebar.pack(expand=False, fill=l.Y, side=l.LEFT, padx=(0, 4), pady=(4, 0))
+        sidebar.pack(expand=False, fill=tk.Y, side=tk.LEFT, padx=(0, 4), pady=(4, 0))
         self._content_labelframe.pack(
-            expand=True, fill=l.BOTH, side=l.LEFT, padx=(0, 8), pady=(8, 0)
+            expand=True, fill=tk.BOTH, side=tk.LEFT, padx=(0, 8), pady=(8, 0)
         )
-        buttons.pack(fill=l.X)
-        upper_frame.pack(expand=True, fill=l.BOTH, anchor=l.CENTER)
-        lower_frame.pack(expand=False, fill=l.X, anchor=l.CENTER)
+        buttons.pack(fill=tk.X)
+        upper_frame.pack(expand=True, fill=tk.BOTH, anchor=tk.CENTER)
+        lower_frame.pack(expand=False, fill=tk.X, anchor=tk.CENTER)
 
         # Select first section
         sidebar.select_section("general", "General")
@@ -180,6 +179,6 @@ class SettingsWindow(AppDialog):
         if (content := self._current_content) is not None:
             content.pack_forget()
         self._current_content = self._contents[section_id]
-        self._current_content.pack(expand=True, fill=l.BOTH, padx=4, pady=4)
+        self._current_content.pack(expand=True, fill=tk.BOTH, padx=4, pady=4)
         self._current_content.refresh()
         self._content_labelframe.update_idletasks()

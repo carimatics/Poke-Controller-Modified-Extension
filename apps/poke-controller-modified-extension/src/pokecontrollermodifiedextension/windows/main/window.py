@@ -4,7 +4,6 @@ import tkinter.ttk as ttk
 from typing import Any, Literal
 
 from ...settings import AppSettings
-from ...values import literals as l
 from ...widgets.app import AppFrame
 from .capture import CapturePane
 from .controller import ControllerPane
@@ -17,10 +16,10 @@ OUTPUTS = "outputs"
 CONTROLLER = "controller"
 
 PANES = [
-    (CAPTURE, CapturePane, l.LEFT),
-    (SETTINGS, SettingsPane, l.LEFT),
-    (OUTPUTS, OutputsPane, l.RIGHT),
-    (CONTROLLER, ControllerPane, l.RIGHT),
+    (CAPTURE, CapturePane, tk.LEFT),
+    (SETTINGS, SettingsPane, tk.LEFT),
+    (OUTPUTS, OutputsPane, tk.RIGHT),
+    (CONTROLLER, ControllerPane, tk.RIGHT),
 ]
 
 
@@ -61,16 +60,16 @@ class MainWindow(AppFrame):
 
     @property
     def _left_frame(self) -> ttk.Frame:
-        return self._frames[l.LEFT]
+        return self._frames[tk.LEFT]
 
     @property
     def _right_frame(self) -> ttk.Frame:
-        return self._frames[l.RIGHT]
+        return self._frames[tk.RIGHT]
 
     def build_ui(self) -> None:
         # Frames
-        self._frames[l.LEFT] = ttk.Frame(self)
-        self._frames[l.RIGHT] = ttk.Frame(self)
+        self._frames[tk.LEFT] = ttk.Frame(self)
+        self._frames[tk.RIGHT] = ttk.Frame(self)
 
         # Create Panes
         for name, pane_class, side in PANES:
@@ -91,12 +90,12 @@ class MainWindow(AppFrame):
         self._serial_port.trace_add("write", self._on_serial_port_changed)
 
     def _layout_left_frame(self) -> None:
-        self._panes[CAPTURE].pack(expand=True, fill=l.BOTH, anchor=l.CENTER)
-        self._panes[SETTINGS].pack(expand=True, fill=l.BOTH, pady=(4, 0))
-        self._frames[l.LEFT].pack(
+        self._panes[CAPTURE].pack(expand=True, fill=tk.BOTH, anchor=tk.CENTER)
+        self._panes[SETTINGS].pack(expand=True, fill=tk.BOTH, pady=(4, 0))
+        self._frames[tk.LEFT].pack(
             expand=True,
-            fill=l.BOTH,
-            side=l.LEFT,
+            fill=tk.BOTH,
+            side=tk.LEFT,
             padx=4,
             pady=(0, 4),
         )
@@ -106,13 +105,13 @@ class MainWindow(AppFrame):
             frame: ttk.Frame,
             visible: bool,
             *,
-            side: Literal["top", "left"] = l.TOP,
+            side: Literal["top", "left"] = tk.TOP,
             px: tuple[int, int] | int = 0,
             py: tuple[int, int] | int = 0,
         ) -> None:
             frame.pack_forget()
             if visible:
-                frame.pack(expand=True, fill=l.BOTH, side=side, padx=px, pady=py)
+                frame.pack(expand=True, fill=tk.BOTH, side=side, padx=px, pady=py)
 
         # pack output frames
         output1, output2 = self._outputs_pane.outputs
@@ -128,7 +127,7 @@ class MainWindow(AppFrame):
         right_frame = self._right_frame
         visible_controller = self._visible_controller.get()
         visible_right_frame = visible_output1 or visible_output2 or visible_controller
-        pack(right_frame, visible_right_frame, side=l.LEFT, px=4, py=(0, 4))
+        pack(right_frame, visible_right_frame, side=tk.LEFT, px=4, py=(0, 4))
 
     def _repack_right_panes(self) -> None:
         self._adjust_outputs_size()
@@ -141,20 +140,20 @@ class MainWindow(AppFrame):
         visible_controller = self._visible_controller.get()
         if self._controller_position.get() == "bottom":
             if visible_outputs:
-                outputs_pane.pack(expand=True, fill=l.BOTH)
+                outputs_pane.pack(expand=True, fill=tk.BOTH)
             if visible_controller:
                 controller_pane.pack(
                     expand=False,
-                    fill=l.BOTH,
+                    fill=tk.BOTH,
                     pady=(4, 0) if visible_outputs else (0, 0),
                 )
         else:
             if visible_controller:
-                controller_pane.pack(expand=False, fill=l.BOTH)
+                controller_pane.pack(expand=False, fill=tk.BOTH)
             if visible_outputs:
                 outputs_pane.pack(
                     expand=True,
-                    fill=l.BOTH,
+                    fill=tk.BOTH,
                     pady=(4, 0) if visible_controller else (0, 0),
                 )
 

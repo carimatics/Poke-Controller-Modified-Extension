@@ -3,7 +3,6 @@ import tkinter as tk
 import tkinter.ttk as ttk
 from typing import Any, Callable
 
-from ....values import literals as l
 from ....widgets.app import AppFrame
 
 logger = logging.getLogger(__name__)
@@ -52,7 +51,7 @@ class SettingsSidebarPane(AppFrame):
         )
 
         self._canvas_window = self._canvas.create_window(
-            (0, 0), window=self._scrollable_frame, anchor=l.NW
+            (0, 0), window=self._scrollable_frame, anchor=tk.NW
         )
         self._canvas.configure(yscrollcommand=self._scrollbar.set)
 
@@ -60,8 +59,8 @@ class SettingsSidebarPane(AppFrame):
             "<Configure>",
             self._on_canvas_configure,
         )
-        self._canvas.pack(side=l.LEFT, fill=l.BOTH, expand=True)
-        self._scrollbar.pack(side=l.RIGHT, fill=l.Y)
+        self._canvas.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+        self._scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
 
         self._canvas.bind_all("<MouseWheel>", self._on_mouse_wheel)
         self._canvas.bind_all("<Button-4>", self._on_mouse_wheel)
@@ -79,21 +78,21 @@ class SettingsSidebarPane(AppFrame):
             highlightbackground=bg_color,
             fg="black",
             activebackground="#e6e6e6",
-            relief=l.FLAT,
-            anchor=l.W,
+            relief=tk.FLAT,
+            anchor=tk.W,
             padx=4,
             pady=4,
             command=lambda: self._on_section_pushed(section_id, section_name),
         )
-        btn.pack(fill=l.X, padx=5, pady=1)
+        btn.pack(fill=tk.X, padx=5, pady=1)
         self._section_buttons[section_id] = btn
 
     def select_section(self, section_id: str, section_name: str) -> None:
         bg_color = self._canvas.cget("background")
         if self._current_button is not None:
-            self._current_button.configure(bg=bg_color, fg="black", state=l.NORMAL)
+            self._current_button.configure(bg=bg_color, fg="black", state=tk.NORMAL)
         self._current_button = self._section_buttons[section_id]
-        self._current_button.configure(bg=bg_color, fg="#6e6e6e", state=l.DISABLED)
+        self._current_button.configure(bg=bg_color, fg="#6e6e6e", state=tk.DISABLED)
 
         self._on_section_selected(section_id, section_name)
 
@@ -121,7 +120,7 @@ class SettingsSidebarPane(AppFrame):
 
         if content_height > canvas_height:
             self._canvas.configure(scrollregion=bbox)
-            self._scrollbar.pack(side=l.RIGHT, fill=l.Y)
+            self._scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
         else:
             self._canvas.configure(scrollregion=(0, 0, 0, canvas_height))
             self._canvas.yview_moveto(0)

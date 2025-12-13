@@ -2,7 +2,6 @@ import tkinter as tk
 import tkinter.ttk as ttk
 from typing import Any, Callable
 
-from ....values import literals as l
 from ....widgets.app import AppFrame
 
 
@@ -35,22 +34,22 @@ class SettingsButtonsPane(AppFrame):
         self._apply_button = ttk.Button(
             frame,
             text="Apply",
-            state=l.NORMAL if self._has_changes.get() else l.DISABLED,
+            state=tk.NORMAL if self._has_changes.get() else tk.DISABLED,
             command=self._on_apply_pushed,
         )
         cancel_button = ttk.Button(frame, text="Cancel", command=self._on_cancel_pushed)
 
         # Layout
-        ok_button.pack(side=l.RIGHT, padx=(4, 0))
-        self._apply_button.pack(side=l.RIGHT, padx=4)
-        cancel_button.pack(side=l.RIGHT, padx=4)
-        frame.pack(expand=True, fill=l.X, padx=16, pady=8)
+        ok_button.pack(side=tk.RIGHT, padx=(4, 0))
+        self._apply_button.pack(side=tk.RIGHT, padx=4)
+        cancel_button.pack(side=tk.RIGHT, padx=4)
+        frame.pack(expand=True, fill=tk.X, padx=16, pady=8)
 
     def _register_hooks(self) -> None:
         self._has_changes.trace_add("write", self._on_has_changes_changed)
 
     def _on_has_changes_changed(self, *_: Any) -> None:
         if self._has_changes.get():
-            self._apply_button.configure(state=l.NORMAL)
+            self._apply_button.configure(state=tk.NORMAL)
         else:
-            self._apply_button.configure(state=l.DISABLED)
+            self._apply_button.configure(state=tk.DISABLED)

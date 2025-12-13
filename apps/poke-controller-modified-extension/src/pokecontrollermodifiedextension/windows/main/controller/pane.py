@@ -4,7 +4,6 @@ import tkinter.ttk as ttk
 from typing import Any
 
 from ....model import AppModel
-from ....values import literals as l
 from ....widgets.app import AppFrame
 
 A = "A"
@@ -67,10 +66,10 @@ class ControllerPane(AppFrame):
         self._build_grid_frame(right_frame, right_buttons)
 
         # Layout
-        left_frame.pack(expand=False, fill=l.BOTH, side=l.LEFT)
-        right_frame.pack(expand=False, fill=l.BOTH, side=l.LEFT)
-        wrapper.pack(expand=False, fill=l.Y, anchor=l.CENTER)
-        labelframe.pack(expand=False, fill=l.BOTH)
+        left_frame.pack(expand=False, fill=tk.BOTH, side=tk.LEFT)
+        right_frame.pack(expand=False, fill=tk.BOTH, side=tk.LEFT)
+        wrapper.pack(expand=False, fill=tk.Y, anchor=tk.CENTER)
+        labelframe.pack(expand=False, fill=tk.BOTH)
 
     @property
     def app_model(self) -> AppModel:
