@@ -1,15 +1,16 @@
 import logging
 import tkinter as tk
-import tkinter.ttk as ttk
 from typing import Any
 
+from .... import widgets
 from ....widgets.app import AppFrame
+from .dynamic_input import DynamicInputsBuilder
 
 logger = logging.getLogger(__name__)
 
 
 class SerialSettingsPane(AppFrame):
-    _port_combobox: ttk.Combobox
+    _port_combobox: widgets.Combobox
 
     def __init__(self, master: tk.Misc, *args: Any, **kwargs: Any) -> None:
         super().__init__(master, *args, **kwargs)
@@ -25,73 +26,49 @@ class SerialSettingsPane(AppFrame):
         self.build_ui()
 
     def build_ui(self) -> None:
-        frame = ttk.Frame(self)
+        frame = widgets.Frame(self)
 
         # port
-        port_frame = ttk.Frame(frame)
-        port_label = ttk.Label(port_frame, width=16, text="Port:")
-        self._port_combobox = ttk.Combobox(
+        port_frame = widgets.Frame(frame, padding=(5, 5))
+        port_label = widgets.Label(port_frame, width=16, text="Port:")
+        self._port_combobox = widgets.Combobox(
             port_frame,
             textvariable=self._port,
             values=[s.path for s in self._serial_ports],
         )
-        port_reload_button = ttk.Button(
+        port_reload_button = widgets.Button(
             port_frame, text="Reload", command=self._on_port_reload_pushed
         )
+        port_label.pack(expand=False, side=tk.LEFT, fill=tk.NONE)
+        self._port_combobox.pack(expand=False, side=tk.LEFT, fill=tk.NONE)
+        port_reload_button.pack(expand=False, side=tk.LEFT, fill=tk.NONE)
+        port_frame.pack(expand=False, side=tk.TOP, fill=tk.BOTH, padx=5, pady=5)
 
-        # port_name
-        port_name_frame = ttk.Frame(frame)
-        port_name_label = ttk.Label(port_name_frame, width=16, text="Port Name:")
-        port_name_value = ttk.Label(port_name_frame, textvariable=self._port_name)
-
-        # baud_rate
-        baud_rate_frame = ttk.Frame(frame)
-        baud_rate_label = ttk.Label(baud_rate_frame, width=16, text="Baud Rate:")
-        baud_rate_combobox = ttk.Combobox(
-            baud_rate_frame,
-            textvariable=self._baud_rate,
-            values=[str(i) for i in self.app.app_model.load_serial_baud_rate_list()],
-        )
-
-        # data_format
-        data_format_frame = ttk.Frame(frame)
-        data_format_label = ttk.Label(data_format_frame, width=16, text="Data Format:")
-        data_format_combobox = ttk.Combobox(
-            data_format_frame,
-            textvariable=self._data_format,
-            values=self.app.app_model.load_serial_data_format_list(),
-        )
-
-        # show_data
-        show_data_frame = ttk.Frame(frame)
-        show_data_label = ttk.Label(show_data_frame, width=16, text="Show Data:")
-        show_data_combobox = ttk.Checkbutton(
-            show_data_frame,
-            variable=self._show_data,
+        dynamic_inputs = (
+            DynamicInputsBuilder(frame, label_width=16)
+            .add_label_row("Port Name:", self._port_name)
+            .add_combobox_row(
+                "Baud Rate:",
+                self._baud_rate,
+                values=[
+                    str(i) for i in self.app.app_model.load_serial_baud_rate_list()
+                ],
+            )
+            .add_combobox_row(
+                "Data Format:",
+                self._data_format,
+                values=self.app.app_model.load_serial_data_format_list(),
+            )
+            .add_checkbutton_row("Show Data:", "", self._show_data)
+            .build()
         )
 
         # Layout
         port_label.pack(side=tk.LEFT)
-        self._port_combobox.pack(side=tk.LEFT, padx=4)
-        port_reload_button.pack(side=tk.LEFT, padx=4)
-        port_frame.pack(expand=False, fill=tk.X)
+        self._port_combobox.pack(side=tk.LEFT)
+        port_reload_button.pack(side=tk.LEFT)
 
-        port_name_label.pack(side=tk.LEFT)
-        port_name_value.pack(side=tk.LEFT, padx=4)
-        port_name_frame.pack(expand=False, fill=tk.X)
-
-        baud_rate_label.pack(side=tk.LEFT)
-        baud_rate_combobox.pack(side=tk.LEFT, padx=4)
-        baud_rate_frame.pack(expand=False, fill=tk.X)
-
-        data_format_label.pack(side=tk.LEFT)
-        data_format_combobox.pack(side=tk.LEFT, padx=4)
-        data_format_frame.pack(expand=False, fill=tk.X)
-
-        show_data_label.pack(side=tk.LEFT)
-        show_data_combobox.pack(side=tk.LEFT, padx=4)
-        show_data_frame.pack(expand=False, fill=tk.X)
-
+        dynamic_inputs.pack(expand=True, fill=tk.BOTH)
         frame.pack(expand=True, fill=tk.BOTH, anchor=tk.CENTER)
 
     def _on_port_reload_pushed(self) -> None:

@@ -4,7 +4,6 @@ from dataclasses import dataclass, field
 from typing import Any, Literal, Self, overload
 
 from .... import widgets
-from ....mixins import AppAccessorMixIn
 from ....values import literals as l
 from ....widgets.app.frame import AppFrame
 
@@ -379,7 +378,7 @@ class DynamicInputs(AppFrame):
 
 
 class DynamicInputsBuilder:
-    def __init__(self, master: AppAccessorMixIn, label_width: int) -> None:
+    def __init__(self, master: ttk.Widget, label_width: int) -> None:
         self.master = master
         self.label_width = label_width
         self.items: list[DynamicInputItem] = []
