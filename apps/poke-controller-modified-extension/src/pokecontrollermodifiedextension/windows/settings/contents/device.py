@@ -69,12 +69,14 @@ class DeviceSettingsPane(AppFrame):
                 )
             builder = builder.end()
 
+        # mouse
         builder = (
             builder.add_labelframe_row("Mouse")
             .add_checkbutton(self._mouse.enabled_lclick, "left click")
             .add_checkbutton(self._mouse.enabled_rclick, "right click")
             .end()
         )
+        # Pro Controller
         builder = (
             builder.add_labelframe_row("Pro-Controller")
             .add_checkbutton(self._pro_controller.enabled, "enabled")
