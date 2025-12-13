@@ -1,6 +1,6 @@
 from pokecontroller.core.image import RawImage, to_bytes
 # for compatibility
-from pokecontrollermodifiedextension.core.notification import Line_Notify as Line_Notify  # noqa
+from pokecontrollermodifiedextension.api.v0_1_8.notification import Line_Notify as Line_Notify  # noqa
 
 
 # for compatibility

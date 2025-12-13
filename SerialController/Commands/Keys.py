@@ -1,5 +1,5 @@
 # for compatibility
-from pokecontrollermodifiedextension.core.command.keys import (  # noqa
+from pokecontrollermodifiedextension.api.v0_1_8.command import (  # noqa
     Button as Button,
     Direction as Direction,
     Hat as Hat,

@@ -1,4 +1,4 @@
 # for compatibility
-from pokecontrollermodifiedextension.core.command.pro_controller import (  # noqa
+from pokecontrollermodifiedextension.api.v0_1_8.command import (  # noqa
     ProController as ProController,
 )

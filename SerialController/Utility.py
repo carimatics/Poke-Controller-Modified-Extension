@@ -1,5 +1,5 @@
 # for compatibility
-from pokecontrollermodifiedextension.core.utils import (  # noqa
+from pokecontrollermodifiedextension.api.v0_1_8.utils import (  # noqa
     ospath as ospath,  # noqa
     browse_file_names as browseFileNames,  # noqa
     get_classes_in_module as getClassesInModule,  # noqa

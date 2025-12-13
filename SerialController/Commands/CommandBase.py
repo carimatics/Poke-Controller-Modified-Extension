@@ -1,4 +1,4 @@
 # for compatibility
-from pokecontrollermodifiedextension.core.command.commands.base import ( # noqa
+from pokecontrollermodifiedextension.api.v0_1_8.command import ( # noqa
     Command as Command,
 )

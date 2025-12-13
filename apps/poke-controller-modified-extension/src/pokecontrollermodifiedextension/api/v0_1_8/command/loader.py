@@ -3,7 +3,11 @@ import logging
 import sys
 from types import ModuleType
 
-from ..utils import get_all_modules, get_classes_in_module, get_module_names
+from pokecontrollermodifiedextension.api.v0_1_8.utils import (
+    get_all_modules,
+    get_classes_in_module,
+    get_module_names,
+)
 
 logger = logging.getLogger(__name__)
 

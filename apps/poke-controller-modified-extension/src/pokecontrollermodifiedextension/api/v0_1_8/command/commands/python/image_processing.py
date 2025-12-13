@@ -8,9 +8,14 @@ from typing import Any
 
 from pokecontroller.core.image import RawImage
 
-from pokecontrollermodifiedextension.core.camera import Camera
+from pokecontrollermodifiedextension.api.v0_1_8.camera import Camera
+from pokecontrollermodifiedextension.api.v0_1_8.image_processing import (
+    ImageProcessing,
+    crop_image,
+    getImage,
+    openImage,
+)
 
-from .....core.image_processing import ImageProcessing, crop_image, getImage, openImage
 from ... import Sender
 from ..base import PostProcess
 from .base import PythonCommand

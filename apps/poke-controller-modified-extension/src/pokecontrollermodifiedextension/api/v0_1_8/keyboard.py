@@ -4,7 +4,14 @@ import os
 
 from pynput.keyboard import Key, KeyCode, Listener
 
-from .command.keys import Button, Direction, Hat, KeyPress, Stick, Touchscreen
+from pokecontrollermodifiedextension.api.v0_1_8.command.keys import (
+    Button,
+    Direction,
+    Hat,
+    KeyPress,
+    Stick,
+    Touchscreen,
+)
 
 logger = logging.getLogger(__name__)
 
