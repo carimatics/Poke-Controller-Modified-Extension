@@ -16,3 +16,6 @@ from .dynamic_form_dialog import (
     DynamicFormDialog as DynamicFormDialog,
     DynamicFormDialogBuilder as DynamicFormDialogBuilder,
 )
+from .dynamic_pack import (
+    ComponentPackBuilder as ComponentPackBuilder,
+)

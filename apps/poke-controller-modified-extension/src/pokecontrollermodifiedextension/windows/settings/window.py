@@ -1,9 +1,9 @@
 import logging
 import tkinter as tk
-import tkinter.ttk as ttk
 from dataclasses import fields, is_dataclass
 from typing import Any
 
+from ... import widgets
 from ...mixins import AppAccessorMixIn
 from ...values import literals as l
 from ...widgets.app import AppDialog, AppFrame
@@ -26,8 +26,7 @@ logger = logging.getLogger(__name__)
 class SettingsWindow(AppDialog):
     _backup: dict[str, Any]
     _has_changes: tk.BooleanVar
-    _trace_ids: list[tuple[tk.Variable, str]]
-    _content_labelframe: ttk.Labelframe
+    _content_labelframe: widgets.Labelframe
     _contents: dict[str, AppFrame]
     _current_content: AppFrame | None
 
@@ -42,7 +41,6 @@ class SettingsWindow(AppDialog):
         self._settings = self.app.settings
         self._backup = self._settings.to_dict()
 
-        self._trace_ids = []
         self._has_changes = tk.BooleanVar(value=False)
         self._register_hooks()
         self.minsize(width=800, height=600)
@@ -53,7 +51,7 @@ class SettingsWindow(AppDialog):
         self.build_ui()
 
     def build_ui(self) -> None:
-        upper_frame = ttk.Frame(self)
+        upper_frame = widgets.Frame(self)
 
         # Sidebar
         sidebar = self._build_sidebar(master=upper_frame)
@@ -61,7 +59,7 @@ class SettingsWindow(AppDialog):
         # Content
         self._build_contents(master=upper_frame)
 
-        lower_frame = ttk.Frame(self)
+        lower_frame = widgets.Frame(self)
         buttons = SettingsButtonsPane(
             lower_frame,
             self._has_changes,
@@ -82,7 +80,7 @@ class SettingsWindow(AppDialog):
         # Select first section
         sidebar.select_section("general", "General")
 
-    def _build_sidebar(self, master: ttk.Frame) -> SettingsSidebarPane:
+    def _build_sidebar(self, master: widgets.Frame) -> SettingsSidebarPane:
         sidebar = SettingsSidebarPane(
             master,
             self._on_section_selected,
@@ -99,8 +97,8 @@ class SettingsWindow(AppDialog):
 
         return sidebar
 
-    def _build_contents(self, master: ttk.Frame) -> None:
-        self._content_labelframe = ttk.Labelframe(master)
+    def _build_contents(self, master: widgets.Frame) -> None:
+        self._content_labelframe = widgets.Labelframe(master)
         self._contents["general"] = GeneralSettingsPane(self._content_labelframe)
         self._contents["capture"] = CaptureSettingsPane(self._content_labelframe)
         self._contents["serial"] = SerialSettingsPane(self._content_labelframe)
@@ -147,8 +145,10 @@ class SettingsWindow(AppDialog):
     def _register_hooks(self) -> None:
         def add_hook(current: Any) -> None:
             if isinstance(current, tk.Variable):
-                self._trace_ids.append(
-                    (current, current.trace_add("write", self._on_settings_changed))
+                self.register_trace(
+                    "write",
+                    current,
+                    self._on_settings_changed,
                 )
                 return
 
@@ -169,8 +169,6 @@ class SettingsWindow(AppDialog):
     def destroy(self) -> None:
         if self._has_changes.get():
             self._revert_settings()
-        for var, trace_id in self._trace_ids:
-            var.trace_remove("write", trace_id)
         logger.debug("SettingsWindow destroyed.")
         super().destroy()
 

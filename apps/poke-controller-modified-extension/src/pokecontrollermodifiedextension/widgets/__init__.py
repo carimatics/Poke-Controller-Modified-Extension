@@ -25,6 +25,9 @@ from .radiobutton import (
 from .scale import (
     Scale as Scale,
 )
+from .scrollable_frame import (
+    ScrollableFrame as ScrollableFrame,
+)
 from .scrollbar import (
     Scrollbar as Scrollbar,
 )

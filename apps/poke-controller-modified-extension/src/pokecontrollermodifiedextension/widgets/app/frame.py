@@ -1,10 +1,11 @@
 import tkinter as tk
-import tkinter.ttk as ttk
 from typing import Any
 
 from pokecontrollermodifiedextension.mixins import AppAccessorMixIn
 
+from ..frame import Frame
 
-class AppFrame(ttk.Frame, AppAccessorMixIn):
+
+class AppFrame(Frame, AppAccessorMixIn):
     def __init__(self, master: tk.Misc, *args: Any, **kwargs: Any) -> None:
         super().__init__(master, *args, **kwargs)

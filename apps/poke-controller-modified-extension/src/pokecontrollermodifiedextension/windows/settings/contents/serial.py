@@ -4,7 +4,7 @@ from typing import Any
 
 from .... import widgets
 from ....widgets.app import AppFrame
-from .dynamic_input import DynamicInputsBuilder
+from ....widgets.components import ComponentPackBuilder
 
 logger = logging.getLogger(__name__)
 
@@ -26,50 +26,44 @@ class SerialSettingsPane(AppFrame):
         self.build_ui()
 
     def build_ui(self) -> None:
-        frame = widgets.Frame(self)
-
-        # port
-        port_frame = widgets.Frame(frame, padding=(5, 5))
-        port_label = widgets.Label(port_frame, width=16, text="Port:")
-        self._port_combobox = widgets.Combobox(
-            port_frame,
-            textvariable=self._port,
-            values=[s.path for s in self._serial_ports],
-        )
-        port_reload_button = widgets.Button(
-            port_frame, text="Reload", command=self._on_port_reload_pushed
-        )
-        port_label.pack(expand=False, side=tk.LEFT, fill=tk.NONE)
-        self._port_combobox.pack(expand=False, side=tk.LEFT, fill=tk.NONE)
-        port_reload_button.pack(expand=False, side=tk.LEFT, fill=tk.NONE)
-        port_frame.pack(expand=False, side=tk.TOP, fill=tk.BOTH, padx=5, pady=5)
-
-        dynamic_inputs = (
-            DynamicInputsBuilder(frame, label_width=16)
-            .add_label_row("Port Name:", self._port_name)
-            .add_combobox_row(
-                "Baud Rate:",
-                self._baud_rate,
+        label_width = 16
+        frame = (
+            ComponentPackBuilder(self)
+            .add_frame_row()
+            .add_label(text="Port:", width=label_width)
+            .add_combobox(
+                variable=self._port, values=[s.path for s in self._serial_ports]
+            )
+            .add_button(text="Reload", command=self._on_port_reload_pushed)
+            .end()
+            .add_frame_row()
+            .add_label(text="Port Name:", width=label_width)
+            .add_label(variable=self._port_name)
+            .end()
+            .add_frame_row()
+            .add_label(text="Baud Rate:", width=label_width)
+            .add_combobox(
+                variable=self._baud_rate,
                 values=[
                     str(i) for i in self.app.app_model.load_serial_baud_rate_list()
                 ],
             )
-            .add_combobox_row(
-                "Data Format:",
-                self._data_format,
+            .end()
+            .add_frame_row()
+            .add_label(text="Data Format:", width=label_width)
+            .add_combobox(
+                variable=self._data_format,
                 values=self.app.app_model.load_serial_data_format_list(),
             )
-            .add_checkbutton_row("Show Data:", "", self._show_data)
+            .end()
+            .add_frame_row()
+            .add_label(text="Show Data:", width=label_width)
+            .add_checkbutton(self._show_data, "")
+            .end()
             .build()
         )
 
-        # Layout
-        port_label.pack(side=tk.LEFT)
-        self._port_combobox.pack(side=tk.LEFT)
-        port_reload_button.pack(side=tk.LEFT)
-
-        dynamic_inputs.pack(expand=True, fill=tk.BOTH)
-        frame.pack(expand=True, fill=tk.BOTH, anchor=tk.CENTER)
+        frame.pack(expand=False, fill=tk.BOTH, anchor=tk.CENTER)
 
     def _on_port_reload_pushed(self) -> None:
         serial_ports = [s.path for s in self.app.app_model.load_serial_ports()]

@@ -3,7 +3,7 @@ import tkinter as tk
 from typing import Any
 
 from ....widgets.app import AppFrame
-from .dynamic_input import DynamicInputsBuilder
+from ....widgets.components import ComponentPackBuilder
 
 logger = logging.getLogger(__name__)
 
@@ -24,13 +24,21 @@ class GeneralSettingsPane(AppFrame):
         self.build_ui()
 
     def build_ui(self) -> None:
+        label_width = 8
         frame = (
-            DynamicInputsBuilder(self, label_width=16)
-            .add_label_row("Version:", self._current_version)
-            .add_combobox_row(
-                "Theme:", self._theme, values=list(self._style_manager.get_themes())
-            )
-            .add_combobox_row("Language:", self._language, values=["ja", "en"])
+            ComponentPackBuilder(self)
+            .add_frame_row()
+            .add_label(text="Version:", width=label_width)
+            .add_label(variable=self._current_version)
+            .end()
+            .add_frame_row()
+            .add_label(text="Theme:", width=label_width)
+            .add_combobox(self._theme, values=list(self._style_manager.get_themes()))
+            .end()
+            .add_frame_row()
+            .add_label(text="Language:", width=label_width)
+            .add_combobox(self._language, values=["ja", "en"])
+            .end()
             .build()
         )
-        frame.pack(expand=True, fill=tk.BOTH, anchor=tk.CENTER)
+        frame.pack(fill=tk.BOTH, anchor=tk.CENTER)
