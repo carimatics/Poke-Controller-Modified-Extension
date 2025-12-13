@@ -26,7 +26,7 @@ class Combobox(ttk.Combobox):
 
     def _disable_text_selection(self) -> None:
         """Disable text selection in combobox."""
-        self.bind("<<ComboboxSelected>>", lambda _: self.selection_clear)
+        self.bind("<<ComboboxSelected>>", lambda _: self.selection_clear())
         self.bind("<Button-1>", lambda _: self.after_idle(self.selection_clear))
         self.bind("<B1-Motion>", lambda _: "break")
         self.bind("<Double-Button-1>", lambda _: "break")
