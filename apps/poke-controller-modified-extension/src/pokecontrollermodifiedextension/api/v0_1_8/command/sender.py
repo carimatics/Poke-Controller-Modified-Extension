@@ -62,7 +62,7 @@ class Sender:
 
     def openSerial(  # noqa
         self,
-        portNum: int,  # noqa
+        portNum: int | str,  # noqa
         portName: str | None = None,  # noqa
         baudrate: int = 9600,
     ) -> bool:
