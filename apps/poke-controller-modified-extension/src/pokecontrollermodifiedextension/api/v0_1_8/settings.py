@@ -74,8 +74,9 @@ class CommandClassDict(dict[str, str]):
 
 
 class GuiSettings:
-    _POKECON_PAPICO: Papico | None = None
     SETTING_PATH: str
+
+    _papico: Papico
 
     camera_id: Value[int]
     com_port: Value[int | str]
@@ -101,15 +102,9 @@ class GuiSettings:
     is_discord_notification_end: Value[bool]
 
     def __init__(self) -> None:
-        if GuiSettings._POKECON_PAPICO is None:
-            GuiSettings._POKECON_PAPICO = get_papico()
-            GuiSettings.SETTING_PATH = str(GuiSettings._POKECON_PAPICO.settings_path)
+        self._papico = get_papico()
 
-        if (papico := GuiSettings._POKECON_PAPICO) is None:
-            raise RuntimeError(
-                "Failed to get Papico instance. Please check if the Papico is installed."
-            )
-        if (settings := papico.load_settings().data) is None:
+        if (settings := self._papico.load_settings().data) is None:
             raise RuntimeError("Failed to load settings")
         self._app_settings = settings
         self._assign_settings()
@@ -255,26 +250,14 @@ class GuiSettings:
             position.set("both")
 
     def load(self) -> None:
-        if (papico := GuiSettings._POKECON_PAPICO) is None:
-            raise RuntimeError(
-                "Failed to get Papico instance. Please check if the Papico is installed."
-            )
-        papico.reload_settings()
+        self._papico.reload_settings()
         self._assign_setting_config()
 
     def generate(self) -> None:
-        if (papico := GuiSettings._POKECON_PAPICO) is None:
-            raise RuntimeError(
-                "Failed to get Papico instance. Please check if the Papico is installed."
-            )
-        papico.save_settings()
+        self._papico.save_settings()
 
     def save(self, path: str | None = None) -> None:
-        if (papico := GuiSettings._POKECON_PAPICO) is None:
-            raise RuntimeError(
-                "Failed to get Papico instance. Please check if the Papico is installed."
-            )
-        papico.save_settings()
+        self._papico.save_settings()
 
     def _assign_settings(self) -> None:
         self.camera_id = self._app_settings.capture.camera_id
