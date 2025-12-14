@@ -67,7 +67,8 @@ class Camera:
 
     @fps.setter
     def fps(self, fps: int) -> None:
-        self._fps = fps
+        # fpsを変更しても何も起こらない
+        pass
 
     @property
     def capture_size(self) -> tuple[int, int]:
@@ -75,7 +76,7 @@ class Camera:
 
     @capture_size.setter
     def capture_size(self, size: tuple[int, int]) -> None:
-        pass
+        self.camera.frame_size = size
 
     def openCamera(self, cameraId: int) -> None:  # noqa
         self.camera.open(camera_id=cameraId)

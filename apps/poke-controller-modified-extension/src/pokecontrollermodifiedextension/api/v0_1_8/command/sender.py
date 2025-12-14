@@ -98,7 +98,7 @@ class Sender:
         if (ser := self.ser) is None:
             logger.debug("Serial communication is not open.")
             return False
-        return ser.is_open
+        return ser.is_open  # type: ignore[no-any-return]
 
     def writeRow(  # noqa
         self,

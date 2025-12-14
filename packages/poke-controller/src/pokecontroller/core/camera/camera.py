@@ -36,6 +36,10 @@ class Camera:
     def frame_size(self) -> tuple[int, int]:
         return self._frame_size
 
+    @frame_size.setter
+    def frame_size(self, size: tuple[int, int]) -> None:
+        self._frame_size = size
+
     @property
     def frame(self) -> RawImage | None:
         return self._frame
