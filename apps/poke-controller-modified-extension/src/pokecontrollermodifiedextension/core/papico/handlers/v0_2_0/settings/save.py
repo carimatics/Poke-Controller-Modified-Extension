@@ -4,7 +4,7 @@ from typing import Any
 
 from pokecontrollermodifiedextension.settings import AppSettings, settings_to_dict
 
-from ....context import PapicoExecContext, PapicoResult
+from ....context import PapicoExecContext, PapicoFailure, PapicoResult, PapicoSuccess
 from ....exception import PapicoSettingsSaveHandlerException
 from ....handlers import PapicoHandler
 
@@ -26,17 +26,14 @@ class PapicoSettingsSaveHandler(PapicoHandler):
             self._path = params["path"]
             self._values = settings_to_dict(params["settings"])
             self._save_settings()
-            return PapicoResult(
-                success=True,
+            return PapicoSuccess(
                 ctx=ctx,
+                data=None,
             )
         except Exception as e:
-            return PapicoResult(
-                success=False,
+            return PapicoFailure(
                 ctx=ctx,
-                error=PapicoSettingsSaveHandlerException(
-                    f"{e}",
-                ),
+                error=PapicoSettingsSaveHandlerException(f"{e}"),
             )
 
     def _save_settings(self) -> None:

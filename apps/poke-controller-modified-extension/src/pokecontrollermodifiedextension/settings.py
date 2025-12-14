@@ -698,3 +698,17 @@ def settings_to_dict(settings: AppSettings) -> dict[str, Any]:
         return result
 
     return convert(settings)  # type: ignore[no-any-return]
+
+
+APP_SETTINGS_SINGLETON: AppSettings | None = None
+
+
+def setup_app_settings(settings: AppSettings) -> AppSettings:
+    global APP_SETTINGS_SINGLETON
+    APP_SETTINGS_SINGLETON = settings
+    return settings
+
+
+def get_app_settings() -> AppSettings | None:
+    global APP_SETTINGS_SINGLETON
+    return APP_SETTINGS_SINGLETON

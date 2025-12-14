@@ -9,7 +9,7 @@ from pokecontroller.core.serial import Serial
 from .core.papico import Papico
 from .info import AppInfo
 from .model import AppModel
-from .settings import AppSettings
+from .settings import AppSettings, setup_app_settings
 from .style import StyleManager
 from .translation import setup_translation
 
@@ -45,7 +45,9 @@ class App(tk.Tk):
         self._serial = serial
 
         self._app_info = INFO
-        self._settings = papico.load_settings().data  # type: ignore[assignment]
+        if (settings := papico.load_settings().data) is None:
+            raise RuntimeError("Settings are not loaded.")
+        self._settings = setup_app_settings(settings)
         self._app_model = AppModel(self._app_info, self._settings)
 
         setup_translation(

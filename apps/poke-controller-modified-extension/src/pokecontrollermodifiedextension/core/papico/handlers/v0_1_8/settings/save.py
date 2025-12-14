@@ -6,7 +6,7 @@ from pokecontroller.utils.config import Config
 
 from pokecontrollermodifiedextension.settings import AppSettings, settings_to_dict
 
-from ....context import PapicoExecContext, PapicoResult
+from ....context import PapicoExecContext, PapicoFailure, PapicoResult, PapicoSuccess
 from ....exception import PapicoSettingsLoadHandlerException
 from ....handlers import PapicoHandler
 from .mapping import MAPPING
@@ -31,18 +31,15 @@ class PapicoSettingsSaveHandler(PapicoHandler):
             self._path = params["path"]
             self._values = settings_to_dict(params["settings"])
             self._save_settings()
-            return PapicoResult(
-                success=True,
+            return PapicoSuccess(
                 ctx=ctx,
+                data=None,
             )
         except Exception as e:
             logger.error(f"Settings save failed: {e}")
-            return PapicoResult(
-                success=False,
+            return PapicoFailure(
                 ctx=ctx,
-                error=PapicoSettingsLoadHandlerException(
-                    f"{e}",
-                ),
+                error=PapicoSettingsLoadHandlerException(f"{e}"),
             )
 
     def _save_settings(self) -> None:

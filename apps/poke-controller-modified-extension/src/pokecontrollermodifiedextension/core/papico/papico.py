@@ -2,8 +2,8 @@ import logging
 from pathlib import Path
 from typing import Callable
 
-from ...settings import AppSettings
-from .context import PapicoExecContext, PapicoResult
+from ...settings import AppSettings, get_app_settings, setup_app_settings
+from .context import PapicoExecContext, PapicoFailure, PapicoResult, PapicoSuccess
 from .exception import PapicoExecException
 from .handlers import PapicoHandler, PapicoRegisterHandlerContext
 
@@ -37,6 +37,16 @@ class Papico:
         )[ctx.operation] = ctx.handler_generator
 
     def load_settings(self) -> PapicoResult[AppSettings]:
+        if (settings := get_app_settings()) is not None:
+            return PapicoSuccess(
+                ctx=PapicoExecContext(
+                    api_version=settings.general.version.get(),
+                    domain="settings",
+                    operation="load",
+                ),
+                data=settings,
+            )
+
         path_v0_2 = self._base_dir / "profiles" / self._profile / "settings.json"
         path_v0_1 = self._base_dir / "profiles" / self._profile / "settings.ini"
         if path_v0_2.exists() and path_v0_2.is_file():
@@ -71,7 +81,38 @@ class Papico:
             )
         return result
 
-    def save_settings(self, settings: AppSettings) -> PapicoResult[None]:
+    def reload_settings(self) -> PapicoResult[AppSettings]:
+        result = self.load_settings()
+        if not result.success:
+            return PapicoFailure(
+                ctx=PapicoExecContext(
+                    api_version=result.ctx.api_version,
+                    domain="settings",
+                    operation="reload",
+                ),
+                error=result.error,
+            )
+
+        if (settings := get_app_settings()) is None:
+            settings = setup_app_settings(result.data)
+        else:
+            settings.apply_dict(result.data.to_dict())
+
+        return PapicoSuccess(
+            ctx=PapicoExecContext(
+                api_version=settings.general.version.get(),
+                domain="settings",
+                operation="reload",
+            ),
+            data=settings,
+        )
+
+    def save_settings(self) -> PapicoResult[None]:
+        if (settings := get_app_settings()) is None:
+            raise PapicoExecException(
+                "Settings is not loaded yet. Please call load_settings() first.",
+            )
+
         version = settings.general.version.get()
         if version == "0.2.0":
             path = self._base_dir / "profiles" / self._profile / "settings.json"
@@ -108,3 +149,19 @@ class Papico:
             raise PapicoExecException(message=f"Operation not found: {e}") from e
         finally:
             self._current_handler = None
+
+
+PAPICO_SINGLETON: Papico | None = None
+
+
+def setup_papico(base_dir: Path, profile: str) -> Papico:
+    global PAPICO_SINGLETON
+    PAPICO_SINGLETON = Papico(base_dir, profile)
+    return PAPICO_SINGLETON
+
+
+def get_papico() -> Papico:
+    global PAPICO_SINGLETON
+    if PAPICO_SINGLETON is None:
+        raise RuntimeError("Papico is not initialized.")
+    return PAPICO_SINGLETON

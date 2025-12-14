@@ -2,17 +2,9 @@ import configparser
 import logging
 from typing import Protocol
 
-from pokecontrollermodifiedextension.settings import AppSettings
+from pokecontrollermodifiedextension.core.papico import Papico, get_papico
 
 logger = logging.getLogger(__name__)
-
-
-class AppSettingsAccessible(Protocol):
-    def load(self) -> AppSettings: ...
-
-    def reload(self) -> None: ...
-
-    def save(self) -> None: ...
 
 
 class Value[T](Protocol):
@@ -82,7 +74,7 @@ class CommandClassDict(dict[str, str]):
 
 
 class GuiSettings:
-    _APP_SETTINGS_ACCESSOR: AppSettingsAccessible
+    _POKECON_PAPICO: Papico = get_papico()
     SETTING_PATH: str
 
     camera_id: Value[int]
@@ -245,7 +237,9 @@ class GuiSettings:
             position.set("both")
 
     def __init__(self) -> None:
-        self._app_settings = self._APP_SETTINGS_ACCESSOR.load()
+        if (settings := self._POKECON_PAPICO.load_settings().data) is None:
+            raise RuntimeError("Failed to load settings")
+        self._app_settings = settings
         self._assign_settings()
 
         self.setting = configparser.ConfigParser()
@@ -253,14 +247,14 @@ class GuiSettings:
         self._assign_setting_config()
 
     def load(self) -> None:
-        self._APP_SETTINGS_ACCESSOR.reload()
+        self._POKECON_PAPICO.reload_settings()
         self._assign_setting_config()
 
     def generate(self) -> None:
-        self._APP_SETTINGS_ACCESSOR.save()
+        self._POKECON_PAPICO.save_settings()
 
     def save(self, path: str | None = None) -> None:
-        self._APP_SETTINGS_ACCESSOR.save()
+        self._POKECON_PAPICO.save_settings()
 
     def _assign_settings(self) -> None:
         self.camera_id = self._app_settings.capture.camera_id

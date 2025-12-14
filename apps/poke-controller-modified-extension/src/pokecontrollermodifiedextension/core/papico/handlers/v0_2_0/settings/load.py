@@ -8,7 +8,7 @@ from pokecontrollermodifiedextension.settings import (
     AppSettings,
 )
 
-from ....context import PapicoExecContext, PapicoResult
+from ....context import PapicoExecContext, PapicoFailure, PapicoResult, PapicoSuccess
 from ....exception import PapicoSettingsLoadHandlerException
 from ...handler import PapicoHandler
 
@@ -26,18 +26,14 @@ class PapicoSettingsLoadHandler(PapicoHandler):
             self._settings = self._load_settings()
             self._fill_by_default()
             self._tk_variables = self._value_to_tk_variables()
-            return PapicoResult(
-                success=True,
+            return PapicoSuccess(
                 ctx=ctx,
                 data=AppSettings.from_dict(self._tk_variables),
             )
         except Exception as e:
-            return PapicoResult(
-                success=False,
+            return PapicoFailure(
                 ctx=ctx,
-                error=PapicoSettingsLoadHandlerException(
-                    f"{e}",
-                ),
+                error=PapicoSettingsLoadHandlerException(f"{e}"),
             )
 
     def _load_settings(self) -> dict[str, Any]:

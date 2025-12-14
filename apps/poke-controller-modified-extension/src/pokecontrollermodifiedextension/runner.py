@@ -15,7 +15,7 @@ from .core.papico.handlers.v0_2_0.settings import (
     PapicoSettingsLoadHandler as PapicoSettingsLoadHandler_v0_2_0,
     PapicoSettingsSaveHandler as PapicoSettingsSaveHandler_v0_2_0,
 )
-from .core.papico.papico import Papico, PapicoRegisterHandlerContext
+from .core.papico.papico import Papico, PapicoRegisterHandlerContext, setup_papico
 from .widgets.app import AppMenu
 from .windows import MainWindow
 
@@ -30,7 +30,7 @@ def run_app(*, base_dir: str, profile: str) -> None:
         base_dir_path = Path(base_dir)
 
         # papico
-        papico = Papico(base_dir=base_dir_path, profile=profile)
+        papico = setup_papico(base_dir=base_dir_path, profile=profile)
         _register_handlers(papico)
 
         # app

@@ -112,7 +112,7 @@ class SettingsWindow(AppDialog):
     def _save_settings(self) -> None:
         logger.info("Settings saving.")
         self._settings.general.version.set(self.app.app_info.latest_settings_version)
-        self.app.papico.save_settings(self.app.settings)
+        self.app.papico.save_settings()
         logger.info("Settings saved.")
 
     def _check_has_changes(self) -> None:

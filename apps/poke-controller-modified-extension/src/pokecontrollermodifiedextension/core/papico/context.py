@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Any
+from typing import Any, Literal
 
 from .exception import PapicoException
 
@@ -17,8 +17,19 @@ class PapicoExecContext(PapicoContext):
 
 
 @dataclass(frozen=True, kw_only=True)
-class PapicoResult[R]:
-    success: bool
+class PapicoSuccess[R]:
     ctx: PapicoExecContext
-    data: R | None = None
-    error: PapicoException | None = None
+    data: R
+    success: Literal[True] = True
+    error: None = None
+
+
+@dataclass(frozen=True, kw_only=True)
+class PapicoFailure:
+    ctx: PapicoExecContext
+    error: PapicoException
+    success: Literal[False] = False
+    data: None = None
+
+
+type PapicoResult[R] = PapicoSuccess[R] | PapicoFailure
