@@ -90,19 +90,22 @@ class Sender:
 
     def closeSerial(self) -> None:  # noqa
         logger.debug("Closing the serial communication")
-        if (s := self.ser) is not None:
-            s.close()
+        if (ser := self.ser) is not None:
+            ser.close()
 
     def isOpened(self) -> bool:  # noqa
         logger.debug("Checking if serial communication is open")
-        return True if self.ser is not None and self.ser.is_open else False
+        if (ser := self.ser) is None:
+            logger.debug("Serial communication is not open.")
+            return False
+        return ser.is_open
 
     def writeRow(  # noqa
         self,
         row: str,
         is_show: bool = False,
     ) -> None:
-        if (s := self.ser) is None:
+        if (ser := self.ser) is None:
             logger.error("Serial is not open")
             return
 
@@ -118,7 +121,7 @@ class Sender:
         try:
             self.time_bef = time.perf_counter()
 
-            s.write((row + "\r\n").encode("utf-8"))
+            ser.write((row + "\r\n").encode("utf-8"))
             self.time_aft = time.perf_counter()
             self.before = row
         except serial.serialutil.SerialException as e:
@@ -133,23 +136,18 @@ class Sender:
         values: list[int],
         is_show: bool = False,
     ) -> None:
-        if (s := self.ser) is None:
-            logger.error("Serial is not open")
+        if (ser := self.ser) is None or not ser.is_open:
+            logger.error("Serial port is not open")
             return
 
         try:
             self.time_bef = time.perf_counter()
-            if self.before is not None and self.before != "end" and is_show:
-                pass
 
-            s.write(values)  # noqa
+            ser.write(values)  # noqa
             self.time_aft = time.perf_counter()
             self.before = values
         except serial.serialutil.SerialException as e:
             logger.error(f"Error : {e}")
-        except AttributeError as e:
-            logger.error("Maybe Using a port that is not open.")
-            logger.error(e)
 
         # Show sending serial data
         if self.is_show_serial.get():
@@ -160,17 +158,17 @@ class Sender:
         row: str,
         is_show: bool = False,
     ) -> None:
-        if (s := self.ser) is None:
-            logger.error("Serial is not open")
+        if (ser := self.ser) is None:
+            logger.error("Serial port is not open")
             return
 
         try:
-            s.write((row + "\r\n").encode("utf-8"))
+            ser.write((row + "\r\n").encode("utf-8"))
         except serial.serialutil.SerialException as e:
             logger.error(f"Error : {e}")
 
         # Show sending serial data
-        if is_show:
+        if self.is_show_serial.get():
             logger.debug(row)
 
     def show_input(self, output: list[str]) -> None:
