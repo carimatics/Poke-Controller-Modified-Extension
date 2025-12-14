@@ -1,6 +1,6 @@
 from pokecontroller.core.image import RawImage, to_bytes
 # for compatibility
-from pokecontrollermodifiedextension.api.v0_1_8.notification import Discord_Notify as Discord_Notify  # noqa
+from pokecontrollermodifiedextension.api.v0_1_8.notification.discord import Discord_Notify as Discord_Notify  # noqa
 
 
 # for compatibility

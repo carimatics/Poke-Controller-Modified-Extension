@@ -18,7 +18,7 @@ from pokecontrollermodifiedextension.api.v0_1_8.widgets.dialogue import (
     save_dialogue_settings,
 )
 
-from .. import Sender
+from ..sender import Sender
 
 PostProcess = Callable[[], None]
 

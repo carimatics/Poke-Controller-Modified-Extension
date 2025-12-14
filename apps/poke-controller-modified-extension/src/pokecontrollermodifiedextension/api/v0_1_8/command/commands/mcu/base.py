@@ -1,6 +1,6 @@
 from abc import ABC
 
-from ... import Sender
+from ...sender import Sender
 from ..base import Command, PostProcess
 
 

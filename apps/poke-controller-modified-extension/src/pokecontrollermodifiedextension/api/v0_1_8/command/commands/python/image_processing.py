@@ -16,7 +16,7 @@ from pokecontrollermodifiedextension.api.v0_1_8.image_processing import (
     openImage,
 )
 
-from ... import Sender
+from ...sender import Sender
 from ..base import PostProcess
 from .base import PythonCommand
 from .decorators import pausable
