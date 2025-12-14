@@ -172,8 +172,8 @@ class PythonCommand(Command, ABC):
 
         self.thread = None
 
-        if (pp := self.postProcess) is not None:
-            pp()
+        if (proc := self.postProcess) is not None:
+            proc()
             self.postProcess = None
         else:
             logger.info("postProcess is None")
