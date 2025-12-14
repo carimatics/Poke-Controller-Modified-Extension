@@ -24,16 +24,7 @@ logger = logging.getLogger(__name__)
 
 
 def generate_token_file(filename: str) -> None:
-    config = ExternalToolsConfig(path=filename)
-    config["SOCKET"] = {"addr": "127.0.0.1", "port": "49152"}
-    config["MQTT"] = {
-        "broker_address": "",
-        "id": "",
-        "fullaccess_token": "",
-        "readonly_token": "",
-    }
-    config.save(chmod=0o777)
-    logger.info("Generate external token file")
+    _ = ExternalToolsConfig(path=filename)
 
 
 class ExternalToolsConfig(Config):
@@ -84,9 +75,9 @@ class ExternalToolsConfig(Config):
         try:
             self.load()
         except FileNotFoundError:
-            self._create()
+            self._generate()
 
-    def _create(self) -> None:
+    def _generate(self) -> None:
         self["SOCKET"] = {"addr": "127.0.0.1", "port": "49152"}
         self["MQTT"] = {
             "broker_address": "",
@@ -95,7 +86,7 @@ class ExternalToolsConfig(Config):
             "readonly_token": "",
         }
         self.save(chmod=0o777, create_directory=True)
-        logger.info("Create external token file")
+        logger.info("External token file generated")
 
 
 def exceptiondecorator[**P, R](
@@ -186,11 +177,12 @@ class SocketCommunications:
             if (sock := self.sock) is not None:
                 sock.shutdown(socket.SHUT_RDWR)
                 sock.close()
-            self.flag_socket = False
         except ConnectionRefusedError:
             logger.error("[error]serverが起動されていません")
         except OSError:
             pass
+        finally:
+            self.flag_socket = False
 
     def receive_message(self, header: str, show_msg: bool = False) -> str | None:
         """
@@ -258,9 +250,7 @@ class SocketCommunications:
             return None
 
         # 待機文字列print出力
-        header0 = ""
-        for i in headerlist:
-            header0 += i + ","
+        header0 = ",".join(headerlist)
         logger.info(f"[socket:wait]:{header0}")
 
         # 出力初期値設定
