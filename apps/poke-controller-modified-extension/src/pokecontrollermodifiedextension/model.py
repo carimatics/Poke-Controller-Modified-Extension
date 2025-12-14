@@ -18,7 +18,7 @@ class AppModel:
         return self._app_info
 
     @property
-    def gui_state(self) -> AppSettings:
+    def app_settings(self) -> AppSettings:
         return self._settings
 
     def load_commands(self) -> list[str]:
@@ -112,8 +112,8 @@ class AppModel:
         return ["Default", "Qingpi", "3DS Controller"]
 
     def connect_serial_port(self, serial: Serial) -> None:
-        port = self.gui_state.serial.port.get()
-        baud_rate = self.gui_state.serial.baud_rate.get()
+        port = self.app_settings.serial.port.get()
+        baud_rate = self.app_settings.serial.baud_rate.get()
         serial.open(port_path=port, baud_rate=baud_rate)
 
     def disconnect_serial_port(self) -> None:
