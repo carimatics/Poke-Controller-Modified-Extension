@@ -1,5 +1,5 @@
 # for compatibility
-from pokecontrollermodifiedextension.widgets.components.dialogue import ( # noqa
+from pokecontrollermodifiedextension.api.v0_1_8.widgets.dialogue import ( # noqa
     PokeConDialogue as PokeConDialogue,
     check_widget_name as check_widget_name,
     get_setting as get_setting,

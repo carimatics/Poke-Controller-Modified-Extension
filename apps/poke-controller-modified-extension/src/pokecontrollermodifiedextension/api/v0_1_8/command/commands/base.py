@@ -8,7 +8,7 @@ from pokecontrollermodifiedextension.api.v0_1_8.external_tools import (
     MQTTCommunications,
     SocketCommunications,
 )
-from pokecontrollermodifiedextension.widgets.components.dialogue import (
+from pokecontrollermodifiedextension.api.v0_1_8.widgets.dialogue import (
     Message,
     MessageMode1,
     PokeConDialogue,
