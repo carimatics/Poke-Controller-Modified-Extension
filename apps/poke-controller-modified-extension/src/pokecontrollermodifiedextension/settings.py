@@ -173,7 +173,7 @@ SCHEMA: dict[str, Any] = {
     },
 }
 
-DEFAULT_SETTINGS: dict[str, Any] = {
+DEFAULT: dict[str, Any] = {
     "general": {
         "version": "0.2.0",
         "theme": "default",

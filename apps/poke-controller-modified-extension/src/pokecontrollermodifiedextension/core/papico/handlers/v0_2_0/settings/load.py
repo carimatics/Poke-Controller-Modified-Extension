@@ -4,7 +4,7 @@ from tkinter import BooleanVar, DoubleVar, IntVar, StringVar
 from typing import Any
 
 from pokecontrollermodifiedextension.settings import (
-    DEFAULT_SETTINGS,
+    DEFAULT,
     AppSettings,
 )
 
@@ -57,7 +57,7 @@ class PapicoSettingsLoadHandler(PapicoHandler):
                 else:
                     data.setdefault(k, v)
 
-        assign_default(self._settings, DEFAULT_SETTINGS)
+        assign_default(self._settings, DEFAULT)
 
     def _value_to_tk_variables(self) -> dict[str, Any]:
         def to_tk_variables(data: dict[str, Any], res: dict[str, Any]) -> None:

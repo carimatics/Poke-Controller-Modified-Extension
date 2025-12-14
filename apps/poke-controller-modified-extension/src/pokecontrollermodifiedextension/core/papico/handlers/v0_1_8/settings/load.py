@@ -6,7 +6,7 @@ from typing import Any
 from pokecontroller.utils.config import Config
 
 from pokecontrollermodifiedextension.settings import (
-    DEFAULT_SETTINGS,
+    DEFAULT,
     SCHEMA,
     AppSettings,
 )
@@ -109,7 +109,7 @@ class PapicoSettingsLoadHandler(PapicoHandler):
                 else:
                     data.setdefault(k, v)
 
-        assign_default(self._settings, DEFAULT_SETTINGS)
+        assign_default(self._settings, DEFAULT)
 
     def _value_to_tk_variables(self) -> dict[str, Any]:
         def to_tk_variables(

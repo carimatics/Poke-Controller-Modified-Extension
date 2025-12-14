@@ -5,7 +5,7 @@ from typing import Any
 
 from pokecontrollermodifiedextension.app import App
 from pokecontrollermodifiedextension.mixins import AppAccessorMixIn
-from pokecontrollermodifiedextension.settings import DEFAULT_SETTINGS
+from pokecontrollermodifiedextension.settings import DEFAULT
 from pokecontrollermodifiedextension.windows import SettingsWindow
 
 logger = logging.getLogger(__name__)
@@ -126,7 +126,7 @@ class AppMenu(tk.Menu, AppAccessorMixIn):
         )
 
     def _on_menu_reset_window_size_pushed(self) -> None:
-        self.app.settings.capture.size.set(DEFAULT_SETTINGS["capture"]["size"])
+        self.app.settings.capture.size.set(DEFAULT["capture"]["size"])
 
     def _on_command_line_settings_pushed(self) -> None:
         pass
