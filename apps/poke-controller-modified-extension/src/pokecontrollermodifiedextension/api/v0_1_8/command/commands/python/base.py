@@ -13,8 +13,8 @@ from pokecontrollermodifiedextension.api.v0_1_8.notification.line import (
 )
 from pokecontrollermodifiedextension.api.v0_1_8.settings import GuiSettings
 
-from ...sender import Sender
 from ...keys import ButtonLike, KeyPress
+from ...sender import Sender
 from ..base import Command, PostProcess
 from .decorators import pausable
 
