@@ -129,22 +129,22 @@ def _clamp(
 
 # This class handle L stick and R stick at any angles
 class Direction:
-    UP: "Direction | None" = None
-    RIGHT: "Direction | None" = None
-    DOWN: "Direction | None" = None
-    LEFT: "Direction | None" = None
-    UP_RIGHT: "Direction | None" = None
-    DOWN_RIGHT: "Direction | None" = None
-    DOWN_LEFT: "Direction | None" = None
-    UP_LEFT: "Direction | None" = None
-    R_UP: "Direction | None" = None
-    R_RIGHT: "Direction | None" = None
-    R_DOWN: "Direction | None" = None
-    R_LEFT: "Direction | None" = None
-    R_UP_RIGHT: "Direction | None" = None
-    R_DOWN_RIGHT: "Direction | None" = None
-    R_DOWN_LEFT: "Direction | None" = None
-    R_UP_LEFT: "Direction | None" = None
+    UP: "Direction"
+    RIGHT: "Direction"
+    DOWN: "Direction"
+    LEFT: "Direction"
+    UP_RIGHT: "Direction"
+    DOWN_RIGHT: "Direction"
+    DOWN_LEFT: "Direction"
+    UP_LEFT: "Direction"
+    R_UP: "Direction"
+    R_RIGHT: "Direction"
+    R_DOWN: "Direction"
+    R_LEFT: "Direction"
+    R_UP_RIGHT: "Direction"
+    R_DOWN_RIGHT: "Direction"
+    R_DOWN_LEFT: "Direction"
+    R_UP_LEFT: "Direction"
 
     def __init__(
         self,
