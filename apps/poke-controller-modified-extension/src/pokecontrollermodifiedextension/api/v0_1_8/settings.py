@@ -103,6 +103,7 @@ class GuiSettings:
 
     def __init__(self) -> None:
         self._papico = get_papico()
+        GuiSettings.SETTING_PATH = str(self._papico.settings_path)
 
         if (settings := self._papico.load_settings().data) is None:
             raise RuntimeError("Failed to load settings")
