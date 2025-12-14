@@ -26,6 +26,7 @@ logger = logging.getLogger(__name__)
 
 
 class Command(ABC):
+    NAME = ""
     text_area_1: tk.Text | None = None
     text_area_2: tk.Text | None = None
     stdout_destination: str = "1"
