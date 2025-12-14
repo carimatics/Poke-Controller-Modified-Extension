@@ -1,7 +1,11 @@
 import logging
+from pathlib import Path
 
+from pokecontroller.core.dynamic import DynamicClassLoader
 from pokecontroller.core.serial import Serial, SerialPort, get_serial_ports
 
+from .api.v0_1_8.command.commands.mcu.base import McuCommand
+from .api.v0_1_8.command.commands.python.base import PythonCommand
 from .info import AppInfo
 from .settings import AppSettings
 
@@ -9,7 +13,13 @@ logger = logging.getLogger(__name__)
 
 
 class AppModel:
-    def __init__(self, app_info: AppInfo, settings: AppSettings):
+    def __init__(
+        self,
+        base_dir: Path,
+        app_info: AppInfo,
+        settings: AppSettings,
+    ):
+        self._base_dir = base_dir
         self._app_info = app_info
         self._settings = settings
 
@@ -21,8 +31,27 @@ class AppModel:
     def app_settings(self) -> AppSettings:
         return self._settings
 
-    def load_commands(self) -> list[str]:
-        return []
+    def load_commands(
+        self,
+    ) -> tuple[
+        list[tuple[str, type[PythonCommand]]],
+        list[tuple[str, type[McuCommand]]],
+    ]:
+        base_dir = self._base_dir / "Commands"
+
+        python_commands = list(
+            DynamicClassLoader(
+                base_dir=base_dir / "PythonCommands",
+                klass=PythonCommand,  # type: ignore[type-abstract]
+            ).load()
+        )
+        mcu_commands = list(
+            DynamicClassLoader(
+                base_dir=base_dir / "McuCommands",
+                klass=McuCommand,  # type: ignore[type-abstract]
+            ).load()
+        )
+        return python_commands, mcu_commands
 
     def start_command(self) -> None:
         logger.info("start_command")

@@ -48,7 +48,7 @@ class App(tk.Tk):
         if (settings := papico.load_settings().data) is None:
             raise RuntimeError("Settings are not loaded.")
         self._settings = setup_app_settings(settings)
-        self._app_model = AppModel(self._app_info, self._settings)
+        self._app_model = AppModel(self._base_dir, self._app_info, self._settings)
 
         setup_translation(
             base_dir=base_dir / "translations",
