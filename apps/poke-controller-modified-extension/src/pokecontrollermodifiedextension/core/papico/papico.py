@@ -21,11 +21,17 @@ class Papico:
     Poke-Controllerの公開APIのバージョンによって異なる処理を適切に振り分けるクラス
     """
 
+    _settings_path: Path
+
     def __init__(self, base_dir: Path, profile: str) -> None:
         self._base_dir = base_dir
         self._profile = profile
         self._handler_generators: PapicoContainer[PapicoHandlerGenerator] = {}
         self._current_handler: PapicoHandler | None = None
+
+    @property
+    def settings_path(self) -> Path:
+        return self._settings_path
 
     def register_handler(self, ctx: PapicoRegisterHandlerContext) -> None:
         self._handler_generators.setdefault(
@@ -59,6 +65,7 @@ class Papico:
                     params={"path": str(path_v0_2)},
                 )
             )
+            self._settings_path = path_v0_2
         elif path_v0_1.exists() and path_v0_1.is_file():
             logger.info(f"Loading settings from {path_v0_1}")
             result = self._exec(
@@ -69,6 +76,7 @@ class Papico:
                     params={"path": str(path_v0_1)},
                 )
             )
+            self._settings_path = path_v0_1
         else:
             logger.info("Loading default settings from the latest version")
             result = self._exec(
@@ -79,6 +87,7 @@ class Papico:
                     params={"path": str(path_v0_2)},
                 )
             )
+            self._settings_path = path_v0_2
         return result
 
     def reload_settings(self) -> PapicoResult[AppSettings]:

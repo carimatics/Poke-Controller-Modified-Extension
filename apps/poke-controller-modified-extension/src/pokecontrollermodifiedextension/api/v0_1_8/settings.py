@@ -74,7 +74,7 @@ class CommandClassDict(dict[str, str]):
 
 
 class GuiSettings:
-    _POKECON_PAPICO: Papico = get_papico()
+    _POKECON_PAPICO: Papico | None = None
     SETTING_PATH: str
 
     camera_id: Value[int]
@@ -99,6 +99,24 @@ class GuiSettings:
     is_line_notification_end: Value[bool]
     is_discord_notification_start: Value[bool]
     is_discord_notification_end: Value[bool]
+
+    def __init__(self) -> None:
+        if GuiSettings._POKECON_PAPICO is None:
+            GuiSettings._POKECON_PAPICO = get_papico()
+            GuiSettings.SETTING_PATH = str(GuiSettings._POKECON_PAPICO.settings_path)
+
+        if (papico := GuiSettings._POKECON_PAPICO) is None:
+            raise RuntimeError(
+                "Failed to get Papico instance. Please check if the Papico is installed."
+            )
+        if (settings := papico.load_settings().data) is None:
+            raise RuntimeError("Failed to load settings")
+        self._app_settings = settings
+        self._assign_settings()
+
+        self.setting = configparser.ConfigParser()
+        self.setting.optionxform = str  # type: ignore[method-assign, assignment]
+        self._assign_setting_config()
 
     @property
     def touchscreen_start_x(self) -> int:
@@ -236,25 +254,27 @@ class GuiSettings:
         else:
             position.set("both")
 
-    def __init__(self) -> None:
-        if (settings := self._POKECON_PAPICO.load_settings().data) is None:
-            raise RuntimeError("Failed to load settings")
-        self._app_settings = settings
-        self._assign_settings()
-
-        self.setting = configparser.ConfigParser()
-        self.setting.optionxform = str  # type: ignore[method-assign, assignment]
-        self._assign_setting_config()
-
     def load(self) -> None:
-        self._POKECON_PAPICO.reload_settings()
+        if (papico := GuiSettings._POKECON_PAPICO) is None:
+            raise RuntimeError(
+                "Failed to get Papico instance. Please check if the Papico is installed."
+            )
+        papico.reload_settings()
         self._assign_setting_config()
 
     def generate(self) -> None:
-        self._POKECON_PAPICO.save_settings()
+        if (papico := GuiSettings._POKECON_PAPICO) is None:
+            raise RuntimeError(
+                "Failed to get Papico instance. Please check if the Papico is installed."
+            )
+        papico.save_settings()
 
     def save(self, path: str | None = None) -> None:
-        self._POKECON_PAPICO.save_settings()
+        if (papico := GuiSettings._POKECON_PAPICO) is None:
+            raise RuntimeError(
+                "Failed to get Papico instance. Please check if the Papico is installed."
+            )
+        papico.save_settings()
 
     def _assign_settings(self) -> None:
         self.camera_id = self._app_settings.capture.camera_id
