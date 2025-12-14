@@ -1,5 +1,5 @@
 import logging
-import os
+from pathlib import Path
 from typing import Literal, Sequence
 
 import pokecontroller.core.image as imagelib
@@ -252,7 +252,7 @@ class ImageProcessing:
         """
         # パラメータチェックを行う
         masks = mask_image_list if mask_image_list is not None else []
-        mask_image_list_temp: Sequence[RawImage | None] = []
+        mask_image_list_temp: Sequence[RawImage | None]
         if len(template_image_list) == len(masks):
             mask_image_list_temp = masks
         elif len(masks) == 0:
@@ -321,12 +321,13 @@ class ImageProcessing:
         """
         cropped_image = crop_image(image, crop=crop)
 
+        filepath = Path(filename)
         # ファイル名からパスを抽出する
-        capture_dir = os.path.dirname(filename)
+        capture_dir = filepath.parent
 
         # 画像保存用ディレクトリの存在を確認し、なかったら作成する。
-        if not os.path.exists(capture_dir):
-            os.makedirs(capture_dir)
+        if not capture_dir.exists() or not capture_dir.is_dir():
+            capture_dir.mkdir(parents=True, exist_ok=True)
             logger.debug("Created Capture folder")
 
         # 画像を保存する
