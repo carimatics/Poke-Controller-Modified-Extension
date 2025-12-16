@@ -23,7 +23,7 @@ jobs:
       - name: Install Mise
         uses: jdx/mise-action@v2
         with:
-          version: 2025.12.1
+          version: 2025.12.9
           install: true
           cache: true
       - name: Setup Runtime via uv
