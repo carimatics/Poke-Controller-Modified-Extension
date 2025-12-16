@@ -2,7 +2,13 @@ import logging
 from pathlib import Path
 from typing import Callable
 
-from ...settings import AppSettings, get_app_settings, setup_app_settings
+from ...info import get_app_runtime_info
+from ...settings import (
+    AppSettings,
+    get_app_settings,
+    get_app_settings_or_none,
+    setup_app_settings,
+)
 from .context import PapicoExecContext, PapicoFailure, PapicoResult, PapicoSuccess
 from .exception import PapicoExecException
 from .handlers import PapicoHandler, PapicoRegisterHandlerContext
@@ -23,11 +29,18 @@ class Papico:
 
     _settings_path: Path
 
-    def __init__(self, base_dir: Path, profile: str) -> None:
-        self._base_dir = base_dir
-        self._profile = profile
+    def __init__(self) -> None:
+        self._runtime_info = get_app_runtime_info()
         self._handler_generators: PapicoContainer[PapicoHandlerGenerator] = {}
         self._current_handler: PapicoHandler | None = None
+
+    @property
+    def _base_dir(self) -> Path:
+        return self._runtime_info.base_dir
+
+    @property
+    def _profile(self) -> str:
+        return self._runtime_info.profile
 
     @property
     def settings_path(self) -> Path:
@@ -43,7 +56,7 @@ class Papico:
         )[ctx.operation] = ctx.handler_generator
 
     def load_settings(self) -> PapicoResult[AppSettings]:
-        if (settings := get_app_settings()) is not None:
+        if (settings := get_app_settings_or_none()) is not None:
             return PapicoSuccess(
                 ctx=PapicoExecContext(
                     api_version=settings.general.version.get(),
@@ -53,8 +66,18 @@ class Papico:
                 data=settings,
             )
 
-        path_v0_2 = self._base_dir / "profiles" / self._profile / "settings.json"
-        path_v0_1 = self._base_dir / "profiles" / self._profile / "settings.ini"
+        path_v0_2 = (
+            self._runtime_info.base_dir
+            / "profiles"
+            / self._runtime_info.profile
+            / "settings.json"
+        )
+        path_v0_1 = (
+            self._runtime_info.base_dir
+            / "profiles"
+            / self._runtime_info.profile
+            / "settings.ini"
+        )
         if path_v0_2.exists() and path_v0_2.is_file():
             logger.info(f"Loading settings from {path_v0_2}")
             result = self._exec(
@@ -102,7 +125,7 @@ class Papico:
                 error=result.error,
             )
 
-        if (settings := get_app_settings()) is None:
+        if (settings := get_app_settings_or_none()) is None:
             settings = setup_app_settings(result.data)
         else:
             settings.apply_dict(result.data.to_dict())
@@ -163,9 +186,9 @@ class Papico:
 PAPICO_SINGLETON: Papico | None = None
 
 
-def setup_papico(base_dir: Path, profile: str) -> Papico:
+def setup_papico() -> Papico:
     global PAPICO_SINGLETON
-    PAPICO_SINGLETON = Papico(base_dir, profile)
+    PAPICO_SINGLETON = Papico()
     return PAPICO_SINGLETON
 
 

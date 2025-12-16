@@ -3,6 +3,7 @@ import tkinter as tk
 import tkinter.ttk as ttk
 from typing import Any, Callable
 
+from ....settings import get_app_settings
 from ....widgets.app import AppFrame
 
 logger = logging.getLogger(__name__)
@@ -29,7 +30,9 @@ class SettingsSidebarPane(AppFrame):
         self._bg_color = self._get_parent_bg(master)
         logging.debug(f"Sidebar background color: {self._bg_color}")
 
-        self._theme = self.app.settings.general.theme
+        self._settings = get_app_settings()
+
+        self._theme = self._settings.general.theme
 
         self._on_section_selected = on_section_selected
         self._hook_ids = []

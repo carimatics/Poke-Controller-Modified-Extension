@@ -5,6 +5,7 @@ from typing import Any
 from pokecontroller.core.controller import switch
 
 from ...mixins import AppAccessorMixIn
+from ...resources import get_app_resources
 from ...widgets.app import AppDialog
 
 logger = logging.getLogger(__name__)
@@ -381,7 +382,8 @@ class ControllerWindow(AppDialog):
     ) -> None:
         super().__init__(master, *args, **kwargs)
 
-        self._controller = switch.SwitchController(serial=self.app.serial)
+        resources = get_app_resources()
+        self._controller = switch.SwitchController(serial=resources.serial)
 
         self.title("Switch Controller Simulator")
         self.build_ui()

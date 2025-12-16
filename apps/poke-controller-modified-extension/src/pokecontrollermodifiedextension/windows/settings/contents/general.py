@@ -2,6 +2,8 @@ import logging
 import tkinter as tk
 from typing import Any
 
+from ....info import get_app_info
+from ....settings import get_app_settings
 from ....widgets.app import AppFrame
 from ....widgets.components import ComponentPackBuilder
 
@@ -14,12 +16,14 @@ class GeneralSettingsPane(AppFrame):
     def __init__(self, master: tk.Misc, *args: Any, **kwargs: Any) -> None:
         super().__init__(master, *args, **kwargs)
 
-        self._current_version = self.app.settings.general.version
-        self._latest_settings_version = self.app.app_info.latest_settings_version
+        self._app_info = get_app_info()
+        self._app_settings = get_app_settings()
+        self._current_version = self._app_settings.general.version
+        self._latest_settings_version = self._app_info.latest_settings_version
 
         self._style_manager = self.app.style_manager
-        self._theme = self.app.settings.general.theme
-        self._language = self.app.settings.general.language
+        self._theme = self._app_settings.general.theme
+        self._language = self._app_settings.general.language
 
         self.build_ui()
 

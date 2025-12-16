@@ -1,7 +1,8 @@
 import logging
 import math
 import time
-from typing import Protocol
+from contextlib import contextmanager
+from typing import Generator, Protocol
 
 import serial
 from pokecontroller.utils import platform
@@ -11,6 +12,11 @@ logger = logging.getLogger(__name__)
 
 class BoolGettable(Protocol):
     def get(self) -> bool: ...
+
+
+class PseudoBoolGetter:
+    def get(self) -> bool:
+        return False
 
 
 class Sender:
@@ -60,6 +66,9 @@ class Sender:
             "CENTER",
         ]
 
+    def _set_is_show_serial(self, is_show_serial: BoolGettable) -> None:
+        self.is_show_serial = is_show_serial
+
     def openSerial(  # noqa
         self,
         portNum: int | str,  # noqa
@@ -90,7 +99,7 @@ class Sender:
 
     def closeSerial(self) -> None:  # noqa
         logger.debug("Closing the serial communication")
-        if (ser := self.ser) is not None:
+        if (ser := self.ser) is not None and ser.is_open:
             ser.close()
 
     def isOpened(self) -> bool:  # noqa
@@ -228,3 +237,14 @@ class Sender:
         if x == 128 and y == 128:
             return None
         return math.degrees(math.atan2(128 - y, x - 128)), math.sqrt(x**2 + y**2)
+
+
+@contextmanager
+def use_sender(
+    if_print: bool = True,
+) -> Generator[Sender, None, None]:
+    sender = Sender(PseudoBoolGetter(), if_print)
+    try:
+        yield sender
+    finally:
+        sender.closeSerial()

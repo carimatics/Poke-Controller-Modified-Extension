@@ -1,35 +1,28 @@
 import logging
-from pathlib import Path
 
 from pokecontroller.core.dynamic import DynamicClassLoader
-from pokecontroller.core.serial import Serial, SerialPort, get_serial_ports
+from pokecontroller.core.serial import SerialPort, get_serial_ports
 
+from .api.v0_1_8.command.commands.base import Command
 from .api.v0_1_8.command.commands.mcu.base import McuCommand
 from .api.v0_1_8.command.commands.python.base import PythonCommand
-from .info import AppInfo
-from .settings import AppSettings
+from .api.v0_1_8.command.sender import Sender
+from .exception import AppRuntimeException
+from .info import get_app_info, get_app_runtime_info
+from .resources import get_app_resources
+from .settings import get_app_settings
 
 logger = logging.getLogger(__name__)
 
 
 class AppModel:
-    def __init__(
-        self,
-        base_dir: Path,
-        app_info: AppInfo,
-        settings: AppSettings,
-    ):
-        self._base_dir = base_dir
-        self._app_info = app_info
-        self._settings = settings
-
-    @property
-    def app_info(self) -> AppInfo:
-        return self._app_info
-
-    @property
-    def app_settings(self) -> AppSettings:
-        return self._settings
+    def __init__(self) -> None:
+        self._runtime_info = get_app_runtime_info()
+        self._app_resources = get_app_resources()
+        self._app_info = get_app_info()
+        self._app_settings = get_app_settings()
+        self._sender: Sender | None = None
+        self._command: Command | None = None
 
     def load_commands(
         self,
@@ -37,7 +30,7 @@ class AppModel:
         list[tuple[str, type[PythonCommand]]],
         list[tuple[str, type[McuCommand]]],
     ]:
-        base_dir = self._base_dir / "Commands"
+        base_dir = self._runtime_info.base_dir / "Commands"
 
         python_commands = list(
             DynamicClassLoader(
@@ -53,8 +46,17 @@ class AppModel:
         )
         return python_commands, mcu_commands
 
-    def start_command(self) -> None:
+    def start_command(self, klass: type[Command]) -> None:
         logger.info("start_command")
+        if self._command is not None:
+            self._command.end(self._app_resources.sender_v0_1_8)
+            self._command = None
+        else:
+            self._command = klass()
+            sender = self._app_resources.sender_v0_1_8
+            port = self._app_settings.serial.port.get()
+            sender.openSerial(portNum=0, portName=port)
+            klass().start(ser=sender)
 
     def stop_command(self) -> None:
         pass
@@ -140,9 +142,10 @@ class AppModel:
     def load_serial_data_format_list(self) -> list[str]:
         return ["Default", "Qingpi", "3DS Controller"]
 
-    def connect_serial_port(self, serial: Serial) -> None:
-        port = self.app_settings.serial.port.get()
-        baud_rate = self.app_settings.serial.baud_rate.get()
+    def connect_serial_port(self) -> None:
+        serial = get_app_resources().serial
+        port = self._app_settings.serial.port.get()
+        baud_rate = self._app_settings.serial.baud_rate.get()
         serial.open(port_path=port, baud_rate=baud_rate)
 
     def disconnect_serial_port(self) -> None:
@@ -226,3 +229,19 @@ class AppModel:
 
     def apply_confirm_buttons_position(self) -> None:
         pass
+
+
+APP_MODEL_SINGLETON: AppModel | None = None
+
+
+def get_app_model() -> AppModel:
+    global APP_MODEL_SINGLETON
+    if APP_MODEL_SINGLETON is None:
+        raise AppRuntimeException("App model is not initialized.")
+    return APP_MODEL_SINGLETON
+
+
+def setup_app_model() -> AppModel:
+    global APP_MODEL_SINGLETON
+    APP_MODEL_SINGLETON = AppModel()
+    return APP_MODEL_SINGLETON

@@ -3,6 +3,7 @@ import tkinter as tk
 from dataclasses import fields
 from typing import Any
 
+from ....settings import get_app_settings
 from ....widgets import Frame, Labelframe, ScrollableFrame
 from ....widgets.app import AppFrame
 from ....widgets.components import ComponentPackBuilder
@@ -16,10 +17,12 @@ class DeviceSettingsPane(AppFrame):
     def __init__(self, master: tk.Misc, *args: Any, **kwargs: Any) -> None:
         super().__init__(master, *args, **kwargs)
 
-        self._touchscreen = self.app.settings.device.touchscreen
-        self._keyboard = self.app.settings.device.keyboard
-        self._mouse = self.app.settings.device.mouse
-        self._pro_controller = self.app.settings.device.pro_controller
+        self._settings = get_app_settings()
+
+        self._touchscreen = self._settings.device.touchscreen
+        self._keyboard = self._settings.device.keyboard
+        self._mouse = self._settings.device.mouse
+        self._pro_controller = self._settings.device.pro_controller
 
         self.build_ui()
 

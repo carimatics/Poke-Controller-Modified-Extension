@@ -1,26 +1,17 @@
 import logging
 import tkinter as tk
-from pathlib import Path
 from typing import Any
 
-from pokecontroller.core.camera import Camera
-from pokecontroller.core.serial import Serial
-
-from .core.papico import Papico
-from .info import AppInfo
-from .model import AppModel
+from .core.papico import get_papico
+from .exception import AppRuntimeException
+from .info import get_app_info, get_app_runtime_info
+from .model import setup_app_model
+from .resources import get_app_resources
 from .settings import AppSettings, setup_app_settings
 from .style import StyleManager
 from .translation import setup_translation
 
 logger = logging.getLogger(__name__)
-
-INFO = AppInfo(
-    name="Poke-Controller Modified Extension",
-    version="0.2.0",
-    latest_settings_version="0.2.0",
-    latest_api_version="0.2.0",
-)
 
 
 class App(tk.Tk):
@@ -28,84 +19,54 @@ class App(tk.Tk):
 
     def __init__(
         self,
-        base_dir: Path,
-        profile: str,
-        papico: Papico,
-        camera: Camera,
-        serial: Serial,
         *args: Any,
         **kwargs: Any,
     ) -> None:
         super().__init__(*args, **kwargs)
-        self._base_dir = base_dir
-        self._profile = profile
-        self._papico = papico
 
-        self._camera = camera
-        self._serial = serial
-
-        self._app_info = INFO
-        if (settings := papico.load_settings().data) is None:
-            raise RuntimeError("Settings are not loaded.")
+        self._app_runtime_info = get_app_runtime_info()
+        self._app_info = get_app_info()
+        self._papico = get_papico()
+        if (settings := self._papico.load_settings().data) is None:
+            raise AppRuntimeException("App settings couldn't load.")
         self._settings = setup_app_settings(settings)
-        self._app_model = AppModel(self._base_dir, self._app_info, self._settings)
+        setup_app_model()
 
         setup_translation(
-            base_dir=base_dir / "translations",
+            base_dir=self._app_runtime_info.base_dir / "translations",
             language=self._settings.general.language.get(),
+        )
+
+        self._resources = get_app_resources()
+        self._resources.sender_v0_1_8._set_is_show_serial(
+            self._settings.serial.show_data,
         )
 
         self._style_manager = StyleManager(self)
         self._style_manager.change_theme(self._settings.general.theme.get())
 
         # Title
-        self.title(f"{INFO.name}(v{INFO.version})")
+        self.title(f"{self._app_info.name}(v{self._app_info.version})")
 
         # Camera
         self._camera_id = self._settings.capture.camera_id
-        self._camera.open(camera_id=int(self._camera_id.get()))
+        try:
+            self._resources.camera.open(camera_id=int(self._camera_id.get()))
+        except Exception as e:
+            logger.warning(f"Failed to open camera: {e}")
 
         # Serial
         self._serial_port = self._settings.serial.port
         self._serial_baud_rate = self._settings.serial.baud_rate
-        self._serial.open(
-            port_path=self._serial_port.get(),
-            baud_rate=self._serial_baud_rate.get(),
-        )
+        try:
+            self._resources.serial.open(
+                port_path=self._serial_port.get(),
+                baud_rate=self._serial_baud_rate.get(),
+            )
+        except Exception as e:
+            logger.warning(f"Failed to open serial port: {e}")
 
-        self._register_hooks()
-
-    @property
-    def base_dir(self) -> Path:
-        return self._base_dir
-
-    @property
-    def profile(self) -> str:
-        return self._profile
-
-    @property
-    def papico(self) -> Papico:
-        return self._papico
-
-    @property
-    def camera(self) -> Camera:
-        return self._camera
-
-    @property
-    def serial(self) -> Serial:
-        return self._serial
-
-    @property
-    def app_info(self) -> AppInfo:
-        return self._app_info
-
-    @property
-    def app_model(self) -> AppModel:
-        return self._app_model
-
-    @property
-    def settings(self) -> AppSettings:
-        return self._settings
+        self._register_traces()
 
     @property
     def style_manager(self) -> StyleManager:
@@ -114,7 +75,7 @@ class App(tk.Tk):
     def run(self) -> None:
         self.mainloop()
 
-    def _register_hooks(self) -> None:
+    def _register_traces(self) -> None:
         self._camera_id.trace_add("write", self._on_camera_id_changed)
         self._settings.general.theme.trace_add("write", self._apply_theme)
 
@@ -122,4 +83,4 @@ class App(tk.Tk):
         self._style_manager.change_theme(self._settings.general.theme.get())
 
     def _on_camera_id_changed(self, *_: Any) -> None:
-        self._camera.open(camera_id=int(self._camera_id.get()))
+        self._resources.camera.open(camera_id=int(self._camera_id.get()))

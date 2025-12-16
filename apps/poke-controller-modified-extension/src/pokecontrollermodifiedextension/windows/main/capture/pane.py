@@ -2,7 +2,7 @@ import tkinter as tk
 import tkinter.ttk as ttk
 from typing import Any
 
-from ....settings import AppSettings
+from ....settings import get_app_settings
 from ....widgets.app import AppFrame
 from .buttons import Buttons
 from .capture import Capture
@@ -12,13 +12,10 @@ class CapturePane(AppFrame):
     def __init__(self, master: tk.Misc, *args: Any, **kwargs: Any) -> None:
         super().__init__(master, *args, **kwargs)
 
-        self._size = self.app_state.capture.size
+        self._app_settings = get_app_settings()
+        self._size = self._app_settings.capture.size
 
         self.build_ui()
-
-    @property
-    def app_state(self) -> AppSettings:
-        return self.app.settings
 
     @property
     def _camera_size(self) -> tuple[int, int]:

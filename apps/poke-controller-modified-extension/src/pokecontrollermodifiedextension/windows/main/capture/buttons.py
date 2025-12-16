@@ -3,7 +3,8 @@ import tkinter as tk
 import tkinter.ttk as ttk
 from typing import Any
 
-from ....model import AppModel
+from ....info import get_app_runtime_info
+from ....model import get_app_model
 from ....widgets.app import AppDialog, AppFrame
 from ...controller import ControllerWindow
 
@@ -32,12 +33,10 @@ class Buttons(AppFrame):
         self._open_dir_button_image: tk.PhotoImage = tk.PhotoImage(
             file="../assets/icons8-OpenDir-16.png"
         )
+        self._runtime_info = get_app_runtime_info()
+        self._app_model = get_app_model()
         self._controller_window: AppDialog | None = None
         self.build_ui()
-
-    @property
-    def app_model(self) -> AppModel:
-        return self.app.app_model
 
     def build_ui(self) -> None:
         # Create Buttons
@@ -67,9 +66,9 @@ class Buttons(AppFrame):
 
     def _on_start_pushed(self) -> None:
         # FIXME: あとで消す
-        logger.info(f"profile={self.app.profile} base_dir={self.app.base_dir}")
-
-        self.app_model.start_command()
+        logger.info(
+            f"profile={self._runtime_info.profile} base_dir={self._runtime_info.base_dir}"
+        )
 
     def _on_controller_pushed(self) -> None:
         self._controller_window = ControllerWindow(self)
@@ -78,16 +77,16 @@ class Buttons(AppFrame):
         )
 
     def _on_clear_outputs_pushed(self) -> None:
-        self.app_model.clear_log_outputs()
+        self._app_model.clear_log_outputs()
 
     def _on_capture_pushed(self) -> None:
-        self.app_model.save_screencapture()
+        self._app_model.save_screencapture()
 
     def _on_open_dir_pushed(self) -> None:
-        self.app_model.open_screencapture_directory_window()
+        self._app_model.open_screencapture_directory_window()
 
     def _on_notify_discord_pushed(self) -> None:
-        self.app_model.notify_discord()
+        self._app_model.notify_discord()
 
     def _on_controller_window_closed(self) -> None:
         if (window := self._controller_window) is None:

@@ -2,8 +2,8 @@ import tkinter as tk
 import tkinter.ttk as ttk
 from typing import Any, Callable
 
-from ....model import AppModel
-from ....settings import AppSettings
+from ....model import get_app_model
+from ....settings import get_app_settings
 from ....widgets.app import AppFrame
 
 PYTHON = "python"
@@ -21,6 +21,9 @@ class CommandsSettings(AppFrame):
     def __init__(self, master: tk.Misc, *args: Any, **kwargs: Any) -> None:
         super().__init__(master, *args, **kwargs)
 
+        self._app_settings = get_app_settings()
+        self._app_model = get_app_model()
+
         self._open_dir_button_image: tk.PhotoImage = tk.PhotoImage(
             file="../assets/icons8-OpenDir-16.png"
         )
@@ -35,22 +38,16 @@ class CommandsSettings(AppFrame):
         self._mcu_command_list: list[str] = self._load_mcu_command_list()
         self._shortcut_button_texts: list[tk.StringVar] = []
 
-        self._python_commands_filter = self.app_state.command.python_commands_filter
-        self._python_command = self.app_state.command.python_command
-        self._mcu_commands_filter = self.app_state.command.mcu_commands_filter
-        self._mcu_command = self.app_state.command.mcu_command
-        self._shortcut_number = self.app_state.command.shortcut.number
-        self._registered_commands = self.app_state.command.shortcut.registered_commands
+        self._python_commands_filter = self._app_settings.command.python_commands_filter
+        self._python_command = self._app_settings.command.python_command
+        self._mcu_commands_filter = self._app_settings.command.mcu_commands_filter
+        self._mcu_command = self._app_settings.command.mcu_command
+        self._shortcut_number = self._app_settings.command.shortcut.number
+        self._registered_commands = (
+            self._app_settings.command.shortcut.registered_commands
+        )
 
         self.build_ui()
-
-    @property
-    def app_state(self) -> AppSettings:
-        return self.app.settings
-
-    @property
-    def app_model(self) -> AppModel:
-        return self.app.app_model
 
     def build_ui(self) -> None:
         upper_frame = ttk.Frame(self)
@@ -242,46 +239,46 @@ class CommandsSettings(AppFrame):
         return frame
 
     def _load_python_commands_filter_list(self) -> list[str]:
-        return self.app_model.load_python_commands_filter_list()
+        return self._app_model.load_python_commands_filter_list()
 
     def _load_python_command_list(self) -> list[str]:
-        return self.app_model.load_python_command_list()
+        return self._app_model.load_python_command_list()
 
     def _load_mcu_commands_filter_list(self) -> list[str]:
-        return self.app_model.load_mcu_commands_filter_list()
+        return self._app_model.load_mcu_commands_filter_list()
 
     def _load_mcu_command_list(self) -> list[str]:
-        return self.app_model.load_mcu_command_list()
+        return self._app_model.load_mcu_command_list()
 
     def _on_open_dir_pushed(self) -> None:
-        self.app_model.open_commands_directory_window()
+        self._app_model.open_commands_directory_window()
 
     def _on_shortcut_number_changed(self) -> None:
-        self.app_model.set_command_shortcut_number()
+        self._app_model.set_command_shortcut_number()
 
     def _on_set_pushed(self) -> None:
-        self.app_model.register_command_shortcut()
+        self._app_model.register_command_shortcut()
 
     def _on_reload_pushed(self) -> None:
-        self.app_model.load_commands()
+        self._app_model.load_commands()
 
     def _on_start_pushed(self) -> None:
-        self.app_model.start_command()
+        pass
 
     def _on_pause_pushed(self) -> None:
-        self.app_model.pause_command()
+        self._app_model.pause_command()
 
     def _on_python_commands_filter_selected(self, _event: tk.Event) -> None:
-        self.app_model.apply_python_commands_filter()
+        self._app_model.apply_python_commands_filter()
 
     def _on_python_command_selected(self, _event: tk.Event) -> None:
-        self.app_model.set_python_command()
+        self._app_model.set_python_command()
 
     def _on_mcu_commands_filter_selected(self, _event: tk.Event) -> None:
-        self.app_model.apply_mcu_commands_filter()
+        self._app_model.apply_mcu_commands_filter()
 
     def _on_mcu_command_selected(self, _event: tk.Event) -> None:
-        self.app_model.set_mcu_command()
+        self._app_model.set_mcu_command()
 
     def _on_shortcut_pushed(self, shortcut_number: int) -> None:
-        self.app_model.start_shortcut_command(shortcut_number)
+        self._app_model.start_shortcut_command(shortcut_number)

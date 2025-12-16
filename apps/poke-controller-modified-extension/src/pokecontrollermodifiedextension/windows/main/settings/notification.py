@@ -2,8 +2,8 @@ import tkinter as tk
 import tkinter.ttk as ttk
 from typing import Any, Callable
 
-from ....model import AppModel
-from ....settings import AppSettings
+from ....model import get_app_model
+from ....settings import get_app_settings
 from ....widgets.app import AppFrame
 
 
@@ -11,22 +11,21 @@ class NotificationSettings(AppFrame):
     def __init__(self, master: tk.Misc, *args: Any, **kwargs: Any) -> None:
         super().__init__(master, *args, **kwargs)
 
-        self._enabled_windows_started = self.app_state.notification.line.enabled_started
-        self._enabled_windows_ended = self.app_state.notification.line.enabled_ended
-        self._enabled_discord_started = (
-            self.app_state.notification.discord.enabled_started
+        self._app_settings = get_app_settings()
+        self._app_model = get_app_model()
+
+        self._enabled_windows_started = (
+            self._app_settings.notification.line.enabled_started
         )
-        self._enabled_discord_ended = self.app_state.notification.discord.enabled_ended
+        self._enabled_windows_ended = self._app_settings.notification.line.enabled_ended
+        self._enabled_discord_started = (
+            self._app_settings.notification.discord.enabled_started
+        )
+        self._enabled_discord_ended = (
+            self._app_settings.notification.discord.enabled_ended
+        )
 
         self.build_ui()
-
-    @property
-    def app_state(self) -> AppSettings:
-        return self.app.settings
-
-    @property
-    def app_model(self) -> AppModel:
-        return self.app.app_model
 
     def build_ui(self) -> None:
         windows_notification = self._build_windows_notification()
@@ -106,19 +105,19 @@ class NotificationSettings(AppFrame):
         return labelframe
 
     def _on_windows_start_changed(self) -> None:
-        self.app_model.apply_enabled_notify_windows_when_command_started()
+        self._app_model.apply_enabled_notify_windows_when_command_started()
 
     def _on_windows_end_changed(self) -> None:
-        self.app_model.apply_enabled_notify_windows_when_command_ended()
+        self._app_model.apply_enabled_notify_windows_when_command_ended()
 
     def _on_windows_test_pushed(self) -> None:
-        self.app_model.notify_windows_force()
+        self._app_model.notify_windows_force()
 
     def _on_discord_start_changed(self) -> None:
-        self.app_model.apply_enabled_notify_discord_when_command_started()
+        self._app_model.apply_enabled_notify_discord_when_command_started()
 
     def _on_discord_end_changed(self) -> None:
-        self.app_model.apply_enabled_notify_discord_when_command_ended()
+        self._app_model.apply_enabled_notify_discord_when_command_ended()
 
     def _on_discord_test_pushed(self) -> None:
-        self.app_model.notify_discord_force()
+        self._app_model.notify_discord_force()

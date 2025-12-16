@@ -14,6 +14,9 @@ from pokecontroller.core.controller import switch
 from pokecontroller.utils import platform
 from pokecontroller.utils.math import clamp
 
+from ....info import get_app_runtime_info
+from ....resources import get_app_resources
+from ....settings import get_app_settings
 from ....widgets.app import AppFrame
 
 logger = logging.getLogger(__name__)
@@ -37,28 +40,32 @@ class Capture(AppFrame):
     def __init__(self, master: tk.Misc, *args: Any, **kwargs: Any) -> None:
         super().__init__(master, *args, **kwargs)
 
+        self._app_resources = get_app_resources()
+        self._app_settings = get_app_settings()
+        self._runtime_info = get_app_runtime_info()
+
         self._disabled_raw_image = image.read(
             path="../Images/disabled.png", mode="grayscale"
         )
 
-        self._camera = self.app.camera
-        self._serial = self.app.serial
+        self._camera = self._app_resources.camera
+        self._serial = self._app_resources.serial
 
-        self._camera_id = self.app.settings.capture.camera_id
-        self._fps = self.app.settings.capture.fps
-        self._size = self.app.settings.capture.size
-        self._show_realtime = self.app.settings.capture.show_realtime
-        self._show_matched = self.app.settings.capture.show_matched
-        self._show_guide = self.app.settings.capture.show_guide
+        self._camera_id = self._app_settings.capture.camera_id
+        self._fps = self._app_settings.capture.fps
+        self._size = self._app_settings.capture.size
+        self._show_realtime = self._app_settings.capture.show_realtime
+        self._show_matched = self._app_settings.capture.show_matched
+        self._show_guide = self._app_settings.capture.show_guide
         self._next_frame_time = 1000 // self._fps.get()
         self._width, self._height = self._parse_size()
 
         # for mouse control
-        self._data_format = self.app.settings.serial.data_format
+        self._data_format = self._app_settings.serial.data_format
         self._mouse_right_mode = "Default"
         self._controller = switch.SwitchController(self._serial)
-        self._enabled_lstick_mouse = self.app.settings.device.mouse.enabled_lclick
-        self._enabled_rstick_mouse = self.app.settings.device.mouse.enabled_rclick
+        self._enabled_lstick_mouse = self._app_settings.device.mouse.enabled_lclick
+        self._enabled_rstick_mouse = self._app_settings.device.mouse.enabled_rclick
         self._mouse_circle_radius = 60
         self._pressed_point = (0, 0)
         self._right_stick_mode = self._data_format.get()
@@ -327,7 +334,7 @@ class Capture(AppFrame):
             filename = filedialog.asksaveasfilename(
                 title="名前をつけて保存",
                 filetypes=[("PNG", "*.png")],
-                initialdir=str(self.app.base_dir / "Template"),
+                initialdir=str(self._runtime_info.base_dir / "Template"),
                 defaultextension=".png",
             )
             if filename != "":
@@ -360,7 +367,7 @@ class Capture(AppFrame):
         if cropped is not None:
             image.write(
                 src=cropped,
-                path=str(self.app.base_dir / "Captures" / "cropped.png"),
+                path=str(self._runtime_info.base_dir / "Captures" / "cropped.png"),
                 params=(cv2.IMWRITE_PNG_COMPRESSION, 0),
             )
 

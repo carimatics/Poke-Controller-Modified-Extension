@@ -4,7 +4,10 @@ from dataclasses import fields, is_dataclass
 from typing import Any
 
 from ... import widgets
+from ...core.papico import get_papico
+from ...info import get_app_info
 from ...mixins import AppAccessorMixIn
+from ...settings import get_app_settings
 from ...widgets.app import AppDialog, AppFrame
 from .buttons import SettingsButtonsPane
 from .contents import (
@@ -37,7 +40,9 @@ class SettingsWindow(AppDialog):
     ) -> None:
         super().__init__(master, *args, **kwargs)
 
-        self._settings = self.app.settings
+        self._app_info = get_app_info()
+        self._settings = get_app_settings()
+        self._papico = get_papico()
         self._backup = self._settings.to_dict()
 
         self._has_changes = tk.BooleanVar(value=False)
@@ -111,8 +116,8 @@ class SettingsWindow(AppDialog):
 
     def _save_settings(self) -> None:
         logger.info("Settings saving.")
-        self._settings.general.version.set(self.app.app_info.latest_settings_version)
-        self.app.papico.save_settings()
+        self._settings.general.version.set(self._app_info.latest_settings_version)
+        self._papico.save_settings()
         logger.info("Settings saved.")
 
     def _check_has_changes(self) -> None:

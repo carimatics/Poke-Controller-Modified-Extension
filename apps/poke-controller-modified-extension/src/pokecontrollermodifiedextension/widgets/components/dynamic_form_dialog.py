@@ -3,6 +3,7 @@ import tkinter.ttk as ttk
 from typing import Any, Self, overload
 
 from ...mixins import AppAccessorMixIn
+from ...settings import get_app_settings
 from ..app.dialog import AppDialog
 from .dynamic_form import DynamicForm, DynamicFormItem
 
@@ -23,6 +24,7 @@ class DynamicFormDialog(AppDialog):
         super().__init__(master, *args, **kwargs)
         self._is_ok = False
         self._items = items
+        self._app_settings = get_app_settings()
         self.protocol("WM_DELETE_WINDOW", self._on_close)
         self.title(title)
         self.build_ui()
@@ -30,7 +32,7 @@ class DynamicFormDialog(AppDialog):
 
     def build_ui(self) -> None:
         confirm_button_position = (
-            self.app.settings.widget.dialog.confirm_buttons_position.get()
+            self._app_settings.widget.dialog.confirm_buttons_position.get()
         )
 
         frame = tk.Frame(self)

@@ -2,8 +2,8 @@ import tkinter as tk
 import tkinter.ttk as ttk
 from typing import Any
 
-from ....model import AppModel
-from ....settings import AppSettings
+from ....model import get_app_model
+from ....settings import get_app_settings
 from ....widgets.app import AppFrame
 
 
@@ -11,23 +11,18 @@ class ManualControlSettings(AppFrame):
     def __init__(self, master: tk.Misc, *args: Any, **kwargs: Any) -> None:
         super().__init__(master, *args, **kwargs)
 
-        self._enabled_keyboard = self.settings.device.keyboard.enabled
-        self._enabled_lstick_mouse = self.settings.device.mouse.enabled_lclick
-        self._enabled_rstick_mouse = self.settings.device.mouse.enabled_rclick
-        self._enabled_pro_controller = self.settings.device.pro_controller.enabled
+        self._app_settings = get_app_settings()
+        self._app_model = get_app_model()
+
+        self._enabled_keyboard = self._app_settings.device.keyboard.enabled
+        self._enabled_lstick_mouse = self._app_settings.device.mouse.enabled_lclick
+        self._enabled_rstick_mouse = self._app_settings.device.mouse.enabled_rclick
+        self._enabled_pro_controller = self._app_settings.device.pro_controller.enabled
         self._enabled_record_pro_controller = (
-            self.settings.device.pro_controller.enabled_record
+            self._app_settings.device.pro_controller.enabled_record
         )
 
         self.build_ui()
-
-    @property
-    def settings(self) -> AppSettings:
-        return self.app.settings
-
-    @property
-    def app_model(self) -> AppModel:
-        return self.app.app_model
 
     def build_ui(self) -> None:
         # Create Labelframes
@@ -124,19 +119,19 @@ class ManualControlSettings(AppFrame):
         return labelframe
 
     def _on_controller_pushed(self) -> None:
-        self.app_model.open_software_controller_window()
+        self._app_model.open_software_controller_window()
 
     def _on_enabled_keyboard_changed(self) -> None:
-        self.app_model.apply_enabled_keyboard()
+        self._app_model.apply_enabled_keyboard()
 
     def _on_enabled_lstick_mouse_changed(self) -> None:
-        self.app_model.apply_enabled_lstick_mouse()
+        self._app_model.apply_enabled_lstick_mouse()
 
     def _on_enabled_rstick_mouse_changed(self) -> None:
-        self.app_model.apply_enabled_rstick_mouse()
+        self._app_model.apply_enabled_rstick_mouse()
 
     def _on_enabled_pro_controller_changed(self) -> None:
-        self.app_model.apply_enabled_pro_controller()
+        self._app_model.apply_enabled_pro_controller()
 
     def _on_enabled_record_pro_controller_changed(self) -> None:
-        self.app_model.apply_enabled_record_pro_controller()
+        self._app_model.apply_enabled_record_pro_controller()

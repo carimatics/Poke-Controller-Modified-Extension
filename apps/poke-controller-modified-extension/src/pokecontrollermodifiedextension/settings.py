@@ -3,6 +3,8 @@ from dataclasses import dataclass, fields, is_dataclass
 from tkinter import BooleanVar, DoubleVar, IntVar, StringVar, Variable
 from typing import Any, Self
 
+from pokecontrollermodifiedextension.exception import AppRuntimeException
+
 logger = logging.getLogger(__name__)
 
 SCHEMA: dict[str, Any] = {
@@ -709,6 +711,13 @@ def setup_app_settings(settings: AppSettings) -> AppSettings:
     return settings
 
 
-def get_app_settings() -> AppSettings | None:
+def get_app_settings() -> AppSettings:
+    global APP_SETTINGS_SINGLETON
+    if APP_SETTINGS_SINGLETON is None:
+        raise AppRuntimeException("App settings is not initialized")
+    return APP_SETTINGS_SINGLETON
+
+
+def get_app_settings_or_none() -> AppSettings | None:
     global APP_SETTINGS_SINGLETON
     return APP_SETTINGS_SINGLETON

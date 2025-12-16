@@ -2,8 +2,8 @@ import tkinter as tk
 import tkinter.ttk as ttk
 from typing import Any
 
-from ....model import AppModel
-from ....settings import AppSettings
+from ....model import get_app_model
+from ....settings import get_app_settings
 from ....widgets.app import AppFrame
 
 
@@ -11,29 +11,24 @@ class OthersSettings(AppFrame):
     def __init__(self, master: tk.Misc, *args: Any, **kwargs: Any) -> None:
         super().__init__(master, *args, **kwargs)
 
-        self._output_size = self.settings.widget.output.size_balance
-        self._output_stdout = self.settings.widget.output.stdout
-        self._output1_visibility = self.settings.widget.output.visible_output1
-        self._output2_visibility = self.settings.widget.output.visible_output2
+        self._app_settings = get_app_settings()
+        self._app_model = get_app_model()
+
+        self._output_size = self._app_settings.widget.output.size_balance
+        self._output_stdout = self._app_settings.widget.output.stdout
+        self._output1_visibility = self._app_settings.widget.output.visible_output1
+        self._output2_visibility = self._app_settings.widget.output.visible_output2
         self._software_controller_visibility = (
-            self.settings.widget.software_controller.visible
+            self._app_settings.widget.software_controller.visible
         )
         self._software_controller_position = (
-            self.settings.widget.software_controller.position
+            self._app_settings.widget.software_controller.position
         )
         self._confirm_dialogue_buttons_position = (
-            self.settings.widget.dialog.confirm_buttons_position
+            self._app_settings.widget.dialog.confirm_buttons_position
         )
 
         self.build_ui()
-
-    @property
-    def settings(self) -> AppSettings:
-        return self.app.settings
-
-    @property
-    def app_model(self) -> AppModel:
-        return self.app.app_model
 
     def build_ui(self) -> None:
         upper_frame = ttk.Labelframe(self, text="Output Settings")
@@ -238,22 +233,22 @@ class OthersSettings(AppFrame):
         return labelframe
 
     def _on_size_adjuster_changed(self, _value: str) -> None:
-        self.app_model.adjust_log_outputs_size()
+        self._app_model.adjust_log_outputs_size()
 
     def _on_stdout_changed(self) -> None:
-        self.app_model.apply_change_log_stdout()
+        self._app_model.apply_change_log_stdout()
 
     def _on_clear_pushed(self, output_id: int) -> None:
-        self.app_model.clear_log_output(output_id)
+        self._app_model.clear_log_output(output_id)
 
     def _on_output_visibility_changed(self) -> None:
-        self.app_model.apply_outputs_visibility()
+        self._app_model.apply_outputs_visibility()
 
     def _on_software_controller_visibility_changed(self) -> None:
-        self.app_model.apply_software_controller_visibility()
+        self._app_model.apply_software_controller_visibility()
 
     def _on_software_controller_position_changed(self) -> None:
-        self.app_model.apply_software_controller_position()
+        self._app_model.apply_software_controller_position()
 
     def _on_confirm_buttons_position_changed(self) -> None:
-        self.app_model.apply_confirm_buttons_position()
+        self._app_model.apply_confirm_buttons_position()

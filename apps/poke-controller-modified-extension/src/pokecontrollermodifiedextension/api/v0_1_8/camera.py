@@ -54,12 +54,15 @@ def _get_save_filespec(filename: str) -> str:
 
 
 class Camera:
+    camera: cameralib.Camera
+
     def __init__(self, fps: int = 45):
-        capture_size = (1280, 720)
-        self.camera = cameralib.Camera(frame_size=capture_size)
         self.image_bgr: imagelib.RawImage | None = None
         self._fps = fps
         self.capture_dir = "Captures"
+
+    def _set_camera(self, camera: cameralib.Camera) -> None:
+        self.camera = camera
 
     @property
     def fps(self) -> int:

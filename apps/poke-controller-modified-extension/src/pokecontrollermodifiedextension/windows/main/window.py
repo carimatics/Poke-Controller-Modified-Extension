@@ -3,7 +3,8 @@ import tkinter as tk
 import tkinter.ttk as ttk
 from typing import Any, Literal
 
-from ...settings import AppSettings
+from ...model import get_app_model
+from ...settings import get_app_settings
 from ...widgets.app import AppFrame
 from .capture import CapturePane
 from .controller import ControllerPane
@@ -27,15 +28,20 @@ class MainWindow(AppFrame):
     def __init__(self, master: tk.Misc, *args: Any, **kwargs: Any) -> None:
         super().__init__(master, *args, **kwargs)
 
-        self._outputs_size = self.settings.widget.output.size_balance
-        self._visible_output1 = self.settings.widget.output.visible_output1
-        self._visible_output2 = self.settings.widget.output.visible_output2
-        self._visible_controller = self.settings.widget.software_controller.visible
-        self._controller_position = self.settings.widget.software_controller.position
+        self._app_settings = get_app_settings()
+        self._app_model = get_app_model()
+
+        self._outputs_size = self._app_settings.widget.output.size_balance
+        self._visible_output1 = self._app_settings.widget.output.visible_output1
+        self._visible_output2 = self._app_settings.widget.output.visible_output2
+        self._visible_controller = self._app_settings.widget.software_controller.visible
+        self._controller_position = (
+            self._app_settings.widget.software_controller.position
+        )
 
         # for trace
-        self._serial_port = self.settings.serial.port
-        self._serial_port_name = self.settings.serial.port_name
+        self._serial_port = self._app_settings.serial.port
+        self._serial_port_name = self._app_settings.serial.port_name
 
         self._panes: dict[str, ttk.Frame] = {}
         self._frames: dict[str, ttk.Frame] = {}
@@ -43,10 +49,6 @@ class MainWindow(AppFrame):
         self.build_ui()
 
         master.after(0, self._adjust_outputs_size)
-
-    @property
-    def settings(self) -> AppSettings:
-        return self.app.settings
 
     @property
     def _outputs_pane(self) -> OutputsPane:
@@ -186,7 +188,7 @@ class MainWindow(AppFrame):
         self._repack_right_panes()
 
     def _on_serial_port_changed(self, *_: Any) -> None:
-        serial_ports = self.app.app_model.load_serial_ports()
+        serial_ports = self._app_model.load_serial_ports()
         for port in serial_ports:
             if port.path == self._serial_port.get():
                 self._serial_port_name.set(port.name)

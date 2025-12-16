@@ -3,6 +3,8 @@ import tkinter as tk
 from typing import Any
 
 from .... import widgets
+from ....model import get_app_model
+from ....settings import get_app_settings
 from ....widgets.app import AppFrame
 from ....widgets.components import ComponentPackBuilder
 
@@ -15,13 +17,16 @@ class SerialSettingsPane(AppFrame):
     def __init__(self, master: tk.Misc, *args: Any, **kwargs: Any) -> None:
         super().__init__(master, *args, **kwargs)
 
-        self._serial_ports = self.app.app_model.load_serial_ports()
+        self._app_settings = get_app_settings()
+        self._app_model = get_app_model()
 
-        self._port = self.app.settings.serial.port
-        self._port_name = self.app.settings.serial.port_name
-        self._baud_rate = self.app.settings.serial.baud_rate
-        self._data_format = self.app.settings.serial.data_format
-        self._show_data = self.app.settings.serial.show_data
+        self._serial_ports = self._app_model.load_serial_ports()
+
+        self._port = self._app_settings.serial.port
+        self._port_name = self._app_settings.serial.port_name
+        self._baud_rate = self._app_settings.serial.baud_rate
+        self._data_format = self._app_settings.serial.data_format
+        self._show_data = self._app_settings.serial.show_data
 
         self.build_ui()
 
@@ -44,16 +49,14 @@ class SerialSettingsPane(AppFrame):
             .add_label(text="Baud Rate:", width=label_width)
             .add_combobox(
                 variable=self._baud_rate,
-                values=[
-                    str(i) for i in self.app.app_model.load_serial_baud_rate_list()
-                ],
+                values=[str(i) for i in self._app_model.load_serial_baud_rate_list()],
             )
             .end()
             .add_frame_row()
             .add_label(text="Data Format:", width=label_width)
             .add_combobox(
                 variable=self._data_format,
-                values=self.app.app_model.load_serial_data_format_list(),
+                values=self._app_model.load_serial_data_format_list(),
             )
             .end()
             .add_frame_row()
@@ -66,5 +69,5 @@ class SerialSettingsPane(AppFrame):
         frame.pack(expand=False, fill=tk.BOTH, anchor=tk.CENTER)
 
     def _on_port_reload_pushed(self) -> None:
-        serial_ports = [s.path for s in self.app.app_model.load_serial_ports()]
+        serial_ports = [s.path for s in self._app_model.load_serial_ports()]
         self._port_combobox.configure(values=serial_ports)

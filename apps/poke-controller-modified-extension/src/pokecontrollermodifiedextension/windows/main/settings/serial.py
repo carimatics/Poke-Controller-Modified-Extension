@@ -3,8 +3,8 @@ import tkinter as tk
 import tkinter.ttk as ttk
 from typing import Any
 
-from ....model import AppModel
-from ....settings import AppSettings
+from ....model import get_app_model
+from ....settings import get_app_settings
 from ....widgets.app import AppFrame
 
 
@@ -12,24 +12,19 @@ class SerialSettings(AppFrame):
     def __init__(self, master: tk.Misc, *args: Any, **kwargs: Any) -> None:
         super().__init__(master, *args, **kwargs)
 
+        self._app_settings = get_app_settings()
+        self._app_model = get_app_model()
+
         self._port_list: list[str] = self._load_serial_ports()
         self._baud_rate_list: list[int] = self._load_serial_baud_rate_list()
         self._data_format_list: list[str] = self._load_serial_data_format_list()
 
-        self._port = self.app_state.serial.port
-        self._baud_rate = self.app_state.serial.baud_rate
-        self._data_format = self.app_state.serial.data_format
-        self._show_data = self.app_state.serial.show_data
+        self._port = self._app_settings.serial.port
+        self._baud_rate = self._app_settings.serial.baud_rate
+        self._data_format = self._app_settings.serial.data_format
+        self._show_data = self._app_settings.serial.show_data
 
         self.build_ui()
-
-    @property
-    def app_state(self) -> AppSettings:
-        return self.app.settings
-
-    @property
-    def app_model(self) -> AppModel:
-        return self.app.app_model
 
     def build_ui(self) -> None:
         # Create Labelframes
@@ -133,19 +128,19 @@ class SerialSettings(AppFrame):
         return labelframe
 
     def _load_serial_ports(self) -> list[str]:
-        return [port.path for port in self.app_model.load_serial_ports()]
+        return [port.path for port in self._app_model.load_serial_ports()]
 
     def _load_serial_baud_rate_list(self) -> list[int]:
-        return self.app_model.load_serial_baud_rate_list()
+        return self._app_model.load_serial_baud_rate_list()
 
     def _load_serial_data_format_list(self) -> list[str]:
-        return self.app_model.load_serial_data_format_list()
+        return self._app_model.load_serial_data_format_list()
 
     def _on_reconnect_pushed(self) -> None:
-        self.app_model.connect_serial_port(self.app.serial)
+        self._app_model.connect_serial_port()
 
     def _on_disconnect_pushed(self) -> None:
-        self.app_model.disconnect_serial_port()
+        self._app_model.disconnect_serial_port()
 
     def _on_data_format_selected(self, _event: tk.Event) -> None:
-        self.app_model.apply_controller_data_format()
+        self._app_model.apply_controller_data_format()

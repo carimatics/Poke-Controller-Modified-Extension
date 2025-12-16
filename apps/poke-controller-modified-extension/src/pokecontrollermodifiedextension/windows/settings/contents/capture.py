@@ -2,6 +2,8 @@ import logging
 import tkinter as tk
 from typing import Any
 
+from ....model import get_app_model
+from ....settings import get_app_settings
 from ....widgets.app import AppFrame
 from ....widgets.components import ComponentPackBuilder
 
@@ -14,16 +16,19 @@ class CaptureSettingsPane(AppFrame):
     def __init__(self, master: tk.Misc, *args: Any, **kwargs: Any) -> None:
         super().__init__(master, *args, **kwargs)
 
-        self._camera_id = self.app.settings.capture.camera_id
-        self._camera_name = self.app.settings.capture.camera_name
-        self._fps = self.app.settings.capture.fps
-        self._camera_size = self.app.settings.capture.size
+        self._settings = get_app_settings()
+        self._app_model = get_app_model()
+
+        self._camera_id = self._settings.capture.camera_id
+        self._camera_name = self._settings.capture.camera_name
+        self._fps = self._settings.capture.fps
+        self._camera_size = self._settings.capture.size
         self._camera_size_scale_value = tk.IntVar(
             value=int(self._camera_size.get().split("x")[0]) // 16,
         )
-        self._show_realtime = self.app.settings.capture.show_realtime
-        self._show_matched = self.app.settings.capture.show_matched
-        self._show_guide = self.app.settings.capture.show_guide
+        self._show_realtime = self._settings.capture.show_realtime
+        self._show_matched = self._settings.capture.show_matched
+        self._show_guide = self._settings.capture.show_guide
 
         self._register_hooks()
         self.build_ui()
@@ -35,7 +40,7 @@ class CaptureSettingsPane(AppFrame):
             .add_frame_row()
             .add_label(text="Camera ID:", width=label_width)
             .add_combobox(
-                self._camera_id, values=list(self.app.app_model.load_camera_list())
+                self._camera_id, values=list(self._app_model.load_camera_list())
             )
             .end()
             .add_frame_row()

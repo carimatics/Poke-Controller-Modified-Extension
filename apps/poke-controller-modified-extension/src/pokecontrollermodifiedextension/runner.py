@@ -1,3 +1,4 @@
+import sys
 import tkinter as tk
 from pathlib import Path
 from typing import Any
@@ -5,6 +6,8 @@ from typing import Any
 from pokecontroller.core.camera import use_camera
 from pokecontroller.core.serial import use_serial
 
+from .api.v0_1_8.camera import use_camera as use_camera_v0_1_8
+from .api.v0_1_8.command.sender import use_sender as use_sender_v0_1_8
 from .app import App
 from .core.logging import setup_logging
 from .core.papico.handlers.v0_1_8.settings import (
@@ -16,31 +19,43 @@ from .core.papico.handlers.v0_2_0.settings import (
     PapicoSettingsSaveHandler as PapicoSettingsSaveHandler_v0_2_0,
 )
 from .core.papico.papico import Papico, PapicoRegisterHandlerContext, setup_papico
+from .info import setup_runtime_info
+from .resources import setup_app_resources
 from .widgets.app import AppMenu
 from .windows import MainWindow
 
 
-def run_app(*, base_dir: str, profile: str) -> None:
+def run_app(*, base_dir: Path, profile: str) -> None:
+    sys.path.append(str(base_dir))
     setup_logging()
 
     with (
         use_camera() as camera,
         use_serial() as serial,
+        use_sender_v0_1_8() as sender_v0_1_8,
+        use_camera_v0_1_8() as camera_v0_1_8,
     ):
-        base_dir_path = Path(base_dir)
+        camera_v0_1_8._set_camera(camera)
+
+        setup_app_resources(
+            camera=camera,
+            serial=serial,
+            camera_v0_1_8=camera_v0_1_8,
+            sender_v0_1_8=sender_v0_1_8,
+        )
+
+        # runtime info
+        setup_runtime_info(
+            base_dir=base_dir,
+            profile=profile,
+        )
 
         # papico
-        papico = setup_papico(base_dir=base_dir_path, profile=profile)
+        papico = setup_papico()
         _register_handlers(papico)
 
         # app
-        app = App(
-            base_dir=base_dir_path,
-            profile=profile,
-            papico=papico,
-            camera=camera,
-            serial=serial,
-        )
+        app = App()
 
         # menubar
         menu = AppMenu(app)

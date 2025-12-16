@@ -2,8 +2,8 @@ import tkinter as tk
 import tkinter.ttk as ttk
 from typing import Any
 
-from ....model import AppModel
-from ....settings import AppSettings
+from ....model import get_app_model
+from ....settings import get_app_settings
 from ....widgets.app import AppFrame
 
 
@@ -11,26 +11,21 @@ class CameraSettings(AppFrame):
     def __init__(self, master: tk.Misc, *args: Any, **kwargs: Any) -> None:
         super().__init__(master, *args, **kwargs)
 
+        self._app_settings = get_app_settings()
+        self._app_model = get_app_model()
+
         self._name_list: list[str] = self._load_camera_list()
         self._size_list: list[str] = self._load_camera_size_list()
 
-        self._camera_id = self.app_state.capture.camera_id
-        self._camera_name = self.app_state.capture.camera_name
-        self._fps = self.app_state.capture.fps
-        self._size = self.app_state.capture.size
-        self._show_realtime = self.app_state.capture.show_realtime
-        self._show_matched = self.app_state.capture.show_matched
-        self._show_guide = self.app_state.capture.show_guide
+        self._camera_id = self._app_settings.capture.camera_id
+        self._camera_name = self._app_settings.capture.camera_name
+        self._fps = self._app_settings.capture.fps
+        self._size = self._app_settings.capture.size
+        self._show_realtime = self._app_settings.capture.show_realtime
+        self._show_matched = self._app_settings.capture.show_matched
+        self._show_guide = self._app_settings.capture.show_guide
 
         self.build_ui()
-
-    @property
-    def app_state(self) -> AppSettings:
-        return self.app.settings
-
-    @property
-    def app_model(self) -> AppModel:
-        return self.app.app_model
 
     def build_ui(self) -> None:
         # Create Labelframes
@@ -191,28 +186,28 @@ class CameraSettings(AppFrame):
         return labelframe
 
     def _load_camera_list(self) -> list[str]:
-        return self.app_model.load_camera_list()
+        return self._app_model.load_camera_list()
 
     def _load_camera_size_list(self) -> list[str]:
-        return self.app_model.load_camera_size_list()
+        return self._app_model.load_camera_size_list()
 
     def _on_camera_name_selected(self, _event: tk.Event) -> None:
-        self.app_model.apply_camera_name()
+        self._app_model.apply_camera_name()
 
     def _on_camera_fps_selected(self, _event: tk.Event) -> None:
-        self.app_model.apply_camera_fps()
+        self._app_model.apply_camera_fps()
 
     def _on_camera_size_selected(self, _event: tk.Event) -> None:
-        self.app_model.apply_camera_size()
+        self._app_model.apply_camera_size()
 
     def _on_reload_pushed(self) -> None:
-        self.app_model.connect_camera()
+        self._app_model.connect_camera()
 
     def _on_show_realtime_changed(self) -> None:
-        self.app_model.apply_camera_show_realtime()
+        self._app_model.apply_camera_show_realtime()
 
     def _on_show_matched_changed(self) -> None:
-        self.app_model.apply_camera_show_matched()
+        self._app_model.apply_camera_show_matched()
 
     def _on_show_guide_changed(self) -> None:
-        self.app_model.apply_camera_show_guide()
+        self._app_model.apply_camera_show_guide()

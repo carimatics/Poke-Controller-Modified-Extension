@@ -3,7 +3,7 @@ import tkinter as tk
 import tkinter.ttk as ttk
 from typing import Any
 
-from ....model import AppModel
+from ....model import get_app_model
 from ....widgets.app import AppFrame
 
 A = "A"
@@ -47,6 +47,7 @@ BUTTON_COLORS = {
 class ControllerPane(AppFrame):
     def __init__(self, master: tk.Misc, *args: Any, **kwargs: Any) -> None:
         super().__init__(master, *args, **kwargs)
+        self._app_model = get_app_model()
         self.build_ui()
 
     def build_ui(self) -> None:
@@ -70,10 +71,6 @@ class ControllerPane(AppFrame):
         right_frame.pack(expand=False, fill=tk.BOTH, side=tk.LEFT)
         wrapper.pack(expand=False, fill=tk.Y, anchor=tk.CENTER)
         labelframe.pack(expand=False, fill=tk.BOTH)
-
-    @property
-    def app_model(self) -> AppModel:
-        return self.app.app_model
 
     def _build_grid_frame(
         self,
@@ -108,7 +105,7 @@ class ControllerPane(AppFrame):
                 b.grid(row=row, column=column, padx=2, pady=2, sticky=tk.NSEW)
 
     def _on_button_pushed(self, button: str) -> None:
-        self.app_model.push_controller_button(button)
+        self._app_model.push_controller_button(button)
 
     def _on_button_released(self, button: str) -> None:
-        self.app_model.release_controller_button(button)
+        self._app_model.release_controller_button(button)
