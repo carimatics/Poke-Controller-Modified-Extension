@@ -9,13 +9,13 @@ class OutputsWidgetCatalog:
 
 
 @dataclass(kw_only=True)
-class WidgetCatalog:
+class AppWidgetCatalog:
     outputs: OutputsWidgetCatalog
 
 
-_widget_catalog = WidgetCatalog(outputs=OutputsWidgetCatalog())
+_app_widget_catalog = AppWidgetCatalog(outputs=OutputsWidgetCatalog())
 
 
-def get_widget_catalog() -> WidgetCatalog:
-    global _widget_catalog
-    return _widget_catalog
+def get_app_widget_catalog() -> AppWidgetCatalog:
+    global _app_widget_catalog
+    return _app_widget_catalog
