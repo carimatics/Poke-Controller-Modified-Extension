@@ -26,7 +26,7 @@ class DiscordWebhookOptions:
 
 
 class DiscordConfig(Config):
-    def __init__(self, path: str) -> None:
+    def __init__(self, path: Path) -> None:
         super().__init__(path)
         self._initialize()
 

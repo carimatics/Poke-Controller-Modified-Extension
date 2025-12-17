@@ -3,18 +3,14 @@ from pathlib import Path
 from typing import Callable
 
 from ...runtime_info import get_app_runtime_info
-from ...settings import (
-    AppSettings,
-    get_app_settings,
-    get_app_settings_or_none,
-    setup_app_settings,
-)
-from .context import PapicoExecContext, PapicoFailure, PapicoResult, PapicoSuccess
-from .exception import PapicoExecException
-from .handlers import PapicoHandler, PapicoRegisterHandlerContext
-
-type PapicoContainer[T] = dict[str, dict[str, dict[str, T]]]
-PapicoHandlerGenerator = Callable[[], PapicoHandler]
+from ...settings import AppSettings
+from ..command import CommandInfo
+from ..command.state import CommandState
+from .context import PapicoResult
+from .delegates.command import PapicoCommandDelegate
+from .delegates.settings import PapicoSettingsDelegate
+from .handlers import PapicoRegisterHandlerContext
+from .types import PapicoContainer, PapicoHandlerGenerator
 
 LATEST_API_VERSION = "0.2.0"
 
@@ -32,19 +28,19 @@ class Papico:
     def __init__(self) -> None:
         self._runtime_info = get_app_runtime_info()
         self._handler_generators: PapicoContainer[PapicoHandlerGenerator] = {}
-        self._current_handler: PapicoHandler | None = None
 
-    @property
-    def _base_dir(self) -> Path:
-        return self._runtime_info.base_dir
-
-    @property
-    def _profile(self) -> str:
-        return self._runtime_info.profile
+        self._settings_delegate = PapicoSettingsDelegate(
+            latest_api_version=LATEST_API_VERSION,
+            handler_generators=self._handler_generators,
+        )
+        self._command_delegate = PapicoCommandDelegate(
+            latest_api_version=LATEST_API_VERSION,
+            handler_generators=self._handler_generators,
+        )
 
     @property
     def settings_path(self) -> Path:
-        return self._settings_path
+        return self._settings_delegate.settings_path
 
     def register_handler(self, ctx: PapicoRegisterHandlerContext) -> None:
         self._handler_generators.setdefault(
@@ -56,131 +52,38 @@ class Papico:
         )[ctx.operation] = ctx.handler_generator
 
     def load_settings(self) -> PapicoResult[AppSettings]:
-        if (settings := get_app_settings_or_none()) is not None:
-            return PapicoSuccess(
-                ctx=PapicoExecContext(
-                    api_version=settings.general.version.get(),
-                    domain="settings",
-                    operation="load",
-                ),
-                data=settings,
-            )
-
-        path_v0_2 = (
-            self._runtime_info.base_dir
-            / "profiles"
-            / self._runtime_info.profile
-            / "settings.json"
-        )
-        path_v0_1 = (
-            self._runtime_info.base_dir
-            / "profiles"
-            / self._runtime_info.profile
-            / "settings.ini"
-        )
-        if path_v0_2.exists() and path_v0_2.is_file():
-            logger.info(f"Loading settings from {path_v0_2}")
-            result = self._exec(
-                PapicoExecContext(
-                    api_version="0.2.0",
-                    domain="settings",
-                    operation="load",
-                    params={"path": str(path_v0_2)},
-                )
-            )
-            self._settings_path = path_v0_2
-        elif path_v0_1.exists() and path_v0_1.is_file():
-            logger.info(f"Loading settings from {path_v0_1}")
-            result = self._exec(
-                PapicoExecContext(
-                    api_version="0.1.8",
-                    domain="settings",
-                    operation="load",
-                    params={"path": str(path_v0_1)},
-                )
-            )
-            self._settings_path = path_v0_1
-        else:
-            logger.info("Loading default settings from the latest version")
-            result = self._exec(
-                PapicoExecContext(
-                    api_version=LATEST_API_VERSION,
-                    domain="settings",
-                    operation="load",
-                    params={"path": str(path_v0_2)},
-                )
-            )
-            self._settings_path = path_v0_2
-        return result
+        return self._settings_delegate.load()
 
     def reload_settings(self) -> PapicoResult[AppSettings]:
-        result = self.load_settings()
-        if not result.success:
-            return PapicoFailure(
-                ctx=PapicoExecContext(
-                    api_version=result.ctx.api_version,
-                    domain="settings",
-                    operation="reload",
-                ),
-                error=result.error,
-            )
-
-        if (settings := get_app_settings_or_none()) is None:
-            settings = setup_app_settings(result.data)
-        else:
-            settings.apply_dict(result.data.to_dict())
-
-        return PapicoSuccess(
-            ctx=PapicoExecContext(
-                api_version=settings.general.version.get(),
-                domain="settings",
-                operation="reload",
-            ),
-            data=settings,
-        )
+        return self._settings_delegate.reload()
 
     def save_settings(self) -> PapicoResult[None]:
-        if (settings := get_app_settings()) is None:
-            raise PapicoExecException(
-                "Settings is not loaded yet. Please call load_settings() first.",
-            )
+        return self._settings_delegate.save()
 
-        version = settings.general.version.get()
-        if version == "0.2.0":
-            path = self._base_dir / "profiles" / self._profile / "settings.json"
-            return self._exec(
-                PapicoExecContext(
-                    api_version=version,
-                    domain="settings",
-                    operation="save",
-                    params={"settings": settings, "path": str(path)},
-                )
-            )
-        elif version == "0.1.8":
-            path = self._base_dir / "profiles" / self._profile / "settings.ini"
-            return self._exec(
-                PapicoExecContext(
-                    api_version=version,
-                    domain="settings",
-                    operation="save",
-                    params={"settings": settings, "path": str(path)},
-                )
-            )
-        else:
-            raise PapicoExecException(f"Unknown version: {version}")
+    def initialize_command(self) -> PapicoResult[None]:
+        return self._command_delegate.initialize()
 
-    def _exec(self, ctx: PapicoExecContext) -> PapicoResult:
-        if self._current_handler is not None:
-            raise PapicoExecException(message="Other handler is running already.")
-        try:
-            self._current_handler = handler = self._handler_generators[ctx.api_version][
-                ctx.domain
-            ][ctx.operation]()
-            return handler.handle(ctx)
-        except KeyError as e:
-            raise PapicoExecException(message=f"Operation not found: {e}") from e
-        finally:
-            self._current_handler = None
+    def load_commands(self) -> PapicoResult[list[CommandInfo]]:
+        return self._command_delegate.load()
+
+    def get_command_state(self) -> PapicoResult[CommandState]:
+        return self._command_delegate.get_state()
+
+    def start_command(
+        self,
+        command_info: CommandInfo,
+        *,
+        post_process: Callable[[], None] | None = None,
+        sync_name: str | None = None,
+    ) -> PapicoResult[None]:
+        return self._command_delegate.start(
+            command_info,
+            post_process=post_process,
+            sync_name=sync_name,
+        )
+
+    def stop_command(self) -> PapicoResult[None]:
+        return self._command_delegate.stop()
 
 
 PAPICO_SINGLETON: Papico | None = None

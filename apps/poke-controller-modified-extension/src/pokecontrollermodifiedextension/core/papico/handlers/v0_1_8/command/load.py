@@ -6,7 +6,7 @@ from ......api.v0_1_8.command.commands.mcu.base import McuCommand
 from ......api.v0_1_8.command.commands.python.base import PythonCommand
 from ......runtime_info import get_app_runtime_info
 from .....command.info import CommandInfo
-from ....context import PapicoExecContext, PapicoResult, PapicoSuccess
+from ....context import PapicoExecContext, PapicoFailure, PapicoResult, PapicoSuccess
 from ....exception import PapicoCommandLoadHandlerException
 from ...handler import PapicoHandler
 
@@ -24,7 +24,10 @@ class PapicoCommandLoadHandler(PapicoHandler):
             self._load_mcu_commands()
             return PapicoSuccess(ctx=ctx, data=self._commands)
         except Exception as e:
-            raise PapicoCommandLoadHandlerException(f"{e}") from e
+            return PapicoFailure(
+                ctx=ctx,
+                error=PapicoCommandLoadHandlerException(f"{e}"),
+            )
 
     def _load_python_commands(self) -> None:
         python_commands_path = self._base_dir / "PythonCommands"

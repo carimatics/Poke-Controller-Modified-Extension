@@ -4,6 +4,7 @@ import os
 import socket
 import time
 from functools import wraps
+from pathlib import Path
 from typing import Callable
 
 from pokecontroller.utils.config import Config
@@ -24,11 +25,11 @@ logger = logging.getLogger(__name__)
 
 
 def generate_token_file(filename: str) -> None:
-    _ = ExternalToolsConfig(path=filename)
+    _ = ExternalToolsConfig(path=Path(filename))
 
 
 class ExternalToolsConfig(Config):
-    def __init__(self, path: str) -> None:
+    def __init__(self, path: Path) -> None:
         super().__init__(path)
         self._initialize()
 
@@ -125,7 +126,7 @@ class SocketCommunications:
         self.flag_socket = False
 
         # SOCKET設定
-        self.token_file = ExternalToolsConfig(path=self.SOCKET_TOKEN_PATH)
+        self.token_file = ExternalToolsConfig(path=Path(self.SOCKET_TOKEN_PATH))
         self.sock: socket.socket | None = None
 
     @property
@@ -330,7 +331,7 @@ class MQTTCommunications:
         self.alive = False
 
         # MQTT設定
-        self.token_file = ExternalToolsConfig(path=self.MQTT_TOKEN_PATH)
+        self.token_file = ExternalToolsConfig(path=Path(self.MQTT_TOKEN_PATH))
 
         fullaccess_token = self.token_file.get_fullaccess_token()
         readonly_token = self.token_file.get_readonly_token()

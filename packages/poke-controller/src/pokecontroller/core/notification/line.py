@@ -1,4 +1,5 @@
 import logging
+from pathlib import Path
 from typing import Any
 
 import requests
@@ -16,7 +17,7 @@ LINE_NOTIFY_API_URL = f"{LINE_API_URL_BASE}/notify"
 
 
 class LineConfig(Config):
-    def __init__(self, path: str) -> None:
+    def __init__(self, path: Path) -> None:
         super().__init__(path)
         self._initialize()
 

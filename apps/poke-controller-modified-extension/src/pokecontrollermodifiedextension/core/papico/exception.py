@@ -33,3 +33,15 @@ class PapicoCommandInitializeHandlerException(PapicoExecException):
 
 class PapicoCommandLoadHandlerException(PapicoExecException):
     pass
+
+
+class PapicoCommandGetStateHandlerException(PapicoExecException):
+    pass
+
+
+class PapicoCommandStartHandlerException(PapicoExecException):
+    pass
+
+
+class PapicoCommandStopHandlerException(PapicoExecException):
+    pass

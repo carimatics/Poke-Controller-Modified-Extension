@@ -3,7 +3,7 @@ from ......info import get_app_info
 from ......runtime_info import get_app_runtime_info
 from ......settings import get_app_settings
 from ......widget_catalog import get_app_widget_catalog
-from ....context import PapicoExecContext, PapicoResult, PapicoSuccess
+from ....context import PapicoExecContext, PapicoFailure, PapicoResult, PapicoSuccess
 from ....exception import PapicoCommandInitializeHandlerException
 from ...handler import PapicoHandler
 
@@ -19,7 +19,10 @@ class PapicoCommandInitializeHandler(PapicoHandler):
                 PapicoCommandInitializeHandler._registered_trace = True
             return PapicoSuccess(ctx=ctx, data=None)
         except Exception as e:
-            raise PapicoCommandInitializeHandlerException(f"{e}") from e
+            return PapicoFailure(
+                ctx=ctx,
+                error=PapicoCommandInitializeHandlerException(f"{e}"),
+            )
 
     def _initialize_base_command(self) -> None:
         app_info = get_app_info()

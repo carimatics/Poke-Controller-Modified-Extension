@@ -20,7 +20,7 @@ logger = logging.getLogger(__name__)
 
 
 class PapicoSettingsLoadHandler(PapicoHandler):
-    _path: str
+    _path: Path
     _settings: dict[str, Any]
     _tk_variables: dict[str, Any]
 
@@ -28,7 +28,7 @@ class PapicoSettingsLoadHandler(PapicoHandler):
         try:
             if (params := ctx.params) is None or "path" not in params:
                 raise PapicoSettingsLoadHandlerException("Path is required.")
-            self._path: str = params["path"]
+            self._path: Path = params["path"]
             self._settings = self._load_settings()
             self._fill_by_default()
             self._tk_variables = self._value_to_tk_variables()
@@ -44,7 +44,7 @@ class PapicoSettingsLoadHandler(PapicoHandler):
             )
 
     def _load_settings(self) -> dict[str, Any]:
-        if not Path(self._path).exists():
+        if not self._path.exists():
             return {}
         config = Config(self._path)
         config.load()

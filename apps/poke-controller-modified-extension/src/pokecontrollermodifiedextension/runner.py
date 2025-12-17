@@ -8,8 +8,11 @@ from pokecontroller.core.serial import use_serial
 
 from .app import App
 from .core.papico.handlers.v0_1_8.command import (
+    PapicoCommandGetStateHandler as PapicoCommandGetStateHandler_v0_1_8,
     PapicoCommandInitializeHandler as PapicoCommandInitializeHandler_v0_1_8,
     PapicoCommandLoadHandler as PapicoCommandLoadHandler_v0_1_8,
+    PapicoCommandStartHandler as PapicoCommandStartHandler_v0_1_8,
+    PapicoCommandStopHandler as PapicoCommandStopHandler_v0_1_8,
 )
 from .core.papico.handlers.v0_1_8.settings import (
     PapicoSettingsLoadHandler as PapicoSettingsLoadHandler_v0_1_8,
@@ -85,6 +88,15 @@ def _register_handlers(papico: Papico) -> None:
             },
             "load": {
                 "0.1.8": PapicoCommandLoadHandler_v0_1_8,
+            },
+            "get_state": {
+                "0.1.8": PapicoCommandGetStateHandler_v0_1_8,
+            },
+            "start": {
+                "0.1.8": PapicoCommandStartHandler_v0_1_8,
+            },
+            "stop": {
+                "0.1.8": PapicoCommandStopHandler_v0_1_8,
             },
         },
     }

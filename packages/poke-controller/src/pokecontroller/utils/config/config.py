@@ -4,8 +4,8 @@ from pathlib import Path
 
 
 class Config:
-    def __init__(self, path: str) -> None:
-        self._path: str = path
+    def __init__(self, path: Path) -> None:
+        self._path = path
         self._config: configparser.ConfigParser = configparser.ConfigParser(
             allow_no_value=True,
             comment_prefixes=("#", ";"),
@@ -19,9 +19,9 @@ class Config:
         self._config[section] = value
 
     def load(self, encoding: str | None = "utf-8-sig") -> None:
-        if not Path(self._path).exists():
-            raise FileNotFoundError(self._path)
-        self._config.read(self._path, encoding=encoding)
+        if not self._path.exists():
+            raise FileNotFoundError(str(self._path))
+        self._config.read(str(self._path), encoding=encoding)
 
     def save(
         self,
@@ -33,7 +33,7 @@ class Config:
         if not self._exists_directory() and create_directory:
             self._create_directories()
 
-        with open(self._path, mode="w", encoding=encoding) as file:
+        with open(str(self._path), mode="w", encoding=encoding) as file:
             self._config.write(file)
 
         if chmod is not None:
@@ -91,7 +91,7 @@ class Config:
         return list(self._config[section].keys())
 
     def _check_exists_directory(self, should_create: bool) -> None:
-        directory = Path(self._path).parent
+        directory = self._path.parent
         exists_dir = self._exists_directory()
         if not exists_dir and not should_create:
             # FIXME: declare better error
@@ -99,10 +99,9 @@ class Config:
         self._create_directories()
 
     def _exists_directory(self) -> bool:
-        path = Path(self._path)
-        directory = path.parent
+        directory = self._path.parent
         return directory.exists() and directory.is_dir()
 
     def _create_directories(self) -> None:
-        directory = Path(self._path).parent
+        directory = self._path.parent
         directory.mkdir(parents=True, exist_ok=True)

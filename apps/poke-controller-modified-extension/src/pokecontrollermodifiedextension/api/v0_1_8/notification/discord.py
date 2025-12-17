@@ -17,7 +17,7 @@ class Discord_Notify:  # noqa
         avatar_url: str = "",
         token_name: str = "token",
     ) -> None:
-        self._config = notification.DiscordConfig(path=str(self.DISCORD_TOKEN_PATH))
+        self._config = notification.DiscordConfig(path=self.DISCORD_TOKEN_PATH)
         self._notifier = notification.DiscordNotifier(config=self._config)
 
     def __str__(self) -> str:

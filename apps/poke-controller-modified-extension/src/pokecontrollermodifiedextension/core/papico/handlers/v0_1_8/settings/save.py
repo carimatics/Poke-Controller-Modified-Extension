@@ -15,7 +15,7 @@ logger = logging.getLogger(__name__)
 
 
 class PapicoSettingsSaveHandler(PapicoHandler):
-    _path: str
+    _path: Path
     _settings: AppSettings
     _values: dict[str, Any]
 
