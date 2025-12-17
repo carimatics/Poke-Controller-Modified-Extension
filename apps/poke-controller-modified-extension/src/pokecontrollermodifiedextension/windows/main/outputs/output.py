@@ -12,7 +12,7 @@ class Output(AppFrame):
         super().__init__(master, *args, **kwargs)
 
         self._id: int = output_id
-        self.text_area: tk.Text | None = None
+        self.textarea: tk.Text | None = None
 
         self.build_ui()
 
@@ -20,7 +20,7 @@ class Output(AppFrame):
         labelframe = ttk.Labelframe(self, text=f"Output#{self._id}", relief=tk.GROOVE)
 
         # Text Area
-        self.text_area = tk.Text(
+        self.textarea = tk.Text(
             labelframe,
             width=62,
             blockcursor=True,
@@ -33,13 +33,11 @@ class Output(AppFrame):
         scroll = tk.Scrollbar(
             labelframe,
             orient=tk.VERTICAL,
-            command=self.text_area.yview,
+            command=self.textarea.yview,
         )
-        self.text_area.configure(yscrollcommand=scroll.set)
+        self.textarea.configure(yscrollcommand=scroll.set)
 
         # Layout
-        self.text_area.pack(
-            expand=True, fill=tk.BOTH, side=tk.LEFT, padx=(5, 0), pady=5
-        )
+        self.textarea.pack(expand=True, fill=tk.BOTH, side=tk.LEFT, padx=(5, 0), pady=5)
         scroll.pack(expand=False, fill=tk.Y, side=tk.LEFT, pady=5)
         labelframe.pack(expand=True, fill=tk.BOTH)

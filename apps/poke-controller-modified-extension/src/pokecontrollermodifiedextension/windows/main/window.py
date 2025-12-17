@@ -161,7 +161,7 @@ class MainWindow(AppFrame):
 
     def _adjust_outputs_size(self) -> None:
         output1, output2 = self._outputs_pane.outputs
-        if (t1 := output1.text_area) is None or (t2 := output2.text_area) is None:
+        if (t1 := output1.textarea) is None or (t2 := output2.textarea) is None:
             raise RuntimeError("Outputs text areas are not initialized.")
 
         if (size := self._outputs_size.get()) is None:

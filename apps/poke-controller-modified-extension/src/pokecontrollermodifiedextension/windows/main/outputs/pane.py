@@ -1,6 +1,7 @@
 import tkinter as tk
 from typing import Any
 
+from ....widget_catalog import get_widget_catalog
 from ....widgets.app import AppFrame
 from .output import Output
 
@@ -13,6 +14,10 @@ class OutputsPane(AppFrame):
         self.outputs: list[Output] = []
 
         self.build_ui()
+
+        widget_catalog = get_widget_catalog()
+        widget_catalog.outputs.textarea1 = self.outputs[0].textarea
+        widget_catalog.outputs.textarea2 = self.outputs[1].textarea
 
     def build_ui(self) -> None:
         self.outputs += [
