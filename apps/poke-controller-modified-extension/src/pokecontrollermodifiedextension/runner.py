@@ -7,7 +7,6 @@ from pokecontroller.core.camera import use_camera
 from pokecontroller.core.serial import use_serial
 
 from .app import App
-from .core.logging import setup_logging
 from .core.papico.handlers.v0_1_8.settings import (
     PapicoSettingsLoadHandler as PapicoSettingsLoadHandler_v0_1_8,
     PapicoSettingsSaveHandler as PapicoSettingsSaveHandler_v0_1_8,
@@ -17,6 +16,7 @@ from .core.papico.handlers.v0_2_0.settings import (
     PapicoSettingsSaveHandler as PapicoSettingsSaveHandler_v0_2_0,
 )
 from .core.papico.papico import Papico, PapicoRegisterHandlerContext, setup_papico
+from .logging import setup_logging
 from .resources import setup_app_resources
 from .runtime_info import setup_runtime_info
 from .widgets.app import AppMenu
