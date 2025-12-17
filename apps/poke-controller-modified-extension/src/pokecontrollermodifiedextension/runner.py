@@ -85,7 +85,7 @@ def _register_handlers(papico: Papico) -> None:
             },
             "load": {
                 "0.1.8": PapicoCommandLoadHandler_v0_1_8,
-            }
+            },
         },
     }
 
