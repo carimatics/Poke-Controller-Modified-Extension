@@ -8,8 +8,9 @@ from .api.v0_1_8.command.commands.mcu.base import McuCommand
 from .api.v0_1_8.command.commands.python.base import PythonCommand
 from .api.v0_1_8.command.sender import Sender
 from .exception import AppRuntimeException
-from .info import get_app_info, get_app_runtime_info
+from .info import get_app_info
 from .resources import get_app_resources
+from .runtime_info import get_app_runtime_info
 from .settings import get_app_settings
 
 logger = logging.getLogger(__name__)

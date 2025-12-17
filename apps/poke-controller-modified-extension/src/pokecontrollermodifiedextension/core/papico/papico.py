@@ -2,7 +2,7 @@ import logging
 from pathlib import Path
 from typing import Callable
 
-from ...info import get_app_runtime_info
+from ...runtime_info import get_app_runtime_info
 from ...settings import (
     AppSettings,
     get_app_settings,

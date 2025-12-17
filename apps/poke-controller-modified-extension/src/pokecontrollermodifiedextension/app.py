@@ -4,9 +4,10 @@ from typing import Any
 
 from .core.papico import get_papico
 from .exception import AppRuntimeException
-from .info import get_app_info, get_app_runtime_info
+from .info import get_app_info
 from .model import setup_app_model
 from .resources import get_app_resources
+from .runtime_info import get_app_runtime_info
 from .settings import AppSettings, setup_app_settings
 from .style import StyleManager
 from .translation import setup_translation

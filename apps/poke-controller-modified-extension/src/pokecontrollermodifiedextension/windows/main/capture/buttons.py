@@ -3,8 +3,8 @@ import tkinter as tk
 import tkinter.ttk as ttk
 from typing import Any
 
-from ....info import get_app_runtime_info
 from ....model import get_app_model
+from ....runtime_info import get_app_runtime_info
 from ....widgets.app import AppDialog, AppFrame
 from ...controller import ControllerWindow
 

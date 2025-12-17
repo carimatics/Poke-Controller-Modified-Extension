@@ -19,8 +19,8 @@ from .core.papico.handlers.v0_2_0.settings import (
     PapicoSettingsSaveHandler as PapicoSettingsSaveHandler_v0_2_0,
 )
 from .core.papico.papico import Papico, PapicoRegisterHandlerContext, setup_papico
-from .info import setup_runtime_info
 from .resources import setup_app_resources
+from .runtime_info import setup_runtime_info
 from .widgets.app import AppMenu
 from .windows import MainWindow
 

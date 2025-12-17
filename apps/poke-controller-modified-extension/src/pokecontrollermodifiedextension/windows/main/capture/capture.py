@@ -14,8 +14,8 @@ from pokecontroller.core.controller import switch
 from pokecontroller.utils import platform
 from pokecontroller.utils.math import clamp
 
-from ....info import get_app_runtime_info
 from ....resources import get_app_resources
+from ....runtime_info import get_app_runtime_info
 from ....settings import get_app_settings
 from ....widgets.app import AppFrame
 
