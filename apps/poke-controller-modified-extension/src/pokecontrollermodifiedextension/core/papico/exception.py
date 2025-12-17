@@ -25,3 +25,11 @@ class PapicoSettingsLoadHandlerException(PapicoExecException):
 
 class PapicoSettingsSaveHandlerException(PapicoExecException):
     pass
+
+
+class PapicoCommandInitializeHandlerException(PapicoExecException):
+    pass
+
+
+class PapicoCommandLoadHandlerException(PapicoExecException):
+    pass
