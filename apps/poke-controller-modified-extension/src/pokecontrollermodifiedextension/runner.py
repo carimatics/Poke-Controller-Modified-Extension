@@ -7,6 +7,10 @@ from pokecontroller.core.camera import use_camera
 from pokecontroller.core.serial import use_serial
 
 from .app import App
+from .core.papico.handlers.v0_1_8.command import (
+    PapicoCommandInitializeHandler as PapicoCommandInitializeHandler_v0_1_8,
+    PapicoCommandLoadHandler as PapicoCommandLoadHandler_v0_1_8,
+)
 from .core.papico.handlers.v0_1_8.settings import (
     PapicoSettingsLoadHandler as PapicoSettingsLoadHandler_v0_1_8,
     PapicoSettingsSaveHandler as PapicoSettingsSaveHandler_v0_1_8,
@@ -74,6 +78,14 @@ def _register_handlers(papico: Papico) -> None:
                 "0.2.0": PapicoSettingsSaveHandler_v0_2_0,
                 "0.1.8": PapicoSettingsSaveHandler_v0_1_8,
             },
+        },
+        "command": {
+            "initialize": {
+                "0.1.8": PapicoCommandInitializeHandler_v0_1_8,
+            },
+            "load": {
+                "0.1.8": PapicoCommandLoadHandler_v0_1_8,
+            }
         },
     }
 

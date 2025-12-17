@@ -26,13 +26,13 @@ logger = logging.getLogger(__name__)
 
 
 class Command(ABC):
-    NAME = ""
+    NAME: str = ""
     text_area_1: tk.Text | None = None
     text_area_2: tk.Text | None = None
     stdout_destination: str = "1"
     pos_dialogue_buttons: str = "2"
     isPause = False
-    canvas = None
+    canvas: tk.Canvas | None = None
     isGuide = False
     isSimilarity = False
     isImage = False
@@ -44,7 +44,7 @@ class Command(ABC):
     isDiscordNotEnd = False
     app_name = ""
     cur_command_name = ""
-    profilename = None
+    profilename: str | None = None
 
     def __init__(self) -> None:
         self.isRunning = False
@@ -762,7 +762,6 @@ class Command(ABC):
                 text_area.insert("1.0", txt)
             elif mode == "a":
                 text_area.insert("end", txt)
-            text_area.insert("end", txt)
             text_area.config(state=tk.DISABLED)
             text_area.see("end")
         except Exception:
