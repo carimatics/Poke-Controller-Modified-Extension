@@ -702,22 +702,22 @@ def settings_to_dict(settings: AppSettings) -> dict[str, Any]:
     return convert(settings)  # type: ignore[no-any-return]
 
 
-APP_SETTINGS_SINGLETON: AppSettings | None = None
+_app_settings: AppSettings | None = None
 
 
 def setup_app_settings(settings: AppSettings) -> AppSettings:
-    global APP_SETTINGS_SINGLETON
-    APP_SETTINGS_SINGLETON = settings
+    global _app_settings
+    _app_settings = settings
     return settings
 
 
 def get_app_settings() -> AppSettings:
-    global APP_SETTINGS_SINGLETON
-    if APP_SETTINGS_SINGLETON is None:
+    global _app_settings
+    if _app_settings is None:
         raise AppRuntimeException("App settings is not initialized")
-    return APP_SETTINGS_SINGLETON
+    return _app_settings
 
 
 def get_app_settings_or_none() -> AppSettings | None:
-    global APP_SETTINGS_SINGLETON
-    return APP_SETTINGS_SINGLETON
+    global _app_settings
+    return _app_settings

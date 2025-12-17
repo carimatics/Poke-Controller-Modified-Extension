@@ -232,17 +232,17 @@ class AppModel:
         pass
 
 
-APP_MODEL_SINGLETON: AppModel | None = None
+_app_model: AppModel | None = None
 
 
 def get_app_model() -> AppModel:
-    global APP_MODEL_SINGLETON
-    if APP_MODEL_SINGLETON is None:
+    global _app_model
+    if _app_model is None:
         raise AppRuntimeException("App model is not initialized.")
-    return APP_MODEL_SINGLETON
+    return _app_model
 
 
 def setup_app_model() -> AppModel:
-    global APP_MODEL_SINGLETON
-    APP_MODEL_SINGLETON = AppModel()
-    return APP_MODEL_SINGLETON
+    global _app_model
+    _app_model = AppModel()
+    return _app_model

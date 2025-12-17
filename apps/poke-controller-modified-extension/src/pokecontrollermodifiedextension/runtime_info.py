@@ -10,20 +10,20 @@ class AppRuntimeInfo:
     profile: str
 
 
-RUNTIME_INFO_SINGLETON: AppRuntimeInfo | None = None
+_runtime_info: AppRuntimeInfo | None = None
 
 
 def get_app_runtime_info() -> AppRuntimeInfo:
-    global RUNTIME_INFO_SINGLETON
-    if RUNTIME_INFO_SINGLETON is None:
+    global _runtime_info
+    if _runtime_info is None:
         raise AppRuntimeException("App runtime info is not initialized.")
-    return RUNTIME_INFO_SINGLETON
+    return _runtime_info
 
 
 def setup_runtime_info(base_dir: Path, profile: str) -> AppRuntimeInfo:
-    global RUNTIME_INFO_SINGLETON
-    RUNTIME_INFO_SINGLETON = AppRuntimeInfo(
+    global _runtime_info
+    _runtime_info = AppRuntimeInfo(
         base_dir=base_dir,
         profile=profile,
     )
-    return RUNTIME_INFO_SINGLETON
+    return _runtime_info

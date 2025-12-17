@@ -13,9 +13,9 @@ class WidgetCatalog:
     outputs: OutputsWidgetCatalog
 
 
-WIDGET_CATALOG_SINGLETON = WidgetCatalog(outputs=OutputsWidgetCatalog())
+_widget_catalog = WidgetCatalog(outputs=OutputsWidgetCatalog())
 
 
 def get_widget_catalog() -> WidgetCatalog:
-    global WIDGET_CATALOG_SINGLETON
-    return WIDGET_CATALOG_SINGLETON
+    global _widget_catalog
+    return _widget_catalog

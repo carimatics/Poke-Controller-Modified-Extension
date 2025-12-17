@@ -18,14 +18,14 @@ class AppResources:
     sender_v0_1_8: Sender_v0_1_8
 
 
-APP_RESOURCES_SINGLETON: AppResources | None = None
+_app_resources: AppResources | None = None
 
 
 def get_app_resources() -> AppResources:
-    global APP_RESOURCES_SINGLETON
-    if APP_RESOURCES_SINGLETON is None:
+    global _app_resources
+    if _app_resources is None:
         raise AppRuntimeException("App resources is not initialized.")
-    return APP_RESOURCES_SINGLETON
+    return _app_resources
 
 
 def setup_app_resources(
@@ -34,11 +34,11 @@ def setup_app_resources(
     camera_v0_1_8: Camera_v0_1_8,
     sender_v0_1_8: Sender_v0_1_8,
 ) -> AppResources:
-    global APP_RESOURCES_SINGLETON
-    APP_RESOURCES_SINGLETON = AppResources(
+    global _app_resources
+    _app_resources = AppResources(
         camera=camera,
         serial=serial,
         camera_v0_1_8=camera_v0_1_8,
         sender_v0_1_8=sender_v0_1_8,
     )
-    return APP_RESOURCES_SINGLETON
+    return _app_resources

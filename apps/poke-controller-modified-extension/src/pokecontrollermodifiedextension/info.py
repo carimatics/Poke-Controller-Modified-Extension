@@ -11,7 +11,7 @@ class AppInfo:
     application_root: Path
 
 
-APP_INFO_SINGLETON = AppInfo(
+_app_info = AppInfo(
     name="Poke-Controller Modified Extension",
     version="0.2.0",
     latest_settings_version="0.2.0",
@@ -21,5 +21,5 @@ APP_INFO_SINGLETON = AppInfo(
 
 
 def get_app_info() -> AppInfo:
-    global APP_INFO_SINGLETON
-    return APP_INFO_SINGLETON
+    global _app_info
+    return _app_info
