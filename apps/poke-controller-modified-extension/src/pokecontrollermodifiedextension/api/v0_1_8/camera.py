@@ -3,6 +3,7 @@ from contextlib import contextmanager
 from pathlib import Path
 from typing import Generator, Sequence
 
+import cv2
 from pokecontroller.core import (
     camera as cameralib,
     image as imagelib,
@@ -11,6 +12,8 @@ from pokecontroller.core.image import utils as imagelib_utils
 from pokecontroller.utils import (
     datetime as datetimelib,
 )
+
+from pokecontrollermodifiedextension.resources import get_app_resources
 
 logger = logging.getLogger(__name__)
 
@@ -54,15 +57,18 @@ def _get_save_filespec(filename: str) -> str:
 
 
 class Camera:
-    camera: cameralib.Camera
+    _camera: cameralib.Camera
 
     def __init__(self, fps: int = 45):
         self.image_bgr: imagelib.RawImage | None = None
+        resources = get_app_resources()
+        self._camera = resources.camera
         self._fps = fps
         self.capture_dir = "Captures"
 
-    def _set_camera(self, camera: cameralib.Camera) -> None:
-        self.camera = camera
+    @property
+    def camera(self) -> cv2.VideoCapture | None:
+        return self._camera._video_capture
 
     @property
     def fps(self) -> int:
@@ -75,20 +81,20 @@ class Camera:
 
     @property
     def capture_size(self) -> tuple[int, int]:
-        return self.camera.frame_size
+        return self._camera.frame_size
 
     @capture_size.setter
     def capture_size(self, size: tuple[int, int]) -> None:
-        self.camera.frame_size = size
+        self._camera.frame_size = size
 
     def openCamera(self, cameraId: int) -> None:  # noqa
-        self.camera.open(camera_id=cameraId)
+        self._camera.open(camera_id=cameraId)
 
     def isOpened(self) -> bool:  # noqa
-        return self.camera.is_opened
+        return self._camera.is_opened
 
     def readFrame(self) -> imagelib.RawImage | None:  # noqa
-        _, self.image_bgr = self.camera.read()
+        _, self.image_bgr = self._camera.read()
         return self.image_bgr
 
     def saveCapture(  # noqa
@@ -142,7 +148,7 @@ class Camera:
             logger.error(f"Capture Failed :{e}")
 
     def destroy(self) -> None:
-        self.camera.close()
+        self._camera.close()
 
 
 @contextmanager

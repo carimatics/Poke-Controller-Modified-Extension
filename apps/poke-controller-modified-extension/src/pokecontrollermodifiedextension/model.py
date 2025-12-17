@@ -22,7 +22,7 @@ class AppModel:
         self._app_resources = get_app_resources()
         self._app_info = get_app_info()
         self._app_settings = get_app_settings()
-        self._sender: Sender | None = None
+        self._sender: Sender = Sender(self._app_settings.serial.show_data)
         self._command: Command | None = None
 
     def load_commands(
@@ -50,11 +50,11 @@ class AppModel:
     def start_command(self, klass: type[Command]) -> None:
         logger.info("start_command")
         if self._command is not None:
-            self._command.end(self._app_resources.sender_v0_1_8)
+            self._command.end(self._sender)
             self._command = None
         else:
+            sender = self._sender
             self._command = klass()
-            sender = self._app_resources.sender_v0_1_8
             port = self._app_settings.serial.port.get()
             sender.openSerial(portNum=0, portName=port)
             klass().start(ser=sender)

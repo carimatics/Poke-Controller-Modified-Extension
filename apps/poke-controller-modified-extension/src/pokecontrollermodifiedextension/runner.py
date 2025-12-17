@@ -6,8 +6,6 @@ from typing import Any
 from pokecontroller.core.camera import use_camera
 from pokecontroller.core.serial import use_serial
 
-from .api.v0_1_8.camera import use_camera as use_camera_v0_1_8
-from .api.v0_1_8.command.sender import use_sender as use_sender_v0_1_8
 from .app import App
 from .core.logging import setup_logging
 from .core.papico.handlers.v0_1_8.settings import (
@@ -32,16 +30,10 @@ def run_app(*, base_dir: Path, profile: str) -> None:
     with (
         use_camera() as camera,
         use_serial() as serial,
-        use_sender_v0_1_8() as sender_v0_1_8,
-        use_camera_v0_1_8() as camera_v0_1_8,
     ):
-        camera_v0_1_8._set_camera(camera)
-
         setup_app_resources(
             camera=camera,
             serial=serial,
-            camera_v0_1_8=camera_v0_1_8,
-            sender_v0_1_8=sender_v0_1_8,
         )
 
         # runtime info

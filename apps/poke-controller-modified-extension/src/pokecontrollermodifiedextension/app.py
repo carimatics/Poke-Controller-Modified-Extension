@@ -39,9 +39,6 @@ class App(tk.Tk):
         )
 
         self._resources = get_app_resources()
-        self._resources.sender_v0_1_8._set_is_show_serial(
-            self._settings.serial.show_data,
-        )
 
         self._style_manager = StyleManager(self)
         self._style_manager.change_theme(self._settings.general.theme.get())

@@ -7,6 +7,8 @@ from typing import Generator, Protocol
 import serial
 from pokecontroller.utils import platform
 
+from pokecontrollermodifiedextension.resources import get_app_resources
+
 logger = logging.getLogger(__name__)
 
 
@@ -25,7 +27,8 @@ class Sender:
         is_show_serial: BoolGettable,
         if_print: bool = True,
     ) -> None:
-        self.ser: serial.Serial | None = None
+        resources = get_app_resources()
+        self._serial = resources.serial
         self.is_show_serial = is_show_serial
 
         self.before: str | list[int] | None = None
@@ -66,8 +69,9 @@ class Sender:
             "CENTER",
         ]
 
-    def _set_is_show_serial(self, is_show_serial: BoolGettable) -> None:
-        self.is_show_serial = is_show_serial
+    @property
+    def ser(self) -> serial.Serial | None:
+        return self._serial._serial
 
     def openSerial(  # noqa
         self,
@@ -89,7 +93,7 @@ class Sender:
 
         logger.info(f"connecting to {name}({baudrate})")
         try:
-            self.ser = serial.Serial(name, baudrate)
+            self._serial.open(port_path=name, baud_rate=baudrate)
         except serial.serialutil.SerialException as e:
             logger.error("COM Port: can't be established")
             logger.error(f"{e}")
@@ -99,22 +103,18 @@ class Sender:
 
     def closeSerial(self) -> None:  # noqa
         logger.debug("Closing the serial communication")
-        if (ser := self.ser) is not None and ser.is_open:
-            ser.close()
+        self._serial.close()
 
     def isOpened(self) -> bool:  # noqa
         logger.debug("Checking if serial communication is open")
-        if (ser := self.ser) is None:
-            logger.debug("Serial communication is not open.")
-            return False
-        return ser.is_open  # type: ignore[no-any-return]
+        return self._serial.is_opened
 
     def writeRow(  # noqa
         self,
         row: str,
         is_show: bool = False,
     ) -> None:
-        if (ser := self.ser) is None:
+        if not self._serial.is_opened:
             logger.error("Serial is not open")
             return
 
@@ -130,7 +130,7 @@ class Sender:
         try:
             self.time_bef = time.perf_counter()
 
-            ser.write((row + "\r\n").encode("utf-8"))
+            self._serial.write_line(row)
             self.time_aft = time.perf_counter()
             self.before = row
         except serial.serialutil.SerialException as e:
@@ -145,14 +145,15 @@ class Sender:
         values: list[int],
         is_show: bool = False,
     ) -> None:
-        if (ser := self.ser) is None or not ser.is_open:
+        if not self._serial.is_opened:
             logger.error("Serial port is not open")
             return
 
         try:
             self.time_bef = time.perf_counter()
 
-            ser.write(values)  # noqa
+            data = bytearray(values)
+            self._serial.write(data)
             self.time_aft = time.perf_counter()
             self.before = values
         except serial.serialutil.SerialException as e:
@@ -167,12 +168,12 @@ class Sender:
         row: str,
         is_show: bool = False,
     ) -> None:
-        if (ser := self.ser) is None:
+        if not self._serial.is_opened:
             logger.error("Serial port is not open")
             return
 
         try:
-            ser.write((row + "\r\n").encode("utf-8"))
+            self._serial.write_line(row)
         except serial.serialutil.SerialException as e:
             logger.error(f"Error : {e}")
 
