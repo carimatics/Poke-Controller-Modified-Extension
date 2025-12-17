@@ -17,6 +17,7 @@ from pokecontroller.utils.math import clamp
 from ....resources import get_app_resources
 from ....runtime_info import get_app_runtime_info
 from ....settings import get_app_settings
+from ....widget_catalog import get_app_widget_catalog
 from ....widgets.app import AppFrame
 
 logger = logging.getLogger(__name__)
@@ -217,6 +218,8 @@ class Capture(AppFrame):
             height=self._height,
             cursor="tcross",
         )
+        wc = get_app_widget_catalog()
+        wc.capture.canvas = self._canvas
         self._image = self._disabled_image
         self._image_id = self._canvas.create_image(
             0, 0, anchor=tk.NW, image=self._image

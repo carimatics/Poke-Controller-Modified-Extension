@@ -9,11 +9,20 @@ class OutputsWidgetCatalog:
 
 
 @dataclass(kw_only=True)
+class CaptureWidgetCatalog:
+    canvas: tk.Canvas | None = None
+
+
+@dataclass(kw_only=True)
 class AppWidgetCatalog:
     outputs: OutputsWidgetCatalog
+    capture: CaptureWidgetCatalog
 
 
-_app_widget_catalog = AppWidgetCatalog(outputs=OutputsWidgetCatalog())
+_app_widget_catalog = AppWidgetCatalog(
+    outputs=OutputsWidgetCatalog(),
+    capture=CaptureWidgetCatalog(),
+)
 
 
 def get_app_widget_catalog() -> AppWidgetCatalog:
