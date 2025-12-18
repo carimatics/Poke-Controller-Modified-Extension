@@ -1,4 +1,6 @@
+import logging
 from pathlib import Path
+from typing import Literal
 
 from pokecontroller.core.dynamic import DynamicClassLoader
 
@@ -10,6 +12,8 @@ from ....context import PapicoExecContext, PapicoFailure, PapicoResult, PapicoSu
 from ....exception import PapicoCommandLoadHandlerException
 from ...handler import PapicoHandler
 
+logger = logging.getLogger(__name__)
+
 
 class PapicoCommandLoadHandler(PapicoHandler):
     _base_dir: Path
@@ -20,43 +24,69 @@ class PapicoCommandLoadHandler(PapicoHandler):
             app_runtime_info = get_app_runtime_info()
             self._base_dir = app_runtime_info.base_dir / "Commands"
             self._commands: list[CommandInfo] = []
-            self._load_python_commands()
-            self._load_mcu_commands()
-            return PapicoSuccess(ctx=ctx, data=self._commands)
+            self._load_commands(
+                base_path=self._base_dir / "PythonCommands",
+                super_class=PythonCommand,
+                kind="python",
+            )
+            self._load_commands(
+                base_path=self._base_dir / "McuCommands",
+                super_class=McuCommand,
+                kind="mcu",
+            )
+            return PapicoSuccess(
+                ctx=ctx,
+                data=self._commands,
+            )
         except Exception as e:
             return PapicoFailure(
                 ctx=ctx,
                 error=PapicoCommandLoadHandlerException(f"{e}"),
             )
 
-    def _load_python_commands(self) -> None:
-        python_commands_path = self._base_dir / "PythonCommands"
-        for module, name, klass in DynamicClassLoader[PythonCommand](
-            base_dir=python_commands_path,
-            klass=PythonCommand,  # type: ignore[type-abstract]
+    def _load_commands(
+        self,
+        base_path: Path,
+        super_class: type,
+        kind: Literal["python", "mcu"],
+    ) -> None:
+        for module, name, klass in DynamicClassLoader(  # type: ignore[var-annotated]
+            base_dir=base_path,
+            klass=super_class,
         ).load():
-            self._commands.append(
-                CommandInfo(
-                    name=name,
-                    module=module,
-                    klass=klass,
-                    api_version="0.1.8",
-                    kind="python",
-                )
-            )
+            if klass.NAME == "":
+                continue
 
-    def _load_mcu_commands(self) -> None:
-        mcu_commands_path = self._base_dir / "McuCommands"
-        for module, name, klass in DynamicClassLoader[McuCommand](
-            base_dir=mcu_commands_path,
-            klass=McuCommand,  # type: ignore[type-abstract]
-        ).load():
+            module_hierarchy = module.__name__.split(".")
+            dir_name = "/".join(module_hierarchy)
+            dir_tags = [f"@{t}" for t in module_hierarchy[:-1]]
+
+            tags = []
+            if hasattr(klass, "TAGS"):
+                if isinstance(klass.TAGS, list):
+                    logger.debug(f"TAGS name add: {dir_tags}")
+                    tags = klass.TAGS + dir_tags
+                elif isinstance(klass.TAGS, str):
+                    logger.debug(f"TAGS name add: {dir_tags}")
+                    tags = [klass.TAGS] + dir_tags
+                else:
+                    logger.debug(
+                        f"TAGS Type error: {module.__name__} {klass.NAME} {type(klass.TAGS)}"
+                    )
+            else:
+                logger.debug(f"TAGS do not exist: {module.__name__} {klass.NAME}")
+                tags += dir_tags
+
+            display_name = f"{klass.NAME} ({dir_name})"
+
             self._commands.append(
                 CommandInfo(
                     name=name,
+                    display_name=display_name,
+                    tags=tags,
                     module=module,
                     klass=klass,
                     api_version="0.1.8",
-                    kind="mcu",
+                    kind=kind,
                 )
             )
