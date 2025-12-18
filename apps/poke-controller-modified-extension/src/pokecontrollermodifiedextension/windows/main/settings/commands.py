@@ -38,9 +38,7 @@ class CommandsSettings(AppFrame):
             for t in c.klass.TAGS
         ]
         self._python_command_list: list[str] = [
-            c.klass.NAME
-            for c in self._commands
-            if c.kind == PYTHON and c.klass.NAME != ""
+            c.klass.NAME for c in self._commands if c.kind == PYTHON
         ]
         self._mcu_commands_filter_list: list[str] = [
             t
@@ -49,7 +47,7 @@ class CommandsSettings(AppFrame):
             for t in c.klass.TAGS
         ]
         self._mcu_command_list: list[str] = [
-            c.klass.NAME for c in self._commands if c.kind == MCU and c.klass.NAME != ""
+            c.klass.NAME for c in self._commands if c.kind == MCU
         ]
         self._shortcut_button_texts: list[tk.StringVar] = []
 

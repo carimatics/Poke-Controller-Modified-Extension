@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from types import ModuleType
 from typing import Literal
 
 
