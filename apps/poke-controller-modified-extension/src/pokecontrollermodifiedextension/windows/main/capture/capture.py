@@ -108,7 +108,22 @@ class Capture(AppFrame):
         return self._camera.frame_size
 
     def build_ui(self) -> None:
-        self._create_new_canvas()
+        logger.info(f"Creating new canvas: {self._width}x{self._height}")
+        self._canvas = tk.Canvas(
+            self,
+            width=self._width,
+            height=self._height,
+            cursor="tcross",
+        )
+        wc = get_app_widget_catalog()
+        wc.capture.canvas = self._canvas
+        self._image = self._disabled_image
+        self._image_id = self._canvas.create_image(
+            0, 0, anchor=tk.NW, image=self._image
+        )
+        self._is_disabled = False
+        self._canvas.pack(expand=True, fill=tk.BOTH, anchor=tk.CENTER)
+        logger.info("Canvas created")
 
     def _register_hooks(self) -> None:
         self._fps.trace_add("write", self._on_fps_changed)
@@ -209,24 +224,6 @@ class Capture(AppFrame):
 
     def _delete_tagged_item(self, tag: str) -> None:
         self._canvas.delete(tag)
-
-    def _create_new_canvas(self) -> None:
-        logger.info(f"Creating new canvas: {self._width}x{self._height}")
-        self._canvas = tk.Canvas(
-            self,
-            width=self._width,
-            height=self._height,
-            cursor="tcross",
-        )
-        wc = get_app_widget_catalog()
-        wc.capture.canvas = self._canvas
-        self._image = self._disabled_image
-        self._image_id = self._canvas.create_image(
-            0, 0, anchor=tk.NW, image=self._image
-        )
-        self._is_disabled = False
-        self._canvas.pack(expand=True, fill=tk.BOTH, anchor=tk.CENTER)
-        logger.info("Canvas recreated")
 
     def _load_frame(self) -> None:
         try:
