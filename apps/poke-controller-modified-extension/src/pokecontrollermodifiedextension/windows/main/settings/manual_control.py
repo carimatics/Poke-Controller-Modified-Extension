@@ -1,7 +1,7 @@
 import tkinter as tk
-import tkinter.ttk as ttk
 from typing import Any
 
+from .... import widgets
 from ....model import get_app_model
 from ....settings import get_app_settings
 from ....widgets.app import AppFrame
@@ -33,14 +33,14 @@ class ManualControlSettings(AppFrame):
         software_settings.pack(expand=False, fill=tk.X, anchor=tk.N, pady=4)
         hardware_settings.pack(expand=False, fill=tk.X, anchor=tk.N, pady=4)
 
-    def _build_software_settings(self) -> ttk.Labelframe:
-        labelframe = ttk.Labelframe(self, text="Software")
+    def _build_software_settings(self) -> widgets.Labelframe:
+        labelframe = widgets.Labelframe(self, text="Software")
 
-        upper_frame = ttk.Frame(labelframe)
-        lower_frame = ttk.Frame(labelframe)
+        upper_frame = widgets.Frame(labelframe)
+        lower_frame = widgets.Frame(labelframe)
 
         # Controller Button
-        controller_button = ttk.Button(
+        controller_button = widgets.Button(
             upper_frame,
             width=15,
             text="Controller",
@@ -48,7 +48,7 @@ class ManualControlSettings(AppFrame):
         )
 
         # Use Keyboard
-        use_keyboard_checkbutton = ttk.Checkbutton(
+        use_keyboard_checkbutton = widgets.Checkbutton(
             lower_frame,
             text="Use Keyboard",
             variable=self._enabled_keyboard,
@@ -56,7 +56,7 @@ class ManualControlSettings(AppFrame):
         )
 
         # Use LStick Mouse
-        use_lstick_mouse_checkbutton = ttk.Checkbutton(
+        use_lstick_mouse_checkbutton = widgets.Checkbutton(
             lower_frame,
             text="Use LStick Mouse",
             variable=self._enabled_lstick_mouse,
@@ -64,7 +64,7 @@ class ManualControlSettings(AppFrame):
         )
 
         # Use RStick Mouse
-        use_rstick_mouse_checkbutton = ttk.Checkbutton(
+        use_rstick_mouse_checkbutton = widgets.Checkbutton(
             lower_frame,
             text="Use RStick Mouse",
             variable=self._enabled_rstick_mouse,
@@ -81,11 +81,11 @@ class ManualControlSettings(AppFrame):
 
         return labelframe
 
-    def _build_hardware_settings(self) -> ttk.Labelframe:
-        labelframe = ttk.Labelframe(self, text="Hardware")
+    def _build_hardware_settings(self) -> widgets.Labelframe:
+        labelframe = widgets.Labelframe(self, text="Hardware")
 
         # Use Pro Controller
-        use_pro_controller_checkbutton = ttk.Checkbutton(
+        use_pro_controller_checkbutton = widgets.Checkbutton(
             labelframe,
             text="Use Pro Controller",
             variable=self._enabled_pro_controller,
@@ -93,7 +93,7 @@ class ManualControlSettings(AppFrame):
         )
 
         # Record Pro Controller
-        record_pro_controller_checkbutton = ttk.Checkbutton(
+        record_pro_controller_checkbutton = widgets.Checkbutton(
             labelframe,
             text="Record Pro Controller",
             variable=self._enabled_record_pro_controller,
