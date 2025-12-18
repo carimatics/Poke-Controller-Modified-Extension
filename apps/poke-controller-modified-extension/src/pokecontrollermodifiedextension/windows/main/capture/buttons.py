@@ -1,8 +1,8 @@
 import logging
 import tkinter as tk
-import tkinter.ttk as ttk
 from typing import Any
 
+from .... import widgets
 from ....model import get_app_model
 from ....runtime_info import get_app_runtime_info
 from ....widgets.app import AppDialog, AppFrame
@@ -40,8 +40,8 @@ class Buttons(AppFrame):
 
     def build_ui(self) -> None:
         # Create Buttons
-        buttons: dict[str, ttk.Button] = {
-            button: ttk.Button(self, command=command, **kwargs)  # type: ignore[arg-type]
+        buttons: dict[str, widgets.Button] = {
+            button: widgets.Button(self, command=command, **kwargs)  # type: ignore[arg-type]
             for button, command, kwargs in [
                 (START, self._on_start_pushed, {"text": "Start"}),
                 (CONTROLLER, self._on_controller_pushed, {"text": "Controller"}),

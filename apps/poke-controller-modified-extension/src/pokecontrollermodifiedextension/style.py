@@ -136,7 +136,7 @@ class StyleManager:
             self._style.theme_settings(theme, s)
 
     def _initialize_base_styles(self) -> None:
-        bg = "#f0f0f0"
+        bg = "#dcdad5"
         combobox_default_layout = self._style.layout("TCombobox")
         print(combobox_default_layout)
         self._base_style = StyleSettings(

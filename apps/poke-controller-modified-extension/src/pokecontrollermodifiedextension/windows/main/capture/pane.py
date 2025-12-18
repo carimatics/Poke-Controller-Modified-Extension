@@ -1,7 +1,7 @@
 import tkinter as tk
-import tkinter.ttk as ttk
 from typing import Any
 
+from .... import widgets
 from ....settings import get_app_settings
 from ....widgets.app import AppFrame
 from .buttons import Buttons
@@ -24,7 +24,7 @@ class CapturePane(AppFrame):
 
     def build_ui(self) -> None:
         # Create Labelframe
-        labelframe = ttk.Labelframe(self, text="Main Panel")
+        labelframe = widgets.Labelframe(self, text="Main Panel")
 
         # Main Panel
         buttons = Buttons(labelframe)
@@ -35,6 +35,6 @@ class CapturePane(AppFrame):
         capture.configure(width=width, height=height, relief=tk.GROOVE)
 
         # Layout
-        buttons.pack(expand=True, fill=tk.NONE, anchor=tk.CENTER)
+        buttons.pack(expand=True, fill=tk.NONE, anchor=tk.CENTER, pady=(4, 0))
         capture.pack(expand=True, fill=tk.NONE, anchor=tk.CENTER, pady=4)
         labelframe.pack(expand=True, fill=tk.BOTH)
