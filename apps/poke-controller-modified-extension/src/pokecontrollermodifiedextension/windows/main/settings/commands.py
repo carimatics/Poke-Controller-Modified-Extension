@@ -2,6 +2,7 @@ import tkinter as tk
 import tkinter.ttk as ttk
 from typing import Any, Callable
 
+from .... import widgets
 from ....model import get_app_model
 from ....settings import get_app_settings
 from ....widgets.app import AppFrame
@@ -50,14 +51,14 @@ class CommandsSettings(AppFrame):
         self.build_ui()
 
     def build_ui(self) -> None:
-        upper_frame = ttk.Frame(self)
-        lower_frame = ttk.Frame(self)
+        upper_frame = widgets.Frame(self)
+        lower_frame = widgets.Frame(self)
 
         # Notebook
         notebook = self._build_commands_notebook(upper_frame)
 
         # Open Commands Directory
-        open_dir_button = ttk.Button(
+        open_dir_button = widgets.Button(
             upper_frame,
             width=5,
             image=self._open_dir_button_image,
@@ -65,8 +66,8 @@ class CommandsSettings(AppFrame):
         )
 
         # Settings
-        shortcut_label = ttk.Label(lower_frame, text="Shortcut: ")
-        shortcut_spinbox = ttk.Spinbox(
+        shortcut_label = widgets.Label(lower_frame, text="Shortcut: ")
+        shortcut_spinbox = widgets.Spinbox(
             lower_frame,
             width=7,
             from_=1,
@@ -75,22 +76,22 @@ class CommandsSettings(AppFrame):
             textvariable=self._shortcut_number,
             command=self._on_shortcut_number_changed,
         )
-        shortcut_set_button = ttk.Button(
+        shortcut_set_button = widgets.Button(
             lower_frame,
             text="Set",
             command=self._on_set_pushed,
         )
-        command_reload_button = ttk.Button(
+        command_reload_button = widgets.Button(
             lower_frame,
             text="Reload",
             command=self._on_reload_pushed,
         )
-        start_button = ttk.Button(
+        start_button = widgets.Button(
             lower_frame,
             text="Start",
             command=self._on_start_pushed,
         )
-        pause_button = ttk.Button(
+        pause_button = widgets.Button(
             lower_frame,
             text="Pause",
             command=self._on_pause_pushed,
@@ -104,7 +105,7 @@ class CommandsSettings(AppFrame):
         shortcut_label.pack(expand=False, fill=tk.X, side=tk.LEFT)
         shortcut_spinbox.pack(expand=False, fill=tk.X, side=tk.LEFT)
         shortcut_set_button.pack(expand=False, fill=tk.X, side=tk.LEFT, padx=4)
-        ttk.Separator(master=lower_frame, orient=tk.VERTICAL).pack(
+        widgets.Separator(master=lower_frame, orient=tk.VERTICAL).pack(
             expand=False, fill=tk.Y, side=tk.LEFT, padx=5, pady=8
         )
         command_reload_button.pack(expand=False, fill=tk.X, side=tk.LEFT, padx=4)
@@ -112,23 +113,23 @@ class CommandsSettings(AppFrame):
         pause_button.pack(expand=False, fill=tk.X, side=tk.LEFT, padx=4)
         lower_frame.pack(expand=False, fill=tk.BOTH, side=tk.TOP, padx=4, pady=4)
 
-    def _build_commands_notebook(self, master: ttk.Frame) -> ttk.Notebook:
+    def _build_commands_notebook(self, master: widgets.Frame) -> ttk.Notebook:
         notebook = ttk.Notebook(master)
 
-        command_frames: list[ttk.Frame] = [
+        command_frames: list[widgets.Frame] = [
             self._build_python_commands_frame(notebook),
             self._build_mcu_commands_frame(notebook),
             self._build_shortcut_commands_frame(notebook),
         ]
 
-        commands: dict[str, ttk.Frame] = {}
+        commands: dict[str, widgets.Frame] = {}
         for (name, tag_text), frame in zip(COMMANDS, command_frames):
             commands[name] = frame
             notebook.add(frame, text=tag_text, padding=5, sticky=tk.NSEW)
 
         return notebook
 
-    def _build_python_commands_frame(self, notebook: ttk.Notebook) -> ttk.Frame:
+    def _build_python_commands_frame(self, notebook: ttk.Notebook) -> widgets.Frame:
         return self._build_commands_frame(
             notebook=notebook,
             filter_list=self._python_commands_filter_list,
@@ -139,7 +140,7 @@ class CommandsSettings(AppFrame):
             on_command_selected=self._on_python_command_selected,
         )
 
-    def _build_mcu_commands_frame(self, notebook: ttk.Notebook) -> ttk.Frame:
+    def _build_mcu_commands_frame(self, notebook: ttk.Notebook) -> widgets.Frame:
         return self._build_commands_frame(
             notebook=notebook,
             filter_list=self._mcu_commands_filter_list,
@@ -160,19 +161,19 @@ class CommandsSettings(AppFrame):
         command_list: list[str],
         command_var: tk.StringVar,
         on_command_selected: Callable[[tk.Event], None],
-    ) -> ttk.Frame:
-        frame = ttk.Frame(notebook)
+    ) -> widgets.Frame:
+        frame = widgets.Frame(notebook)
 
         def _combobox_frame(
-            master: ttk.Frame,
+            master: widgets.Frame,
             text: str,
             var: tk.StringVar,
             values: list[str],
             on_changed: Callable[[tk.Event], None],
-        ) -> ttk.Frame:
-            combobox_frame = ttk.Frame(master=master)
-            label = ttk.Label(combobox_frame, text=text, width=8)
-            combobox = ttk.Combobox(
+        ) -> widgets.Frame:
+            combobox_frame = widgets.Frame(master=master)
+            label = widgets.Label(combobox_frame, text=text, width=8)
+            combobox = widgets.Combobox(
                 combobox_frame,
                 state="readonly",
                 textvariable=var,
@@ -208,8 +209,8 @@ class CommandsSettings(AppFrame):
 
         return frame
 
-    def _build_shortcut_commands_frame(self, notebook: ttk.Notebook) -> ttk.Frame:
-        frame = ttk.Frame(notebook)
+    def _build_shortcut_commands_frame(self, notebook: ttk.Notebook) -> widgets.Frame:
+        frame = widgets.Frame(notebook)
 
         self._shortcut_button_texts = [
             tk.StringVar(value=f"({i})") for i in range(1, 11)
@@ -218,10 +219,10 @@ class CommandsSettings(AppFrame):
             lambda num=i: self._on_shortcut_pushed(num) for i in range(1, 11)
         ]
 
-        upper_frame = ttk.Frame(frame)
-        lower_frame = ttk.Frame(frame)
+        upper_frame = widgets.Frame(frame)
+        lower_frame = widgets.Frame(frame)
         shortcut_buttons = [
-            ttk.Button(
+            widgets.Button(
                 upper_frame if i < 5 else lower_frame,
                 width=7,
                 textvariable=self._shortcut_button_texts[i],
