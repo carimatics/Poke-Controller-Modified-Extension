@@ -1,7 +1,7 @@
 import tkinter as tk
-import tkinter.ttk as ttk
 from typing import Any
 
+from .... import widgets
 from ....widgets.app import AppFrame
 
 
@@ -17,7 +17,9 @@ class Output(AppFrame):
         self.build_ui()
 
     def build_ui(self) -> None:
-        labelframe = ttk.Labelframe(self, text=f"Output#{self._id}", relief=tk.GROOVE)
+        labelframe = widgets.Labelframe(
+            self, text=f"Output#{self._id}", relief=tk.GROOVE
+        )
 
         # Text Area
         self.textarea = tk.Text(
