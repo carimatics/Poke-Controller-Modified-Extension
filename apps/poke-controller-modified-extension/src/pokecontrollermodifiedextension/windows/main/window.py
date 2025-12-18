@@ -175,8 +175,16 @@ class MainWindow(AppFrame):
         shareable_height = (outputs_pane_height / 13) - 8
         size_gravity = math.ceil(size) / 100
 
-        t1.configure(height=shareable_height * size_gravity)
-        t2.configure(height=shareable_height * (1.0 - size_gravity))
+        height1 = int(shareable_height * size_gravity)
+        height2 = int(shareable_height * (1.0 - size_gravity))
+        if (r := shareable_height - (height1 + height2)) > 0:
+            if height1 > height2:
+                height2 += r
+            else:
+                height1 += r
+
+        t1.configure(height=height1)
+        t2.configure(height=height2)
 
     def _on_widget_visibility_changed(self, *_: Any) -> None:
         self._layout_right_frame()
