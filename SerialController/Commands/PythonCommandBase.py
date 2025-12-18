@@ -5,7 +5,7 @@ from pokecontrollermodifiedextension.api.v0_1_8.command.commands.python.base imp
 )
 # for compatibility
 from pokecontrollermodifiedextension.api.v0_1_8.command.commands.python.image_processing import ( # noqa
-    ImageProcPythonCommand as ImageProcessingPythonCommand,
+    ImageProcPythonCommand as ImageProcPythonCommand,
     convertCv2Format as convertCv2Format,
     generateRandomCharacter as generateRandomCharacter,
 )
