@@ -1,8 +1,8 @@
 import platform
 import tkinter as tk
-import tkinter.ttk as ttk
 from typing import Any
 
+from .... import widgets
 from ....model import get_app_model
 from ....widgets.app import AppFrame
 
@@ -51,18 +51,18 @@ class ControllerPane(AppFrame):
         self.build_ui()
 
     def build_ui(self) -> None:
-        labelframe = ttk.Labelframe(self, text="Software-Controller")
+        labelframe = widgets.Labelframe(self, text="Software-Controller")
 
         # Wrapper Frame
-        wrapper = ttk.Frame(labelframe)
+        wrapper = widgets.Frame(labelframe)
 
         # Left
-        left_frame = tk.Frame(wrapper, bg="#56CCF2")
+        left_frame = tk.Frame(wrapper, bg="#56ccf2")
         left_buttons = [bs[:LEFT_FRAME_COLUMNS] for bs in BUTTONS_LAYOUT]
         self._build_grid_frame(left_frame, left_buttons)
 
         # Right
-        right_frame = tk.Frame(wrapper, bg="#E9514E")
+        right_frame = tk.Frame(wrapper, bg="#e9514e")
         right_buttons = [bs[LEFT_FRAME_COLUMNS:] for bs in BUTTONS_LAYOUT]
         self._build_grid_frame(right_frame, right_buttons)
 
