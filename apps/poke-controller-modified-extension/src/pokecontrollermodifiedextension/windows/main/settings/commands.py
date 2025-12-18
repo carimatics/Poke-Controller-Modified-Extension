@@ -31,31 +31,19 @@ class CommandsSettings(AppFrame):
             file="../assets/icons8-OpenDir-16.png"
         )
 
-        python_tags = set([
-            t
-            for c in self._commands
-            if c.kind == PYTHON
-            for t in c.tags
-        ])
-        self._python_commands_filter_list: list[str] = sorted([
-            t for t in python_tags if not t.startswith("@")
-        ]) + sorted([
-            t for t in python_tags if t.startswith("@")
-        ])
+        python_tags = set(
+            [t for c in self._commands if c.kind == PYTHON for t in c.tags]
+        )
+        self._python_commands_filter_list: list[str] = sorted(
+            [t for t in python_tags if not t.startswith("@")]
+        ) + sorted([t for t in python_tags if t.startswith("@")])
         self._python_command_list: list[str] = [
             c.display_name for c in self._commands if c.kind == PYTHON
         ]
-        mcu_tags = set([
-            t
-            for c in self._commands
-            if c.kind == MCU
-            for t in c.tags
-        ])
-        self._mcu_commands_filter_list: list[str] = sorted([
-            t for t in mcu_tags if not t.startswith("@")
-        ]) + sorted([
-            t for t in mcu_tags if t.startswith("@")
-        ])
+        mcu_tags = set([t for c in self._commands if c.kind == MCU for t in c.tags])
+        self._mcu_commands_filter_list: list[str] = sorted(
+            [t for t in mcu_tags if not t.startswith("@")]
+        ) + sorted([t for t in mcu_tags if t.startswith("@")])
         self._mcu_command_list: list[str] = [
             c.display_name for c in self._commands if c.kind == MCU
         ]
@@ -272,32 +260,20 @@ class CommandsSettings(AppFrame):
 
     def _on_reload_pushed(self) -> None:
         self._commands = self._app_model.load_commands()
-        python_tags = set([
-            t
-            for c in self._commands
-            if c.kind == PYTHON
-            for t in c.tags
-        ])
-        self._python_commands_filter_list: list[str] = sorted([
-            t for t in python_tags if not t.startswith("@")
-        ]) + sorted([
-            t for t in python_tags if t.startswith("@")
-        ])
-        self._python_command_list: list[str] = [
+        python_tags = set(
+            [t for c in self._commands if c.kind == PYTHON for t in c.tags]
+        )
+        self._python_commands_filter_list = sorted(
+            [t for t in python_tags if not t.startswith("@")]
+        ) + sorted([t for t in python_tags if t.startswith("@")])
+        self._python_command_list = [
             c.display_name for c in self._commands if c.kind == PYTHON
         ]
-        mcu_tags = set([
-            t
-            for c in self._commands
-            if c.kind == MCU
-            for t in c.tags
-        ])
-        self._mcu_commands_filter_list: list[str] = sorted([
-            t for t in mcu_tags if not t.startswith("@")
-        ]) + sorted([
-            t for t in mcu_tags if t.startswith("@")
-        ])
-        self._mcu_command_list: list[str] = [
+        mcu_tags = set([t for c in self._commands if c.kind == MCU for t in c.tags])
+        self._mcu_commands_filter_list = sorted(
+            [t for t in mcu_tags if not t.startswith("@")]
+        ) + sorted([t for t in mcu_tags if t.startswith("@")])
+        self._mcu_command_list = [
             c.display_name for c in self._commands if c.kind == MCU
         ]
 
