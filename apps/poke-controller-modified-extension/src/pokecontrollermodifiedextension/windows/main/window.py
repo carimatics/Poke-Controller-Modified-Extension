@@ -172,11 +172,11 @@ class MainWindow(AppFrame):
             controller_height = self._controller_pane.winfo_height()
             outputs_pane_height -= controller_height
 
-        shareable_height = (outputs_pane_height / 13) - 8
-        size_gravity = math.ceil(size) / 100
+        shareable_height = math.floor((outputs_pane_height / 13) - 8)
+        size_gravity = math.floor(size) / 100
 
-        height1 = int(shareable_height * size_gravity)
-        height2 = int(shareable_height * (1.0 - size_gravity))
+        height1 = math.floor(shareable_height * size_gravity)
+        height2 = math.floor(shareable_height * (1.0 - size_gravity))
         if (r := shareable_height - (height1 + height2)) > 0:
             if height1 > height2:
                 height2 += r
