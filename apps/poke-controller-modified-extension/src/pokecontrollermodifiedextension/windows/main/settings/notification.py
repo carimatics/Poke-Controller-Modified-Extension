@@ -1,7 +1,7 @@
 import tkinter as tk
-import tkinter.ttk as ttk
 from typing import Any, Callable
 
+from .... import widgets
 from ....model import get_app_model
 from ....settings import get_app_settings
 from ....widgets.app import AppFrame
@@ -47,7 +47,7 @@ class NotificationSettings(AppFrame):
             padx=8,
         )
 
-    def _build_windows_notification(self) -> ttk.Labelframe:
+    def _build_windows_notification(self) -> widgets.Labelframe:
         return self._build_notification(
             platform="Windows",
             enabled_started=self._enabled_windows_started,
@@ -57,7 +57,7 @@ class NotificationSettings(AppFrame):
             on_test_pushed=self._on_windows_test_pushed,
         )
 
-    def _build_discord_notification(self) -> ttk.Labelframe:
+    def _build_discord_notification(self) -> widgets.Labelframe:
         return self._build_notification(
             platform="Discord",
             enabled_started=self._enabled_discord_started,
@@ -75,11 +75,11 @@ class NotificationSettings(AppFrame):
         on_enabled_started_changed: Callable[[], None],
         on_enabled_ended_changed: Callable[[], None],
         on_test_pushed: Callable[[], None],
-    ) -> ttk.Labelframe:
-        labelframe = ttk.Labelframe(self, text=f"{platform} Notification")
+    ) -> widgets.Labelframe:
+        labelframe = widgets.Labelframe(self, text=f"{platform} Notification")
 
         # Start
-        enable_start_checkbutton = ttk.Checkbutton(
+        enable_start_checkbutton = widgets.Checkbutton(
             labelframe,
             text="Start",
             variable=enabled_started,
@@ -87,7 +87,7 @@ class NotificationSettings(AppFrame):
         )
 
         # End
-        enable_end_checkbutton = ttk.Checkbutton(
+        enable_end_checkbutton = widgets.Checkbutton(
             labelframe,
             text="End",
             variable=enabled_ended,
@@ -95,7 +95,7 @@ class NotificationSettings(AppFrame):
         )
 
         # Test
-        test_button = ttk.Button(labelframe, text="Test", command=on_test_pushed)
+        test_button = widgets.Button(labelframe, text="Test", command=on_test_pushed)
 
         # Layout
         enable_start_checkbutton.pack(expand=False, fill=tk.NONE, side=tk.LEFT, padx=4)
