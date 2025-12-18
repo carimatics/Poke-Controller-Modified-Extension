@@ -139,8 +139,6 @@ class StyleManager:
 
     def _initialize_base_styles(self) -> None:
         bg = "#dcdad5"
-        combobox_default_layout = self._style.layout("TCombobox")
-        print(combobox_default_layout)
         self._base_style = StyleSettings(
             button=ComponentStyle(),
             label=ComponentStyle(
