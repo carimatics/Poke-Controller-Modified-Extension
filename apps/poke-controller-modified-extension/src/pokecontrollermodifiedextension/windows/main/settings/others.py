@@ -1,7 +1,7 @@
 import tkinter as tk
-import tkinter.ttk as ttk
 from typing import Any
 
+from .... import widgets
 from ....model import get_app_model
 from ....settings import get_app_settings
 from ....widgets.app import AppFrame
@@ -31,12 +31,12 @@ class OthersSettings(AppFrame):
         self.build_ui()
 
     def build_ui(self) -> None:
-        upper_frame = ttk.Labelframe(self, text="Output Settings")
+        upper_frame = widgets.Labelframe(self, text="Output Settings")
         size_adjuster = self._build_size_adjuster(upper_frame)
         standard_output_destination_settings = self._build_stdout_settings(upper_frame)
         clear_outputs = self._build_clear_outputs(upper_frame)
 
-        lower_frame = ttk.Labelframe(self, text="Widget Settings")
+        lower_frame = widgets.Labelframe(self, text="Widget Settings")
         widget_mode = self._build_widget_mode(lower_frame)
         software_controller_position_settings = (
             self._build_software_controller_position_settings(lower_frame)
@@ -82,11 +82,11 @@ class OthersSettings(AppFrame):
         )
         lower_frame.pack(expand=False, fill=tk.X, side=tk.TOP, padx=4, pady=4)
 
-    def _build_size_adjuster(self, master: tk.Misc) -> ttk.Labelframe:
-        labelframe = ttk.Labelframe(master, text="Size Adjuster")
+    def _build_size_adjuster(self, master: tk.Misc) -> widgets.Labelframe:
+        labelframe = widgets.Labelframe(master, text="Size Adjuster")
 
         # Size
-        size_scale = ttk.Scale(
+        size_scale = widgets.Scale(
             labelframe,
             length=200,
             orient=tk.HORIZONTAL,
@@ -108,12 +108,12 @@ class OthersSettings(AppFrame):
 
         return labelframe
 
-    def _build_stdout_settings(self, master: tk.Misc) -> ttk.Labelframe:
-        labelframe = ttk.Labelframe(master, text="Standard Output")
+    def _build_stdout_settings(self, master: tk.Misc) -> widgets.Labelframe:
+        labelframe = widgets.Labelframe(master, text="Standard Output")
 
         # Destinations
         stdout_radiobuttons = [
-            ttk.Radiobutton(
+            widgets.Radiobutton(
                 labelframe,
                 text=f"Output#{i}",
                 value=i,
@@ -129,15 +129,15 @@ class OthersSettings(AppFrame):
 
         return labelframe
 
-    def _build_clear_outputs(self, master: tk.Misc) -> ttk.Labelframe:
-        labelframe = ttk.Labelframe(master, text="Clear")
+    def _build_clear_outputs(self, master: tk.Misc) -> widgets.Labelframe:
+        labelframe = widgets.Labelframe(master, text="Clear")
 
         # Outputs Clear Buttons
         buttons = [
-            ttk.Button(
+            widgets.Button(
                 labelframe,
                 text=f"Clear(#{i})",
-                command=lambda i=i: self._on_clear_pushed(output_id=i),  # type: ignore[misc]
+                command=lambda i=i: self._on_clear_pushed(output_id=i),
             )
             for i in range(1, 3)
         ]
@@ -148,12 +148,12 @@ class OthersSettings(AppFrame):
 
         return labelframe
 
-    def _build_widget_mode(self, master: tk.Misc) -> ttk.Labelframe:
-        labelframe = ttk.Labelframe(master, text="Display")
+    def _build_widget_mode(self, master: tk.Misc) -> widgets.Labelframe:
+        labelframe = widgets.Labelframe(master, text="Display")
 
         # Widget Mode Checkbuttons
         checkbuttons = [
-            ttk.Checkbutton(
+            widgets.Checkbutton(
                 labelframe,
                 text=text,
                 variable=var,
@@ -187,12 +187,12 @@ class OthersSettings(AppFrame):
     def _build_software_controller_position_settings(
         self,
         master: tk.Misc,
-    ) -> ttk.Labelframe:
-        labelframe = ttk.Labelframe(master, text="Software-Controller Position")
+    ) -> widgets.Labelframe:
+        labelframe = widgets.Labelframe(master, text="Software-Controller Position")
 
         # Positions
         position_radiobuttons = [
-            ttk.Radiobutton(
+            widgets.Radiobutton(
                 labelframe,
                 text=value.capitalize(),
                 value=value,
@@ -211,12 +211,12 @@ class OthersSettings(AppFrame):
     def _build_dialogue_confirm_buttons_position_settings(
         self,
         master: tk.Misc,
-    ) -> ttk.Labelframe:
-        labelframe = ttk.Labelframe(master, text="Dialogue OK/Cancel Position")
+    ) -> widgets.Labelframe:
+        labelframe = widgets.Labelframe(master, text="Dialogue OK/Cancel Position")
 
         # Positions
         position_radiobuttons = [
-            ttk.Radiobutton(
+            widgets.Radiobutton(
                 labelframe,
                 text=value.capitalize(),
                 value=value,
