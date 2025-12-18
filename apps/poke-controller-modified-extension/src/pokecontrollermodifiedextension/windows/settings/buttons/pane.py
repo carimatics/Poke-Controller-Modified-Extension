@@ -1,12 +1,12 @@
 import tkinter as tk
-import tkinter.ttk as ttk
 from typing import Any, Callable
 
+from .... import widgets
 from ....widgets.app import AppFrame
 
 
 class SettingsButtonsPane(AppFrame):
-    _apply_button: ttk.Button
+    _apply_button: widgets.Button
     _has_changes: tk.BooleanVar
     _on_apply_pushed: Callable[[], None]
 
@@ -29,15 +29,17 @@ class SettingsButtonsPane(AppFrame):
         self.build_ui()
 
     def build_ui(self) -> None:
-        frame = ttk.Frame(self)
-        ok_button = ttk.Button(frame, text="OK", command=self._on_ok_pushed)
-        self._apply_button = ttk.Button(
+        frame = widgets.Frame(self)
+        ok_button = widgets.Button(frame, text="OK", command=self._on_ok_pushed)
+        self._apply_button = widgets.Button(
             frame,
             text="Apply",
             state=tk.NORMAL if self._has_changes.get() else tk.DISABLED,
             command=self._on_apply_pushed,
         )
-        cancel_button = ttk.Button(frame, text="Cancel", command=self._on_cancel_pushed)
+        cancel_button = widgets.Button(
+            frame, text="Cancel", command=self._on_cancel_pushed
+        )
 
         # Layout
         ok_button.pack(side=tk.RIGHT, padx=(4, 0))
