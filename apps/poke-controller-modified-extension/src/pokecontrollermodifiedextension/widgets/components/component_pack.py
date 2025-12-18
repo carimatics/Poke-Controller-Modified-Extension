@@ -48,8 +48,9 @@ class ComponentPackRowBuilder[T: TraceRegisterable]:
         text: str,
         command: Callable[[], Any],
         disabled: tk.BooleanVar | None = None,
+        tooltip: str | None = None,
     ) -> Self:
-        button = Button(self._master, text=text, command=command)
+        button = Button(self._master, text=text, command=command, tooltip=tooltip)
         button.pack(side=tk.LEFT)
         if disabled is not None:
             button.configure(state=tk.DISABLED if disabled.get() else tk.NORMAL)
@@ -61,8 +62,11 @@ class ComponentPackRowBuilder[T: TraceRegisterable]:
         variable: tk.BooleanVar,
         text: str,
         disabled: tk.BooleanVar | None = None,
+        tooltip: str | None = None,
     ) -> Self:
-        checkbutton = Checkbutton(self._master, variable=variable, text=text)
+        checkbutton = Checkbutton(
+            self._master, variable=variable, text=text, tooltip=tooltip
+        )
         checkbutton.pack(side=tk.LEFT)
         if disabled is not None:
             checkbutton.configure(state=tk.DISABLED if disabled.get() else tk.NORMAL)
@@ -74,8 +78,11 @@ class ComponentPackRowBuilder[T: TraceRegisterable]:
         variable: tk.IntVar | tk.StringVar,
         values: list[str],
         disabled: tk.BooleanVar | None = None,
+        tooltip: str | None = None,
     ) -> Self:
-        combobox = Combobox(self._master, textvariable=variable, values=values)
+        combobox = Combobox(
+            self._master, textvariable=variable, values=values, tooltip=tooltip
+        )
         combobox.pack(side=tk.LEFT)
         if disabled is not None:
             combobox.configure(state=tk.DISABLED if disabled.get() else tk.NORMAL)
@@ -86,8 +93,9 @@ class ComponentPackRowBuilder[T: TraceRegisterable]:
         self,
         variable: tk.StringVar,
         disabled: tk.BooleanVar | None = None,
+        tooltip: str | None = None,
     ) -> Self:
-        entry = Entry(self._master, textvariable=variable)
+        entry = Entry(self._master, textvariable=variable, tooltip=tooltip)
         entry.pack(side=tk.LEFT)
         if disabled is not None:
             entry.configure(state=tk.DISABLED if disabled.get() else tk.NORMAL)
@@ -96,11 +104,17 @@ class ComponentPackRowBuilder[T: TraceRegisterable]:
 
     @overload
     def add_label(
-        self, *, variable: tk.StringVar, width: int | None = None
+        self,
+        *,
+        variable: tk.StringVar,
+        width: int | None = None,
+        tooltip: str | None = None,
     ) -> Self: ...
 
     @overload
-    def add_label(self, *, text: str, width: int | None = None) -> Self: ...
+    def add_label(
+        self, *, text: str, width: int | None = None, tooltip: str | None = None
+    ) -> Self: ...
 
     def add_label(
         self,
@@ -108,11 +122,12 @@ class ComponentPackRowBuilder[T: TraceRegisterable]:
         variable: tk.StringVar | None = None,
         text: str | None = None,
         width: int | None = None,
+        tooltip: str | None = None,
     ) -> Self:
         if variable is not None:
-            label = Label(self._master, textvariable=variable)
+            label = Label(self._master, textvariable=variable, tooltip=tooltip)
         elif text is not None:
-            label = Label(self._master, text=text)
+            label = Label(self._master, text=text, tooltip=tooltip)
         else:
             raise ValueError("Either variable or text must be specified.")
         if width is not None:
@@ -120,9 +135,22 @@ class ComponentPackRowBuilder[T: TraceRegisterable]:
         label.pack(side=tk.LEFT)
         return self
 
-    def add_radiobutton(self, variable: tk.StringVar, values: list[str]) -> Self:
-        for value in values:
-            Radiobutton(self._master, variable=variable, value=value).pack(side=tk.LEFT)
+    def add_radiobutton(
+        self,
+        variable: tk.StringVar,
+        values: list[str],
+        tooltips: list[str] | None = None,
+    ) -> Self:
+        if tooltips is not None and len(tooltips) == len(values):
+            for value, tooltip in zip(values, tooltips):
+                Radiobutton(
+                    self._master, variable=variable, value=value, tooltip=tooltip
+                ).pack(side=tk.LEFT)
+        else:
+            for value in values:
+                Radiobutton(self._master, variable=variable, value=value).pack(
+                    side=tk.LEFT
+                )
         return self
 
     @overload
@@ -133,6 +161,7 @@ class ComponentPackRowBuilder[T: TraceRegisterable]:
         to: int,
         expand: bool = False,
         disabled: tk.BooleanVar | None = None,
+        tooltip: str | None = None,
     ) -> Self: ...
 
     @overload
@@ -143,6 +172,7 @@ class ComponentPackRowBuilder[T: TraceRegisterable]:
         to: float,
         expand: bool = False,
         disabled: tk.BooleanVar | None = None,
+        tooltip: str | None = None,
     ) -> Self: ...
 
     def add_scale(
@@ -152,12 +182,14 @@ class ComponentPackRowBuilder[T: TraceRegisterable]:
         to: int | float,
         expand: bool = False,
         disabled: tk.BooleanVar | None = None,
+        tooltip: str | None = None,
     ) -> Self:
         scale = Scale(
             self._master,
             variable=variable,
             from_=from_,
             to=to,
+            tooltip=tooltip,
         )
         if disabled is not None:
             scale.configure(state=tk.DISABLED if disabled.get() else tk.NORMAL)
@@ -175,6 +207,7 @@ class ComponentPackRowBuilder[T: TraceRegisterable]:
         from_: int,
         increment: int = 1,
         disabled: tk.BooleanVar | None = None,
+        tooltip: str | None = None,
     ) -> Self:
         spinbox = Spinbox(
             self._master,
@@ -182,6 +215,7 @@ class ComponentPackRowBuilder[T: TraceRegisterable]:
             to=to,
             from_=from_,
             increment=increment,
+            tooltip=tooltip,
         )
         if disabled is not None:
             spinbox.configure(state=tk.DISABLED if disabled.get() else tk.NORMAL)

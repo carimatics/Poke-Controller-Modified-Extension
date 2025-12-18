@@ -2,24 +2,24 @@ import tkinter as tk
 import tkinter.ttk as ttk
 from typing import Any, Literal
 
+from ..mixins.tooltip import TooltipMixIn
+
 type VariantType = Literal["base", "primary", "error", "success", "warning"]
 type SizeType = Literal["xs", "s", "md", "l", "xl"]
 
 
-class Button(ttk.Button):
+class Button(TooltipMixIn, ttk.Button):
     def __init__(
         self,
         master: tk.Misc,
-        *,
-        variant: VariantType = "base",
-        size: SizeType = "md",
+        *args: Any,
         **kwargs: Any,
     ) -> None:
+        self._pokecon_variant = variant = kwargs.pop("variant", "base")
+        self._pokecon_size = size = kwargs.pop("size", "md")
         self._pokecon_style = self._construct_style(variant, size)
         kwargs["style"] = self._pokecon_style
-        super().__init__(master, **kwargs)
-        self._pokecon_size = size
-        self._pokecon_variant = variant
+        super().__init__(master, *args, **kwargs)
 
     def configure_style(
         self,

@@ -2,21 +2,22 @@ import tkinter as tk
 import tkinter.ttk as ttk
 from typing import Any, Literal
 
+from ..mixins.tooltip import TooltipMixIn
+
 type SizeType = Literal["xs", "s", "md", "l", "xl"]
 
 
-class Label(ttk.Label):
+class Label(TooltipMixIn, ttk.Label):
     def __init__(
         self,
         master: tk.Misc,
-        *,
-        size: SizeType = "md",
+        *args: Any,
         **kwargs: Any,
     ) -> None:
+        self._pokecon_size = size = kwargs.pop("size", "md")
         self._pokecon_style = self._construct_style(size)
         kwargs["style"] = self._pokecon_style
-        super().__init__(master, **kwargs)
-        self._pokecon_size = size
+        super().__init__(master, *args, **kwargs)
 
     def configure_style(self, *, size: SizeType) -> None:
         self._pokecon_style = self._construct_style(size)

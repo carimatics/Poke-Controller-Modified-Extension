@@ -17,15 +17,16 @@ class ScrollableFrame(Frame):
     def __init__(
         self,
         master: tk.Misc,
+        *args: Any,
         **kwargs: Any,
     ) -> None:
-        super().__init__(master)
+        super().__init__(master, **kwargs)
 
         self._canvas = tk.Canvas(self, highlightthickness=0)
         self._scrollbar = Scrollbar(
             master, orient="vertical", command=self._canvas.yview
         )
-        self.scrollable_frame = Frame(self._canvas, **kwargs)
+        self.scrollable_frame = Frame(self._canvas, *args, **kwargs)
 
         self._updating = False
         self.build_ui()

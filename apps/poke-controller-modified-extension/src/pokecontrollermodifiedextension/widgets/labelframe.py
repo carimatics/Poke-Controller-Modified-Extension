@@ -7,11 +7,12 @@ class Labelframe(ttk.Labelframe):
     def __init__(
         self,
         master: tk.Misc,
+        *args: Any,
         **kwargs: Any,
     ) -> None:
         self._pokecon_style = self._construct_style()
         kwargs["style"] = self._pokecon_style
-        super().__init__(master, **kwargs)
+        super().__init__(master, *args, **kwargs)
 
         self._trace_ids: list[
             tuple[tk.Variable, Literal["array", "read", "write", "unset"], str]
