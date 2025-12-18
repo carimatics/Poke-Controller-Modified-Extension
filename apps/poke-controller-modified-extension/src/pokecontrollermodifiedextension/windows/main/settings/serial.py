@@ -1,8 +1,8 @@
 import platform
 import tkinter as tk
-import tkinter.ttk as ttk
 from typing import Any
 
+from .... import widgets
 from ....model import get_app_model
 from ....settings import get_app_settings
 from ....widgets.app import AppFrame
@@ -35,15 +35,15 @@ class SerialSettings(AppFrame):
         serial_settings.pack(expand=False, fill=tk.X, anchor=tk.N, pady=4)
         data_settings.pack(expand=False, fill=tk.X, anchor=tk.N, pady=4)
 
-    def _build_serial_settings(self) -> ttk.Labelframe:
-        labelframe = ttk.Labelframe(self, text="Port Settings")
+    def _build_serial_settings(self) -> widgets.Labelframe:
+        labelframe = widgets.Labelframe(self, text="Port Settings")
 
         # Port
-        port_label = ttk.Label(
+        port_label = widgets.Label(
             labelframe,
             text="COM Port: " if platform.system() == "Windows" else "Port: ",
         )
-        port_entry = ttk.Combobox(
+        port_entry = widgets.Combobox(
             labelframe,
             width=5,
             state="readonly",
@@ -54,8 +54,8 @@ class SerialSettings(AppFrame):
             port_entry.current(0)
 
         # Baud Rate
-        baud_rate_label = ttk.Label(labelframe, text="Baud Rate: ")
-        baud_rate_combobox = ttk.Combobox(
+        baud_rate_label = widgets.Label(labelframe, text="Baud Rate: ")
+        baud_rate_combobox = widgets.Combobox(
             labelframe,
             width=6,
             justify=tk.RIGHT,
@@ -65,14 +65,14 @@ class SerialSettings(AppFrame):
         )
 
         # Reconnect Button
-        reconnect_button = ttk.Button(
+        reconnect_button = widgets.Button(
             labelframe,
             text="Reconnect",
             command=self._on_reconnect_pushed,
         )
 
         # Disconnect Button
-        disconnect_button = ttk.Button(
+        disconnect_button = widgets.Button(
             labelframe,
             text="Disconnect",
             command=self._on_disconnect_pushed,
@@ -81,12 +81,12 @@ class SerialSettings(AppFrame):
         # Layout
         port_label.pack(expand=False, side=tk.LEFT, padx=4)
         port_entry.pack(expand=True, fill=tk.X, side=tk.LEFT)
-        ttk.Separator(master=labelframe, orient=tk.VERTICAL).pack(
+        widgets.Separator(master=labelframe, orient=tk.VERTICAL).pack(
             expand=False, fill=tk.Y, side=tk.LEFT, padx=5, pady=8
         )
         baud_rate_label.pack(expand=False, side=tk.LEFT)
         baud_rate_combobox.pack(expand=False, fill=tk.X, side=tk.LEFT)
-        ttk.Separator(master=labelframe, orient=tk.VERTICAL).pack(
+        widgets.Separator(master=labelframe, orient=tk.VERTICAL).pack(
             expand=False, fill=tk.Y, side=tk.LEFT, padx=5, pady=8
         )
         reconnect_button.pack(expand=False, fill=tk.X, side=tk.LEFT, padx=4, pady=4)
@@ -94,14 +94,14 @@ class SerialSettings(AppFrame):
 
         return labelframe
 
-    def _build_data_settings(self) -> ttk.Labelframe:
-        labelframe = ttk.Labelframe(self, text="Data")
+    def _build_data_settings(self) -> widgets.Labelframe:
+        labelframe = widgets.Labelframe(self, text="Data")
 
         # Data Format
-        data_format_label = ttk.Label(
+        data_format_label = widgets.Label(
             labelframe, text="Data Format: ", anchor=tk.CENTER
         )
-        data_format_combobox = ttk.Combobox(
+        data_format_combobox = widgets.Combobox(
             labelframe,
             state=tk.NORMAL,
             textvariable=self._data_format,
@@ -114,7 +114,7 @@ class SerialSettings(AppFrame):
         )
 
         # Show Serial
-        show_serial_checkbutton = ttk.Checkbutton(
+        show_serial_checkbutton = widgets.Checkbutton(
             labelframe,
             text="Show Serial",
             variable=self._show_data,
