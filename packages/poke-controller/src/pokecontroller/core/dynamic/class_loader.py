@@ -22,7 +22,7 @@ class DynamicClassLoader[T]:
         self.base_namespace = namespace
         self.base_dir = base_dir
 
-    def load(self) -> Generator[tuple[str, type[T]], None, None]:
+    def load(self) -> Generator[tuple[ModuleType, str, type[T]], None, None]:
         if not self.base_dir.exists():
             raise PokeControllerDynamicClassLoaderException(
                 f"{self.base_dir} is not found."
@@ -73,15 +73,13 @@ class DynamicClassLoader[T]:
 
     def _load_class_from_module(
         self, module: ModuleType
-    ) -> Generator[tuple[str, type[T]], None, None]:
+    ) -> Generator[tuple[ModuleType, str, type[T]], None, None]:
         for name, obj in inspect.getmembers(module, inspect.isclass):
             try:
                 if obj is self.klass:
                     continue
                 if not issubclass(obj, self.klass):
                     continue
-                if inspect.isabstract(obj):
-                    continue
-                yield name, obj
+                yield module, name, obj
             except TypeError:
                 continue

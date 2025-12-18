@@ -1,12 +1,11 @@
 import logging
 
-from pokecontroller.core.dynamic import DynamicClassLoader
 from pokecontroller.core.serial import SerialPort, get_serial_ports
 
 from .api.v0_1_8.command.commands.base import Command
-from .api.v0_1_8.command.commands.mcu.base import McuCommand
-from .api.v0_1_8.command.commands.python.base import PythonCommand
 from .api.v0_1_8.command.sender import Sender
+from .core.command import CommandInfo
+from .core.papico import get_papico
 from .exception import AppRuntimeException
 from .info import get_app_info
 from .resources import get_app_resources
@@ -22,45 +21,33 @@ class AppModel:
         self._app_resources = get_app_resources()
         self._app_info = get_app_info()
         self._app_settings = get_app_settings()
+        self._papico = get_papico()
         self._sender: Sender = Sender(self._app_settings.serial.show_data)
         self._command: Command | None = None
 
     def load_commands(
         self,
-    ) -> tuple[
-        list[tuple[str, type[PythonCommand]]],
-        list[tuple[str, type[McuCommand]]],
-    ]:
-        base_dir = self._runtime_info.base_dir / "Commands"
-
-        python_commands = list(
-            DynamicClassLoader(
-                base_dir=base_dir / "PythonCommands",
-                klass=PythonCommand,  # type: ignore[type-abstract]
-            ).load()
-        )
-        mcu_commands = list(
-            DynamicClassLoader(
-                base_dir=base_dir / "McuCommands",
-                klass=McuCommand,  # type: ignore[type-abstract]
-            ).load()
-        )
-        return python_commands, mcu_commands
-
-    def start_command(self, klass: type[Command]) -> None:
-        logger.info("start_command")
-        if self._command is not None:
-            self._command.end(self._sender)
-            self._command = None
+    ) -> list[CommandInfo]:
+        result = self._papico.load_commands()
+        if result.success:
+            return result.data
         else:
-            sender = self._sender
-            self._command = klass()
-            port = self._app_settings.serial.port.get()
-            sender.openSerial(portNum=0, portName=port)
-            klass().start(ser=sender)
+            return []
+
+    def start_command(self, command_info: CommandInfo) -> None:
+        result = self._papico.get_command_state()
+        if result.success and result.data.is_running:
+            logger.info("Command is running.")
+            return
+
+        self._papico.start_command(command_info)
 
     def stop_command(self) -> None:
-        pass
+        result = self._papico.stop_command()
+        if result.success:
+            logger.info("Command stopped.")
+        else:
+            logger.warning("Failed to stop command.")
 
     def pause_command(self) -> None:
         pass

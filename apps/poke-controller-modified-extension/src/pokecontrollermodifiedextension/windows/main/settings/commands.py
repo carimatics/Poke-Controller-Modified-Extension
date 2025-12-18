@@ -25,18 +25,32 @@ class CommandsSettings(AppFrame):
         self._app_settings = get_app_settings()
         self._app_model = get_app_model()
 
+        self._commands = self._app_model.load_commands()
+
         self._open_dir_button_image: tk.PhotoImage = tk.PhotoImage(
             file="../assets/icons8-OpenDir-16.png"
         )
 
-        self._python_commands_filter_list: list[str] = (
-            self._load_python_commands_filter_list()
-        )
-        self._python_command_list: list[str] = self._load_python_command_list()
-        self._mcu_commands_filter_list: list[str] = (
-            self._load_mcu_commands_filter_list()
-        )
-        self._mcu_command_list: list[str] = self._load_mcu_command_list()
+        self._python_commands_filter_list: list[str] = [
+            t
+            for c in self._commands
+            if c.kind == PYTHON and hasattr(c.klass, "TAGS")
+            for t in c.klass.TAGS
+        ]
+        self._python_command_list: list[str] = [
+            c.klass.NAME
+            for c in self._commands
+            if c.kind == PYTHON and c.klass.NAME != ""
+        ]
+        self._mcu_commands_filter_list: list[str] = [
+            t
+            for c in self._commands
+            if c.kind == MCU and hasattr(c.klass, "TAGS")
+            for t in c.klass.TAGS
+        ]
+        self._mcu_command_list: list[str] = [
+            c.klass.NAME for c in self._commands if c.kind == MCU and c.klass.NAME != ""
+        ]
         self._shortcut_button_texts: list[tk.StringVar] = []
 
         self._python_commands_filter = self._app_settings.command.python_commands_filter
@@ -239,18 +253,6 @@ class CommandsSettings(AppFrame):
 
         return frame
 
-    def _load_python_commands_filter_list(self) -> list[str]:
-        return self._app_model.load_python_commands_filter_list()
-
-    def _load_python_command_list(self) -> list[str]:
-        return self._app_model.load_python_command_list()
-
-    def _load_mcu_commands_filter_list(self) -> list[str]:
-        return self._app_model.load_mcu_commands_filter_list()
-
-    def _load_mcu_command_list(self) -> list[str]:
-        return self._app_model.load_mcu_command_list()
-
     def _on_open_dir_pushed(self) -> None:
         self._app_model.open_commands_directory_window()
 
@@ -261,7 +263,17 @@ class CommandsSettings(AppFrame):
         self._app_model.register_command_shortcut()
 
     def _on_reload_pushed(self) -> None:
-        self._app_model.load_commands()
+        self._commands = self._app_model.load_commands()
+        self._python_commands_filter_list = [
+            t for c in self._commands if c.kind == PYTHON for t in c.klass.TAGS
+        ]
+        self._python_command_list = [
+            c.klass.NAME for c in self._commands if c.kind == PYTHON
+        ]
+        self._mcu_commands_filter_list = [
+            t for c in self._commands if c.kind == MCU for t in c.klass.TAGS
+        ]
+        self._mcu_command_list = [c.klass.NAME for c in self._commands if c.kind == MCU]
 
     def _on_start_pushed(self) -> None:
         pass

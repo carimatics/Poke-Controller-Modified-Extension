@@ -1,6 +1,8 @@
-from pokecontrollermodifiedextension.app import INFO
+from pokecontrollermodifiedextension.info import get_app_info
+
+_app_info = get_app_info()
 
 # for compatibility
-NAME = INFO.name
+NAME = _app_info.name
 # for compatibility
-VERSION = INFO.version
+VERSION = _app_info.version
