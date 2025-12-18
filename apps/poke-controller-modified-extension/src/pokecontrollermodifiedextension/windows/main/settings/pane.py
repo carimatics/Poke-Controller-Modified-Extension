@@ -2,6 +2,7 @@ import tkinter as tk
 import tkinter.ttk as ttk
 from typing import Any
 
+from .... import widgets
 from ....widgets.app import AppFrame
 from .capture import CameraSettings
 from .commands import CommandsSettings
@@ -17,7 +18,7 @@ COMMANDS = "commands"
 NOTIFICATION = "notification"
 OTHERS = "others"
 
-SETTINGS: list[tuple[str, type[ttk.Frame], str]] = [
+SETTINGS: list[tuple[str, type[widgets.Frame], str]] = [
     (CAPTURE, CameraSettings, "Capture"),
     (SERIAL, SerialSettings, "Serial"),
     (MANUAL_CONTROL, ManualControlSettings, "Manual Control"),
@@ -37,7 +38,7 @@ class SettingsPane(AppFrame):
         notebook = ttk.Notebook(self)
 
         # Create Notebook Children
-        settings: dict[str, ttk.Frame] = {}
+        settings: dict[str, widgets.Frame] = {}
         for name, settings_class, tag_text in SETTINGS:
             settings[name] = settings_class(notebook)
             notebook.add(settings[name], text=tag_text, padding=5, sticky=tk.NSEW)
