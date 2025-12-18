@@ -264,7 +264,6 @@ class Capture(AppFrame):
         if self._show_realtime.get():
             return
         self._resize()
-        self._width, self._height = self._parse_size()
 
     def _on_enable_lstick_mouse_changed(self, *_: Any) -> None:
         if self._enabled_lstick_mouse.get():
@@ -307,9 +306,22 @@ class Capture(AppFrame):
             self._disabled_image = ImageTk.PhotoImage()
         self._is_show_disabled = False
 
-        logger.info("Destroying canvas")
-        self._canvas.destroy()
-        self._create_new_canvas()
+        logger.info("Deleting image item")
+        self._canvas.delete(self._image_id)
+
+        logger.info(f"Resizing canvas to {self._width}x{self._height}")
+        self._canvas.config(width=self._width, height=self._height)
+        logger.info("Canvas resized")
+
+        self.update_idletasks()
+        logger.info("update_idletasks complete")
+
+        logger.info("Recreating image item")
+        self._image = self._disabled_image
+        self._image_id = self._canvas.create_image(
+            0, 0, anchor=tk.NW, image=self._image
+        )
+        logger.info("Image item recreated")
 
     def _parse_size(self) -> tuple[int, int]:
         width, height = self._size.get().split("x")
