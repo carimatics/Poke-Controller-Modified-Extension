@@ -43,8 +43,7 @@ class PapicoSettingsSaveHandler(PapicoHandler):
             )
 
     def _save_settings(self) -> None:
-        path = Path(self._path)
-        base = path.parent
+        base = self._path.parent
         if base.exists() and not base.is_dir():
             raise PapicoSettingsLoadHandlerException(f"{base} is not directory.")
 

@@ -14,15 +14,16 @@ from ...handler import PapicoHandler
 
 
 class PapicoSettingsLoadHandler(PapicoHandler):
-    _path: str
+    _path: Path | None
     _settings: dict[str, Any]
     _tk_variables: dict[str, Any]
 
     def handle(self, ctx: PapicoExecContext) -> PapicoResult[AppSettings]:
         try:
             if (params := ctx.params) is None or "path" not in params:
-                raise PapicoSettingsLoadHandlerException("Path is required.")
-            self._path: str = params["path"]
+                self._path = None
+            else:
+                self._path = params["path"]
             self._settings = self._load_settings()
             self._fill_by_default()
             self._tk_variables = self._value_to_tk_variables()
@@ -37,7 +38,7 @@ class PapicoSettingsLoadHandler(PapicoHandler):
             )
 
     def _load_settings(self) -> dict[str, Any]:
-        if not (p := Path(self._path)).exists():
+        if (p := self._path) is None or not p.exists():
             return {}
         default_settings: dict[str, Any] = json.loads(
             p.read_text(encoding="utf-8-sig"),

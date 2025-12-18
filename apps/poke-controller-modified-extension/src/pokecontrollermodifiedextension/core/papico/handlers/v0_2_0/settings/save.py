@@ -10,7 +10,7 @@ from ....handlers import PapicoHandler
 
 
 class PapicoSettingsSaveHandler(PapicoHandler):
-    _path: str
+    _path: Path
     _settings: AppSettings
     _values: dict[str, Any]
 
@@ -37,15 +37,14 @@ class PapicoSettingsSaveHandler(PapicoHandler):
             )
 
     def _save_settings(self) -> None:
-        path = Path(self._path)
-        base = path.parent
+        base = self._path.parent
         if base.exists() and not base.is_dir():
             raise PapicoSettingsSaveHandlerException(f"{base} is not directory.")
 
         if not base.exists():
             base.mkdir(parents=True, exist_ok=True)
 
-        path.write_text(
+        self._path.write_text(
             json.dumps(self._values, indent=4),
             encoding="utf-8",
         )
