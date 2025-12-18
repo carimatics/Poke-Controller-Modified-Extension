@@ -3,6 +3,7 @@ import tkinter as tk
 import tkinter.ttk as ttk
 from typing import Any, Callable
 
+from .... import widgets
 from ....settings import get_app_settings
 from ....widgets.app import AppFrame
 
@@ -12,7 +13,7 @@ logger = logging.getLogger(__name__)
 class SettingsSidebarPane(AppFrame):
     _canvas: tk.Canvas
     _scrollable_frame: tk.Frame
-    _scrollbar: ttk.Scrollbar
+    _scrollbar: widgets.Scrollbar
     _bg_color: str
     _canvas_window: int
     _current_button: tk.Button | None
@@ -44,7 +45,7 @@ class SettingsSidebarPane(AppFrame):
         self._canvas = tk.Canvas(
             self, bg=self._bg_color, width=140, highlightthickness=0
         )
-        self._scrollbar = ttk.Scrollbar(
+        self._scrollbar = widgets.Scrollbar(
             self, orient="vertical", command=self._canvas.yview
         )
         self._scrollable_frame = tk.Frame(self._canvas, bg=self._bg_color)
@@ -145,7 +146,7 @@ class SettingsSidebarPane(AppFrame):
             bg = None
             if isinstance(widget, (tk.Frame, tk.Tk, tk.Toplevel)):
                 bg = widget.cget("background")
-            elif isinstance(widget, ttk.Frame):
+            elif isinstance(widget, widgets.Frame):
                 style = ttk.Style(widget)
                 bg = style.lookup("TFrame", "background")
             if bg:
