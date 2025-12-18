@@ -31,6 +31,9 @@ from .scrollable_frame import (
 from .scrollbar import (
     Scrollbar as Scrollbar,
 )
+from .separator import (
+    Separator as Separator,
+)
 from .spinbox import (
     Spinbox as Spinbox,
 )

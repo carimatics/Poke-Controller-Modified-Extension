@@ -69,6 +69,7 @@ class StyleSettings:
     frame: ComponentStyle = field(default_factory=ComponentStyle)
     labelframe: ComponentStyle = field(default_factory=ComponentStyle)
     scrollbar: ComponentStyle = field(default_factory=ComponentStyle)
+    separator: ComponentStyle = field(default_factory=ComponentStyle)
 
     def to_dict(self) -> dict[str, Any]:
         return {
@@ -83,6 +84,7 @@ class StyleSettings:
             **self.frame.to_dict("Frame"),
             **self.labelframe.to_dict("Labelframe"),
             **self.scrollbar.to_dict("Scrollbar"),
+            **self.separator.to_dict("Separator"),
         }
 
 
@@ -199,6 +201,7 @@ class StyleManager:
                     },
                 },
             ),
+            separator=ComponentStyle(),
         )
 
     def _initialize_styles_for_windows(self) -> None:
