@@ -34,6 +34,9 @@ class CommandsSettings(AppFrame):
 
     _shortcut_buttons: list[widgets.Button]
 
+    _start_button: widgets.Button
+    _pause_button: widgets.Button
+
     def __init__(self, master: tk.Misc, *args: Any, **kwargs: Any) -> None:
         super().__init__(master, *args, **kwargs)
 
@@ -96,15 +99,16 @@ class CommandsSettings(AppFrame):
             text="Reload",
             command=self._on_reload_pushed,
         )
-        start_button = widgets.Button(
+        self._start_button = widgets.Button(
             lower_frame,
             text="Start",
             command=self._on_start_pushed,
         )
-        pause_button = widgets.Button(
+        self._pause_button = widgets.Button(
             lower_frame,
             text="Pause",
             command=self._on_pause_pushed,
+            state=tk.DISABLED,
         )
 
         # Layout
@@ -119,8 +123,8 @@ class CommandsSettings(AppFrame):
             expand=False, fill=tk.Y, side=tk.LEFT, padx=5, pady=8
         )
         command_reload_button.pack(expand=False, fill=tk.X, side=tk.LEFT, padx=4)
-        start_button.pack(expand=False, fill=tk.X, side=tk.LEFT, padx=4)
-        pause_button.pack(expand=False, fill=tk.X, side=tk.LEFT, padx=4)
+        self._start_button.pack(expand=False, fill=tk.X, side=tk.LEFT, padx=4)
+        self._pause_button.pack(expand=False, fill=tk.X, side=tk.LEFT, padx=4)
         lower_frame.pack(expand=False, fill=tk.BOTH, side=tk.TOP, padx=4, pady=4)
 
     def _build_commands_notebook(self, master: widgets.Frame) -> ttk.Notebook:
@@ -381,6 +385,15 @@ class CommandsSettings(AppFrame):
                     self._app_model.start_command(c)
                     return
 
+    def _stop_shortcut_command(self) -> None:
+        self._app_model.stop_command()
+
+    def _configure_start_button(self) -> None:
+        self._start_button.configure(text="Start", command=self._on_start_pushed)
+
+    def _configure_stop_button(self) -> None:
+        self._start_button.configure(text="Stop", command=self._on_stop_pushed)
+
     def _enable_shortcut_buttons(self) -> None:
         for i in range(10):
             button = self._shortcut_buttons[i]
@@ -391,13 +404,31 @@ class CommandsSettings(AppFrame):
             button = self._shortcut_buttons[i]
             button.configure(state=tk.DISABLED)
 
+    def _enable_pause_button(self) -> None:
+        self._pause_button.configure(state=tk.NORMAL)
+
+    def _disable_pause_button(self) -> None:
+        self._pause_button.configure(state=tk.DISABLED)
+
     def _on_running_changed(self, *_: str) -> None:
         if self._app_command_state.is_running.get():
             self._disable_shortcut_buttons()
+            self._configure_stop_button()
 
     def _on_stopped_changed(self, *_: str) -> None:
         if self._app_command_state.is_stopped.get():
             self._enable_shortcut_buttons()
+            self._configure_start_button()
+
+    def _on_paused_changed(self, *_: str) -> None:
+        is_running = self._app_command_state.is_running.get()
+        is_paused = self._app_command_state.is_paused.get()
+        if not is_running:
+            self._disable_pause_button()
+        elif is_running and not is_paused:
+            self._disable_pause_button()
+        else:
+            self._enable_pause_button()
 
     def _on_reload_pushed(self) -> None:
         self._load_commands()
@@ -406,6 +437,9 @@ class CommandsSettings(AppFrame):
     def _on_start_pushed(self) -> None:
         shortcut_number = self._shortcut_number.get()
         self._start_shortcut_command(shortcut_number)
+
+    def _on_stop_pushed(self) -> None:
+        self._stop_shortcut_command()
 
     def _on_pause_pushed(self) -> None:
         self._app_model.pause_command()
@@ -461,4 +495,9 @@ class CommandsSettings(AppFrame):
             "write",
             self._app_command_state.is_stopped,
             self._on_stopped_changed,
+        )
+        self.register_trace(
+            "write",
+            self._app_command_state.is_paused,
+            self._on_paused_changed,
         )
