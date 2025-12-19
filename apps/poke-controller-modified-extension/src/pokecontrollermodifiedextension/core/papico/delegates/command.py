@@ -15,8 +15,12 @@ from pokecontrollermodifiedextension.core.papico.context import (
     PapicoSuccess,
 )
 from pokecontrollermodifiedextension.core.papico.exception import (
-    PapicoCommandGetStateHandlerException,
+    PapicoCommandInitializeHandlerException,
     PapicoCommandLoadHandlerException,
+    PapicoCommandPauseHandlerException,
+    PapicoCommandResumeHandlerException,
+    PapicoCommandStartHandlerException,
+    PapicoCommandStopHandlerException,
 )
 from pokecontrollermodifiedextension.core.papico.handlers.handler import PapicoHandler
 from pokecontrollermodifiedextension.core.papico.types import (
@@ -72,7 +76,7 @@ class PapicoCommandDelegate:
                         api_version=api_version,
                         operation=operation,
                     ),
-                    error=PapicoCommandLoadHandlerException(f"{e}"),
+                    error=PapicoCommandInitializeHandlerException(f"{e}"),
                 )
 
         self._register_traces()
@@ -132,7 +136,7 @@ class PapicoCommandDelegate:
                     api_version=self._latest_api_version,
                     operation="start",
                 ),
-                error=PapicoCommandGetStateHandlerException("Command is running."),
+                error=PapicoCommandStartHandlerException("Command is running."),
             )
 
         set_current_command_info(command_info)
@@ -174,7 +178,7 @@ class PapicoCommandDelegate:
                     api_version=self._latest_api_version,
                     operation=operation,
                 ),
-                error=PapicoCommandGetStateHandlerException("Command is not running."),
+                error=PapicoCommandStopHandlerException("Command is not running."),
             )
 
         if (command_info := get_current_command_info()) is None:
@@ -183,7 +187,87 @@ class PapicoCommandDelegate:
                     api_version=self._latest_api_version,
                     operation=operation,
                 ),
-                error=PapicoCommandGetStateHandlerException("Command info is not set."),
+                error=PapicoCommandStopHandlerException("Command info is not set."),
+            )
+
+        ctx = self._create_context(
+            api_version=command_info.api_version,
+            operation=operation,
+            params={"command": command},
+        )
+        handler = self._get_handler(ctx=ctx)
+        result = handler.handle(ctx)
+        return result
+
+    def pause(self) -> PapicoResult[None]:
+        operation = "pause"
+
+        command_state = get_app_command_state()
+        if not command_state.is_running.get():
+            return PapicoSuccess(
+                ctx=self._create_context(
+                    api_version=self._latest_api_version,
+                    operation=operation,
+                ),
+                data=None,
+            )
+
+        if (command := self._current_command) is None:
+            return PapicoFailure(
+                ctx=self._create_context(
+                    api_version=self._latest_api_version,
+                    operation=operation,
+                ),
+                error=PapicoCommandPauseHandlerException("Command is not running."),
+            )
+
+        if (command_info := get_current_command_info()) is None:
+            return PapicoFailure(
+                ctx=self._create_context(
+                    api_version=self._latest_api_version,
+                    operation=operation,
+                ),
+                error=PapicoCommandPauseHandlerException("Command info is not set."),
+            )
+
+        ctx = self._create_context(
+            api_version=command_info.api_version,
+            operation=operation,
+            params={"command": command},
+        )
+        handler = self._get_handler(ctx=ctx)
+        result = handler.handle(ctx)
+        return result
+
+    def resume(self) -> PapicoResult[None]:
+        operation = "resume"
+
+        command_state = get_app_command_state()
+        if not command_state.is_paused.get():
+            return PapicoSuccess(
+                ctx=self._create_context(
+                    api_version=self._latest_api_version,
+                    operation=operation,
+                ),
+                data=None,
+            )
+
+        if (command := self._current_command) is None:
+            return PapicoFailure(
+                ctx=self._create_context(
+                    api_version=self._latest_api_version,
+                    operation=operation,
+                ),
+                error=PapicoCommandResumeHandlerException("Command is not running."),
+            )
+
+        if (command_info := get_current_command_info()) is None:
+            return PapicoFailure(
+                ctx=self._create_context(
+                    api_version=self._latest_api_version,
+                    operation=operation,
+                ),
+                error=PapicoCommandResumeHandlerException("Command info is not set."),
             )
 
         ctx = self._create_context(

@@ -102,6 +102,18 @@ class Papico:
             logger.warning(f"Failed to stop command: {result.error}")
         return result
 
+    def pause_command(self) -> PapicoResult[None]:
+        result = self._command_delegate.pause()
+        if not result.success:
+            logger.warning(f"Failed to pause command: {result.error}")
+        return result
+
+    def resume_command(self) -> PapicoResult[None]:
+        result = self._command_delegate.resume()
+        if not result.success:
+            logger.warning(f"Failed to resume command: {result.error}")
+        return result
+
 
 PAPICO_SINGLETON: Papico | None = None
 

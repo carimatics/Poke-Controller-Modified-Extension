@@ -4,6 +4,12 @@ from .initialize import (
 from .load import (
     PapicoCommandLoadHandler as PapicoCommandLoadHandler,
 )
+from .pause import (
+    PapicoCommandPauseHandler as PapicoCommandPauseHandler,
+)
+from .resume import (
+    PapicoCommandResumeHandler as PapicoCommandResumeHandler,
+)
 from .start import (
     PapicoCommandStartHandler as PapicoCommandStartHandler,
 )

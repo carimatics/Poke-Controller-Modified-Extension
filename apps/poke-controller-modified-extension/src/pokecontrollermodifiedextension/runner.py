@@ -10,6 +10,8 @@ from .app import App
 from .core.papico.handlers.v0_1_8.command import (
     PapicoCommandInitializeHandler as PapicoCommandInitializeHandler_v0_1_8,
     PapicoCommandLoadHandler as PapicoCommandLoadHandler_v0_1_8,
+    PapicoCommandPauseHandler as PapicoCommandPauseHandler_v0_1_8,
+    PapicoCommandResumeHandler as PapicoCommandResumeHandler_v0_1_8,
     PapicoCommandStartHandler as PapicoCommandStartHandler_v0_1_8,
     PapicoCommandStopHandler as PapicoCommandStopHandler_v0_1_8,
 )
@@ -93,6 +95,12 @@ def _register_handlers(papico: Papico) -> None:
             },
             "stop": {
                 "0.1.8": PapicoCommandStopHandler_v0_1_8,
+            },
+            "pause": {
+                "0.1.8": PapicoCommandPauseHandler_v0_1_8,
+            },
+            "resume": {
+                "0.1.8": PapicoCommandResumeHandler_v0_1_8,
             },
         },
     }
