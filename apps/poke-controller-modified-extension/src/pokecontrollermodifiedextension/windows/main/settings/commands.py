@@ -3,6 +3,7 @@ import tkinter.ttk as ttk
 from typing import Any, Literal
 
 from .... import widgets
+from ....core.command import get_app_command_state
 from ....core.command.info import set_current_command_info
 from ....model import get_app_model
 from ....settings import get_app_settings
@@ -38,6 +39,7 @@ class CommandsSettings(AppFrame):
 
         self._app_settings = get_app_settings()
         self._app_model = get_app_model()
+        self._app_command_state = get_app_command_state()
 
         self._open_dir_button_image: tk.PhotoImage = tk.PhotoImage(
             file="../assets/icons8-OpenDir-16.png"
@@ -379,6 +381,24 @@ class CommandsSettings(AppFrame):
                     self._app_model.start_command(c)
                     return
 
+    def _enable_shortcut_buttons(self) -> None:
+        for i in range(10):
+            button = self._shortcut_buttons[i]
+            button.configure(state=tk.NORMAL)
+
+    def _disable_shortcut_buttons(self) -> None:
+        for i in range(10):
+            button = self._shortcut_buttons[i]
+            button.configure(state=tk.DISABLED)
+
+    def _on_running_changed(self, *_: str) -> None:
+        if self._app_command_state.is_running.get():
+            self._disable_shortcut_buttons()
+
+    def _on_stopped_changed(self, *_: str) -> None:
+        if self._app_command_state.is_stopped.get():
+            self._enable_shortcut_buttons()
+
     def _on_reload_pushed(self) -> None:
         self._load_commands()
         self._update_commands()
@@ -431,4 +451,14 @@ class CommandsSettings(AppFrame):
             "write",
             self._mcu_command,
             self._on_mcu_command_changed,
+        )
+        self.register_trace(
+            "write",
+            self._app_command_state.is_running,
+            self._on_running_changed,
+        )
+        self.register_trace(
+            "write",
+            self._app_command_state.is_stopped,
+            self._on_stopped_changed,
         )
