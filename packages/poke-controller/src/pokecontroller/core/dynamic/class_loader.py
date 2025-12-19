@@ -20,12 +20,10 @@ class DynamicClassLoader[T]:
     def __init__(
         self,
         *,
-        base_dir: Path,
         search_root: Path,
         klass: type[T],
         namespace: str = "",
     ) -> None:
-        self._base_dir = base_dir
         self._search_root = search_root
         self._klass = klass
         self._base_namespace = namespace
@@ -49,7 +47,7 @@ class DynamicClassLoader[T]:
 
     def _load_module_from_file(self, file_path: Path) -> ModuleType:
         # construct module name
-        relative_path = file_path.relative_to(self._base_dir)
+        relative_path = file_path.relative_to(self._search_root)
         parts = list(relative_path.with_suffix("").parts)
         if self._base_namespace:
             parts.insert(0, self._base_namespace)

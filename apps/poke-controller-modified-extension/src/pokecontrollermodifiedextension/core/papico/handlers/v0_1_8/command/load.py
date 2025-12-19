@@ -27,13 +27,11 @@ class PapicoCommandLoadHandler(PapicoHandler):
             self._search_root = self._base_dir / "Commands"
             self._commands: list[CommandInfo] = []
             self._load_commands(
-                base_dir=self._base_dir,
                 search_root=self._search_root / "PythonCommands",
                 super_class=PythonCommand,
                 kind="python",
             )
             self._load_commands(
-                base_dir=self._base_dir,
                 search_root=self._search_root / "McuCommands",
                 super_class=McuCommand,
                 kind="mcu",
@@ -50,13 +48,11 @@ class PapicoCommandLoadHandler(PapicoHandler):
 
     def _load_commands(
         self,
-        base_dir: Path,
         search_root: Path,
         super_class: type,
         kind: Literal["python", "mcu"],
     ) -> None:
         for module, name, klass in DynamicClassLoader(  # type: ignore[var-annotated]
-            base_dir=base_dir,
             search_root=search_root,
             klass=super_class,
         ).load():
