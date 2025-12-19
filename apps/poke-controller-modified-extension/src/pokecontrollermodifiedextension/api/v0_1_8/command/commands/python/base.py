@@ -12,6 +12,7 @@ from pokecontrollermodifiedextension.api.v0_1_8.notification.line import (
     Line_Notify,
 )
 from pokecontrollermodifiedextension.api.v0_1_8.settings import GuiSettings
+from pokecontrollermodifiedextension.core.command import get_app_command_state
 
 from ...keys import ButtonLike, KeyPress
 from ...sender import Sender
@@ -35,6 +36,7 @@ class StopThread(Exception):
 class PythonCommand(Command, ABC):
     def __init__(self) -> None:
         super().__init__()
+        self._command_state = get_app_command_state()
 
         self.keys: KeyPress | None = None
         self.thread: threading.Thread | None = None
@@ -42,11 +44,15 @@ class PythonCommand(Command, ABC):
         self.isPause = False
         self.postProcess: PostProcess | None = None
         self.Line: Line_Notify | None = None
+        self.Discord: Discord_Notify | None = None
         try:
             self.Line = Line_Notify()
         except Exception:
             pass
-        self.Discord = Discord_Notify()
+        try:
+            self.Discord = Discord_Notify()
+        except Exception:
+            pass
 
     @abstractmethod
     def do(self) -> None:
@@ -126,6 +132,7 @@ class PythonCommand(Command, ABC):
         """
         自動化スクリプトをスレッドに割り当てて実行します。
         """
+        self._command_state.start()
         self.alive = True
         if (socket := self.socket0) is not None:
             socket.alive = True
@@ -156,6 +163,7 @@ class PythonCommand(Command, ABC):
                 keys.ser.closeSerial()
 
         logger.info("Exit from command successfully")
+        self._command_state.finish()
         raise StopThread("exit successfully")
 
     def checkIfAlive(self) -> bool:
@@ -364,7 +372,8 @@ class PythonCommand(Command, ABC):
             pass
 
         # 送信
-        try:
-            self.Discord.send_message(notification_message=content, keys=keys)
-        except Exception:
-            pass
+        if (notifier := self.Discord) is not None:
+            try:
+                notifier.send_message(notification_message=content, keys=keys)
+            except Exception:
+                pass

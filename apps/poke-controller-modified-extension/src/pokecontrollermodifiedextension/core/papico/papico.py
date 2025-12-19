@@ -5,7 +5,6 @@ from typing import Callable
 from ...runtime_info import get_app_runtime_info
 from ...settings import AppSettings
 from ..command import CommandInfo
-from ..command.state import CommandState
 from .context import PapicoResult
 from .delegates.command import PapicoCommandDelegate
 from .delegates.settings import PapicoSettingsDelegate
@@ -52,22 +51,34 @@ class Papico:
         )[ctx.operation] = ctx.handler_generator
 
     def load_settings(self) -> PapicoResult[AppSettings]:
-        return self._settings_delegate.load()
+        result = self._settings_delegate.load()
+        if not result.success:
+            logger.warning(f"Failed to load settings: {result.error}")
+        return result
 
     def reload_settings(self) -> PapicoResult[AppSettings]:
-        return self._settings_delegate.reload()
+        result = self._settings_delegate.reload()
+        if not result.success:
+            logger.warning(f"Failed to reload settings: {result.error}")
+        return result
 
     def save_settings(self) -> PapicoResult[None]:
-        return self._settings_delegate.save()
+        result = self._settings_delegate.save()
+        if not result.success:
+            logger.warning(f"Failed to save settings: {result.error}")
+        return result
 
     def initialize_command(self) -> PapicoResult[None]:
-        return self._command_delegate.initialize()
+        result = self._command_delegate.initialize()
+        if not result.success:
+            logger.warning(f"Failed to initialize command: {result.error}")
+        return result
 
     def load_commands(self) -> PapicoResult[list[CommandInfo]]:
-        return self._command_delegate.load()
-
-    def get_command_state(self) -> PapicoResult[CommandState]:
-        return self._command_delegate.get_state()
+        result = self._command_delegate.load()
+        if not result.success:
+            logger.warning(f"Failed to load commands: {result.error}")
+        return result
 
     def start_command(
         self,
@@ -76,14 +87,20 @@ class Papico:
         post_process: Callable[[], None] | None = None,
         sync_name: str | None = None,
     ) -> PapicoResult[None]:
-        return self._command_delegate.start(
+        result = self._command_delegate.start(
             command_info,
             post_process=post_process,
             sync_name=sync_name,
         )
+        if not result.success:
+            logger.warning(f"Failed to start command: {result.error}")
+        return result
 
     def stop_command(self) -> PapicoResult[None]:
-        return self._command_delegate.stop()
+        result = self._command_delegate.stop()
+        if not result.success:
+            logger.warning(f"Failed to stop command: {result.error}")
+        return result
 
 
 PAPICO_SINGLETON: Papico | None = None

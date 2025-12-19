@@ -2,6 +2,7 @@ import logging
 import tkinter as tk
 from typing import Any
 
+from .core.command import setup_app_command_state
 from .core.papico import get_papico
 from .exception import AppRuntimeException
 from .info import get_app_info
@@ -27,7 +28,10 @@ class App(tk.Tk):
 
         self._app_runtime_info = get_app_runtime_info()
         self._app_info = get_app_info()
+        self._app_command_state = setup_app_command_state()
+
         self._papico = get_papico()
+        self._papico.initialize_command()
         if (settings := self._papico.load_settings().data) is None:
             raise AppRuntimeException("App settings couldn't load.")
         self._settings = setup_app_settings(settings)

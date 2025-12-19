@@ -35,11 +35,6 @@ class AppModel:
             return []
 
     def start_command(self, command_info: CommandInfo) -> None:
-        result = self._papico.get_command_state()
-        if result.success and result.data.is_running:
-            logger.info("Command is running.")
-            return
-
         self._papico.start_command(command_info)
 
     def stop_command(self) -> None:

@@ -3,7 +3,7 @@ import threading
 from typing import Any, Callable
 
 from pokecontrollermodifiedextension.core.command import CommandInfo
-from pokecontrollermodifiedextension.core.command.state import CommandState
+from pokecontrollermodifiedextension.core.command.state import get_app_command_state
 from pokecontrollermodifiedextension.core.papico.context import (
     PapicoExecContext,
     PapicoFailure,
@@ -30,6 +30,8 @@ class PapicoCommandDelegate:
         latest_api_version: str,
         handler_generators: PapicoContainer[PapicoHandlerGenerator],
     ) -> None:
+        self._initialized = False
+
         self._handler_generators = handler_generators
         self._latest_api_version = latest_api_version
         self._domain = "command"
@@ -43,6 +45,15 @@ class PapicoCommandDelegate:
 
     def initialize(self) -> PapicoResult[None]:
         operation = "initialize"
+        if self._initialized:
+            return PapicoSuccess(
+                ctx=self._create_context(
+                    api_version=self._latest_api_version,
+                    operation=operation,
+                ),
+                data=None,
+            )
+
         for api_version in self._api_versions:
             ctx = self._create_context(
                 api_version=api_version,
@@ -61,6 +72,10 @@ class PapicoCommandDelegate:
                     ),
                     error=PapicoCommandLoadHandlerException(f"{e}"),
                 )
+
+        self._register_traces()
+
+        self._initialized = True
         return PapicoSuccess(
             ctx=self._create_context(
                 api_version=self._latest_api_version,
@@ -100,37 +115,6 @@ class PapicoCommandDelegate:
             data=result_data,
         )
 
-    def get_state(self) -> PapicoResult[CommandState]:
-        operation = "get_state"
-        if (command := self._current_command) is None:
-            return PapicoFailure(
-                ctx=self._create_context(
-                    api_version=self._latest_api_version,
-                    operation=operation,
-                ),
-                error=PapicoCommandGetStateHandlerException("Command is not running."),
-            )
-
-        if (command_info := self._current_command_info) is None:
-            return PapicoFailure(
-                ctx=self._create_context(
-                    api_version=self._latest_api_version,
-                    operation=operation,
-                ),
-                error=PapicoCommandGetStateHandlerException(
-                    "Command info is not loaded yet."
-                ),
-            )
-
-        api_version = command_info.api_version
-        ctx = self._create_context(
-            api_version=api_version,
-            operation=operation,
-            params={"command": command},
-        )
-        handler = self._get_handler(ctx)
-        return handler.handle(ctx)
-
     def start(
         self,
         command_info: CommandInfo,
@@ -139,20 +123,15 @@ class PapicoCommandDelegate:
         sync_name: str | None = None,
     ) -> PapicoResult[None]:
         operation = "start"
-        state = self.get_state()
-        if state.success:
-            if state.data.is_running:
-                return PapicoFailure(
-                    ctx=self._create_context(
-                        api_version=self._latest_api_version,
-                        operation="start",
-                    ),
-                    error=PapicoCommandGetStateHandlerException("Command is running."),
-                )
-
-        initialize_result = self.initialize()
-        if not initialize_result.success:
-            return initialize_result
+        command_state = get_app_command_state()
+        if command_state.is_running:
+            return PapicoFailure(
+                ctx=self._create_context(
+                    api_version=self._latest_api_version,
+                    operation="start",
+                ),
+                error=PapicoCommandGetStateHandlerException("Command is running."),
+            )
 
         self._current_command_info = command_info
         params: dict[str, Any] = {
@@ -173,6 +152,17 @@ class PapicoCommandDelegate:
 
     def stop(self) -> PapicoResult[None]:
         operation = "stop"
+
+        command_state = get_app_command_state()
+        if not command_state.is_running:
+            return PapicoSuccess(
+                ctx=self._create_context(
+                    api_version=self._latest_api_version,
+                    operation=operation,
+                ),
+                data=None,
+            )
+
         if (command := self._current_command) is None:
             return PapicoFailure(
                 ctx=self._create_context(
@@ -198,9 +188,6 @@ class PapicoCommandDelegate:
         )
         handler = self._get_handler(ctx=ctx)
         result = handler.handle(ctx)
-        if result.success:
-            self._current_command_info = None
-            self._current_command = None
         return result
 
     def _create_context(
@@ -218,3 +205,13 @@ class PapicoCommandDelegate:
 
     def _get_handler(self, ctx: PapicoExecContext) -> PapicoHandler:
         return self._handler_generators[ctx.api_version][ctx.domain][ctx.operation]()
+
+    def _on_stopped_changed(self, *_: str) -> None:
+        command_state = get_app_command_state()
+        if command_state.is_stopped:
+            self._current_command = None
+            self._current_command_info = None
+
+    def _register_traces(self) -> None:
+        command_state = get_app_command_state()
+        command_state.is_stopped.trace_add("write", self._on_stopped_changed)

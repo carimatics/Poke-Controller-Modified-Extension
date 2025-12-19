@@ -1,6 +1,3 @@
-from .get_state import (
-    PapicoCommandGetStateHandler as PapicoCommandGetStateHandler,
-)
 from .initialize import (
     PapicoCommandInitializeHandler as PapicoCommandInitializeHandler,
 )

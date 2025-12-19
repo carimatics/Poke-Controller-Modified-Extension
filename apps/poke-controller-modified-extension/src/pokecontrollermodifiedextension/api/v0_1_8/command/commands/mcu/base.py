@@ -1,5 +1,6 @@
 from abc import ABC
 
+from ......core.command import get_app_command_state
 from ...sender import Sender
 from ..base import Command, PostProcess
 
@@ -9,12 +10,14 @@ class McuCommand(Command, ABC):
         super().__init__()
         self.sync_name = sync_name
         self.postProcess: PostProcess | None = None
+        self._command_state = get_app_command_state()
 
     def start(
         self,
         ser: Sender,
         postProcess: PostProcess | None = None,  # noqa
     ) -> None:
+        self._command_state.start()
         ser.writeRow(self.sync_name)
         self.isRunning = True
         self.postProcess = postProcess
@@ -24,3 +27,4 @@ class McuCommand(Command, ABC):
         self.isRunning = False
         if (proc := self.postProcess) is not None:
             proc()
+        self._command_state.finish()

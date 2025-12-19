@@ -764,9 +764,10 @@ class ImageProcPythonCommand(PythonCommand):
             keys = f"DISCORD_WEBHOOK{index}"
 
         # 送信
-        try:
-            self.Discord.send_message(
-                notification_message=content, image=cropped_image, keys=keys
-            )
-        except Exception:
-            pass
+        if (notifier := self.Discord) is not None:
+            try:
+                notifier.send_message(
+                    notification_message=content, image=cropped_image, keys=keys
+                )
+            except Exception:
+                pass
