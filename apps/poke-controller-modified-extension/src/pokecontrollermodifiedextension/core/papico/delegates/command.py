@@ -210,7 +210,7 @@ class PapicoCommandDelegate:
 
     def _on_stopped_changed(self, *_: str) -> None:
         command_state = get_app_command_state()
-        if command_state.is_stopped:
+        if command_state.is_stopped.get():
             self._current_command = None
             clear_current_command_info()
 
