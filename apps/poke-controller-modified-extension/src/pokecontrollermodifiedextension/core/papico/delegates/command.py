@@ -150,7 +150,10 @@ class PapicoCommandDelegate:
             params=params,
         )
         handler = self._get_handler(ctx=ctx)
-        return handler.handle(ctx)
+        result = handler.handle(ctx)
+        if result.success:
+            self._current_command = result.data[0]
+        return result
 
     def stop(self) -> PapicoResult[None]:
         operation = "stop"

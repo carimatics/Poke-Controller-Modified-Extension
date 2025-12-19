@@ -35,14 +35,14 @@ class PapicoCommandStopHandler(PapicoHandler):
         app_settings = get_app_settings()
 
         command = params["command"]
-        if issubclass(command, PythonCommand):
+        if issubclass(command.__class__, PythonCommand):
             sender = Sender(app_settings.serial.show_data)
             try:
                 command.end(ser=sender)
             except StopThread:
                 pass
             return PapicoSuccess(ctx=ctx, data=None)
-        if issubclass(command, McuCommand):
+        if issubclass(command.__class__, McuCommand):
             sender = Sender(app_settings.serial.show_data)
             command.end(ser=sender)
             return PapicoSuccess(ctx=ctx, data=None)
