@@ -227,7 +227,6 @@ class CommandsSettings(AppFrame):
 
         upper_frame = widgets.Frame(frame)
         lower_frame = widgets.Frame(frame)
-        print(self._registered_commands)
         self._shortcut_buttons = [
             widgets.Button(
                 upper_frame if i < 5 else lower_frame,
@@ -364,14 +363,10 @@ class CommandsSettings(AppFrame):
         button.configure(text=name[:8])
         button.set_tooltip(text=name)
 
-    def _on_reload_pushed(self) -> None:
-        self._load_commands()
-        self._update_commands()
-
-    def _on_start_pushed(self) -> None:
-        shortcut_number = self._shortcut_number.get()
-        klass = self._registered_commands[str(shortcut_number)].klass.get()
-        name = self._registered_commands[str(shortcut_number)].name.get()
+    def _start_shortcut_command(self, num: int) -> None:
+        shortcut_number = str(num)
+        klass = self._registered_commands[shortcut_number].klass.get()
+        name = self._registered_commands[shortcut_number].name.get()
 
         if klass == "Python":
             for c in [c for c in self._commands if c.kind == PYTHON]:
@@ -384,11 +379,19 @@ class CommandsSettings(AppFrame):
                     self._app_model.start_command(c)
                     return
 
+    def _on_reload_pushed(self) -> None:
+        self._load_commands()
+        self._update_commands()
+
+    def _on_start_pushed(self) -> None:
+        shortcut_number = self._shortcut_number.get()
+        self._start_shortcut_command(shortcut_number)
+
     def _on_pause_pushed(self) -> None:
         self._app_model.pause_command()
 
     def _on_shortcut_pushed(self, shortcut_number: int) -> None:
-        self._app_model.start_shortcut_command(shortcut_number)
+        self._start_shortcut_command(shortcut_number)
 
     def _on_filter_changed(self, *_: str) -> None:
         self._filter_commands()

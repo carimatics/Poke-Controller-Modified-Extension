@@ -1,11 +1,13 @@
 from threading import Thread
 
+from pokecontrollermodifiedextension.api.v0_1_8.camera import Camera
 from pokecontrollermodifiedextension.api.v0_1_8.command.commands.mcu.base import (
     McuCommand,
 )
 from pokecontrollermodifiedextension.api.v0_1_8.command.commands.python.base import (
     PythonCommand,
 )
+from pokecontrollermodifiedextension.api.v0_1_8.command.commands.python.image_processing import ImageProcPythonCommand
 from pokecontrollermodifiedextension.api.v0_1_8.command.sender import Sender
 from pokecontrollermodifiedextension.core.command import CommandInfo
 from pokecontrollermodifiedextension.core.papico.context import (
@@ -44,6 +46,16 @@ class PapicoCommandStartHandler(PapicoHandler):
         app_settings = get_app_settings()
 
         klass = info.klass
+        if issubclass(klass, ImageProcPythonCommand):
+            camera = Camera(app_settings.capture.fps.get())
+            post_process = params.get("post_process", None)
+            sender = Sender(app_settings.serial.show_data)
+            python_command = klass(cam=camera)
+            python_command.start(ser=sender, postProcess=post_process)
+            return PapicoSuccess(
+                ctx=ctx,
+                data=(python_command, python_command.thread),
+            )
         if issubclass(klass, PythonCommand):
             post_process = params.get("post_process", None)
             sender = Sender(app_settings.serial.show_data)
