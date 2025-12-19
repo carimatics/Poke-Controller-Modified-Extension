@@ -310,9 +310,9 @@ class CommandsSettings(AppFrame):
         )
 
         self._python_command_combobox.configure(values=self._python_command_list)
-        self._python_command_combobox.current(0)
+        self._python_command_combobox.selection_clear()
         self._mcu_command_combobox.configure(values=self._mcu_command_list)
-        self._mcu_command_combobox.current(0)
+        self._mcu_command_combobox.selection_clear()
 
     def _on_open_dir_pushed(self) -> None:
         self._app_model.open_commands_directory_window()
@@ -325,7 +325,9 @@ class CommandsSettings(AppFrame):
 
     def _on_reload_pushed(self) -> None:
         self._load_commands()
+        self.update_idletasks()
         self._update_commands()
+        self.update_idletasks()
 
     def _on_start_pushed(self) -> None:
         pass

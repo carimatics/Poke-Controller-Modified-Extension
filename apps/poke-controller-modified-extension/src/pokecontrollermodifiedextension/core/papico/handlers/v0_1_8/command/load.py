@@ -17,20 +17,24 @@ logger = logging.getLogger(__name__)
 
 class PapicoCommandLoadHandler(PapicoHandler):
     _base_dir: Path
+    _search_root: Path
     _commands: list[CommandInfo]
 
     def handle(self, ctx: PapicoExecContext) -> PapicoResult[list[CommandInfo]]:
         try:
             app_runtime_info = get_app_runtime_info()
-            self._base_dir = app_runtime_info.base_dir / "Commands"
+            self._base_dir = app_runtime_info.base_dir
+            self._search_root = self._base_dir / "Commands"
             self._commands: list[CommandInfo] = []
             self._load_commands(
-                base_path=self._base_dir / "PythonCommands",
+                base_dir=self._base_dir,
+                search_root=self._search_root / "PythonCommands",
                 super_class=PythonCommand,
                 kind="python",
             )
             self._load_commands(
-                base_path=self._base_dir / "McuCommands",
+                base_dir=self._base_dir,
+                search_root=self._search_root / "McuCommands",
                 super_class=McuCommand,
                 kind="mcu",
             )
@@ -46,12 +50,14 @@ class PapicoCommandLoadHandler(PapicoHandler):
 
     def _load_commands(
         self,
-        base_path: Path,
+        base_dir: Path,
+        search_root: Path,
         super_class: type,
         kind: Literal["python", "mcu"],
     ) -> None:
         for module, name, klass in DynamicClassLoader(  # type: ignore[var-annotated]
-            base_dir=base_path,
+            base_dir=base_dir,
+            search_root=search_root,
             klass=super_class,
         ).load():
             if klass.NAME == "":

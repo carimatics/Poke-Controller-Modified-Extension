@@ -17,18 +17,26 @@ class PokeControllerDynamicClassLoaderException(PokeControllerException):
 
 
 class DynamicClassLoader[T]:
-    def __init__(self, *, base_dir: Path, klass: type[T], namespace: str = "") -> None:
-        self.klass = klass
-        self.base_namespace = namespace
-        self.base_dir = base_dir
+    def __init__(
+        self,
+        *,
+        base_dir: Path,
+        search_root: Path,
+        klass: type[T],
+        namespace: str = "",
+    ) -> None:
+        self._base_dir = base_dir
+        self._search_root = search_root
+        self._klass = klass
+        self._base_namespace = namespace
 
     def load(self) -> Generator[tuple[ModuleType, str, type[T]], None, None]:
-        if not self.base_dir.exists():
+        if not self._search_root.exists():
             raise PokeControllerDynamicClassLoaderException(
-                f"{self.base_dir} is not found."
+                f"{self._search_root} is not found."
             )
 
-        for py_file in self.base_dir.rglob("*.py"):
+        for py_file in self._search_root.rglob("*.py"):
             if py_file.name.startswith("_"):
                 continue
 
@@ -41,19 +49,21 @@ class DynamicClassLoader[T]:
 
     def _load_module_from_file(self, file_path: Path) -> ModuleType:
         # construct module name
-        relative_path = file_path.relative_to(self.base_dir)
+        relative_path = file_path.relative_to(self._base_dir)
         parts = list(relative_path.with_suffix("").parts)
-        if self.base_namespace:
-            parts.insert(0, self.base_namespace)
+        if self._base_namespace:
+            parts.insert(0, self._base_namespace)
         module_name = ".".join(parts)
 
-        # reload module if already exists
+        # remove existing module for clean reload
         if module_name in sys.modules:
-            return importlib.reload(sys.modules[module_name])
+            logger.debug(f"Removing module {module_name}")
+            del sys.modules[module_name]
 
         # load module
         spec = importlib.util.spec_from_file_location(module_name, file_path)
         if spec is None or spec.loader is None:
+            logger.warning(f"Cannot load module from {file_path}")
             raise PokeControllerDynamicClassLoaderException(
                 f"Cannot load module from {file_path}"
             )
@@ -76,9 +86,9 @@ class DynamicClassLoader[T]:
     ) -> Generator[tuple[ModuleType, str, type[T]], None, None]:
         for name, obj in inspect.getmembers(module, inspect.isclass):
             try:
-                if obj is self.klass:
+                if obj is self._klass:
                     continue
-                if not issubclass(obj, self.klass):
+                if not issubclass(obj, self._klass):
                     continue
                 yield module, name, obj
             except TypeError:
