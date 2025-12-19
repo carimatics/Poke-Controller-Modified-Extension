@@ -38,11 +38,7 @@ class AppModel:
         self._papico.start_command(command_info)
 
     def stop_command(self) -> None:
-        result = self._papico.stop_command()
-        if result.success:
-            logger.info("Command stopped.")
-        else:
-            logger.warning("Failed to stop command.")
+        self._papico.stop_command()
 
     def pause_command(self) -> None:
         pass

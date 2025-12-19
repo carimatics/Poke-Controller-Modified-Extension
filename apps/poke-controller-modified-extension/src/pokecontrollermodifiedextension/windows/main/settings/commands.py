@@ -80,7 +80,6 @@ class CommandsSettings(AppFrame):
             to=10,
             increment=1,
             textvariable=self._shortcut_number,
-            command=self._on_shortcut_number_changed,
         )
         shortcut_set_button = widgets.Button(
             lower_frame,
@@ -307,6 +306,10 @@ class CommandsSettings(AppFrame):
             items: list[str],
         ) -> None:
             combobox.configure(values=items)
+
+            if not items:
+                return
+
             hit = False
             for i, item in enumerate(items):
                 if item == combobox.get():
@@ -317,19 +320,24 @@ class CommandsSettings(AppFrame):
                 combobox.current(0)
 
         update_combobox(
-            self._python_commands_filter_combobox, self._python_commands_filter_list
+            self._python_commands_filter_combobox,
+            self._python_commands_filter_list,
         )
         update_combobox(
-            self._mcu_commands_filter_combobox, self._mcu_commands_filter_list
+            self._mcu_commands_filter_combobox,
+            self._mcu_commands_filter_list,
         )
-        update_combobox(self._python_command_combobox, self._python_command_list)
-        update_combobox(self._mcu_command_combobox, self._mcu_command_list)
+        update_combobox(
+            self._python_command_combobox,
+            self._python_command_list,
+        )
+        update_combobox(
+            self._mcu_command_combobox,
+            self._mcu_command_list,
+        )
 
     def _on_open_dir_pushed(self) -> None:
         self._app_model.open_commands_directory_window()
-
-    def _on_shortcut_number_changed(self) -> None:
-        self._app_model.set_command_shortcut_number()
 
     def _on_set_pushed(self) -> None:
         self._app_model.register_command_shortcut()
