@@ -98,7 +98,7 @@ class Command(ABC):
             return
         self._print_t(text_area, "a", *objects, sep=sep, end=end)
 
-    def print_t(self, *objects: object, sep: str = " ", end: str = "\n"):
+    def print_t(self, *objects: object, sep: str = " ", end: str = "\n") -> None:
         if self.stdout_destination == "1":
             self.print_t2(*objects, sep=sep, end=end)
         elif self.stdout_destination == "2":
