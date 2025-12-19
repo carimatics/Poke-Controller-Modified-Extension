@@ -20,6 +20,8 @@ COMMANDS = [
 
 
 class CommandsSettings(AppFrame):
+    _notebook: ttk.Notebook
+
     _python_commands_filter_list: list[str]
     _python_command_list: list[str]
     _python_commands_filter_combobox: widgets.Combobox
@@ -28,6 +30,8 @@ class CommandsSettings(AppFrame):
     _mcu_command_list: list[str]
     _mcu_commands_filter_combobox: widgets.Combobox
     _mcu_command_combobox: widgets.Combobox
+
+    _shortcut_buttons: list[widgets.Button]
 
     def __init__(self, master: tk.Misc, *args: Any, **kwargs: Any) -> None:
         super().__init__(master, *args, **kwargs)
@@ -50,7 +54,6 @@ class CommandsSettings(AppFrame):
 
         self._load_commands()
         set_current_command_info(self._commands[0])
-        self._shortcut_button_texts: list[tk.StringVar] = []
 
         self._register_traces()
 
@@ -61,7 +64,7 @@ class CommandsSettings(AppFrame):
         lower_frame = widgets.Frame(self)
 
         # Notebook
-        notebook = self._build_commands_notebook(upper_frame)
+        self._notebook = self._build_commands_notebook(upper_frame)
 
         # Open Commands Directory
         open_dir_button = widgets.Button(
@@ -103,7 +106,7 @@ class CommandsSettings(AppFrame):
         )
 
         # Layout
-        notebook.pack(expand=True, fill=tk.X, side=tk.LEFT)
+        self._notebook.pack(expand=True, fill=tk.X, side=tk.LEFT)
         open_dir_button.pack(expand=False, fill=tk.X, side=tk.LEFT, padx=(8, 0))
         upper_frame.pack(expand=True, fill=tk.X, side=tk.TOP, padx=4)
 
@@ -218,27 +221,26 @@ class CommandsSettings(AppFrame):
     def _build_shortcut_commands_frame(self, notebook: ttk.Notebook) -> widgets.Frame:
         frame = widgets.Frame(notebook)
 
-        self._shortcut_button_texts = [
-            tk.StringVar(value=f"({i})") for i in range(1, 11)
-        ]
         shortcut_commands = [
             lambda num=i: self._on_shortcut_pushed(num) for i in range(1, 11)
         ]
 
         upper_frame = widgets.Frame(frame)
         lower_frame = widgets.Frame(frame)
-        shortcut_buttons = [
+        print(self._registered_commands)
+        self._shortcut_buttons = [
             widgets.Button(
                 upper_frame if i < 5 else lower_frame,
                 width=7,
-                textvariable=self._shortcut_button_texts[i],
+                text=(self._registered_commands[str(i + 1)]).name.get()[:8],
+                tooltip=(self._registered_commands[str(i + 1)]).name.get(),
                 command=shortcut_commands[i],
             )
             for i in range(10)
         ]
 
         # Layout
-        for b in shortcut_buttons:
+        for b in self._shortcut_buttons:
             b.pack(expand=True, fill=tk.X, side=tk.LEFT, padx=4, pady=2)
         upper_frame.pack(expand=False, fill=tk.X, side=tk.TOP, padx=4)
         lower_frame.pack(expand=False, fill=tk.X, side=tk.TOP, padx=4)
@@ -340,7 +342,27 @@ class CommandsSettings(AppFrame):
         self._app_model.open_commands_directory_window()
 
     def _on_set_pushed(self) -> None:
-        self._app_model.register_command_shortcut()
+        shortcut_number = self._shortcut_number.get()
+        if self._notebook.index(self._notebook.select()) == 0:
+            klass = "Python"
+        elif self._notebook.index(self._notebook.select()) == 1:
+            klass = "Mcu"
+        else:
+            return
+
+        if klass == "Python":
+            name = self._python_command.get()
+        elif klass == "Mcu":
+            name = self._mcu_command.get()
+        else:
+            return
+
+        shortcut = self._registered_commands[str(shortcut_number)]
+        shortcut.klass.set(klass)
+        shortcut.name.set(name)
+        button = self._shortcut_buttons[shortcut_number - 1]
+        button.configure(text=name[:8])
+        button.set_tooltip(text=name)
 
     def _on_reload_pushed(self) -> None:
         self._load_commands()

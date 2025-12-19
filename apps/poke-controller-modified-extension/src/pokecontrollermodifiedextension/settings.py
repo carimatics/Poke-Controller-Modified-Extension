@@ -516,7 +516,7 @@ class CommandSettings:
             python_command=d["python_command"],
             mcu_commands_filter=d["mcu_commands_filter"],
             mcu_command=d["mcu_command"],
-            shortcut=ShortcutSettings(**d["shortcut"]),
+            shortcut=ShortcutSettings.from_dict(d["shortcut"]),
         )
 
 
