@@ -1,6 +1,6 @@
 import tkinter as tk
 import tkinter.ttk as ttk
-from typing import Any, Callable
+from typing import Any, Literal
 
 from .... import widgets
 from ....model import get_app_model
@@ -19,35 +19,24 @@ COMMANDS = [
 
 
 class CommandsSettings(AppFrame):
+    _python_commands_filter_list: list[str]
+    _python_command_list: list[str]
+    _python_commands_filter_combobox: widgets.Combobox
+    _python_command_combobox: widgets.Combobox
+    _mcu_commands_filter_list: list[str]
+    _mcu_command_list: list[str]
+    _mcu_commands_filter_combobox: widgets.Combobox
+    _mcu_command_combobox: widgets.Combobox
+
     def __init__(self, master: tk.Misc, *args: Any, **kwargs: Any) -> None:
         super().__init__(master, *args, **kwargs)
 
         self._app_settings = get_app_settings()
         self._app_model = get_app_model()
 
-        self._commands = self._app_model.load_commands()
-
         self._open_dir_button_image: tk.PhotoImage = tk.PhotoImage(
             file="../assets/icons8-OpenDir-16.png"
         )
-
-        python_tags = set(
-            [t for c in self._commands if c.kind == PYTHON for t in c.tags]
-        )
-        self._python_commands_filter_list: list[str] = sorted(
-            [t for t in python_tags if not t.startswith("@")]
-        ) + sorted([t for t in python_tags if t.startswith("@")])
-        self._python_command_list: list[str] = [
-            c.display_name for c in self._commands if c.kind == PYTHON
-        ]
-        mcu_tags = set([t for c in self._commands if c.kind == MCU for t in c.tags])
-        self._mcu_commands_filter_list: list[str] = sorted(
-            [t for t in mcu_tags if not t.startswith("@")]
-        ) + sorted([t for t in mcu_tags if t.startswith("@")])
-        self._mcu_command_list: list[str] = [
-            c.display_name for c in self._commands if c.kind == MCU
-        ]
-        self._shortcut_button_texts: list[tk.StringVar] = []
 
         self._python_commands_filter = self._app_settings.command.python_commands_filter
         self._python_command = self._app_settings.command.python_command
@@ -57,6 +46,11 @@ class CommandsSettings(AppFrame):
         self._registered_commands = (
             self._app_settings.command.shortcut.registered_commands
         )
+
+        self._load_commands()
+        self._shortcut_button_texts: list[tk.StringVar] = []
+
+        self._register_traces()
 
         self.build_ui()
 
@@ -142,35 +136,32 @@ class CommandsSettings(AppFrame):
     def _build_python_commands_frame(self, notebook: ttk.Notebook) -> widgets.Frame:
         return self._build_commands_frame(
             notebook=notebook,
+            kind="python",
             filter_list=self._python_commands_filter_list,
             filter_var=self._python_commands_filter,
-            on_filter_selected=self._on_python_commands_filter_selected,
             command_list=self._python_command_list,
             command_var=self._python_command,
-            on_command_selected=self._on_python_command_selected,
         )
 
     def _build_mcu_commands_frame(self, notebook: ttk.Notebook) -> widgets.Frame:
         return self._build_commands_frame(
             notebook=notebook,
+            kind="mcu",
             filter_list=self._mcu_commands_filter_list,
             filter_var=self._mcu_commands_filter,
-            on_filter_selected=self._on_mcu_commands_filter_selected,
             command_list=self._mcu_command_list,
             command_var=self._mcu_command,
-            on_command_selected=self._on_mcu_command_selected,
         )
 
     # noinspection PyMethodMayBeStatic
     def _build_commands_frame(
         self,
         notebook: ttk.Notebook,
+        kind: Literal["python", "mcu"],
         filter_list: list[str],
         filter_var: tk.StringVar,
-        on_filter_selected: Callable[[tk.Event], None],
         command_list: list[str],
         command_var: tk.StringVar,
-        on_command_selected: Callable[[tk.Event], None],
     ) -> widgets.Frame:
         frame = widgets.Frame(notebook)
 
@@ -179,43 +170,47 @@ class CommandsSettings(AppFrame):
             text: str,
             var: tk.StringVar,
             values: list[str],
-            on_changed: Callable[[tk.Event], None],
-        ) -> widgets.Frame:
+        ) -> tuple[widgets.Frame, widgets.Combobox]:
             combobox_frame = widgets.Frame(master=master)
             label = widgets.Label(combobox_frame, text=text, width=8)
             combobox = widgets.Combobox(
                 combobox_frame,
-                state="readonly",
                 textvariable=var,
                 values=values,
             )
-            combobox.bind("<<ComboboxSelected>>", func=on_changed, add="")
+            if var.get() == "":
+                combobox.current(0)
 
             # Layout
             label.pack(expand=False, fill=tk.X, side=tk.LEFT)
             combobox.pack(expand=True, fill=tk.X, side=tk.LEFT)
 
-            return combobox_frame
+            return combobox_frame, combobox
 
-        # Filter
-        upper_frame = _combobox_frame(
+        filter_frame, filter_combobox = _combobox_frame(
             frame,
             "Filter:",
             filter_var,
             filter_list,
-            on_filter_selected,
         )
-        lower_frame = _combobox_frame(
+        if kind == "python":
+            self._python_commands_filter_combobox = filter_combobox
+        if kind == "mcu":
+            self._mcu_commands_filter_combobox = filter_combobox
+        command_frame, command_combobox = _combobox_frame(
             frame,
             "Command:",
             command_var,
             command_list,
-            on_command_selected,
         )
+        if kind == "python":
+            self._python_command_combobox = command_combobox
+        if kind == "mcu":
+            self._mcu_command_combobox = command_combobox
 
         # Layout
-        upper_frame.pack(expand=False, fill=tk.X, side=tk.TOP, padx=4, pady=4)
-        lower_frame.pack(expand=False, fill=tk.X, side=tk.TOP, padx=4, pady=4)
+        filter_frame.pack(expand=False, fill=tk.X, side=tk.TOP, padx=4, pady=4)
+        command_frame.pack(expand=False, fill=tk.X, side=tk.TOP, padx=4, pady=4)
 
         return frame
 
@@ -249,6 +244,74 @@ class CommandsSettings(AppFrame):
 
         return frame
 
+    def _load_commands(self) -> None:
+        self._commands = self._app_model.load_commands()
+
+        def load_lists(
+            kind: Literal["python", "mcu"],
+            filter_var: tk.StringVar,
+        ) -> tuple[list[str], list[str]]:
+            filter_value = filter_var.get()
+            use_filter = filter_value != "-"
+            tags = set([t for c in self._commands if c.kind == kind for t in c.tags])
+            filters = (
+                ["-"]
+                + sorted([t for t in tags if not t.startswith("@")])
+                + sorted([t for t in tags if t.startswith("@")])
+            )
+            commands = [
+                c.display_name
+                for c in self._commands
+                if c.kind == kind and (not use_filter or filter_value in c.tags)
+            ]
+
+            return filters, commands
+
+        filter_list, command_list = load_lists("python", self._python_commands_filter)
+        self._python_commands_filter_list = filter_list
+        self._python_command_list = command_list
+
+        filter_list, command_list = load_lists("mcu", self._mcu_commands_filter)
+        self._mcu_commands_filter_list = filter_list
+        self._mcu_command_list = command_list
+
+    def _filter_commands(self) -> None:
+        def filter_commands(
+            kind: Literal["python", "mcu"],
+            filter_var: tk.StringVar,
+        ) -> list[str]:
+            filter_value = filter_var.get()
+            use_filter = filter_value != "-"
+            commands = [
+                c.display_name
+                for c in self._commands
+                if c.kind == kind and (not use_filter or filter_value in c.tags)
+            ]
+
+            return commands
+
+        self._python_command_list = filter_commands(
+            "python",
+            self._python_commands_filter,
+        )
+        self._mcu_command_list = filter_commands(
+            "mcu",
+            self._mcu_commands_filter,
+        )
+
+    def _update_commands(self) -> None:
+        self._python_commands_filter_combobox.configure(
+            values=self._python_commands_filter_list
+        )
+        self._mcu_commands_filter_combobox.configure(
+            values=self._mcu_commands_filter_list
+        )
+
+        self._python_command_combobox.configure(values=self._python_command_list)
+        self._python_command_combobox.current(0)
+        self._mcu_command_combobox.configure(values=self._mcu_command_list)
+        self._mcu_command_combobox.current(0)
+
     def _on_open_dir_pushed(self) -> None:
         self._app_model.open_commands_directory_window()
 
@@ -259,23 +322,8 @@ class CommandsSettings(AppFrame):
         self._app_model.register_command_shortcut()
 
     def _on_reload_pushed(self) -> None:
-        self._commands = self._app_model.load_commands()
-        python_tags = set(
-            [t for c in self._commands if c.kind == PYTHON for t in c.tags]
-        )
-        self._python_commands_filter_list = sorted(
-            [t for t in python_tags if not t.startswith("@")]
-        ) + sorted([t for t in python_tags if t.startswith("@")])
-        self._python_command_list = [
-            c.display_name for c in self._commands if c.kind == PYTHON
-        ]
-        mcu_tags = set([t for c in self._commands if c.kind == MCU for t in c.tags])
-        self._mcu_commands_filter_list = sorted(
-            [t for t in mcu_tags if not t.startswith("@")]
-        ) + sorted([t for t in mcu_tags if t.startswith("@")])
-        self._mcu_command_list = [
-            c.display_name for c in self._commands if c.kind == MCU
-        ]
+        self._load_commands()
+        self._update_commands()
 
     def _on_start_pushed(self) -> None:
         pass
@@ -283,17 +331,21 @@ class CommandsSettings(AppFrame):
     def _on_pause_pushed(self) -> None:
         self._app_model.pause_command()
 
-    def _on_python_commands_filter_selected(self, _event: tk.Event) -> None:
-        self._app_model.apply_python_commands_filter()
-
-    def _on_python_command_selected(self, _event: tk.Event) -> None:
-        self._app_model.set_python_command()
-
-    def _on_mcu_commands_filter_selected(self, _event: tk.Event) -> None:
-        self._app_model.apply_mcu_commands_filter()
-
-    def _on_mcu_command_selected(self, _event: tk.Event) -> None:
-        self._app_model.set_mcu_command()
-
     def _on_shortcut_pushed(self, shortcut_number: int) -> None:
         self._app_model.start_shortcut_command(shortcut_number)
+
+    def _on_filter_changed(self, *_: str) -> None:
+        self._filter_commands()
+        self._update_commands()
+
+    def _register_traces(self) -> None:
+        self.register_trace(
+            "write",
+            self._python_commands_filter,
+            self._on_filter_changed,
+        )
+        self.register_trace(
+            "write",
+            self._mcu_commands_filter,
+            self._on_filter_changed,
+        )

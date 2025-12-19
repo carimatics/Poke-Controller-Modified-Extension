@@ -30,7 +30,7 @@ class AppModel:
     ) -> list[CommandInfo]:
         result = self._papico.load_commands()
         if result.success:
-            return [info for info in result.data if info.klass.NAME != ""]
+            return result.data
         else:
             return []
 

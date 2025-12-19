@@ -1,3 +1,4 @@
+import logging
 import threading
 from typing import Any, Callable
 
@@ -19,6 +20,8 @@ from pokecontrollermodifiedextension.core.papico.types import (
     PapicoHandlerGenerator,
 )
 from pokecontrollermodifiedextension.runtime_info import get_app_runtime_info
+
+logger = logging.getLogger(__name__)
 
 
 class PapicoCommandDelegate:
@@ -80,6 +83,7 @@ class PapicoCommandDelegate:
                 if not result.success:
                     return result
             except Exception as e:
+                logger.warning(f"Failed to load commands: {e}")
                 return PapicoFailure(
                     ctx=self._create_context(
                         api_version=api_version,
