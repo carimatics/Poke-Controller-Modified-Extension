@@ -3,6 +3,7 @@ import tkinter.ttk as ttk
 from typing import Any, Literal
 
 from .... import widgets
+from ....core.command.info import set_current_command_info
 from ....model import get_app_model
 from ....settings import get_app_settings
 from ....widgets.app import AppFrame
@@ -48,6 +49,7 @@ class CommandsSettings(AppFrame):
         )
 
         self._load_commands()
+        set_current_command_info(self._commands[0])
         self._shortcut_button_texts: list[tk.StringVar] = []
 
         self._register_traces()
@@ -338,6 +340,20 @@ class CommandsSettings(AppFrame):
         self._filter_commands()
         self._update_commands()
 
+    def _on_python_command_changed(self, *_: str) -> None:
+        for command in [
+            command for command in self._commands if command.kind == PYTHON
+        ]:
+            if command.display_name == self._python_command.get():
+                set_current_command_info(command)
+                return
+
+    def _on_mcu_command_changed(self, *_: str) -> None:
+        for command in [command for command in self._commands if command.kind == MCU]:
+            if command.display_name == self._mcu_command.get():
+                set_current_command_info(command)
+                return
+
     def _register_traces(self) -> None:
         self.register_trace(
             "write",
@@ -348,4 +364,14 @@ class CommandsSettings(AppFrame):
             "write",
             self._mcu_commands_filter,
             self._on_filter_changed,
+        )
+        self.register_trace(
+            "write",
+            self._python_command,
+            self._on_python_command_changed,
+        )
+        self.register_trace(
+            "write",
+            self._mcu_command,
+            self._on_mcu_command_changed,
         )

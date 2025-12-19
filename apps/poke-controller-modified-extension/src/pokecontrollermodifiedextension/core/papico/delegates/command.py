@@ -1,8 +1,12 @@
 import logging
-import threading
 from typing import Any, Callable
 
 from pokecontrollermodifiedextension.core.command import CommandInfo
+from pokecontrollermodifiedextension.core.command.info import (
+    clear_current_command_info,
+    get_current_command_info,
+    set_current_command_info,
+)
 from pokecontrollermodifiedextension.core.command.state import get_app_command_state
 from pokecontrollermodifiedextension.core.papico.context import (
     PapicoExecContext,
@@ -37,9 +41,7 @@ class PapicoCommandDelegate:
         self._domain = "command"
         self._app_runtime_info = get_app_runtime_info()
 
-        self._current_command_info: CommandInfo | None = None
         self._current_command: Any | None = None
-        self._current_thread: threading.Thread | None = None
 
         self._api_versions = ("0.1.8",)
 
@@ -124,7 +126,7 @@ class PapicoCommandDelegate:
     ) -> PapicoResult[None]:
         operation = "start"
         command_state = get_app_command_state()
-        if command_state.is_running:
+        if command_state.is_running.get():
             return PapicoFailure(
                 ctx=self._create_context(
                     api_version=self._latest_api_version,
@@ -133,7 +135,7 @@ class PapicoCommandDelegate:
                 error=PapicoCommandGetStateHandlerException("Command is running."),
             )
 
-        self._current_command_info = command_info
+        set_current_command_info(command_info)
         params: dict[str, Any] = {
             "info": command_info,
         }
@@ -154,7 +156,7 @@ class PapicoCommandDelegate:
         operation = "stop"
 
         command_state = get_app_command_state()
-        if not command_state.is_running:
+        if not command_state.is_running.get():
             return PapicoSuccess(
                 ctx=self._create_context(
                     api_version=self._latest_api_version,
@@ -172,7 +174,7 @@ class PapicoCommandDelegate:
                 error=PapicoCommandGetStateHandlerException("Command is not running."),
             )
 
-        if (command_info := self._current_command_info) is None:
+        if (command_info := get_current_command_info()) is None:
             return PapicoFailure(
                 ctx=self._create_context(
                     api_version=self._latest_api_version,
@@ -210,7 +212,7 @@ class PapicoCommandDelegate:
         command_state = get_app_command_state()
         if command_state.is_stopped:
             self._current_command = None
-            self._current_command_info = None
+            clear_current_command_info()
 
     def _register_traces(self) -> None:
         command_state = get_app_command_state()

@@ -3,6 +3,9 @@ import tkinter as tk
 from typing import Any
 
 from .... import widgets
+from ....core.command import get_app_command_state
+from ....core.command.info import get_current_command_info
+from ....core.papico import get_papico
 from ....model import get_app_model
 from ....runtime_info import get_app_runtime_info
 from ....widgets.app import AppDialog, AppFrame
@@ -28,19 +31,26 @@ BUTTONS = [
 
 
 class Buttons(AppFrame):
+    _buttons: dict[str, widgets.Button]
+
     def __init__(self, master: tk.Misc, *args: Any, **kwargs: Any) -> None:
         super().__init__(master, *args, **kwargs)
         self._open_dir_button_image: tk.PhotoImage = tk.PhotoImage(
             file="../assets/icons8-OpenDir-16.png"
         )
+        self._papico = get_papico()
         self._runtime_info = get_app_runtime_info()
         self._app_model = get_app_model()
+        self._command_state = get_app_command_state()
         self._controller_window: AppDialog | None = None
+
         self.build_ui()
+
+        self._register_traces()
 
     def build_ui(self) -> None:
         # Create Buttons
-        buttons: dict[str, widgets.Button] = {
+        self._buttons: dict[str, widgets.Button] = {
             button: widgets.Button(self, command=command, **kwargs)  # type: ignore[arg-type]
             for button, command, kwargs in [
                 (START, self._on_start_pushed, {"text": "Start"}),
@@ -62,13 +72,17 @@ class Buttons(AppFrame):
 
         # Layout
         for button in BUTTONS:
-            buttons[button].pack(expand=True, anchor=tk.CENTER, side=tk.LEFT, padx=4)
+            self._buttons[button].pack(
+                expand=True, anchor=tk.CENTER, side=tk.LEFT, padx=4
+            )
 
     def _on_start_pushed(self) -> None:
-        # FIXME: あとで消す
-        logger.info(
-            f"profile={self._runtime_info.profile} base_dir={self._runtime_info.base_dir}"
-        )
+        current_command_info = get_current_command_info()
+        if current_command_info is not None:
+            self._papico.start_command(current_command_info)
+
+    def _on_stop_pushed(self) -> None:
+        self._papico.stop_command()
 
     def _on_controller_pushed(self) -> None:
         self._controller_window = ControllerWindow(self)
@@ -93,3 +107,25 @@ class Buttons(AppFrame):
             return
         window.destroy()
         self._controller_window = None
+
+    def _on_running_changed(self, *_: str) -> None:
+        if self._command_state.is_running.get():
+            self._buttons[START].config(text="Stop", command=self._on_stop_pushed)
+            self.update_idletasks()
+
+    def _on_stopped_changed(self, *_: str) -> None:
+        if self._command_state.is_stopped.get():
+            self._buttons[START].config(text="Start", command=self._on_start_pushed)
+            self.update_idletasks()
+
+    def _register_traces(self) -> None:
+        self.register_trace(
+            "write",
+            self._command_state.is_running,
+            self._on_running_changed,
+        )
+        self.register_trace(
+            "write",
+            self._command_state.is_stopped,
+            self._on_stopped_changed,
+        )
