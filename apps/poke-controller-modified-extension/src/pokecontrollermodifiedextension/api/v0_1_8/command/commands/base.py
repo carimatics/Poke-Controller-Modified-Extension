@@ -98,6 +98,12 @@ class Command(ABC):
             return
         self._print_t(text_area, "a", *objects, sep=sep, end=end)
 
+    def print_t(self, *objects: object, sep: str = " ", end: str = "\n"):
+        if self.stdout_destination == "1":
+            self.print_t2(*objects, sep=sep, end=end)
+        elif self.stdout_destination == "2":
+            self.print_t1(*objects, sep=sep, end=end)
+
     def print_t1b(
         self,
         mode: Literal["w", "a", "d"],

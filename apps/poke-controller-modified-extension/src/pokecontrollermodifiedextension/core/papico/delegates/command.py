@@ -51,14 +51,6 @@ class PapicoCommandDelegate:
 
     def initialize(self) -> PapicoResult[None]:
         operation = "initialize"
-        if self._initialized:
-            return PapicoSuccess(
-                ctx=self._create_context(
-                    api_version=self._latest_api_version,
-                    operation=operation,
-                ),
-                data=None,
-            )
 
         for api_version in self._api_versions:
             ctx = self._create_context(
@@ -79,9 +71,10 @@ class PapicoCommandDelegate:
                     error=PapicoCommandInitializeHandlerException(f"{e}"),
                 )
 
-        self._register_traces()
+        if not self._initialized:
+            self._register_traces()
+            self._initialized = True
 
-        self._initialized = True
         return PapicoSuccess(
             ctx=self._create_context(
                 api_version=self._latest_api_version,
@@ -129,6 +122,17 @@ class PapicoCommandDelegate:
         sync_name: str | None = None,
     ) -> PapicoResult[None]:
         operation = "start"
+
+        initialize_result = self.initialize()
+        if not initialize_result.success:
+            return PapicoFailure(
+                ctx=self._create_context(
+                    api_version=self._latest_api_version,
+                    operation=operation,
+                ),
+                error=initialize_result.error,
+            )
+
         command_state = get_app_command_state()
         if command_state.is_running.get():
             return PapicoFailure(

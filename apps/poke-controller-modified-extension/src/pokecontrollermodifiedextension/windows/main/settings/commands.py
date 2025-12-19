@@ -369,7 +369,20 @@ class CommandsSettings(AppFrame):
         self._update_commands()
 
     def _on_start_pushed(self) -> None:
-        pass
+        shortcut_number = self._shortcut_number.get()
+        klass = self._registered_commands[str(shortcut_number)].klass.get()
+        name = self._registered_commands[str(shortcut_number)].name.get()
+
+        if klass == "Python":
+            for c in [c for c in self._commands if c.kind == PYTHON]:
+                if c.display_name == name:
+                    self._app_model.start_command(c)
+                    return
+        elif klass == "Mcu":
+            for c in [c for c in self._commands if c.kind == MCU]:
+                if c.display_name == name:
+                    self._app_model.start_command(c)
+                    return
 
     def _on_pause_pushed(self) -> None:
         self._app_model.pause_command()
