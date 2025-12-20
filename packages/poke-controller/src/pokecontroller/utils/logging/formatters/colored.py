@@ -3,6 +3,7 @@ import os
 import sys
 
 from ...platform import is_windows
+from .standard import StandardFormatter
 
 RESET = "\033[0m"
 ESCAPED_LEVELS = {
@@ -17,7 +18,7 @@ ESCAPED_LEVELS = {
 }
 
 
-class ColoredFormatter(logging.Formatter):
+class ColoredFormatter(StandardFormatter):
     """クロスプラットフォーム対応のカラーフォーマッター"""
 
     def __init__(

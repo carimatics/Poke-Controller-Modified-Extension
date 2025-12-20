@@ -19,12 +19,13 @@ disable_existing_loggers = false
 
 # formatters
 [formatters.pokeconExtension]
-format = "%(asctime)s [%(levelname)8s] %(name)s#%(funcName)s: %(message)s"
+class = "pokecontroller.utils.logging.StandardFormatter"
+format = "%(asctime)s [%(levelname)8s] %(name)s.%(class)s#%(funcName)s: %(message)s"
 datefmt = "%Y-%m-%d %H:%M:%S"
 
 [formatters.pokeconExtensionColored]
 class = "pokecontroller.utils.logging.ColoredFormatter"
-format = "%(asctime)s [%(levelname)8s] %(name)s#%(funcName)s: %(message)s"
+format = "%(asctime)s [%(levelname)8s] %(name)s.%(class)s#%(funcName)s: %(message)s"
 datefmt = "%Y-%m-%d %H:%M:%S"
 
 # handlers

@@ -4,4 +4,5 @@ from .config import (
 )
 from .formatters import (
     ColoredFormatter as ColoredFormatter,
+    StandardFormatter as StandardFormatter,
 )
