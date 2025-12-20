@@ -269,7 +269,76 @@
           }
         }
       },
-      "others": {}
+      "others": {
+        "output": {
+          "size_adjuster": {
+            "text": "Size Adjuster",
+            "tooltip": "Output#1(上側)とOutput#2(下側)のサイズの比率を調整します"
+          },
+          "stdout": {
+            "1": {
+              "text": "Output#1",
+              "tooltip": "標準出力としてOutput#1(上側)を設定します"
+            },
+            "2": {
+              "text": "Output#2",
+              "tooltip": "標準出力としてOutput#2(下側)を設定します"
+            }
+          },
+          "clear": {
+            "1": {
+              "text": "Clear(#1)",
+              "tooltip": "Output#1(上側)の出力をクリアします"
+            },
+            "2": {
+              "text": "Clear(#2)",
+              "tooltip": "Output#2(下側)の出力をクリアします"
+            }
+          }
+        },
+        "widget": {
+          "display": {
+            "output1": {
+              "text": "Output#1",
+              "tooltip": "Output#1(上側)を表示するかを設定します"
+            },
+            "output2": {
+              "text": "Output#2",
+              "tooltip": "Output#2(下側)を表示するかを設定します"
+            },
+            "software_controller": {
+              "text": "Software-Controller",
+              "tooltip": "ソフトウェアコントローラーを表示するかを設定します"
+            }
+          },
+          "software_controller": {
+            "top": {
+              "text": "Top",
+              "tooltip": "ソフトウェアコントローラーを上側に表示します"
+            },
+            "bottom": {
+              "text": "Bottom",
+              "tooltip": "ソフトウェアコントローラーを下側に表示します"
+            }
+          },
+          "dialog": {
+            "confirm_buttons_position": {
+              "top": {
+                "text": "Top",
+                "tooltip": "ダイアログ起動時におけるOK/Cancelボタンを上側に表示します"
+              },
+              "bottom": {
+                "text": "Bottom",
+                "tooltip": "ダイアログ起動時におけるOK/Cancelボタンを下側に表示します"
+              },
+              "both": {
+                "text": "Both",
+                "tooltip": "ダイアログ起動時におけるOK/Cancelボタンを上下両方に表示します"
+              }
+            }
+          }
+        }
+      }
     }
   }
 }

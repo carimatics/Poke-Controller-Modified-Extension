@@ -4,6 +4,7 @@ from typing import Any
 from .... import widgets
 from ....model import get_app_model
 from ....settings import get_app_settings
+from ....translation import t
 from ....widgets.app import AppFrame
 
 
@@ -83,11 +84,16 @@ class OthersSettings(AppFrame):
         lower_frame.pack(expand=False, fill=tk.X, side=tk.TOP, padx=4, pady=4)
 
     def _build_size_adjuster(self, master: tk.Misc) -> widgets.Labelframe:
-        labelframe = widgets.Labelframe(master, text="Size Adjuster")
+        tid_prefix = "main.settings.others.output.size_adjuster"
+        labelframe = widgets.Labelframe(
+            master,
+            text=t(f"{tid_prefix}"),
+        )
 
         # Size
         size_scale = widgets.Scale(
             labelframe,
+            tooltip=t(f"{tid_prefix}.tooltip"),
             length=200,
             orient=tk.HORIZONTAL,
             from_=0,
@@ -112,10 +118,12 @@ class OthersSettings(AppFrame):
         labelframe = widgets.Labelframe(master, text="Standard Output")
 
         # Destinations
+        tid_prefix = "main.settings.others.output.stdout"
         stdout_radiobuttons = [
             widgets.Radiobutton(
                 labelframe,
-                text=f"Output#{i}",
+                text=t(f"{tid_prefix}.{i}"),
+                tooltip=t(f"{tid_prefix}.{i}.tooltip"),
                 value=i,
                 variable=self._output_stdout,
                 command=self._on_stdout_changed,
@@ -133,10 +141,12 @@ class OthersSettings(AppFrame):
         labelframe = widgets.Labelframe(master, text="Clear")
 
         # Outputs Clear Buttons
+        tid_prefix = "main.settings.others.output.clear"
         buttons = [
             widgets.Button(
                 labelframe,
-                text=f"Clear(#{i})",
+                text=t(f"{tid_prefix}.{i}"),
+                tooltip=t(f"{tid_prefix}.{i}"),
                 command=lambda i=i: self._on_clear_pushed(output_id=i),
             )
             for i in range(1, 3)
@@ -152,26 +162,31 @@ class OthersSettings(AppFrame):
         labelframe = widgets.Labelframe(master, text="Display")
 
         # Widget Mode Checkbuttons
+        tid_prefix = "main.settings.others.widget.display"
         checkbuttons = [
             widgets.Checkbutton(
                 labelframe,
                 text=text,
+                tooltip=tooltip,
                 variable=var,
                 command=command,
             )
-            for text, var, command in [
+            for text, tooltip, var, command in [
                 (
-                    "Output#1",
+                    t(f"{tid_prefix}.output1"),
+                    t(f"{tid_prefix}.output1.tooltip"),
                     self._output1_visibility,
                     self._on_output_visibility_changed,
                 ),
                 (
-                    "Output#2",
+                    t(f"{tid_prefix}.output2"),
+                    t(f"{tid_prefix}.output2.tooltip"),
                     self._output2_visibility,
                     self._on_output_visibility_changed,
                 ),
                 (
-                    "Software-Controller",
+                    t(f"{tid_prefix}.software_controller"),
+                    t(f"{tid_prefix}.software_controller.tooltip"),
                     self._software_controller_visibility,
                     self._on_software_controller_visibility_changed,
                 ),
@@ -191,10 +206,12 @@ class OthersSettings(AppFrame):
         labelframe = widgets.Labelframe(master, text="Software-Controller Position")
 
         # Positions
+        tid_prefix = "main.settings.others.widget.software_controller"
         position_radiobuttons = [
             widgets.Radiobutton(
                 labelframe,
-                text=value.capitalize(),
+                text=t(f"{tid_prefix}.{value}"),
+                tooltip=t(f"{tid_prefix}.{value}.tooltip"),
                 value=value,
                 variable=self._software_controller_position,
                 command=self._on_software_controller_position_changed,
@@ -215,10 +232,12 @@ class OthersSettings(AppFrame):
         labelframe = widgets.Labelframe(master, text="Dialogue OK/Cancel Position")
 
         # Positions
+        tid_prefix = "main.settings.others.widget.dialog.confirm_buttons_position"
         position_radiobuttons = [
             widgets.Radiobutton(
                 labelframe,
-                text=value.capitalize(),
+                text=t(f"{tid_prefix}.{value}"),
+                tooltip=t(f"{tid_prefix}.{value}.tooltip"),
                 value=value,
                 variable=self._confirm_dialogue_buttons_position,
                 command=self._on_confirm_buttons_position_changed,
