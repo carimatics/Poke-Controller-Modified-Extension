@@ -3,6 +3,7 @@ import platform
 import tkinter as tk
 from typing import Any
 
+from pokecontroller.core import controller
 from pokecontroller.core.controller import switch
 
 from .... import widgets
@@ -144,29 +145,29 @@ class ControllerPane(AppFrame):
         },
         LSR: {
             "text": "→",
-            "pressed": lambda self: self._controller.lstick.tilt_by_preset(
-                tilt=switch.SwitchStickTilt.RIGHT,
+            "pressed": lambda self: self._controller.lstick.tilt_full(
+                tilt=controller.StickTilt.RIGHT,
             ),
             "released": lambda self: self._controller.lstick.to_neutral(),
         },
         LSU: {
             "text": "↑",
-            "pressed": lambda self: self._controller.lstick.tilt_by_preset(
-                tilt=switch.SwitchStickTilt.TOP,
+            "pressed": lambda self: self._controller.lstick.tilt_full(
+                tilt=controller.StickTilt.UP,
             ),
             "released": lambda self: self._controller.lstick.to_neutral(),
         },
         LSL: {
             "text": "←",
-            "pressed": lambda self: self._controller.lstick.tilt_by_preset(
-                tilt=switch.SwitchStickTilt.LEFT,
+            "pressed": lambda self: self._controller.lstick.tilt_full(
+                tilt=controller.StickTilt.LEFT,
             ),
             "released": lambda self: self._controller.lstick.to_neutral(),
         },
         LSD: {
             "text": "↓",
-            "pressed": lambda self: self._controller.lstick.tilt_by_preset(
-                tilt=switch.SwitchStickTilt.BOTTOM,
+            "pressed": lambda self: self._controller.lstick.tilt_full(
+                tilt=controller.StickTilt.DOWN,
             ),
             "released": lambda self: self._controller.lstick.to_neutral(),
         },

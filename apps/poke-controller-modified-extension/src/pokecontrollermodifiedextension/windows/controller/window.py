@@ -2,6 +2,7 @@ import logging
 import tkinter as tk
 from typing import Any
 
+from pokecontroller.core import controller
 from pokecontroller.core.controller import switch
 
 from ...mixins import AppAccessorMixIn
@@ -172,57 +173,57 @@ class ControllerWindow(AppDialog):
         },
         LSR: {
             "text": "→",
-            "pressed": lambda self: self._controller.lstick.tilt_by_preset(
-                tilt=switch.SwitchStickTilt.RIGHT
+            "pressed": lambda self: self._controller.lstick.tilt_full(
+                tilt=controller.StickTilt.RIGHT
             ),
             "released": lambda self: self._controller.lstick.to_neutral(),
         },
         LSUR: {
             "text": "↗",
-            "pressed": lambda self: self._controller.lstick.tilt_by_preset(
-                tilt=switch.SwitchStickTilt.TOP | switch.SwitchStickTilt.RIGHT
+            "pressed": lambda self: self._controller.lstick.tilt_full(
+                tilt=controller.StickTilt.UP | controller.StickTilt.RIGHT
             ),
             "released": lambda self: self._controller.lstick.to_neutral(),
         },
         LSU: {
             "text": "↑",
-            "pressed": lambda self: self._controller.lstick.tilt_by_preset(
-                tilt=switch.SwitchStickTilt.TOP
+            "pressed": lambda self: self._controller.lstick.tilt_full(
+                tilt=controller.StickTilt.UP
             ),
             "released": lambda self: self._controller.lstick.to_neutral(),
         },
         LSUL: {
             "text": "↖",
-            "pressed": lambda self: self._controller.lstick.tilt_by_preset(
-                tilt=switch.SwitchStickTilt.TOP | switch.SwitchStickTilt.LEFT
+            "pressed": lambda self: self._controller.lstick.tilt_full(
+                tilt=controller.StickTilt.UP | controller.StickTilt.LEFT
             ),
             "released": lambda self: self._controller.lstick.to_neutral(),
         },
         LSL: {
             "text": "←",
-            "pressed": lambda self: self._controller.lstick.tilt_by_preset(
-                tilt=switch.SwitchStickTilt.LEFT
+            "pressed": lambda self: self._controller.lstick.tilt_full(
+                tilt=controller.StickTilt.LEFT
             ),
             "released": lambda self: self._controller.lstick.to_neutral(),
         },
         LSDL: {
             "text": "↙",
-            "pressed": lambda self: self._controller.lstick.tilt_by_preset(
-                tilt=switch.SwitchStickTilt.BOTTOM | switch.SwitchStickTilt.LEFT
+            "pressed": lambda self: self._controller.lstick.tilt_full(
+                tilt=controller.StickTilt.DOWN | controller.StickTilt.LEFT
             ),
             "released": lambda self: self._controller.lstick.to_neutral(),
         },
         LSD: {
             "text": "↓",
-            "pressed": lambda self: self._controller.lstick.tilt_by_preset(
-                tilt=switch.SwitchStickTilt.BOTTOM
+            "pressed": lambda self: self._controller.lstick.tilt_full(
+                tilt=controller.StickTilt.DOWN
             ),
             "released": lambda self: self._controller.lstick.to_neutral(),
         },
         LSDR: {
             "text": "↘",
-            "pressed": lambda self: self._controller.lstick.tilt_by_preset(
-                tilt=switch.SwitchStickTilt.BOTTOM | switch.SwitchStickTilt.RIGHT
+            "pressed": lambda self: self._controller.lstick.tilt_full(
+                tilt=controller.StickTilt.DOWN | controller.StickTilt.RIGHT
             ),
             "released": lambda self: self._controller.lstick.to_neutral(),
         },
@@ -236,19 +237,19 @@ class ControllerWindow(AppDialog):
         HUR: {
             "text": "↗",
             "pressed": lambda self: self._controller.hat.push(
-                hat=switch.SwitchHat.TOP_RIGHT
+                hat=switch.SwitchHat.UP_RIGHT
             ),
             "released": lambda self: self._controller.hat.reset(),
         },
         HU: {
             "text": "↑",
-            "pressed": lambda self: self._controller.hat.push(hat=switch.SwitchHat.TOP),
+            "pressed": lambda self: self._controller.hat.push(hat=switch.SwitchHat.UP),
             "released": lambda self: self._controller.hat.reset(),
         },
         HUL: {
             "text": "↖",
             "pressed": lambda self: self._controller.hat.push(
-                hat=switch.SwitchHat.TOP_LEFT
+                hat=switch.SwitchHat.UP_LEFT
             ),
             "released": lambda self: self._controller.hat.reset(),
         },
@@ -262,77 +263,77 @@ class ControllerWindow(AppDialog):
         HDL: {
             "text": "↙",
             "pressed": lambda self: self._controller.hat.push(
-                hat=switch.SwitchHat.BOTTOM_LEFT
+                hat=switch.SwitchHat.DOWN_LEFT
             ),
             "released": lambda self: self._controller.hat.reset(),
         },
         HD: {
             "text": "↓",
             "pressed": lambda self: self._controller.hat.push(
-                hat=switch.SwitchHat.BOTTOM
+                hat=switch.SwitchHat.DOWN
             ),
             "released": lambda self: self._controller.hat.reset(),
         },
         HDR: {
             "text": "↘",
             "pressed": lambda self: self._controller.hat.push(
-                hat=switch.SwitchHat.BOTTOM_RIGHT
+                hat=switch.SwitchHat.DOWN_RIGHT
             ),
             "released": lambda self: self._controller.hat.reset(),
         },
         RSR: {
             "text": "→",
-            "pressed": lambda self: self._controller.rstick.tilt_by_preset(
-                tilt=switch.SwitchStickTilt.RIGHT
+            "pressed": lambda self: self._controller.rstick.tilt_full(
+                tilt=controller.StickTilt.RIGHT
             ),
             "released": lambda self: self._controller.rstick.to_neutral(),
         },
         RSUR: {
             "text": "↗",
-            "pressed": lambda self: self._controller.rstick.tilt_by_preset(
-                tilt=switch.SwitchStickTilt.TOP | switch.SwitchStickTilt.RIGHT
+            "pressed": lambda self: self._controller.rstick.tilt_full(
+                tilt=controller.StickTilt.UP | controller.StickTilt.RIGHT
             ),
             "released": lambda self: self._controller.rstick.to_neutral(),
         },
         RSU: {
             "text": "↑",
-            "pressed": lambda self: self._controller.rstick.tilt_by_preset(
-                tilt=switch.SwitchStickTilt.TOP
+            "pressed": lambda self: self._controller.rstick.tilt_full(
+                tilt=controller.StickTilt.UP
             ),
             "released": lambda self: self._controller.rstick.to_neutral(),
         },
         RSUL: {
             "text": "↖",
-            "pressed": lambda self: self._controller.rstick.tilt_by_preset(
-                tilt=switch.SwitchStickTilt.TOP | switch.SwitchStickTilt.LEFT
+            "pressed": lambda self: self._controller.rstick.tilt_full(
+                tilt=controller.StickTilt.UP | controller.StickTilt.LEFT
             ),
             "released": lambda self: self._controller.rstick.to_neutral(),
         },
         RSL: {
             "text": "←",
-            "pressed": lambda self: self._controller.rstick.tilt_by_preset(
-                tilt=switch.SwitchStickTilt.LEFT
+            "pressed": lambda self: self._controller.rstick.tilt_full(
+                tilt=controller.StickTilt.LEFT
             ),
             "released": lambda self: self._controller.rstick.to_neutral(),
         },
         RSDL: {
             "text": "↙",
-            "pressed": lambda self: self._controller.rstick.tilt_by_preset(
-                tilt=switch.SwitchStickTilt.BOTTOM | switch.SwitchStickTilt.LEFT
+            "pressed": lambda self: self._controller.rstick.tilt_full(
+                tilt=controller.StickTilt.DOWN | controller.StickTilt.LEFT
             ),
             "released": lambda self: self._controller.rstick.to_neutral(),
         },
         RSD: {
             "text": "↓",
-            "pressed": lambda self: self._controller.rstick.tilt_by_preset(
-                tilt=switch.SwitchStickTilt.BOTTOM
+            "pressed": lambda self: self._controller.rstick.tilt_full(
+                tilt=controller.StickTilt.DOWN
             ),
             "released": lambda self: self._controller.rstick.to_neutral(),
         },
         RSDR: {
             "text": "↘",
-            "pressed": lambda self: self._controller.rstick.tilt_by_preset(
-                tilt=switch.SwitchStickTilt.BOTTOM | switch.SwitchStickTilt.RIGHT
+            "pressed": lambda self: self._controller.rstick.tilt_full(
+                tilt=controller.StickTilt.DOWN | controller.StickTilt.RIGHT
             ),
             "released": lambda self: self._controller.rstick.to_neutral(),
         },

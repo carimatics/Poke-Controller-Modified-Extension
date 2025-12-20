@@ -9,7 +9,7 @@ from typing import Any
 
 import cv2
 from PIL import Image, ImageTk
-from pokecontroller.core import image
+from pokecontroller.core import controller, image
 from pokecontroller.core.controller import switch
 from pokecontroller.utils import platform
 from pokecontroller.utils.math import clamp
@@ -754,7 +754,7 @@ class Capture(AppFrame):
     def _on_switch_mouse_pressing(
         self,
         pressing_point: tuple[int, int],
-        stick_state: switch.SwitchStickState,
+        stick_state: controller.StickState,
     ) -> None:
         pos = complex(
             pressing_point[0] - self._pressed_point[0],
@@ -763,7 +763,7 @@ class Capture(AppFrame):
         angle_rad = cmath.phase(pos)
         angle = math.degrees(angle_rad)
         mag = abs(pos) / self._mouse_circle_radius
-        stick_state.tilt_by_polar(mag, angle)
+        stick_state.tilt_by_polar(angle, mag)
         self._controller.send_state()
 
         circle_radius = self._mouse_circle_radius
@@ -798,7 +798,7 @@ class Capture(AppFrame):
     def _on_switch_mouse_released(
         self,
         released_point: tuple[int, int],
-        stick_state: switch.SwitchStickState,
+        stick_state: controller.StickState,
     ) -> None:
         if not self._enabled_lstick_mouse.get():
             return
