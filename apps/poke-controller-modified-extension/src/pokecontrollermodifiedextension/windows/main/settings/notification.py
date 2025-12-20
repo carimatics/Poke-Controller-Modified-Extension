@@ -4,6 +4,7 @@ from typing import Any, Callable
 from .... import widgets
 from ....model import get_app_model
 from ....settings import get_app_settings
+from ....translation import t
 from ....widgets.app import AppFrame
 
 
@@ -49,7 +50,7 @@ class NotificationSettings(AppFrame):
 
     def _build_windows_notification(self) -> widgets.Labelframe:
         return self._build_notification(
-            platform="Windows",
+            platform="windows",
             enabled_started=self._enabled_windows_started,
             enabled_ended=self._enabled_windows_ended,
             on_enabled_started_changed=self._on_windows_start_changed,
@@ -59,7 +60,7 @@ class NotificationSettings(AppFrame):
 
     def _build_discord_notification(self) -> widgets.Labelframe:
         return self._build_notification(
-            platform="Discord",
+            platform="discord",
             enabled_started=self._enabled_discord_started,
             enabled_ended=self._enabled_discord_ended,
             on_enabled_started_changed=self._on_discord_start_changed,
@@ -76,12 +77,16 @@ class NotificationSettings(AppFrame):
         on_enabled_ended_changed: Callable[[], None],
         on_test_pushed: Callable[[], None],
     ) -> widgets.Labelframe:
-        labelframe = widgets.Labelframe(self, text=f"{platform} Notification")
+        labelframe = widgets.Labelframe(
+            self,
+            text=t(f"main.settings.notification.{platform}.title"),
+        )
 
         # Start
         enable_start_checkbutton = widgets.Checkbutton(
             labelframe,
-            text="Start",
+            text=t(f"main.settings.notification.{platform}.start"),
+            tooltip=t(f"main.settings.notification.{platform}.start.tooltip"),
             variable=enabled_started,
             command=on_enabled_started_changed,
         )
@@ -89,13 +94,19 @@ class NotificationSettings(AppFrame):
         # End
         enable_end_checkbutton = widgets.Checkbutton(
             labelframe,
-            text="End",
+            text=t(f"main.settings.notification.{platform}.end"),
+            tooltip=t(f"main.settings.notification.{platform}.end.tooltip"),
             variable=enabled_ended,
             command=on_enabled_ended_changed,
         )
 
         # Test
-        test_button = widgets.Button(labelframe, text="Test", command=on_test_pushed)
+        test_button = widgets.Button(
+            labelframe,
+            text=t(f"main.settings.notification.{platform}.test"),
+            tooltip=t(f"main.settings.notification.{platform}.test.tooltip"),
+            command=on_test_pushed,
+        )
 
         # Layout
         enable_start_checkbutton.pack(expand=False, fill=tk.NONE, side=tk.LEFT, padx=4)

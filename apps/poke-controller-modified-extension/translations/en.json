@@ -237,7 +237,38 @@
           "tooltip": "自動化スクリプトの実行を一時停止します"
         }
       },
-      "notification": {},
+      "notification": {
+        "windows": {
+          "title": "Windows Notification",
+          "start": {
+            "text": "Start",
+            "tooltip": "自動化スクリプト実行開始時に通知をします"
+          },
+          "end": {
+            "text": "End",
+            "tooltip": "自動化スクリプト実行終了時に通知をします"
+          },
+          "test": {
+            "text": "Test",
+            "tooltip": "テストメッセージを送信します"
+          }
+        },
+        "discord": {
+          "title": "Discord Notification",
+          "start": {
+            "text": "Start",
+            "tooltip": "自動化スクリプト実行開始時にDiscordで通知をします"
+          },
+          "end": {
+            "text": "End",
+            "tooltip": "自動化スクリプト実行終了時にDiscordで通知をします"
+          },
+          "test": {
+            "text": "Test",
+            "tooltip": "Discordでテストメッセージを送信します"
+          }
+        }
+      },
       "others": {}
     }
   }
