@@ -8,6 +8,7 @@ from ....core.command.info import get_current_command_info
 from ....core.papico import get_papico
 from ....model import get_app_model
 from ....runtime_info import get_app_runtime_info
+from ....translation import t
 from ....widgets.app import AppDialog, AppFrame
 from ...controller import ControllerWindow
 
@@ -53,20 +54,55 @@ class Buttons(AppFrame):
         self._buttons: dict[str, widgets.Button] = {
             button: widgets.Button(self, command=command, **kwargs)  # type: ignore[arg-type]
             for button, command, kwargs in [
-                (START, self._on_start_pushed, {"text": "Start"}),
-                (CONTROLLER, self._on_controller_pushed, {"text": "Controller"}),
+                (
+                    START,
+                    self._on_start_pushed,
+                    {
+                        "text": t("main.capture.start"),
+                        "tooltip": t("main.capture.start.tooltip"),
+                    },
+                ),
+                (
+                    CONTROLLER,
+                    self._on_controller_pushed,
+                    {
+                        "text": t("main.capture.controller"),
+                        "tooltip": t("main.capture.controller.tooltip"),
+                    },
+                ),
                 (
                     CLEAR_OUTPUTS,
                     self._on_clear_outputs_pushed,
-                    {"text": "Clear Outputs"},
+                    {
+                        "text": t("main.capture.clear_outputs"),
+                        "tooltip": t("main.capture.clear_outputs.tooltip"),
+                    },
                 ),
-                (CAPTURE, self._on_capture_pushed, {"text": "Capture"}),
+                (
+                    CAPTURE,
+                    self._on_capture_pushed,
+                    {
+                        "text": t("main.capture.capture"),
+                        "tooltip": t("main.capture.capture.tooltip"),
+                    },
+                ),
                 (
                     OPEN_CAPTURE_DIR,
                     self._on_open_dir_pushed,
-                    {"image": self._open_dir_button_image, "padding": 1},
+                    {
+                        "image": self._open_dir_button_image,
+                        "tooltip": t("main.capture.open_capture_dir.tooltip"),
+                        "padding": 1,
+                    },
                 ),
-                (NOTIFY_DISCORD, self._on_notify_discord_pushed, {"text": "Discord"}),
+                (
+                    NOTIFY_DISCORD,
+                    self._on_notify_discord_pushed,
+                    {
+                        "text": t("main.capture.discord"),
+                        "tooltip": t("main.capture.discord.tooltip"),
+                    },
+                ),
             ]
         }
 
@@ -110,12 +146,20 @@ class Buttons(AppFrame):
 
     def _on_running_changed(self, *_: str) -> None:
         if self._command_state.is_running.get():
-            self._buttons[START].config(text="Stop", command=self._on_stop_pushed)
+            self._buttons[START].configure(
+                text=t("main.capture.stop"),
+                tooltip=t("main.capture.stop.tooltip"),
+                command=self._on_stop_pushed,
+            )
             self.update_idletasks()
 
     def _on_stopped_changed(self, *_: str) -> None:
         if self._command_state.is_stopped.get():
-            self._buttons[START].config(text="Start", command=self._on_start_pushed)
+            self._buttons[START].configure(
+                text=t("main.capture.start"),
+                tooltip=t("main.capture.start.tooltip"),
+                command=self._on_start_pushed,
+            )
             self.update_idletasks()
 
     def _register_traces(self) -> None:

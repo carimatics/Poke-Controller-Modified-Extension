@@ -23,7 +23,16 @@ class Translation:
             if k not in ts:
                 break
             ts = ts[k]
-        text = ts if isinstance(ts, str) else key
+        if isinstance(ts, dict):
+            if "text" not in ts:
+                return key
+            if not isinstance(txt := ts["text"], str):
+                return key
+            text = txt
+        elif isinstance(ts, str):
+            text = ts
+        else:
+            return key
         return text.format_map(kwargs)
 
     def _load_translations(self) -> dict[str, Any]:

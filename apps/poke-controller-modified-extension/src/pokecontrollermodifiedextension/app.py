@@ -37,7 +37,7 @@ class App(tk.Tk):
         setup_app_model()
 
         setup_translation(
-            base_dir=self._app_runtime_info.base_dir / "translations",
+            base_dir=self._app_info.application_root / "translations",
             language=self._settings.general.language.get(),
         )
 
