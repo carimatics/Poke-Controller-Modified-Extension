@@ -128,7 +128,46 @@
             "tooltip": "シリアル値を出力する機能を有効化します"
           }
         }
-      }
+      },
+      "manual_control": {
+        "software": {
+          "controller": {
+            "text": "Controller",
+            "tooltip": "Switch用ソフトウェアコントローラを起動します"
+          },
+          "keyboard": {
+            "use_keyboard": {
+              "text": "Use Keyboard",
+              "tooltip": "キーボードで操作する機能を有効化します"
+            }
+          },
+          "mouse": {
+            "use_lclick": {
+              "text": "Use Mouse LClick",
+              "tooltip": "ゲーム画面上で左クリックを押下した後、その状態でマウスを動かすことで左stickを動かす機能を有効化します"
+            },
+            "use_rclick": {
+              "text": "Use Mouse RClick",
+              "tooltip": "ゲーム画面上で右クリックを押下した後、その状態でマウスを動かすことで右stickを動かす機能を有効化します"
+            }
+          }
+        },
+        "hardware": {
+          "pro_controller": {
+            "use": {
+              "text": "Use Pro Controller",
+              "tooltip": "PCに接続したPro ControllerでSwitchを操作する機能を有効化します"
+            },
+            "record": {
+              "text": "Record Pro Controller",
+              "tooltip": "Pro Controllerで操作している際のログを記録する機能を有効化します"
+            }
+          }
+        }
+      },
+      "commands": {},
+      "notification": {},
+      "others": {}
     }
   }
 }

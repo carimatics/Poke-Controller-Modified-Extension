@@ -4,6 +4,7 @@ from typing import Any
 from .... import widgets
 from ....model import get_app_model
 from ....settings import get_app_settings
+from ....translation import t
 from ....widgets.app import AppFrame
 
 
@@ -42,15 +43,19 @@ class ManualControlSettings(AppFrame):
         # Controller Button
         controller_button = widgets.Button(
             upper_frame,
+            text=t("main.settings.manual_control.software.controller"),
+            tooltip=t("main.settings.manual_control.software.controller.tooltip"),
             width=15,
-            text="Controller",
             command=self._on_controller_pushed,
         )
 
         # Use Keyboard
         use_keyboard_checkbutton = widgets.Checkbutton(
             lower_frame,
-            text="Use Keyboard",
+            text=t("main.settings.manual_control.software.keyboard.use_keyboard"),
+            tooltip=t(
+                "main.settings.manual_control.software.keyboard.use_keyboard.tooltip"
+            ),
             variable=self._enabled_keyboard,
             command=self._on_enabled_keyboard_changed,
         )
@@ -58,7 +63,8 @@ class ManualControlSettings(AppFrame):
         # Use LStick Mouse
         use_lstick_mouse_checkbutton = widgets.Checkbutton(
             lower_frame,
-            text="Use LStick Mouse",
+            text=t("main.settings.manual_control.software.mouse.use_lclick"),
+            tooltip=t("main.settings.manual_control.software.mouse.use_lclick.tooltip"),
             variable=self._enabled_lstick_mouse,
             command=self._on_enabled_lstick_mouse_changed,
         )
@@ -66,7 +72,8 @@ class ManualControlSettings(AppFrame):
         # Use RStick Mouse
         use_rstick_mouse_checkbutton = widgets.Checkbutton(
             lower_frame,
-            text="Use RStick Mouse",
+            text=t("main.settings.manual_control.software.mouse.use_rclick"),
+            tooltip=t("main.settings.manual_control.software.mouse.use_rclick.tooltip"),
             variable=self._enabled_rstick_mouse,
             command=self._on_enabled_rstick_mouse_changed,
         )
@@ -87,7 +94,10 @@ class ManualControlSettings(AppFrame):
         # Use Pro Controller
         use_pro_controller_checkbutton = widgets.Checkbutton(
             labelframe,
-            text="Use Pro Controller",
+            text=t("main.settings.manual_control.hardware.pro_controller.use"),
+            tooltip=t(
+                "main.settings.manual_control.hardware.pro_controller.use.tooltip"
+            ),
             variable=self._enabled_pro_controller,
             command=self._on_enabled_pro_controller_changed,
         )
@@ -95,7 +105,10 @@ class ManualControlSettings(AppFrame):
         # Record Pro Controller
         record_pro_controller_checkbutton = widgets.Checkbutton(
             labelframe,
-            text="Record Pro Controller",
+            text=t("main.settings.manual_control.hardware.pro_controller.record"),
+            tooltip=t(
+                "main.settings.manual_control.hardware.pro_controller.record.tooltip"
+            ),
             variable=self._enabled_record_pro_controller,
             command=self._on_enabled_record_pro_controller_changed,
         )
