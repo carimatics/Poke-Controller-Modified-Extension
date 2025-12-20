@@ -1,4 +1,4 @@
-class HatState:
+class DpadState:
     def __init__(self, neutral: int) -> None:
         self._neutral = neutral
         self._value = neutral

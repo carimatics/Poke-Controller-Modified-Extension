@@ -1,7 +1,7 @@
 from enum import IntEnum
 
 
-class SwitchHat(IntEnum):
+class SwitchDpad(IntEnum):
     UP = 0
     UP_RIGHT = 1
     RIGHT = 2

@@ -52,7 +52,7 @@ class StickState:
         tilt: coefficient
         for coefficient, tilt in enumerate(
             (
-                # LBRT
+                # LDRU
                 0b0010,  # RIGHT
                 0b0011,  # UP|RIGHT
                 0b0001,  # UP
@@ -115,7 +115,6 @@ class StickState:
         self.set_xy(*polar.to_xy(self._range))
 
     def tilt_full(self, tilt: int) -> None:
-        print(format(tilt, "x"))
         coefficient = self._tilt_coefficient.get(tilt, None)
         if coefficient is None:
             self._set_xy(self._range.x.neutral, self._range.y.neutral)

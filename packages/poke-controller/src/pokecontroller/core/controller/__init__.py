@@ -1,8 +1,8 @@
 from .button import (
     ButtonState as ButtonState,
 )
-from .hat import (
-    HatState as HatState,
+from .dpad import (
+    DpadState as DpadState,
 )
 from .stick import (
     StickState as StickState,

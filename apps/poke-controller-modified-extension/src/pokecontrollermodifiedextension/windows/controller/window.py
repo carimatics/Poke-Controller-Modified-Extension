@@ -230,54 +230,54 @@ class ControllerWindow(AppDialog):
         HR: {
             "text": "→",
             "pressed": lambda self: self._controller.hat.push(
-                hat=switch.SwitchHat.RIGHT
+                hat=switch.SwitchDpad.RIGHT
             ),
             "released": lambda self: self._controller.hat.reset(),
         },
         HUR: {
             "text": "↗",
             "pressed": lambda self: self._controller.hat.push(
-                hat=switch.SwitchHat.UP_RIGHT
+                hat=switch.SwitchDpad.UP_RIGHT
             ),
             "released": lambda self: self._controller.hat.reset(),
         },
         HU: {
             "text": "↑",
-            "pressed": lambda self: self._controller.hat.push(hat=switch.SwitchHat.UP),
+            "pressed": lambda self: self._controller.hat.push(hat=switch.SwitchDpad.UP),
             "released": lambda self: self._controller.hat.reset(),
         },
         HUL: {
             "text": "↖",
             "pressed": lambda self: self._controller.hat.push(
-                hat=switch.SwitchHat.UP_LEFT
+                hat=switch.SwitchDpad.UP_LEFT
             ),
             "released": lambda self: self._controller.hat.reset(),
         },
         HL: {
             "text": "←",
             "pressed": lambda self: self._controller.hat.push(
-                hat=switch.SwitchHat.LEFT
+                hat=switch.SwitchDpad.LEFT
             ),
             "released": lambda self: self._controller.hat.reset(),
         },
         HDL: {
             "text": "↙",
             "pressed": lambda self: self._controller.hat.push(
-                hat=switch.SwitchHat.DOWN_LEFT
+                hat=switch.SwitchDpad.DOWN_LEFT
             ),
             "released": lambda self: self._controller.hat.reset(),
         },
         HD: {
             "text": "↓",
             "pressed": lambda self: self._controller.hat.push(
-                hat=switch.SwitchHat.DOWN
+                hat=switch.SwitchDpad.DOWN
             ),
             "released": lambda self: self._controller.hat.reset(),
         },
         HDR: {
             "text": "↘",
             "pressed": lambda self: self._controller.hat.push(
-                hat=switch.SwitchHat.DOWN_RIGHT
+                hat=switch.SwitchDpad.DOWN_RIGHT
             ),
             "released": lambda self: self._controller.hat.reset(),
         },

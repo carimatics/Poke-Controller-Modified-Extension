@@ -6,6 +6,6 @@ from .controller import (
     SwitchControllerState as SwitchControllerState,
     SwitchControllerStateSerializer as SwitchControllerStateSerializer,
 )
-from .hat import (
-    SwitchHat as SwitchHat,
+from .dpad import (
+    SwitchDpad as SwitchDpad,
 )
