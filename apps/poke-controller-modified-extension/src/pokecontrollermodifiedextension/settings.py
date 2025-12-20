@@ -74,7 +74,7 @@ SCHEMA: dict[str, Any] = {
                     "down_left": str,
                     "left": str,
                     "up_left": str,
-                    "center": str,
+                    "neutral": str,
                 },
             },
         },
@@ -242,7 +242,7 @@ DEFAULT: dict[str, Any] = {
                     "down_left": "10101",
                     "left": "10110",
                     "up_left": "10111",
-                    "center": "11000",
+                    "neutral": "11000",
                 },
             },
         },
@@ -419,7 +419,7 @@ class DpadKeymapSettings:
     down_left: StringVar
     left: StringVar
     up_left: StringVar
-    center: StringVar
+    neutral: StringVar
 
 
 @dataclass(kw_only=True, frozen=True)

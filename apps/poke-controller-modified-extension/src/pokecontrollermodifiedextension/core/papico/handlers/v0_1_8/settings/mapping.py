@@ -66,7 +66,7 @@ MAPPING: dict[str, Any] = {
                     "down_left": "KeyMap-Hat/Hat.BTM_LEFT",
                     "left": "KeyMap-Hat/Hat.LEFT",
                     "up_left": "KeyMap-Hat/Hat.TOP_LEFT",
-                    "center": "KeyMap-Hat/Hat.CENTER",
+                    "neutral": "KeyMap-Hat/Hat.CENTER",
                 },
             },
         },

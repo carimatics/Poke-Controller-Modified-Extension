@@ -2,6 +2,11 @@ import logging
 import tkinter as tk
 from typing import Any
 
+from pokecontroller.core.controller.switch.keyboard import (
+    SwitchKeyboard,
+    parse_keymap_json,
+)
+
 from .core.command import setup_app_command_state
 from .core.papico import get_papico
 from .exception import AppRuntimeException
@@ -43,6 +48,12 @@ class App(tk.Tk):
 
         self._resources = get_app_resources()
 
+        serial = self._resources.serial
+        keymap = parse_keymap_json(settings.to_dict()["device"]["keyboard"]["keymap"])
+        self._keyboard = SwitchKeyboard(serial, keymap)
+        if self._settings.device.keyboard.enabled.get():
+            self._keyboard.start()
+
         self._style_manager = StyleManager(self)
         self._style_manager.change_theme(self._settings.general.theme.get())
 
@@ -76,9 +87,18 @@ class App(tk.Tk):
     def run(self) -> None:
         self.mainloop()
 
+    def _on_keyboard_enabled_changed(self, *_: Any) -> None:
+        if self._settings.device.keyboard.enabled.get():
+            self._keyboard.start()
+        else:
+            self._keyboard.stop()
+
     def _register_traces(self) -> None:
         self._camera_id.trace_add("write", self._on_camera_id_changed)
         self._settings.general.theme.trace_add("write", self._apply_theme)
+        self._settings.device.keyboard.enabled.trace_add(
+            "write", self._on_keyboard_enabled_changed
+        )
 
     def _apply_theme(self, *_: Any) -> None:
         self._style_manager.change_theme(self._settings.general.theme.get())
