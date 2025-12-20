@@ -1,6 +1,6 @@
 import tkinter as tk
 import tkinter.ttk as ttk
-from typing import Any, Literal
+from typing import Any, Literal, overload
 
 from ..mixins.tooltip import TooltipMixIn
 
@@ -21,9 +21,28 @@ class Combobox(TooltipMixIn, ttk.Combobox):
 
         self._disable_text_selection()
 
-    def configure_style(self, *, size: SizeType) -> None:
-        self._pokecon_style = self._construct_style(size)
-        self.configure(style=self._pokecon_style)
+    @overload
+    def configure(
+        self, cnf: dict[str, Any] | None = ..., **kwargs: Any
+    ) -> Any | None: ...
+
+    @overload
+    def configure(self, cnf: str) -> tuple[str, str, str, Any, Any]: ...
+
+    def configure(self, cnf: str | dict[str, Any] | None = None, **kwargs: Any) -> Any:
+        if cnf is not None:
+            kwargs["cnf"] = cnf
+        if "style" not in kwargs:
+            size = kwargs.get("size", self._pokecon_size)
+            style = self._construct_style(size)
+            if style != self._pokecon_style:
+                self._pokecon_size = size
+                self._pokecon_style = style
+                kwargs["style"] = style
+        if "tooltip" in kwargs:
+            self.set_tooltip(kwargs.pop("tooltip"))
+
+        super().configure(**kwargs)
 
     def _disable_text_selection(self) -> None:
         """Disable text selection in combobox."""

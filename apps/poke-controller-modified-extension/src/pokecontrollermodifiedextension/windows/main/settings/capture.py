@@ -4,6 +4,7 @@ from typing import Any
 from .... import widgets
 from ....model import get_app_model
 from ....settings import get_app_settings
+from ....translation import t
 from ....widgets.app import AppFrame
 
 
@@ -45,21 +46,16 @@ class CameraSettings(AppFrame):
         # Name
         name_label = widgets.Label(
             upper_frame,
-            text="Camera Name: ",
+            text=t("main.settings.capture.camera.name.label"),
+            tooltip=t("main.settings.capture.camera.name.label.tooltip"),
             width=11,
             anchor=tk.CENTER,
         )
         name_combobox = widgets.Combobox(
             upper_frame,
-            state="readonly",
+            tooltip=t("main.settings.capture.camera.name.combobox.tooltip"),
             textvariable=self._camera_name,
             values=self._name_list,
-        )
-        # FIXME: 必要か検証する
-        name_combobox.bind(
-            "<<ComboboxSelected>>",
-            self._on_camera_name_selected,
-            add="",
         )
         self._camera_name.set(self._name_list[0])
 
@@ -69,12 +65,14 @@ class CameraSettings(AppFrame):
         # ID
         id_label = widgets.Label(
             lower_frame,
-            text="Camera ID: ",
+            text=t("main.settings.capture.camera.id.label"),
+            tooltip=t("main.settings.capture.camera.id.label.tooltip"),
             width=11,
             anchor=tk.W,
         )
         id_entry = widgets.Entry(
             lower_frame,
+            tooltip=t("main.settings.capture.camera.id.entry.tooltip"),
             width=3,
             state=tk.DISABLED,
             textvariable=self._camera_id,
@@ -82,39 +80,42 @@ class CameraSettings(AppFrame):
 
         # FPS
         fps_list = [60, 45, 30, 15, 5]
-        fps_label = widgets.Label(lower_frame, text="FPS: ")
+        fps_label = widgets.Label(
+            lower_frame,
+            text=t("main.settings.capture.camera.fps.label"),
+            tooltip=t("main.settings.capture.camera.fps.label.tooltip"),
+        )
         fps_combobox = widgets.Combobox(
             lower_frame,
+            tooltip=t("main.settings.capture.camera.fps.combobox.tooltip"),
             width=3,
             justify=tk.LEFT,
             state="readonly",
             textvariable=self._fps,
             values=[str(f) for f in fps_list],
         )
-        # FIXME: 必要か検証する
-        fps_combobox.bind("<<ComboboxSelected>>", self._on_camera_fps_selected, add="")
 
         # Size
-        size_label = widgets.Label(lower_frame, text="Show Size: ")
+        size_label = widgets.Label(
+            lower_frame,
+            text=t("main.settings.capture.camera.size.label"),
+            tooltip=t("main.settings.capture.camera.size.label.tooltip"),
+        )
         size_combobox = widgets.Combobox(
             lower_frame,
+            tooltip=t("main.settings.capture.camera.size.combobox.tooltip"),
             width=8,
             state="readonly",
             textvariable=self._size,
             values=self._size_list,
-        )
-        # FIXME: 必要か検証する
-        size_combobox.bind(
-            "<<ComboboxSelected>>",
-            self._on_camera_size_selected,
-            add="",
         )
         size_combobox.current(self._size_list.index(self._size.get()))
 
         # Reload
         reload_button = widgets.Button(
             lower_frame,
-            text="Reload Camera",
+            text=t("main.settings.capture.camera.reload"),
+            tooltip=t("main.settings.capture.camera.reload.tooltip"),
             command=self._on_reload_pushed,
         )
 
@@ -151,7 +152,8 @@ class CameraSettings(AppFrame):
         # Show Realtime
         show_realtime_checkbutton = widgets.Checkbutton(
             labelframe,
-            text="Show Realtime",
+            text=t("main.settings.capture.display.realtime"),
+            tooltip=t("main.settings.capture.display.realtime.tooltip"),
             variable=self._show_realtime,
             command=self._on_show_realtime_changed,
         )
@@ -159,7 +161,8 @@ class CameraSettings(AppFrame):
         # Show Value
         show_matched_checkbutton = widgets.Checkbutton(
             labelframe,
-            text="Show Matched",
+            text=t("main.settings.capture.display.matched"),
+            tooltip=t("main.settings.capture.display.matched.tooltip"),
             variable=self._show_matched,
             command=self._on_show_matched_changed,
         )
@@ -167,7 +170,8 @@ class CameraSettings(AppFrame):
         # Show Guide
         show_guide_checkbutton = widgets.Checkbutton(
             labelframe,
-            text="Show Guide",
+            text=t("main.settings.capture.display.guide"),
+            tooltip=t("main.settings.capture.display.guide.tooltip"),
             variable=self._show_guide,
             command=self._on_show_guide_changed,
         )
@@ -190,15 +194,6 @@ class CameraSettings(AppFrame):
 
     def _load_camera_size_list(self) -> list[str]:
         return self._app_model.load_camera_size_list()
-
-    def _on_camera_name_selected(self, _event: tk.Event) -> None:
-        self._app_model.apply_camera_name()
-
-    def _on_camera_fps_selected(self, _event: tk.Event) -> None:
-        self._app_model.apply_camera_fps()
-
-    def _on_camera_size_selected(self, _event: tk.Event) -> None:
-        self._app_model.apply_camera_size()
 
     def _on_reload_pushed(self) -> None:
         self._app_model.connect_camera()
