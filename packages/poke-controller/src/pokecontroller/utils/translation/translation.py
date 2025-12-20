@@ -4,14 +4,20 @@ from typing import Any
 
 
 class Translation:
-    def __init__(self, base_path: Path, language: str = "en") -> None:
+    def __init__(
+        self,
+        base_path: Path,
+        platform: str = "windows",
+        language: str = "en",
+    ) -> None:
         self._base_path = base_path
+        self._platform = platform
         self._language = language
         self._translations = self._load_translations()
 
     @property
-    def filepath(self) -> str:
-        return str(self._base_path / f"{self._language}.json")
+    def filepath(self) -> Path:
+        return self._base_path / f"{self._platform}.{self._language}.json"
 
     @property
     def language(self) -> str:
@@ -36,10 +42,9 @@ class Translation:
         return text.format_map(kwargs)
 
     def _load_translations(self) -> dict[str, Any]:
-        trans_file = self._base_path / f"{self._language}.json"
-        if not trans_file.exists():
+        if not self.filepath.exists():
             # fallback
             self._language = "en"
-            trans_file = self._base_path / "en.json"
-        with open(trans_file, "r", encoding="utf-8-sig") as f:
+            self._translations = "windows"
+        with open(self.filepath, "r", encoding="utf-8-sig") as f:
             return json.load(f)  # type: ignore[no-any-return]

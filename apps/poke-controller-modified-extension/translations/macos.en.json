@@ -1,0 +1,93 @@
+{
+  "main": {
+    "capture": {
+      "start": {
+        "text": "Start",
+        "tooltip": "自動化スクリプトを実行します"
+      },
+      "stop": {
+        "text": "Stop",
+        "tooltip": "自動化スクリプトの実行を停止します"
+      },
+      "controller": {
+        "text": "Controller",
+        "tooltip": "Switch用ソフトウェアコントローラーを起動します"
+      },
+      "clear_outputs": {
+        "text": "Clear Outputs",
+        "tooltip": "ログ画面(Output#1/Output#2)をクリアします"
+      },
+      "open_capture_dir": {
+        "tooltip": "スクリーンショット画像を保存するディレクトリを開きます"
+      },
+      "capture": {
+        "text": "Capture",
+        "tooltip": "ゲーム画面のスクリーンショットを取得します"
+      },
+      "discord": {
+        "text": "Discord",
+        "tooltip": "現在のゲーム画面をDiscordに通知します"
+      }
+    },
+    "settings": {
+      "capture": {
+        "camera": {
+          "name": {
+            "label": {
+              "text": "Camera Name:",
+              "tooltip": "使用するキャプチャデバイスを設定します"
+            },
+            "combobox": {
+              "tooltip": "設定するキャプチャデバイス"
+            }
+          },
+          "id": {
+            "label": {
+              "text": "Camera ID:",
+              "tooltip": "使用するキャプチャデバイスのIDを設定します"
+            },
+            "entry": {
+              "tooltip": "使用するキャプチャデバイスのID"
+            }
+          },
+          "fps": {
+            "label": {
+              "text": "FPS:",
+              "tooltip": "FPSを設定します(即時反映)"
+            },
+            "combobox": {
+              "tooltip": "設定されているFPS"
+            }
+          },
+          "size": {
+            "label": {
+              "text": "Show Size:",
+              "tooltip": "表示する画像のサイズを設定します(即時反映)\n(注意)リアルタイム更新中は反映不可"
+            },
+            "combobox": {
+              "tooltip": "表示されている画像サイズ"
+            }
+          },
+          "reload": {
+            "text": "Reload",
+            "tooltip": "設定したキャプチャデバイスとの接続を確立し、画像読み込みを開始します"
+          }
+        },
+        "display": {
+          "realtime": {
+            "text": "Show Realtime",
+            "tooltip": "画像をリアルタイムで更新する機能を有効化します\n(注意)本機能を有効化しないと画像は静止画のままとなります"
+          },
+          "matched": {
+            "text": "Show Matched",
+            "tooltip": "テンプレートマッチングの類似度をshow_valueの値によらず強制的に出力します"
+          },
+          "guide": {
+            "text": "Show Guide",
+            "tooltip": "ガイド表示を有効化します\n自動化スクリプト次第で本チェックボックスは無効化される場合があります"
+          }
+        }
+      }
+    }
+  }
+}

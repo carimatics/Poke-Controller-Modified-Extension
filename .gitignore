@@ -28,6 +28,7 @@ SerialController/Commands/PythonCommands/*
 !SerialController/Commands/PythonCommands/ImageProcessingOnly/
 SerialController/Commands/PythonCommands/ImageProcessingOnly/*
 !SerialController/Commands/PythonCommands/ImageProcessingOnly/Samples/
+!apps/poke-controller-modified-extension/translations/*
 
 SerialControllerSandbox/
 
