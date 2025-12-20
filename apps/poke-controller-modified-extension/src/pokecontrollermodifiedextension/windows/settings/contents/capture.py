@@ -40,7 +40,8 @@ class CaptureSettingsPane(AppFrame):
             .add_frame_row()
             .add_label(text="Camera ID:", width=label_width)
             .add_combobox(
-                self._camera_id, values=list(self._app_model.load_camera_list())
+                self._camera_id,
+                values=[camera.name for camera in self._app_model.load_camera_list()],
             )
             .end()
             .add_frame_row()

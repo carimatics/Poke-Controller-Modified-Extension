@@ -1,6 +1,8 @@
 import tkinter as tk
 from typing import Any
 
+from pokecontroller.core.camera import CameraInfo
+
 from .... import widgets
 from ....model import get_app_model
 from ....settings import get_app_settings
@@ -9,13 +11,16 @@ from ....widgets.app import AppFrame
 
 
 class CameraSettings(AppFrame):
+    _cameras: list[CameraInfo]
+
     def __init__(self, master: tk.Misc, *args: Any, **kwargs: Any) -> None:
         super().__init__(master, *args, **kwargs)
 
         self._app_settings = get_app_settings()
         self._app_model = get_app_model()
+        self._load_camera_list()
 
-        self._name_list: list[str] = self._load_camera_list()
+        self._name_list = [camera.name for camera in self._cameras]
         self._size_list: list[str] = self._load_camera_size_list()
 
         self._camera_id = self._app_settings.capture.camera_id
@@ -25,6 +30,8 @@ class CameraSettings(AppFrame):
         self._show_realtime = self._app_settings.capture.show_realtime
         self._show_matched = self._app_settings.capture.show_matched
         self._show_guide = self._app_settings.capture.show_guide
+
+        self._register_traces()
 
         self.build_ui()
 
@@ -63,6 +70,7 @@ class CameraSettings(AppFrame):
         lower_frame = widgets.Frame(labelframe)
 
         # ID
+        self._adjust_camera_id()
         id_label = widgets.Label(
             lower_frame,
             text=t("main.settings.capture.camera.id.label"),
@@ -189,11 +197,18 @@ class CameraSettings(AppFrame):
 
         return labelframe
 
-    def _load_camera_list(self) -> list[str]:
-        return self._app_model.load_camera_list()
+    def _load_camera_list(self) -> None:
+        self._cameras = self._app_model.load_camera_list()
 
     def _load_camera_size_list(self) -> list[str]:
         return self._app_model.load_camera_size_list()
+
+    def _adjust_camera_id(self) -> None:
+        camera_id = 0
+        for camera in self._cameras:
+            if camera.name == self._camera_name.get():
+                camera_id = camera.index
+        self._camera_id.set(camera_id)
 
     def _on_reload_pushed(self) -> None:
         self._app_model.connect_camera()
@@ -206,3 +221,9 @@ class CameraSettings(AppFrame):
 
     def _on_show_guide_changed(self) -> None:
         self._app_model.apply_camera_show_guide()
+
+    def _on_camera_name_changed(self, *_: str) -> None:
+        self._adjust_camera_id()
+
+    def _register_traces(self) -> None:
+        self.register_trace("write", self._camera_name, self._on_camera_name_changed)

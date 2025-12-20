@@ -1,5 +1,6 @@
 import logging
 
+from pokecontroller.core.camera import CameraDetector, CameraInfo
 from pokecontroller.core.serial import SerialPort, get_serial_ports
 
 from .api.v0_1_8.command.commands.base import Command
@@ -24,8 +25,8 @@ class AppModel:
         self._sender: Sender = Sender(self._app_settings.serial.show_data)
         self._command: Command | None = None
 
-    def load_camera_list(self) -> list[str]:
-        return ["0"]
+    def load_camera_list(self) -> list[CameraInfo]:
+        return CameraDetector(max_cameras=20).detect()
 
     def load_camera_size_list(self) -> list[str]:
         return [f"{320 * i}x{180 * i}" for i in range(1, 7)]
