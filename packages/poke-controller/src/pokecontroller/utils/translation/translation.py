@@ -2,6 +2,8 @@ import json
 from pathlib import Path
 from typing import Any
 
+from ..collection.dict import deep_merge
+
 
 class Translation:
     def __init__(
@@ -14,14 +16,6 @@ class Translation:
         self._platform = platform
         self._language = language
         self._translations = self._load_translations()
-
-    @property
-    def filepath(self) -> Path:
-        return self._base_path / f"{self._platform}.{self._language}.json"
-
-    @property
-    def language(self) -> str:
-        return self._language
 
     def get(self, key: str, **kwargs: Any) -> str:
         ts: Any = self._translations
@@ -42,9 +36,16 @@ class Translation:
         return text.format_map(kwargs)
 
     def _load_translations(self) -> dict[str, Any]:
-        if not self.filepath.exists():
-            # fallback
-            self._language = "en"
-            self._translations = "windows"
-        with open(self.filepath, "r", encoding="utf-8-sig") as f:
-            return json.load(f)  # type: ignore[no-any-return]
+        base_file = self._base_path / f"{self._language}.json"
+
+        with open(base_file, "r", encoding="utf-8-sig") as f:
+            base = json.load(f)
+
+        platform_file = self._base_path / f"{self._language}.{self._platform}.json"
+        if not platform_file.exists():
+            return base  # type: ignore[no-any-return]
+
+        with open(platform_file, "r", encoding="utf-8-sig") as f:
+            platform = json.load(f)
+
+        return deep_merge(base, platform)
