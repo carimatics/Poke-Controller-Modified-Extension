@@ -22,9 +22,16 @@ class ScrollableFrame(Frame):
     ) -> None:
         super().__init__(master, **kwargs)
 
-        self._canvas = tk.Canvas(self, highlightthickness=0)
+        bg_color = (
+            kwargs.pop("bg", None)
+            or kwargs.pop("background", None)
+            or self._get_default_bg(master)
+        )
+        self._canvas = tk.Canvas(self, highlightthickness=0, bg=bg_color)
         self._scrollbar = Scrollbar(
-            master, orient="vertical", command=self._canvas.yview
+            master,
+            orient="vertical",
+            command=self._canvas.yview,
         )
         self.scrollable_frame = Frame(self._canvas, *args, **kwargs)
 
@@ -115,3 +122,32 @@ class ScrollableFrame(Frame):
                 self._canvas.yview_scroll(1, "units")
             if event.num == 4 or event.delta > 0:
                 self._canvas.yview_scroll(-1, "units")
+
+    def _get_default_bg(self, widget: tk.Misc) -> str:
+        """親ウィジェットの背景色を取得"""
+        try:
+            if isinstance(widget, (tk.Frame, tk.Tk, tk.Toplevel)):
+                bg = widget.cget("background")
+            else:
+                from tkinter import ttk
+
+                style = ttk.Style()
+                if isinstance(widget, ttk.Frame):
+                    bg = (
+                        style.lookup("PokeController.TFrame", "background")
+                        or "SystemButtonFace"
+                    )
+                elif isinstance(widget, ttk.Labelframe):
+                    bg = (
+                        style.lookup("PokeController.TLabelframe", "background")
+                        or "SystemButtonFace"
+                    )
+                else:
+                    bg = "SystemButtonFace"
+
+            # システムカラーをRGBに変換
+            rgb = widget.winfo_rgb(bg)
+            r, g, b = [x >> 8 for x in rgb]
+            return f"#{r:02x}{g:02x}{b:02x}"
+        except Exception:
+            return "#f0f0f0"
