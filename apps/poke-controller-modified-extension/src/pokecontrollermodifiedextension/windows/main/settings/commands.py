@@ -4,9 +4,13 @@ from typing import Any, Literal
 
 from .... import widgets
 from ....core.command import get_app_command_state
-from ....core.command.info import set_current_command_info
+from ....core.command.info import (
+    get_selected_command_info,
+    set_selected_command_info,
+)
 from ....model import get_app_model
 from ....settings import get_app_settings
+from ....translation import t
 from ....widgets.app import AppFrame
 
 PYTHON = "python"
@@ -58,7 +62,7 @@ class CommandsSettings(AppFrame):
         )
 
         self._load_commands()
-        set_current_command_info(self._commands[0])
+        set_selected_command_info(self._commands[0])
 
         self._register_traces()
 
@@ -74,15 +78,20 @@ class CommandsSettings(AppFrame):
         # Open Commands Directory
         open_dir_button = widgets.Button(
             upper_frame,
+            tooltip=t("main.settings.commands.open_dir.tooltip"),
             width=5,
             image=self._open_dir_button_image,
             command=self._on_open_dir_pushed,
         )
 
-        # Settings
-        shortcut_label = widgets.Label(lower_frame, text="Shortcut: ")
+        shortcut_label = widgets.Label(
+            lower_frame,
+            text=t("main.settings.commands.shortcut.label"),
+            tooltip=t("main.settings.commands.shortcut.label.tooltip"),
+        )
         shortcut_spinbox = widgets.Spinbox(
             lower_frame,
+            tooltip=t("main.settings.commands.shortcut.spinbox.tooltip"),
             width=7,
             from_=1,
             to=10,
@@ -91,22 +100,26 @@ class CommandsSettings(AppFrame):
         )
         shortcut_set_button = widgets.Button(
             lower_frame,
-            text="Set",
+            text=t("main.settings.commands.set"),
+            tooltip=t("main.settings.commands.set.tooltip"),
             command=self._on_set_pushed,
         )
         command_reload_button = widgets.Button(
             lower_frame,
-            text="Reload",
+            text=t("main.settings.commands.reload"),
+            tooltip=t("main.settings.commands.reload.tooltip"),
             command=self._on_reload_pushed,
         )
         self._start_button = widgets.Button(
             lower_frame,
-            text="Start",
+            text=t("main.settings.commands.start"),
+            tooltip=t("main.settings.commands.start.tooltip"),
             command=self._on_start_pushed,
         )
         self._pause_button = widgets.Button(
             lower_frame,
-            text="Pause",
+            text=t("main.settings.commands.pause"),
+            tooltip=t("main.settings.commands.pause.tooltip"),
             command=self._on_pause_pushed,
             state=tk.DISABLED,
         )
@@ -177,14 +190,24 @@ class CommandsSettings(AppFrame):
 
         def _combobox_frame(
             master: widgets.Frame,
-            text: str,
+            component: str,
             var: tk.StringVar,
             values: list[str],
         ) -> tuple[widgets.Frame, widgets.Combobox]:
             combobox_frame = widgets.Frame(master=master)
-            label = widgets.Label(combobox_frame, text=text, width=8)
+            label = widgets.Label(
+                combobox_frame,
+                text=t(f"main.settings.commands.notebook.{kind}.{component}.label"),
+                tooltip=t(
+                    f"main.settings.commands.notebook.{kind}.{component}.label.tooltip"
+                ),
+                width=8,
+            )
             combobox = widgets.Combobox(
                 combobox_frame,
+                tooltip=t(
+                    f"main.settings.commands.notebook.{kind}.{component}.combobox.tooltip"
+                ),
                 textvariable=var,
                 values=values,
             )
@@ -199,7 +222,7 @@ class CommandsSettings(AppFrame):
 
         filter_frame, filter_combobox = _combobox_frame(
             frame,
-            "Filter:",
+            "filter",
             filter_var,
             filter_list,
         )
@@ -209,7 +232,7 @@ class CommandsSettings(AppFrame):
             self._mcu_commands_filter_combobox = filter_combobox
         command_frame, command_combobox = _combobox_frame(
             frame,
-            "Command:",
+            "command",
             command_var,
             command_list,
         )
@@ -369,6 +392,10 @@ class CommandsSettings(AppFrame):
         button.configure(text=name[:8])
         button.set_tooltip(text=name)
 
+    def _start_command(self) -> None:
+        if (command := get_selected_command_info()) is not None:
+            self._app_model.start_command(command)
+
     def _start_shortcut_command(self, num: int) -> None:
         shortcut_number = str(num)
         klass = self._registered_commands[shortcut_number].klass.get()
@@ -385,7 +412,7 @@ class CommandsSettings(AppFrame):
                     self._app_model.start_command(c)
                     return
 
-    def _stop_shortcut_command(self) -> None:
+    def _stop_command(self) -> None:
         self._app_model.stop_command()
 
     def _configure_start_button(self) -> None:
@@ -435,11 +462,10 @@ class CommandsSettings(AppFrame):
         self._update_commands()
 
     def _on_start_pushed(self) -> None:
-        shortcut_number = self._shortcut_number.get()
-        self._start_shortcut_command(shortcut_number)
+        self._start_command()
 
     def _on_stop_pushed(self) -> None:
-        self._stop_shortcut_command()
+        self._stop_command()
 
     def _on_pause_pushed(self) -> None:
         self._app_model.pause_command()
@@ -456,13 +482,13 @@ class CommandsSettings(AppFrame):
             command for command in self._commands if command.kind == PYTHON
         ]:
             if command.display_name == self._python_command.get():
-                set_current_command_info(command)
+                set_selected_command_info(command)
                 return
 
     def _on_mcu_command_changed(self, *_: str) -> None:
         for command in [command for command in self._commands if command.kind == MCU]:
             if command.display_name == self._mcu_command.get():
-                set_current_command_info(command)
+                set_selected_command_info(command)
                 return
 
     def _register_traces(self) -> None:

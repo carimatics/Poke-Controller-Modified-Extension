@@ -4,7 +4,7 @@ from typing import Any
 
 from .... import widgets
 from ....core.command import get_app_command_state
-from ....core.command.info import get_current_command_info
+from ....core.command.info import get_selected_command_info
 from ....core.papico import get_papico
 from ....model import get_app_model
 from ....runtime_info import get_app_runtime_info
@@ -113,7 +113,7 @@ class Buttons(AppFrame):
             )
 
     def _on_start_pushed(self) -> None:
-        current_command_info = get_current_command_info()
+        current_command_info = get_selected_command_info()
         if current_command_info is not None:
             self._papico.start_command(current_command_info)
 

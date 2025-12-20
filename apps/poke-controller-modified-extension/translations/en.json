@@ -165,7 +165,78 @@
           }
         }
       },
-      "commands": {},
+      "commands": {
+        "notebook": {
+          "python": {
+            "filter": {
+              "label": {
+                "text": "Filter:",
+                "tooltip": "実行可能なスクリプト(python)のリストをフィルタリングします"
+              },
+              "combobox": {
+                "tooltip": "実行可能なスクリプト(python)のフィルタリング条件"
+              }
+            },
+            "command": {
+              "label": {
+                "text": "Command:",
+                "tooltip": "実行するスクリプト(python)を設定します"
+              },
+              "combobox": {
+                "tooltip": "実行するスクリプト(python)"
+              }
+            }
+          },
+          "mcu": {
+            "filter": {
+              "label": {
+                "text": "Filter:",
+                "tooltip": "実行可能なスクリプト(mcu)のリストをフィルタリングします"
+              },
+              "combobox": {
+                "tooltip": "実行可能なスクリプト(mcu)のフィルタリング条件"
+              }
+            },
+            "command": {
+              "label": {
+                "text": "Command:",
+                "tooltip": "実行するスクリプト(mcu)を設定します"
+              },
+              "combobox": {
+                "tooltip": "実行するスクリプト(mcu)"
+              }
+            }
+          }
+        },
+        "open_dir": {
+          "tooltip": "スクリプト(.py)を保存するディレクトリを開きます"
+        },
+        "shortcut": {
+          "label": {
+            "text": "Shortcut:",
+            "tooltip": "ショートカットボタンに選択されているスクリプトを割り当てます"
+          },
+          "spinbox": {
+            "tooltip": "スクリプトを割り当てるショートカットボタンの番号"
+          }
+        },
+        "set": {
+          "text": "Set",
+          "tooltip": "ショートカットボタンへのスクリプトの割り当てを実行します"
+        },
+        "reload": {
+          "text": "Reload",
+          "tooltip": "自動化スクリプトを再度読み込みます"
+        },
+        "start": {
+          "text": "Start",
+          "tooltip": "自動化スクリプトを実行します"
+        },
+        "pause": {
+          "text": "Pause",
+          "tooltip": "自動化スクリプトの実行を一時停止します"
+        }
+      },
       "notification": {},
       "others": {}
     }
