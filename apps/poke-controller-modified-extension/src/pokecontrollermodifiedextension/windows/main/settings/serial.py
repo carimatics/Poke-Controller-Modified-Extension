@@ -1,10 +1,10 @@
-import platform
 import tkinter as tk
 from typing import Any
 
 from .... import widgets
 from ....model import get_app_model
 from ....settings import get_app_settings
+from ....translation import t
 from ....widgets.app import AppFrame
 
 
@@ -41,12 +41,13 @@ class SerialSettings(AppFrame):
         # Port
         port_label = widgets.Label(
             labelframe,
-            text="COM Port: " if platform.system() == "Windows" else "Port: ",
+            text=t("main.settings.serial.port.port.label"),
+            tooltip=t("main.settings.serial.port.port.label.tooltip"),
         )
         port_entry = widgets.Combobox(
             labelframe,
+            tooltip=t("main.settings.serial.port.port.combobox.tooltip"),
             width=5,
-            state="readonly",
             textvariable=self._port,
             values=self._port_list,
         )
@@ -54,12 +55,16 @@ class SerialSettings(AppFrame):
             port_entry.current(0)
 
         # Baud Rate
-        baud_rate_label = widgets.Label(labelframe, text="Baud Rate: ")
+        baud_rate_label = widgets.Label(
+            labelframe,
+            text=t("main.settings.serial.port.baud_rate.label"),
+            tooltip=t("main.settings.serial.port.baud_rate.label.tooltip"),
+        )
         baud_rate_combobox = widgets.Combobox(
             labelframe,
+            tooltip=t("main.settings.serial.port.baud_rate.combobox.tooltip"),
             width=6,
             justify=tk.RIGHT,
-            state="readonly",
             textvariable=self._baud_rate,
             values=[str(i) for i in self._baud_rate_list],
         )
@@ -67,14 +72,16 @@ class SerialSettings(AppFrame):
         # Reconnect Button
         reconnect_button = widgets.Button(
             labelframe,
-            text="Reconnect",
+            text=t("main.settings.serial.port.reload"),
+            tooltip=t("main.settings.serial.port.reload.tooltip"),
             command=self._on_reconnect_pushed,
         )
 
         # Disconnect Button
         disconnect_button = widgets.Button(
             labelframe,
-            text="Disconnect",
+            text=t("main.settings.serial.port.disconnect"),
+            tooltip=t("main.settings.serial.port.disconnect.tooltip"),
             command=self._on_disconnect_pushed,
         )
 
@@ -99,7 +106,9 @@ class SerialSettings(AppFrame):
 
         # Data Format
         data_format_label = widgets.Label(
-            labelframe, text="Data Format: ", anchor=tk.CENTER
+            labelframe,
+            text=t("main.settings.serial.data.format.label"),
+            anchor=tk.CENTER,
         )
         data_format_combobox = widgets.Combobox(
             labelframe,
@@ -107,16 +116,12 @@ class SerialSettings(AppFrame):
             textvariable=self._data_format,
             values=self._data_format_list,
         )
-        data_format_combobox.bind(
-            "<<ComboboxSelected>>",
-            self._on_data_format_selected,
-            add="",
-        )
 
         # Show Serial
         show_serial_checkbutton = widgets.Checkbutton(
             labelframe,
-            text="Show Serial",
+            text=t("main.settings.serial.data.show_data"),
+            tooltip=t("main.settings.serial.data.show_data.tooltip"),
             variable=self._show_data,
         )
 
@@ -141,6 +146,3 @@ class SerialSettings(AppFrame):
 
     def _on_disconnect_pushed(self) -> None:
         self._app_model.disconnect_serial_port()
-
-    def _on_data_format_selected(self, _event: tk.Event) -> None:
-        self._app_model.apply_controller_data_format()

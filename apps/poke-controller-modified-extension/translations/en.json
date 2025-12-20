@@ -87,6 +87,47 @@
             "tooltip": "ガイド表示を有効化します\n自動化スクリプト次第で本チェックボックスは無効化される場合があります"
           }
         }
+      },
+      "serial": {
+        "port": {
+          "port": {
+            "label": {
+              "text": "Port:",
+              "tooltip": "COMポート番号を設定します(デバイスマネージャーで確認可能です)"
+            },
+            "combobox": {
+              "tooltip": "設定するCOMポート番号"
+            }
+          },
+          "baud_rate": {
+            "label": {
+              "text": "Baud Rate:",
+              "tooltip": "ボーレートを設定します(switch: 9600, GC: 4800)"
+            },
+            "combobox": {
+              "tooltip": "設定するボーレート"
+            }
+          },
+          "reload": {
+            "text": "Reload",
+            "tooltip": "設定したCOMポート番号とボーレートの情報に基づいてUSBシリアルとの接続を確立します"
+          },
+          "disconnect": {
+            "text": "Disconnect",
+            "tooltip": "USBシリアルとの接続を解除します"
+          }
+        },
+        "data": {
+          "format": {
+            "label": {
+              "text": "Data Format:"
+            }
+          },
+          "show_data": {
+            "text": "Show Serial",
+            "tooltip": "シリアル値を出力する機能を有効化します"
+          }
+        }
       }
     }
   }
