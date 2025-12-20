@@ -1,6 +1,9 @@
+import subprocess
 import tkinter as tk
 import tkinter.ttk as ttk
 from typing import Any, Literal
+
+from pokecontroller.utils import platform
 
 from .... import widgets
 from ....core.command import get_app_command_state
@@ -8,7 +11,9 @@ from ....core.command.info import (
     get_selected_command_info,
     set_selected_command_info,
 )
+from ....core.papico import get_papico
 from ....model import get_app_model
+from ....runtime_info import get_app_runtime_info
 from ....settings import get_app_settings
 from ....translation import t
 from ....widgets.app import AppFrame
@@ -44,6 +49,8 @@ class CommandsSettings(AppFrame):
     def __init__(self, master: tk.Misc, *args: Any, **kwargs: Any) -> None:
         super().__init__(master, *args, **kwargs)
 
+        self._papico = get_papico()
+        self._app_runtime_info = get_app_runtime_info()
         self._app_settings = get_app_settings()
         self._app_model = get_app_model()
         self._app_command_state = get_app_command_state()
@@ -276,7 +283,11 @@ class CommandsSettings(AppFrame):
         return frame
 
     def _load_commands(self) -> None:
-        self._commands = self._app_model.load_commands()
+        load_result = self._papico.load_commands()
+        if load_result.success:
+            self._commands = load_result.data
+        else:
+            self._commands = []
 
         def load_lists(
             kind: Literal["python", "mcu"],
@@ -367,7 +378,19 @@ class CommandsSettings(AppFrame):
         )
 
     def _on_open_dir_pushed(self) -> None:
-        self._app_model.open_commands_directory_window()
+        base_dir = self._app_runtime_info.base_dir / "Commands"
+        if self._notebook.index(self._notebook.select()) == 1:
+            path = base_dir / "McuCommands"
+        else:
+            path = base_dir / "PythonCommands"
+
+        if platform.is_windows():
+            program = ["explorer"]
+        else:
+            program = ["open"]
+        program.append(f"{path}")
+        print(program)
+        subprocess.run(program)
 
     def _on_set_pushed(self) -> None:
         shortcut_number = self._shortcut_number.get()
@@ -394,7 +417,7 @@ class CommandsSettings(AppFrame):
 
     def _start_command(self) -> None:
         if (command := get_selected_command_info()) is not None:
-            self._app_model.start_command(command)
+            self._papico.start_command(command)
 
     def _start_shortcut_command(self, num: int) -> None:
         shortcut_number = str(num)
@@ -404,16 +427,16 @@ class CommandsSettings(AppFrame):
         if klass == "Python":
             for c in [c for c in self._commands if c.kind == PYTHON]:
                 if c.display_name == name:
-                    self._app_model.start_command(c)
+                    self._papico.start_command(c)
                     return
         elif klass == "Mcu":
             for c in [c for c in self._commands if c.kind == MCU]:
                 if c.display_name == name:
-                    self._app_model.start_command(c)
+                    self._papico.start_command(c)
                     return
 
     def _stop_command(self) -> None:
-        self._app_model.stop_command()
+        self._papico.stop_command()
 
     def _configure_start_button(self) -> None:
         self._start_button.configure(text="Start", command=self._on_start_pushed)
@@ -468,7 +491,7 @@ class CommandsSettings(AppFrame):
         self._stop_command()
 
     def _on_pause_pushed(self) -> None:
-        self._app_model.pause_command()
+        self._papico.pause_command()
 
     def _on_shortcut_pushed(self, shortcut_number: int) -> None:
         self._start_shortcut_command(shortcut_number)

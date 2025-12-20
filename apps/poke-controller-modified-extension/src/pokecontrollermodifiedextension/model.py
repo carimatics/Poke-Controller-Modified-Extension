@@ -4,7 +4,6 @@ from pokecontroller.core.serial import SerialPort, get_serial_ports
 
 from .api.v0_1_8.command.commands.base import Command
 from .api.v0_1_8.command.sender import Sender
-from .core.command import CommandInfo
 from .core.papico import get_papico
 from .exception import AppRuntimeException
 from .info import get_app_info
@@ -24,60 +23,6 @@ class AppModel:
         self._papico = get_papico()
         self._sender: Sender = Sender(self._app_settings.serial.show_data)
         self._command: Command | None = None
-
-    def load_commands(
-        self,
-    ) -> list[CommandInfo]:
-        result = self._papico.load_commands()
-        if result.success:
-            return result.data
-        else:
-            return []
-
-    def start_command(self, command_info: CommandInfo) -> None:
-        self._papico.start_command(command_info)
-
-    def stop_command(self) -> None:
-        self._papico.stop_command()
-
-    def pause_command(self) -> None:
-        pass
-
-    def set_command_shortcut_number(self) -> None:
-        pass
-
-    def register_command_shortcut(self) -> None:
-        pass
-
-    def start_shortcut_command(self, shortcut_number: int) -> None:
-        pass
-
-    def apply_python_commands_filter(self) -> None:
-        pass
-
-    def set_python_command(self) -> None:
-        pass
-
-    def apply_mcu_commands_filter(self) -> None:
-        pass
-
-    def set_mcu_command(self) -> None:
-        pass
-
-    def load_python_command_list(self) -> list[str]:
-        return ["Python Command 1", "Python Command 2", "Python Command 3"]
-
-    def load_python_commands_filter_list(self) -> list[str]:
-        return ["-", "Python 1", "Python 2"]
-
-    def load_mcu_command_list(self) -> list[str]:
-        return ["MCU Command 1", "MCU Command 2", "MCU Command 3"]
-
-    def load_mcu_commands_filter_list(self) -> list[str]:
-        return ["-", "MCU 1", "MCU 2"]
-
-    def open_commands_directory_window(self) -> None:
-        pass
 
     def load_camera_list(self) -> list[str]:
         return ["0"]
