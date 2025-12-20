@@ -105,7 +105,7 @@ class ScrollableFrame(Frame):
             if content_height > canvas_height:
                 self._canvas.configure(scrollregion=bbox)
                 if not self._scrollbar.winfo_ismapped():
-                    self._scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
+                    self._scrollbar.pack(side=tk.RIGHT, fill=tk.Y, before=self._canvas)
             else:
                 self._canvas.configure(scrollregion=bbox)
                 self._canvas.yview_moveto(0)
