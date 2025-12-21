@@ -1,6 +1,6 @@
 #!/usr/bin/env -S uv run --script
 # @formatter:off
-#MISE description="Launch Poke-Controller Modified Extension Sandbox"
+#MISE description="Launch Poke-Controller Modified Extension"
 #MISE depends=["sync"]
 #MISE dir="{{cwd}}"
 #USAGE arg "<name>" help="App name to launch" env="POKECON_APP_NAME" {
@@ -32,6 +32,12 @@ if __name__ == '__main__':
         case _:
             wd = "SerialControllerSandbox"
             entry_point = "main.py"
+
+    # Update the app
+    _ = CrossPlatformCommand().run(
+        command=["uv", "update_app"],
+        cwd=project_root,
+    )
 
     # Run the command
     _ = CrossPlatformCommand().run(
