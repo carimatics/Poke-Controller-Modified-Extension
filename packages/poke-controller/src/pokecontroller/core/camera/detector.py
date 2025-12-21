@@ -5,7 +5,7 @@ from dataclasses import dataclass
 
 import cv2
 
-from ...utils import platform
+from pokecontroller.utils import platform
 
 logger = logging.getLogger(__name__)
 

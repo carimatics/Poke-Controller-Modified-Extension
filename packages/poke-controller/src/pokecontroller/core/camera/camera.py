@@ -3,8 +3,8 @@ from typing import overload
 
 import cv2
 
-from ...utils.platform import is_windows
-from ..image import RawImage
+from pokecontroller.core.image import RawImage
+from pokecontroller.utils.platform import is_windows
 
 logger = logging.getLogger(__name__)
 

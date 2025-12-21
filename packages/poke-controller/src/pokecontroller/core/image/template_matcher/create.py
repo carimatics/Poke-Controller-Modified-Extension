@@ -1,8 +1,8 @@
 from typing import Literal
 
-from .cpu import CpuTemplateMatcher
-from .gpu import GpuTemplateMatcher
-from .template_matcher import TemplateMatcher
+from pokecontroller.core.image.template_matcher.cpu import CpuTemplateMatcher
+from pokecontroller.core.image.template_matcher.gpu import GpuTemplateMatcher
+from pokecontroller.core.image.template_matcher.template_matcher import TemplateMatcher
 
 TemplateMatcherPreferredMode = Literal["cpu", "gpu"]
 

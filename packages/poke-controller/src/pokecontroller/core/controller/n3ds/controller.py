@@ -1,15 +1,17 @@
 import logging
 
-from ...serial import Serial
-from ..button import ButtonState
-from ..dpad import DpadState
-from ..stick import StickState
-from .serializers.n3ds_controller import (
+from pokecontroller.core.controller.button import ButtonState
+from pokecontroller.core.controller.dpad import DpadState
+from pokecontroller.core.controller.n3ds.serializers.n3ds_controller import (
     N3dsControllerStateSerializer as N3dsControllerSerializer,
 )
-from .serializers.qingpi import N3dsControllerStateSerializer as QingpiSerializer
-from .state import N3dsControllerState
-from .touchscreen import N3dsTouchscreenState
+from pokecontroller.core.controller.n3ds.serializers.qingpi import (
+    N3dsControllerStateSerializer as QingpiSerializer,
+)
+from pokecontroller.core.controller.n3ds.state import N3dsControllerState
+from pokecontroller.core.controller.n3ds.touchscreen import N3dsTouchscreenState
+from pokecontroller.core.controller.stick import StickState
+from pokecontroller.core.serial import Serial
 
 logger = logging.getLogger(__name__)
 

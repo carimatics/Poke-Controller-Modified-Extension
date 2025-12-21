@@ -1,8 +1,11 @@
 from typing import Literal, Self
 
-from ..image_processing import match_template
-from ..raw_image import RawImage
-from .template_matcher import TemplateMatchResult, TemplateMatcher
+from pokecontroller.core.image.image_processing import match_template
+from pokecontroller.core.image.raw_image import RawImage
+from pokecontroller.core.image.template_matcher.template_matcher import (
+    TemplateMatchResult,
+    TemplateMatcher,
+)
 
 
 class CpuTemplateMatcher(TemplateMatcher):

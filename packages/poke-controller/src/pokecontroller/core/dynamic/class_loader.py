@@ -7,7 +7,7 @@ from pathlib import Path
 from types import ModuleType
 from typing import Generator
 
-from ..exception import PokeControllerException
+from pokecontroller.core.exception import PokeControllerException
 
 logger = logging.getLogger(__name__)
 

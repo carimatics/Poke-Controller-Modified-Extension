@@ -1,4 +1,7 @@
-from ..state import STICK_RANGE, SwitchControllerState
+from pokecontroller.core.controller.switch.state import (
+    STICK_RANGE,
+    SwitchControllerState,
+)
 
 
 class SwitchControllerStateSerializer:

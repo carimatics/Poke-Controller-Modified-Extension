@@ -1,8 +1,12 @@
-from ..button import ButtonState
-from ..dpad import DpadState
-from ..stick import StickAxisRange, StickRange, StickState
-from .dpad import N3dsDpad
-from .touchscreen import N3dsTouchscreenState
+from pokecontroller.core.controller.button import ButtonState
+from pokecontroller.core.controller.dpad import DpadState
+from pokecontroller.core.controller.n3ds.dpad import N3dsDpad
+from pokecontroller.core.controller.n3ds.touchscreen import N3dsTouchscreenState
+from pokecontroller.core.controller.stick import (
+    StickAxisRange,
+    StickRange,
+    StickState,
+)
 
 stick_range = StickRange(
     x=StickAxisRange(min=0, max=255, neutral=128),

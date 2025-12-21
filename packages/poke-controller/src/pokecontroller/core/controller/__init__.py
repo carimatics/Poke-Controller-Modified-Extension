@@ -1,10 +1,10 @@
-from .button import (
+from pokecontroller.core.controller.button import (
     ButtonState as ButtonState,
 )
-from .dpad import (
+from pokecontroller.core.controller.dpad import (
     DpadState as DpadState,
 )
-from .stick import (
+from pokecontroller.core.controller.stick import (
     StickState as StickState,
     StickTilt as StickTilt,
 )

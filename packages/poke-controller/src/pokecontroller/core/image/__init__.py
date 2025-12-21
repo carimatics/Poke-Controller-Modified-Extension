@@ -1,4 +1,4 @@
-from .image_processing import (
+from pokecontroller.core.image.image_processing import (
     GpuTemplateMatchable as GpuTemplateMatchable,
     ImageBinarizeHsvArgs as ImageBinarizeHsvArgs,
     ImageCropArgs as ImageCropArgs,
@@ -16,10 +16,10 @@ from .image_processing import (
     to_bytes as to_bytes,
     write as write,
 )
-from .raw_image import (
+from pokecontroller.core.image.raw_image import (
     RawImage as RawImage,
 )
-from .template_matcher import (
+from pokecontroller.core.image.template_matcher import (
     CpuTemplateMatcher as CpuTemplateMatcher,
     GpuTemplateMatcher as GpuTemplateMatcher,
     TemplateMatcher as TemplateMatcher,

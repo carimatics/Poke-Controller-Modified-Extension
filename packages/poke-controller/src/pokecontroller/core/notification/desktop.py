@@ -4,9 +4,8 @@ import os
 from plyer import notification
 
 from pokecontroller.core.image import RawImage
+from pokecontroller.core.notification import Notifier, RateLimit
 from pokecontroller.utils import platform
-
-from . import Notifier, RateLimit
 
 logger = logging.getLogger(__name__)
 

@@ -1,3 +1,3 @@
-from .base import (
+from pokecontroller.core.exception.base import (
     PokeControllerException as PokeControllerException,
 )

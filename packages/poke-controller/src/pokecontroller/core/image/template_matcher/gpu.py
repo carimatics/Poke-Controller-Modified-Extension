@@ -2,9 +2,15 @@ from typing import Literal, Self
 
 import cv2
 
-from ..image_processing import GpuTemplateMatchable, match_template_by_gpu
-from ..raw_image import RawImage
-from .template_matcher import TemplateMatchResult, TemplateMatcher
+from pokecontroller.core.image.image_processing import (
+    GpuTemplateMatchable,
+    match_template_by_gpu,
+)
+from pokecontroller.core.image.raw_image import RawImage
+from pokecontroller.core.image.template_matcher.template_matcher import (
+    TemplateMatchResult,
+    TemplateMatcher,
+)
 
 
 class GpuTemplateMatcher(TemplateMatcher):

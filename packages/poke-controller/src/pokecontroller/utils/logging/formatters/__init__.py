@@ -1,6 +1,6 @@
-from .colored import (
+from pokecontroller.utils.logging.formatters.colored import (
     ColoredFormatter as ColoredFormatter,
 )
-from .standard import (
+from pokecontroller.utils.logging.formatters.standard import (
     StandardFormatter as StandardFormatter,
 )

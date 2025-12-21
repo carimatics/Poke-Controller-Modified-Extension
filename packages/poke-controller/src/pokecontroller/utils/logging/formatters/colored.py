@@ -2,8 +2,8 @@ import logging
 import os
 import sys
 
-from ...platform import is_windows
-from .standard import StandardFormatter
+from pokecontroller.utils.logging.formatters.standard import StandardFormatter
+from pokecontroller.utils.platform import is_windows
 
 RESET = "\033[0m"
 ESCAPED_LEVELS = {

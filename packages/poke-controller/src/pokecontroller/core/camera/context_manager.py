@@ -1,7 +1,7 @@
 from contextlib import contextmanager
 from typing import Generator
 
-from .camera import Camera
+from pokecontroller.core.camera.camera import Camera
 
 
 @contextmanager

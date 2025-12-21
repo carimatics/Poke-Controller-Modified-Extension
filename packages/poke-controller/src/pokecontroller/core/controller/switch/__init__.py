@@ -1,10 +1,10 @@
-from .button import (
+from pokecontroller.core.controller.switch.button import (
     SwitchButton as SwitchButton,
 )
-from .controller import (
+from pokecontroller.core.controller.switch.controller import (
     SwitchController as SwitchController,
     SwitchControllerState as SwitchControllerState,
 )
-from .dpad import (
+from pokecontroller.core.controller.switch.dpad import (
     SwitchDpad as SwitchDpad,
 )

@@ -1,6 +1,6 @@
 import cv2
 
-from ...core.image import RawImage
+from pokecontroller.core.image import RawImage
 
 
 def show(image: RawImage, window_name: str = "image") -> None:

@@ -2,7 +2,7 @@ import json
 from pathlib import Path
 from typing import Any
 
-from ..collection.dict import deep_merge
+from pokecontroller.utils.collection.dict import deep_merge
 
 
 class Translation:

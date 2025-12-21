@@ -2,12 +2,14 @@ from typing import Any
 
 from pynput.keyboard import Key, Listener
 
-from ...serial import Serial
-from .. import StickTilt
-from .button import SwitchButton
-from .dpad import SwitchDpad
-from .serializers.leonardo import SwitchControllerStateSerializer
-from .state import SwitchControllerState
+from pokecontroller.core.controller import StickTilt
+from pokecontroller.core.controller.switch.button import SwitchButton
+from pokecontroller.core.controller.switch.dpad import SwitchDpad
+from pokecontroller.core.controller.switch.serializers.leonardo import (
+    SwitchControllerStateSerializer,
+)
+from pokecontroller.core.controller.switch.state import SwitchControllerState
+from pokecontroller.core.serial import Serial
 
 KEYMAP_JSON_ACTIONS: dict[str, dict[str, Any]] = {
     "button": {

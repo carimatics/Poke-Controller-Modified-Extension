@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
 
-from ..image import RawImage
+from pokecontroller.core.image import RawImage
 
 
 @dataclass(kw_only=True, frozen=True)

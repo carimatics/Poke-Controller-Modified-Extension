@@ -1,10 +1,10 @@
-from .camera import (
+from pokecontroller.core.camera.camera import (
     Camera as Camera,
 )
-from .context_manager import (
+from pokecontroller.core.camera.context_manager import (
     use_camera as use_camera,
 )
-from .detector import (
+from pokecontroller.core.camera.detector import (
     CameraDetector as CameraDetector,
     CameraInfo as CameraInfo,
 )

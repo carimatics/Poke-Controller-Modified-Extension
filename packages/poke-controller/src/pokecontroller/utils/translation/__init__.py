@@ -1,1 +1,1 @@
-from .translation import Translation as Translation
+from pokecontroller.utils.translation.translation import Translation as Translation

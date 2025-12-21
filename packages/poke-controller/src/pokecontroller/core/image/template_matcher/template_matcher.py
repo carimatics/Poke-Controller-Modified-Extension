@@ -3,8 +3,8 @@ from typing import Self
 
 import cv2
 
-from ..image_processing import TemplateMatchResult
-from ..raw_image import RawImage
+from pokecontroller.core.image.image_processing import TemplateMatchResult
+from pokecontroller.core.image.raw_image import RawImage
 
 
 class TemplateMatcher(ABC):

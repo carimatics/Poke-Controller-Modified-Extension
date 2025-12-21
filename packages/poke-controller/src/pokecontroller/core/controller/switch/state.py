@@ -1,6 +1,13 @@
-from ..button import ButtonState
-from ..stick import StickAxisRange, StickRange, StickState
-from .dpad import SwitchDpad, SwitchDpadState
+from pokecontroller.core.controller.button import ButtonState
+from pokecontroller.core.controller.stick import (
+    StickAxisRange,
+    StickRange,
+    StickState,
+)
+from pokecontroller.core.controller.switch.dpad import (
+    SwitchDpad,
+    SwitchDpadState,
+)
 
 STICK_RANGE = StickRange(
     x=StickAxisRange(min=0, max=255, neutral=128),

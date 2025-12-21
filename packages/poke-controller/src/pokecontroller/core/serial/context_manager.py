@@ -1,7 +1,7 @@
 from contextlib import contextmanager
 from typing import Generator
 
-from .serial import Serial
+from pokecontroller.core.serial.serial import Serial
 
 
 @contextmanager

@@ -7,7 +7,7 @@ from typing import Literal, Protocol, Sequence
 import cv2
 from PIL import Image
 
-from .raw_image import RawImage
+from pokecontroller.core.image.raw_image import RawImage
 
 logger = logging.getLogger(__name__)
 

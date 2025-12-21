@@ -1,9 +1,11 @@
-from ...serial import Serial
-from ..button import ButtonState
-from ..dpad import DpadState
-from ..stick import StickState
-from .serializers.leonardo import SwitchControllerStateSerializer
-from .state import SwitchControllerState
+from pokecontroller.core.controller.button import ButtonState
+from pokecontroller.core.controller.dpad import DpadState
+from pokecontroller.core.controller.stick import StickState
+from pokecontroller.core.controller.switch.serializers.leonardo import (
+    SwitchControllerStateSerializer,
+)
+from pokecontroller.core.controller.switch.state import SwitchControllerState
+from pokecontroller.core.serial import Serial
 
 
 class SwitchController:
