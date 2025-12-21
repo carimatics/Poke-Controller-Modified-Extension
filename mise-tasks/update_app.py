@@ -20,7 +20,7 @@ def _update_repository() -> None:
 
         if messagebox.askyesno(
             title="更新確認",
-            message="最新版が公開されています。更新しますか？",
+            message="ローカルとリモートで差分があります。更新しますか？",
             detail="詳細",
         ):
             try:
