@@ -1,10 +1,11 @@
 import logging
 
 from pokecontroller.core.camera import CameraDetector, CameraInfo
+from pokecontroller.core.image import RawImage
+from pokecontroller.core.notification import DiscordConfig, DiscordNotifier
+from pokecontroller.core.notification.desktop import DesktopNotifier
 from pokecontroller.core.serial import SerialPort, get_serial_ports
 
-from .api.v0_1_8.command.commands.base import Command
-from .api.v0_1_8.command.sender import Sender
 from .core.papico import get_papico
 from .exception import AppRuntimeException
 from .info import get_app_info
@@ -22,8 +23,19 @@ class AppModel:
         self._app_info = get_app_info()
         self._app_settings = get_app_settings()
         self._papico = get_papico()
-        self._sender: Sender = Sender(self._app_settings.serial.show_data)
-        self._command: Command | None = None
+
+        app_name = self._app_info.name
+        app_version = self._app_info.version
+        base_dir = self._runtime_info.base_dir
+        profile = self._runtime_info.profile
+        self._discord_notifier = DiscordNotifier(
+            config=DiscordConfig(
+                path=base_dir / "profiles" / profile / "discord_token.ini"
+            )
+        )
+        self._desktop_notifier = DesktopNotifier(
+            title=f"{app_name} ver. {app_version}(profile: {profile})"
+        )
 
     def load_camera_list(self) -> list[CameraInfo]:
         return CameraDetector(max_cameras=20).detect()
@@ -116,17 +128,15 @@ class AppModel:
     def adjust_log_outputs_size(self) -> None:
         pass
 
-    def notify_windows(self) -> None:
-        pass
+    def notify_desktop(self, message: str) -> None:
+        self._desktop_notifier.notify(message=message)
 
-    def notify_discord(self) -> None:
-        pass
-
-    def notify_windows_force(self) -> None:
-        pass
-
-    def notify_discord_force(self) -> None:
-        pass
+    def notify_discord(
+        self,
+        message: str | None = None,
+        image: RawImage | None = None,
+    ) -> None:
+        self._discord_notifier.notify(message=message, image=image)
 
     def apply_enabled_notify_windows_when_command_started(self) -> None:
         pass

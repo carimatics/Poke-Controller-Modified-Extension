@@ -238,8 +238,8 @@
         }
       },
       "notification": {
-        "windows": {
-          "title": "Windows Notification",
+        "desktop": {
+          "title": "Desktop Notification",
           "start": {
             "text": "Start",
             "tooltip": "自動化スクリプト実行開始時に通知をします"

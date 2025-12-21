@@ -29,11 +29,11 @@ class NotificationSettings(AppFrame):
         self.build_ui()
 
     def build_ui(self) -> None:
-        windows_notification = self._build_windows_notification()
+        desktop_notification = self._build_desktop_notification()
         discord_notification = self._build_discord_notification()
 
         # Layout
-        windows_notification.pack(
+        desktop_notification.pack(
             expand=False,
             fill=tk.NONE,
             anchor=tk.NE,
@@ -48,14 +48,14 @@ class NotificationSettings(AppFrame):
             padx=8,
         )
 
-    def _build_windows_notification(self) -> widgets.Labelframe:
+    def _build_desktop_notification(self) -> widgets.Labelframe:
         return self._build_notification(
-            platform="windows",
+            platform="desktop",
             enabled_started=self._enabled_windows_started,
             enabled_ended=self._enabled_windows_ended,
             on_enabled_started_changed=self._on_windows_start_changed,
             on_enabled_ended_changed=self._on_windows_end_changed,
-            on_test_pushed=self._on_windows_test_pushed,
+            on_test_pushed=self._on_desktop_test_pushed,
         )
 
     def _build_discord_notification(self) -> widgets.Labelframe:
@@ -121,8 +121,8 @@ class NotificationSettings(AppFrame):
     def _on_windows_end_changed(self) -> None:
         self._app_model.apply_enabled_notify_windows_when_command_ended()
 
-    def _on_windows_test_pushed(self) -> None:
-        self._app_model.notify_windows_force()
+    def _on_desktop_test_pushed(self) -> None:
+        self._app_model.notify_desktop(message="Notification Test")
 
     def _on_discord_start_changed(self) -> None:
         self._app_model.apply_enabled_notify_discord_when_command_started()
@@ -131,4 +131,4 @@ class NotificationSettings(AppFrame):
         self._app_model.apply_enabled_notify_discord_when_command_ended()
 
     def _on_discord_test_pushed(self) -> None:
-        self._app_model.notify_discord_force()
+        self._app_model.notify_discord(message="Notification Test")
