@@ -1,9 +1,8 @@
 import logging
 from datetime import datetime
+from pathlib import Path
 
 from git import Repo
-
-from pokecontrollermodifiedextension.core.runtime_info import get_app_runtime_info
 
 logger = logging.getLogger(__name__)
 
@@ -11,15 +10,15 @@ logger = logging.getLogger(__name__)
 class PokeControllerUpdater:
     def __init__(
         self,
+        root: str,
         remote: str = "origin",
         branch: str = "master",
     ) -> None:
+        self._root = Path(root)
         self._remote = remote
         self._branch = branch
 
-        runtime_info = get_app_runtime_info()
-        self._repository_root = runtime_info.base_dir.parent
-        self._repo = Repo(self._repository_root)
+        self._repo = Repo(self._root)
         self._current_branch = self._repo.active_branch.name
         self._backup_branch_name = ""
         self._diff_files: list[str] = []

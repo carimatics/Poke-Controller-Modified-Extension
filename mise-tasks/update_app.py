@@ -5,12 +5,14 @@
 # @formatter:on
 
 from tkinter import messagebox
+from pathlib import Path
 
 from pokecontrollermodifiedextension.updater import PokeControllerUpdater
 
 
 def _update_repository() -> None:
-    updater = PokeControllerUpdater()
+    root = Path(__file__).parent.parent
+    updater = PokeControllerUpdater(root=root)
     if not updater.has_changes():
         return
 
