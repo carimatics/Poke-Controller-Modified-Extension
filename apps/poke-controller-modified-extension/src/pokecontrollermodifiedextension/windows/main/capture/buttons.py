@@ -2,12 +2,13 @@ import logging
 import tkinter as tk
 from typing import Any
 
+from pokecontrollermodifiedextension.core.model import get_app_model
+from pokecontrollermodifiedextension.core.runtime_info import get_app_runtime_info
+
 from .... import widgets
 from ....core.command import get_app_command_state
 from ....core.command.info import get_selected_command_info
 from ....core.papico import get_papico
-from ....model import get_app_model
-from ....runtime_info import get_app_runtime_info
 from ....translation import t
 from ....widgets.app import AppDialog, AppFrame
 from ...controller import ControllerWindow

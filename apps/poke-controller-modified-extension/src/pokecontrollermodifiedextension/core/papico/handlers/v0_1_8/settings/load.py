@@ -5,7 +5,7 @@ from typing import Any
 
 from pokecontroller.utils.config import Config
 
-from pokecontrollermodifiedextension.settings import (
+from pokecontrollermodifiedextension.core.settings import (
     DEFAULT,
     SCHEMA,
     AppSettings,

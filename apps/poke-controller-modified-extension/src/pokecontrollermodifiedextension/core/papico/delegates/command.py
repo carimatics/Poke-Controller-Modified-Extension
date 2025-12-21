@@ -27,7 +27,7 @@ from pokecontrollermodifiedextension.core.papico.types import (
     PapicoContainer,
     PapicoHandlerGenerator,
 )
-from pokecontrollermodifiedextension.runtime_info import get_app_runtime_info
+from pokecontrollermodifiedextension.core.runtime_info import get_app_runtime_info
 
 logger = logging.getLogger(__name__)
 

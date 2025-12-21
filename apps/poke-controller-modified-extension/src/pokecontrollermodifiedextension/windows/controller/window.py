@@ -5,8 +5,9 @@ from typing import Any
 from pokecontroller.core import controller
 from pokecontroller.core.controller import switch
 
+from pokecontrollermodifiedextension.core.resources import get_app_resources
+
 from ...mixins import AppAccessorMixIn
-from ...resources import get_app_resources
 from ...widgets.app import AppDialog
 
 logger = logging.getLogger(__name__)

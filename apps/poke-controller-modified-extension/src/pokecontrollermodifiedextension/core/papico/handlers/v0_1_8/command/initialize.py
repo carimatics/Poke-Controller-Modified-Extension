@@ -1,8 +1,9 @@
+from pokecontrollermodifiedextension.core.info import get_app_info
+from pokecontrollermodifiedextension.core.runtime_info import get_app_runtime_info
+from pokecontrollermodifiedextension.core.settings import get_app_settings
+from pokecontrollermodifiedextension.core.widget_catalog import get_app_widget_catalog
+
 from ......api.v0_1_8.command.commands.base import Command
-from ......info import get_app_info
-from ......runtime_info import get_app_runtime_info
-from ......settings import get_app_settings
-from ......widget_catalog import get_app_widget_catalog
 from ....context import PapicoExecContext, PapicoFailure, PapicoResult, PapicoSuccess
 from ....exception import PapicoCommandInitializeHandlerException
 from ...handler import PapicoHandler

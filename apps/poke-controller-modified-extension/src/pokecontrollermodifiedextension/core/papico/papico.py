@@ -2,8 +2,9 @@ import logging
 from pathlib import Path
 from typing import Callable
 
-from ...runtime_info import get_app_runtime_info
-from ...settings import AppSettings
+from pokecontrollermodifiedextension.core.runtime_info import get_app_runtime_info
+from pokecontrollermodifiedextension.core.settings import AppSettings
+
 from ..command import CommandInfo
 from .context import PapicoResult
 from .delegates.command import PapicoCommandDelegate

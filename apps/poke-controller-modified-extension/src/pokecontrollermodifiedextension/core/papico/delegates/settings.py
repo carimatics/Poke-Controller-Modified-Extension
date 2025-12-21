@@ -2,8 +2,13 @@ import logging
 from pathlib import Path
 from typing import Any
 
-from ....runtime_info import get_app_runtime_info
-from ....settings import AppSettings, get_app_settings_or_none, setup_app_settings
+from pokecontrollermodifiedextension.core.runtime_info import get_app_runtime_info
+from pokecontrollermodifiedextension.core.settings import (
+    AppSettings,
+    get_app_settings_or_none,
+    setup_app_settings,
+)
+
 from ..context import PapicoExecContext, PapicoFailure, PapicoResult, PapicoSuccess
 from ..exception import PapicoSettingsSaveHandlerException
 from ..handlers.handler import PapicoHandler

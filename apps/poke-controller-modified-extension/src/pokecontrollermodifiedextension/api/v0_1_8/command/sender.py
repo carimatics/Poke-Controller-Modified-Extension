@@ -7,7 +7,7 @@ from typing import Generator, Protocol
 import serial
 from pokecontroller.utils import platform
 
-from pokecontrollermodifiedextension.resources import get_app_resources
+from pokecontrollermodifiedextension.core.resources import get_app_resources
 
 logger = logging.getLogger(__name__)
 

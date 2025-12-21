@@ -1,8 +1,9 @@
 import tkinter as tk
 from typing import Any
 
+from pokecontrollermodifiedextension.core.settings import get_app_settings
+
 from .... import widgets
-from ....settings import get_app_settings
 from ....widgets.app import AppFrame
 from .buttons import Buttons
 from .capture import Capture

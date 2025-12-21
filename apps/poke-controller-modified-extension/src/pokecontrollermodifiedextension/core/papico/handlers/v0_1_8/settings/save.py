@@ -4,7 +4,7 @@ from typing import Any
 
 from pokecontroller.utils.config import Config
 
-from pokecontrollermodifiedextension.settings import AppSettings, settings_to_dict
+from pokecontrollermodifiedextension.core.settings import AppSettings, settings_to_dict
 
 from ....context import PapicoExecContext, PapicoFailure, PapicoResult, PapicoSuccess
 from ....exception import PapicoSettingsLoadHandlerException

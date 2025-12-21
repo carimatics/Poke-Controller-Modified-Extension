@@ -5,6 +5,10 @@ from typing import Any, Literal
 
 from pokecontroller.utils import platform
 
+from pokecontrollermodifiedextension.core.model import get_app_model
+from pokecontrollermodifiedextension.core.runtime_info import get_app_runtime_info
+from pokecontrollermodifiedextension.core.settings import get_app_settings
+
 from .... import widgets
 from ....core.command import get_app_command_state
 from ....core.command.info import (
@@ -12,9 +16,6 @@ from ....core.command.info import (
     set_selected_command_info,
 )
 from ....core.papico import get_papico
-from ....model import get_app_model
-from ....runtime_info import get_app_runtime_info
-from ....settings import get_app_settings
 from ....translation import t
 from ....widgets.app import AppFrame
 

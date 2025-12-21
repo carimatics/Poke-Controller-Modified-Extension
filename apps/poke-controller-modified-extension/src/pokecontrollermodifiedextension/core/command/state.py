@@ -1,6 +1,6 @@
 import tkinter as tk
 
-from ...exception import AppRuntimeException
+from pokecontrollermodifiedextension.core.exception import AppRuntimeException
 
 
 class AppCommandState:

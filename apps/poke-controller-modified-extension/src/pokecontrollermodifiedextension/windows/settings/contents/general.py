@@ -2,8 +2,9 @@ import logging
 import tkinter as tk
 from typing import Any
 
-from ....info import get_app_info
-from ....settings import get_app_settings
+from pokecontrollermodifiedextension.core.info import get_app_info
+from pokecontrollermodifiedextension.core.settings import get_app_settings
+
 from ....widgets.app import AppFrame
 from ....widgets.components import ComponentPackBuilder
 

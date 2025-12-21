@@ -6,12 +6,12 @@ from pokecontroller.core.notification import DiscordConfig, DiscordNotifier
 from pokecontroller.core.notification.desktop import DesktopNotifier
 from pokecontroller.core.serial import SerialPort, get_serial_ports
 
-from .core.papico import get_papico
-from .exception import AppRuntimeException
-from .info import get_app_info
-from .resources import get_app_resources
-from .runtime_info import get_app_runtime_info
-from .settings import get_app_settings
+from pokecontrollermodifiedextension.core.exception import AppRuntimeException
+from pokecontrollermodifiedextension.core.info import get_app_info
+from pokecontrollermodifiedextension.core.papico import get_papico
+from pokecontrollermodifiedextension.core.resources import get_app_resources
+from pokecontrollermodifiedextension.core.runtime_info import get_app_runtime_info
+from pokecontrollermodifiedextension.core.settings import get_app_settings
 
 logger = logging.getLogger(__name__)
 

@@ -16,7 +16,7 @@ _app_info = AppInfo(
     version="0.2.0",
     latest_settings_version="0.2.0",
     latest_api_version="0.2.0",
-    application_root=Path(__file__).parent.parent.parent,
+    application_root=Path(__file__).parent.parent.parent.parent,
 )
 
 

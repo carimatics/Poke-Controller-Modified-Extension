@@ -22,7 +22,7 @@ from pokecontrollermodifiedextension.core.papico.exception import (
     PapicoCommandStartHandlerException,
 )
 from pokecontrollermodifiedextension.core.papico.handlers import PapicoHandler
-from pokecontrollermodifiedextension.settings import get_app_settings
+from pokecontrollermodifiedextension.core.settings import get_app_settings
 
 
 class PapicoCommandStartHandler(PapicoHandler):

@@ -6,9 +6,10 @@ from typing import Any
 from pokecontroller.core import controller
 from pokecontroller.core.controller import switch
 
+from pokecontrollermodifiedextension.core.model import get_app_model
+from pokecontrollermodifiedextension.core.resources import get_app_resources
+
 from .... import widgets
-from ....model import get_app_model
-from ....resources import get_app_resources
 from ....widgets.app import AppFrame
 
 A = "A"

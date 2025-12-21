@@ -2,8 +2,9 @@ import logging
 import tkinter as tk
 from typing import Any, Callable
 
+from pokecontrollermodifiedextension.core.settings import get_app_settings
+
 from .... import widgets
-from ....settings import get_app_settings
 from ....widgets.app import AppFrame
 
 logger = logging.getLogger(__name__)

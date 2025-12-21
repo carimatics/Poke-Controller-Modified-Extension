@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from pathlib import Path
 
-from pokecontrollermodifiedextension.exception import AppRuntimeException
+from pokecontrollermodifiedextension.core.exception import AppRuntimeException
 
 
 @dataclass(kw_only=True, frozen=True)

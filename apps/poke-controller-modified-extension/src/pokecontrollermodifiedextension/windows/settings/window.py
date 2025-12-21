@@ -3,11 +3,12 @@ import tkinter as tk
 from dataclasses import fields, is_dataclass
 from typing import Any
 
+from pokecontrollermodifiedextension.core.info import get_app_info
+from pokecontrollermodifiedextension.core.settings import get_app_settings
+
 from ... import widgets
 from ...core.papico import get_papico
-from ...info import get_app_info
 from ...mixins import AppAccessorMixIn
-from ...settings import get_app_settings
 from ...widgets.app import AppDialog, AppFrame
 from .buttons import SettingsButtonsPane
 from .contents import (

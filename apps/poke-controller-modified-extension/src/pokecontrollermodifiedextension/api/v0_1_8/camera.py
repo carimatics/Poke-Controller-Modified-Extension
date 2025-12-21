@@ -13,7 +13,7 @@ from pokecontroller.utils import (
     datetime as datetimelib,
 )
 
-from pokecontrollermodifiedextension.resources import get_app_resources
+from pokecontrollermodifiedextension.core.resources import get_app_resources
 
 logger = logging.getLogger(__name__)
 

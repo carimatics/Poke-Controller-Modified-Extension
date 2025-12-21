@@ -6,6 +6,9 @@ from typing import Any
 from pokecontroller.core.camera import use_camera
 from pokecontroller.core.serial import use_serial
 
+from pokecontrollermodifiedextension.core.resources import setup_app_resources
+from pokecontrollermodifiedextension.core.runtime_info import setup_runtime_info
+
 from .app import App
 from .core.papico.handlers.v0_1_8.command import (
     PapicoCommandInitializeHandler as PapicoCommandInitializeHandler_v0_1_8,
@@ -25,8 +28,6 @@ from .core.papico.handlers.v0_2_0.settings import (
 )
 from .core.papico.papico import Papico, PapicoRegisterHandlerContext, setup_papico
 from .logging import setup_logging
-from .resources import setup_app_resources
-from .runtime_info import setup_runtime_info
 from .widgets.app import AppMenu
 from .windows import MainWindow
 
