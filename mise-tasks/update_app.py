@@ -12,29 +12,33 @@ from pokecontrollermodifiedextension.updater import PokeControllerUpdater
 
 def _update_repository() -> None:
     root = Path(__file__).parent.parent
-    updater = PokeControllerUpdater(root=root)
-    if not updater.has_changes():
-        return
 
-    if messagebox.askyesno(
-        title="更新確認",
-        message="最新版が公開されています。更新しますか？",
-        detail="詳細",
-    ):
-        try:
-            updater.backup()
-            updater.update()
-        except Exception as e:
-            logger.error(f"Error while updating repository: {e}")
+    updater = PokeControllerUpdater(root=root)
+    try:
+        if not updater.has_changes():
+            return
+
+        if messagebox.askyesno(
+            title="更新確認",
+            message="最新版が公開されています。更新しますか？",
+            detail="詳細",
+        ):
+            try:
+                updater.backup()
+                updater.update()
+            except Exception as e:
+                logger.error(f"Error while updating repository: {e}")
+                messagebox.showinfo(
+                    title="更新確認",
+                    message="更新に失敗しました。\n手動でGitリポジトリを最新に更新してください。"
+                )
+                return
             messagebox.showinfo(
                 title="更新確認",
-                message="更新に失敗しました。\n手動でGitリポジトリを最新に更新してください。"
+                message="更新が完了しました。",
             )
-            return
-        messagebox.showinfo(
-            title="更新確認",
-            message="更新が完了しました。",
-        )
+    finally:
+        updater.checkout_original_branch()
 
 
 if __name__ == '__main__':
