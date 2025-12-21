@@ -1,7 +1,6 @@
 from ..button import ButtonState
-from ..dpad import DpadState
 from ..stick import StickAxisRange, StickRange, StickState
-from .dpad import SwitchDpad
+from .dpad import SwitchDpad, SwitchDpadState
 
 stick_range = StickRange(
     x=StickAxisRange(min=0, max=255, neutral=128),
@@ -12,7 +11,7 @@ stick_range = StickRange(
 class SwitchControllerState:
     def __init__(self) -> None:
         self._button = ButtonState()
-        self._hat = DpadState(neutral=SwitchDpad.NEUTRAL)
+        self._hat = SwitchDpadState(neutral=SwitchDpad.NEUTRAL)
         self._lstick = StickState(stick_range)
         self._rstick = StickState(stick_range)
 
@@ -21,7 +20,7 @@ class SwitchControllerState:
         return self._button
 
     @property
-    def hat(self) -> DpadState:
+    def hat(self) -> SwitchDpadState:
         return self._hat
 
     @property

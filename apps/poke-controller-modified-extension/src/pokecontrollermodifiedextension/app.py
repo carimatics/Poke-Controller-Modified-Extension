@@ -51,8 +51,9 @@ class App(tk.Tk):
         serial = self._resources.serial
         keymap = parse_keymap_json(settings.to_dict()["device"]["keyboard"]["keymap"])
         self._keyboard = SwitchKeyboard(serial, keymap)
-        if self._settings.device.keyboard.enabled.get():
-            self._keyboard.start()
+        self._keyboard.start()
+        if not self._settings.device.keyboard.enabled.get():
+            self._keyboard.stop()
 
         self._style_manager = StyleManager(self)
         self._style_manager.change_theme(self._settings.general.theme.get())
