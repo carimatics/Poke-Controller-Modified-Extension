@@ -10,7 +10,7 @@ import sys
 project_root = Path(__file__).parent.parent
 sys.path.append(str(project_root))
 
-from scripts.utils.command import CrossPlatformCommand, get_usage_envs
+from scripts.utils.command import CrossPlatformCommand
 
 if __name__ == '__main__':
     commands = [

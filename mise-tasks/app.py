@@ -35,7 +35,7 @@ if __name__ == '__main__':
 
     # Update the app
     _ = CrossPlatformCommand().run(
-        command=["uv", "update_app"],
+        command=["mise", "run", "update_app"],
         cwd=project_root,
     )
 
