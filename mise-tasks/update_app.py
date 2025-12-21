@@ -13,7 +13,7 @@ from pokecontrollermodifiedextension.updater import PokeControllerUpdater
 def _update_repository() -> None:
     root = Path(__file__).parent.parent
 
-    updater = PokeControllerUpdater(root=root)
+    updater = PokeControllerUpdater(root=root, branch="project/rewrite")
     try:
         if not updater.has_changes():
             return
