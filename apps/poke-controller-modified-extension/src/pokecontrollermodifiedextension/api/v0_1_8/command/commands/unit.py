@@ -1,9 +1,19 @@
 from abc import ABC
 from time import sleep
 
-from ..keys import Button, ButtonLike, Hat, KeyPress
-from ..sender import Sender
-from .base import Command, PostProcess
+from pokecontrollermodifiedextension.api.v0_1_8.command.commands.base import (
+    Command,
+    PostProcess,
+)
+from pokecontrollermodifiedextension.api.v0_1_8.command.keys import (
+    Button,
+    ButtonLike,
+    Hat,
+    KeyPress,
+)
+from pokecontrollermodifiedextension.api.v0_1_8.command.sender import (
+    Sender,
+)
 
 
 # Single button command

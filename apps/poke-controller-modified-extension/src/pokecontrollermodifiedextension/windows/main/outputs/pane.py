@@ -2,9 +2,8 @@ import tkinter as tk
 from typing import Any
 
 from pokecontrollermodifiedextension.core.widget_catalog import get_app_widget_catalog
-
-from ....widgets.app import AppFrame
-from .output import Output
+from pokecontrollermodifiedextension.widgets.app import AppFrame
+from pokecontrollermodifiedextension.windows.main.outputs.output import Output
 
 
 class OutputsPane(AppFrame):

@@ -2,8 +2,7 @@ import tkinter as tk
 from typing import Any
 
 from pokecontrollermodifiedextension.mixins import AppAccessorMixIn
-
-from ..frame import Frame
+from pokecontrollermodifiedextension.widgets.frame import Frame
 
 
 class AppFrame(Frame, AppAccessorMixIn):

@@ -2,15 +2,14 @@ import math
 import tkinter as tk
 from typing import Any, Literal
 
+from pokecontrollermodifiedextension import widgets
 from pokecontrollermodifiedextension.core.model import get_app_model
 from pokecontrollermodifiedextension.core.settings import get_app_settings
-
-from ... import widgets
-from ...widgets.app import AppFrame
-from .capture import CapturePane
-from .controller import ControllerPane
-from .outputs import OutputsPane
-from .settings import SettingsPane
+from pokecontrollermodifiedextension.widgets.app import AppFrame
+from pokecontrollermodifiedextension.windows.main.capture import CapturePane
+from pokecontrollermodifiedextension.windows.main.controller import ControllerPane
+from pokecontrollermodifiedextension.windows.main.outputs import OutputsPane
+from pokecontrollermodifiedextension.windows.main.settings import SettingsPane
 
 CAPTURE = "capture"
 SETTINGS = "settings"

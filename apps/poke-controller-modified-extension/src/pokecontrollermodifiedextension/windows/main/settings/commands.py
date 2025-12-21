@@ -5,19 +5,18 @@ from typing import Any, Literal
 
 from pokecontroller.utils import platform
 
-from pokecontrollermodifiedextension.core.model import get_app_model
-from pokecontrollermodifiedextension.core.runtime_info import get_app_runtime_info
-from pokecontrollermodifiedextension.core.settings import get_app_settings
-
-from .... import widgets
-from ....core.command import get_app_command_state
-from ....core.command.info import (
+from pokecontrollermodifiedextension import widgets
+from pokecontrollermodifiedextension.core.command import get_app_command_state
+from pokecontrollermodifiedextension.core.command.info import (
     get_selected_command_info,
     set_selected_command_info,
 )
-from ....core.papico import get_papico
-from ....translation import t
-from ....widgets.app import AppFrame
+from pokecontrollermodifiedextension.core.model import get_app_model
+from pokecontrollermodifiedextension.core.papico import get_papico
+from pokecontrollermodifiedextension.core.runtime_info import get_app_runtime_info
+from pokecontrollermodifiedextension.core.settings import get_app_settings
+from pokecontrollermodifiedextension.translation import t
+from pokecontrollermodifiedextension.widgets.app import AppFrame
 
 PYTHON = "python"
 MCU = "mcu"

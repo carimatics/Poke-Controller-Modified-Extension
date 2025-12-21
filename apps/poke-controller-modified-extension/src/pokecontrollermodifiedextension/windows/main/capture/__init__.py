@@ -1,1 +1,3 @@
-from .pane import CapturePane as CapturePane
+from pokecontrollermodifiedextension.windows.main.capture.pane import (
+    CapturePane as CapturePane,
+)

@@ -1,8 +1,8 @@
 import tkinter as tk
 from typing import Any, Callable
 
-from .... import widgets
-from ....widgets.app import AppFrame
+from pokecontrollermodifiedextension import widgets
+from pokecontrollermodifiedextension.widgets.app import AppFrame
 
 
 class SettingsButtonsPane(AppFrame):

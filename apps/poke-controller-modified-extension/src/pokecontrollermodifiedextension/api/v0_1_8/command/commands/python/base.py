@@ -5,6 +5,18 @@ from abc import ABC, abstractmethod
 from time import sleep
 from typing import Never
 
+from pokecontrollermodifiedextension.api.v0_1_8.command.commands.base import (
+    Command,
+    PostProcess,
+)
+from pokecontrollermodifiedextension.api.v0_1_8.command.commands.python.decorators import (
+    pausable,
+)
+from pokecontrollermodifiedextension.api.v0_1_8.command.keys import (
+    ButtonLike,
+    KeyPress,
+)
+from pokecontrollermodifiedextension.api.v0_1_8.command.sender import Sender
 from pokecontrollermodifiedextension.api.v0_1_8.notification.discord import (
     Discord_Notify,
 )
@@ -13,11 +25,6 @@ from pokecontrollermodifiedextension.api.v0_1_8.notification.line import (
 )
 from pokecontrollermodifiedextension.api.v0_1_8.settings import GuiSettings
 from pokecontrollermodifiedextension.core.command import get_app_command_state
-
-from ...keys import ButtonLike, KeyPress
-from ...sender import Sender
-from ..base import Command, PostProcess
-from .decorators import pausable
 
 try:
     from plyer import notification

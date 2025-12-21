@@ -1,12 +1,11 @@
 import tkinter as tk
 from typing import Any
 
+from pokecontrollermodifiedextension import widgets
 from pokecontrollermodifiedextension.core.model import get_app_model
 from pokecontrollermodifiedextension.core.settings import get_app_settings
-
-from .... import widgets
-from ....translation import t
-from ....widgets.app import AppFrame
+from pokecontrollermodifiedextension.translation import t
+from pokecontrollermodifiedextension.widgets.app import AppFrame
 
 
 class OthersSettings(AppFrame):

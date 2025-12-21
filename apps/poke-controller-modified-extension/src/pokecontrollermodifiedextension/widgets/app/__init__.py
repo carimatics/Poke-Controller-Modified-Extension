@@ -1,3 +1,9 @@
-from .dialog import AppDialog as AppDialog
-from .frame import AppFrame as AppFrame
-from .menu import AppMenu as AppMenu
+from pokecontrollermodifiedextension.widgets.app.dialog import (
+    AppDialog as AppDialog,
+)
+from pokecontrollermodifiedextension.widgets.app.frame import (
+    AppFrame as AppFrame,
+)
+from pokecontrollermodifiedextension.widgets.app.menu import (
+    AppMenu as AppMenu,
+)

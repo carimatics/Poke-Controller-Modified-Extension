@@ -1,1 +1,3 @@
-from .window import MainWindow as MainWindow
+from pokecontrollermodifiedextension.windows.main.window import (
+    MainWindow as MainWindow,
+)

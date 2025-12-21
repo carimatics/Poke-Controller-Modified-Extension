@@ -3,8 +3,8 @@ import tkinter.ttk as ttk
 from dataclasses import dataclass, field
 from typing import Any, Literal, Self, overload
 
-from ...mixins import AppAccessorMixIn
-from ..app.frame import AppFrame
+from pokecontrollermodifiedextension.mixins import AppAccessorMixIn
+from pokecontrollermodifiedextension.widgets.app.frame import AppFrame
 
 type WidgetType = Literal[
     "checkbutton",

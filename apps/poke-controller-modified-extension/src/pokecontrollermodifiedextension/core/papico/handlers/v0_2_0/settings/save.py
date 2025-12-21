@@ -2,11 +2,19 @@ import json
 from pathlib import Path
 from typing import Any
 
+from pokecontrollermodifiedextension.core.papico.context import (
+    PapicoExecContext,
+    PapicoFailure,
+    PapicoResult,
+    PapicoSuccess,
+)
+from pokecontrollermodifiedextension.core.papico.exception import (
+    PapicoSettingsSaveHandlerException,
+)
+from pokecontrollermodifiedextension.core.papico.handlers import (
+    PapicoHandler,
+)
 from pokecontrollermodifiedextension.core.settings import AppSettings, settings_to_dict
-
-from ....context import PapicoExecContext, PapicoFailure, PapicoResult, PapicoSuccess
-from ....exception import PapicoSettingsSaveHandlerException
-from ....handlers import PapicoHandler
 
 
 class PapicoSettingsSaveHandler(PapicoHandler):

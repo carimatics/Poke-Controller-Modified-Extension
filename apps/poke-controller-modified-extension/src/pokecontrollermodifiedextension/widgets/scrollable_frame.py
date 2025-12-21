@@ -2,8 +2,8 @@ import logging
 import tkinter as tk
 from typing import Any
 
-from .frame import Frame
-from .scrollbar import Scrollbar
+from pokecontrollermodifiedextension.widgets.frame import Frame
+from pokecontrollermodifiedextension.widgets.scrollbar import Scrollbar
 
 logger = logging.getLogger(__name__)
 

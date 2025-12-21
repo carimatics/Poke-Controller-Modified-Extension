@@ -9,17 +9,22 @@ from typing import Any
 from pokecontroller.core.image import RawImage
 
 from pokecontrollermodifiedextension.api.v0_1_8.camera import Camera
+from pokecontrollermodifiedextension.api.v0_1_8.command.commands.base import (
+    PostProcess,
+)
+from pokecontrollermodifiedextension.api.v0_1_8.command.commands.python.base import (
+    PythonCommand,
+)
+from pokecontrollermodifiedextension.api.v0_1_8.command.commands.python.decorators import (
+    pausable,
+)
+from pokecontrollermodifiedextension.api.v0_1_8.command.sender import Sender
 from pokecontrollermodifiedextension.api.v0_1_8.image_processing import (
     ImageProcessing,
     crop_image,
     getImage,
     openImage,
 )
-
-from ...sender import Sender
-from ..base import PostProcess
-from .base import PythonCommand
-from .decorators import pausable
 
 logger = logging.getLogger(__name__)
 

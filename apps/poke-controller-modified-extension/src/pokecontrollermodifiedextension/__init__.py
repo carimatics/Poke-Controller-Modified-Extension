@@ -1,1 +1,3 @@
-from .runner import run_app as run_app
+from pokecontrollermodifiedextension.runner import (
+    run_app as run_app,
+)

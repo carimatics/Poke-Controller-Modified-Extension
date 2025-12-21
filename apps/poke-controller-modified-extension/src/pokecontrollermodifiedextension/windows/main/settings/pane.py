@@ -2,14 +2,26 @@ import tkinter as tk
 import tkinter.ttk as ttk
 from typing import Any
 
-from .... import widgets
-from ....widgets.app import AppFrame
-from .capture import CameraSettings
-from .commands import CommandsSettings
-from .manual_control import ManualControlSettings
-from .notification import NotificationSettings
-from .others import OthersSettings
-from .serial import SerialSettings
+from pokecontrollermodifiedextension import widgets
+from pokecontrollermodifiedextension.widgets.app import AppFrame
+from pokecontrollermodifiedextension.windows.main.settings.capture import (
+    CameraSettings,
+)
+from pokecontrollermodifiedextension.windows.main.settings.commands import (
+    CommandsSettings,
+)
+from pokecontrollermodifiedextension.windows.main.settings.manual_control import (
+    ManualControlSettings,
+)
+from pokecontrollermodifiedextension.windows.main.settings.notification import (
+    NotificationSettings,
+)
+from pokecontrollermodifiedextension.windows.main.settings.others import (
+    OthersSettings,
+)
+from pokecontrollermodifiedextension.windows.main.settings.serial import (
+    SerialSettings,
+)
 
 CAPTURE = "capture"
 SERIAL = "serial"

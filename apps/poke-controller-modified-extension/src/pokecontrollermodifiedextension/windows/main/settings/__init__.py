@@ -1,1 +1,3 @@
-from .pane import SettingsPane as SettingsPane
+from pokecontrollermodifiedextension.windows.main.settings.pane import (
+    SettingsPane as SettingsPane,
+)

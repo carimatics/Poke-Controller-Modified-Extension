@@ -5,16 +5,26 @@ from typing import Any
 
 from pokecontroller.utils.config import Config
 
+from pokecontrollermodifiedextension.core.papico.context import (
+    PapicoExecContext,
+    PapicoFailure,
+    PapicoResult,
+    PapicoSuccess,
+)
+from pokecontrollermodifiedextension.core.papico.exception import (
+    PapicoSettingsLoadHandlerException,
+)
+from pokecontrollermodifiedextension.core.papico.handlers.handler import (
+    PapicoHandler,
+)
+from pokecontrollermodifiedextension.core.papico.handlers.v0_1_8.settings.mapping import (
+    MAPPING,
+)
 from pokecontrollermodifiedextension.core.settings import (
     DEFAULT,
     SCHEMA,
     AppSettings,
 )
-
-from ....context import PapicoExecContext, PapicoFailure, PapicoResult, PapicoSuccess
-from ....exception import PapicoSettingsLoadHandlerException
-from ...handler import PapicoHandler
-from .mapping import MAPPING
 
 logger = logging.getLogger(__name__)
 

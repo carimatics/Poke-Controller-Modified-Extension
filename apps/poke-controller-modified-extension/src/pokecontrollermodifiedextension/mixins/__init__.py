@@ -1,1 +1,3 @@
-from .app_accessor import AppAccessorMixIn as AppAccessorMixIn
+from pokecontrollermodifiedextension.mixins.app_accessor import (
+    AppAccessorMixIn as AppAccessorMixIn,
+)

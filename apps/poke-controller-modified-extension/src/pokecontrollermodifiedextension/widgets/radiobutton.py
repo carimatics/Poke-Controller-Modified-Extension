@@ -2,7 +2,7 @@ import tkinter as tk
 import tkinter.ttk as ttk
 from typing import Any, Literal
 
-from ..mixins.tooltip import TooltipMixIn
+from pokecontrollermodifiedextension.mixins.tooltip import TooltipMixIn
 
 type SizeType = Literal["xs", "s", "md", "l", "xl"]
 

@@ -5,7 +5,7 @@ from io import TextIOWrapper
 import numpy as np
 import pygame
 
-from .sender import Sender
+from pokecontrollermodifiedextension.api.v0_1_8.command.sender import Sender
 
 logger = logging.getLogger(__name__)
 

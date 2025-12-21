@@ -3,9 +3,19 @@ from time import sleep
 
 import numpy as np
 
-from ..keys import ButtonLike, Direction, KeyPress, Stick
-from ..sender import Sender
-from .base import Command, PostProcess
+from pokecontrollermodifiedextension.api.v0_1_8.command.commands.base import (
+    Command,
+    PostProcess,
+)
+from pokecontrollermodifiedextension.api.v0_1_8.command.keys import (
+    ButtonLike,
+    Direction,
+    KeyPress,
+    Stick,
+)
+from pokecontrollermodifiedextension.api.v0_1_8.command.sender import (
+    Sender,
+)
 
 logger = logging.getLogger(__name__)
 

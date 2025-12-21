@@ -3,15 +3,14 @@ import tkinter as tk
 from dataclasses import fields, is_dataclass
 from typing import Any
 
+from pokecontrollermodifiedextension import widgets
 from pokecontrollermodifiedextension.core.info import get_app_info
+from pokecontrollermodifiedextension.core.papico import get_papico
 from pokecontrollermodifiedextension.core.settings import get_app_settings
-
-from ... import widgets
-from ...core.papico import get_papico
-from ...mixins import AppAccessorMixIn
-from ...widgets.app import AppDialog, AppFrame
-from .buttons import SettingsButtonsPane
-from .contents import (
+from pokecontrollermodifiedextension.mixins import AppAccessorMixIn
+from pokecontrollermodifiedextension.widgets.app import AppDialog, AppFrame
+from pokecontrollermodifiedextension.windows.settings.buttons import SettingsButtonsPane
+from pokecontrollermodifiedextension.windows.settings.contents import (
     CaptureSettingsPane,
     CommandSettingsPane,
     DeviceSettingsPane,
@@ -21,7 +20,7 @@ from .contents import (
     SerialSettingsPane,
     WidgetSettingsPane,
 )
-from .sidebar import SettingsSidebarPane
+from pokecontrollermodifiedextension.windows.settings.sidebar import SettingsSidebarPane
 
 logger = logging.getLogger(__name__)
 

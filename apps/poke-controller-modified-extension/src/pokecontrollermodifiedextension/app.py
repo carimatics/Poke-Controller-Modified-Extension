@@ -2,17 +2,16 @@ import logging
 import tkinter as tk
 from typing import Any
 
+from pokecontrollermodifiedextension.core.command import setup_app_command_state
 from pokecontrollermodifiedextension.core.exception import AppRuntimeException
 from pokecontrollermodifiedextension.core.info import get_app_info
 from pokecontrollermodifiedextension.core.model import setup_app_model
+from pokecontrollermodifiedextension.core.papico import get_papico
 from pokecontrollermodifiedextension.core.resources import get_app_resources
 from pokecontrollermodifiedextension.core.runtime_info import get_app_runtime_info
 from pokecontrollermodifiedextension.core.settings import setup_app_settings
-
-from .core.command import setup_app_command_state
-from .core.papico import get_papico
-from .style import StyleManager
-from .translation import setup_translation
+from pokecontrollermodifiedextension.style import StyleManager
+from pokecontrollermodifiedextension.translation import setup_translation
 
 logger = logging.getLogger(__name__)
 

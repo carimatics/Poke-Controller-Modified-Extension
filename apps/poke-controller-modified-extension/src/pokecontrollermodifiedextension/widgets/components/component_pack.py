@@ -2,17 +2,17 @@ import tkinter as tk
 import tkinter.ttk as ttk
 from typing import Any, Callable, Literal, Protocol, Self, overload
 
-from ..button import Button
-from ..checkbutton import Checkbutton
-from ..combobox import Combobox
-from ..entry import Entry
-from ..frame import Frame
-from ..label import Label
-from ..labelframe import Labelframe
-from ..radiobutton import Radiobutton
-from ..scale import Scale
-from ..scrollable_frame import ScrollableFrame
-from ..spinbox import Spinbox
+from pokecontrollermodifiedextension.widgets.button import Button
+from pokecontrollermodifiedextension.widgets.checkbutton import Checkbutton
+from pokecontrollermodifiedextension.widgets.combobox import Combobox
+from pokecontrollermodifiedextension.widgets.entry import Entry
+from pokecontrollermodifiedextension.widgets.frame import Frame
+from pokecontrollermodifiedextension.widgets.label import Label
+from pokecontrollermodifiedextension.widgets.labelframe import Labelframe
+from pokecontrollermodifiedextension.widgets.radiobutton import Radiobutton
+from pokecontrollermodifiedextension.widgets.scale import Scale
+from pokecontrollermodifiedextension.widgets.scrollable_frame import ScrollableFrame
+from pokecontrollermodifiedextension.widgets.spinbox import Spinbox
 
 
 class Refreshable(Protocol):

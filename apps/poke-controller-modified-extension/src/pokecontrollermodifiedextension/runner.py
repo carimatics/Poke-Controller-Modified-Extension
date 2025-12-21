@@ -6,11 +6,8 @@ from typing import Any
 from pokecontroller.core.camera import use_camera
 from pokecontroller.core.serial import use_serial
 
-from pokecontrollermodifiedextension.core.resources import setup_app_resources
-from pokecontrollermodifiedextension.core.runtime_info import setup_runtime_info
-
-from .app import App
-from .core.papico.handlers.v0_1_8.command import (
+from pokecontrollermodifiedextension.app import App
+from pokecontrollermodifiedextension.core.papico.handlers.v0_1_8.command import (
     PapicoCommandInitializeHandler as PapicoCommandInitializeHandler_v0_1_8,
     PapicoCommandLoadHandler as PapicoCommandLoadHandler_v0_1_8,
     PapicoCommandPauseHandler as PapicoCommandPauseHandler_v0_1_8,
@@ -18,18 +15,24 @@ from .core.papico.handlers.v0_1_8.command import (
     PapicoCommandStartHandler as PapicoCommandStartHandler_v0_1_8,
     PapicoCommandStopHandler as PapicoCommandStopHandler_v0_1_8,
 )
-from .core.papico.handlers.v0_1_8.settings import (
+from pokecontrollermodifiedextension.core.papico.handlers.v0_1_8.settings import (
     PapicoSettingsLoadHandler as PapicoSettingsLoadHandler_v0_1_8,
     PapicoSettingsSaveHandler as PapicoSettingsSaveHandler_v0_1_8,
 )
-from .core.papico.handlers.v0_2_0.settings import (
+from pokecontrollermodifiedextension.core.papico.handlers.v0_2_0.settings import (
     PapicoSettingsLoadHandler as PapicoSettingsLoadHandler_v0_2_0,
     PapicoSettingsSaveHandler as PapicoSettingsSaveHandler_v0_2_0,
 )
-from .core.papico.papico import Papico, PapicoRegisterHandlerContext, setup_papico
-from .logging import setup_logging
-from .widgets.app import AppMenu
-from .windows import MainWindow
+from pokecontrollermodifiedextension.core.papico.papico import (
+    Papico,
+    PapicoRegisterHandlerContext,
+    setup_papico,
+)
+from pokecontrollermodifiedextension.core.resources import setup_app_resources
+from pokecontrollermodifiedextension.core.runtime_info import setup_runtime_info
+from pokecontrollermodifiedextension.logging import setup_logging
+from pokecontrollermodifiedextension.widgets.app import AppMenu
+from pokecontrollermodifiedextension.windows import MainWindow
 
 
 def run_app(*, base_dir: Path, profile: str) -> None:

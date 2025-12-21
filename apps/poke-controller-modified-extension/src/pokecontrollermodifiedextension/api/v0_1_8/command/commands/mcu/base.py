@@ -1,8 +1,11 @@
 from abc import ABC
 
-from ......core.command import get_app_command_state
-from ...sender import Sender
-from ..base import Command, PostProcess
+from pokecontrollermodifiedextension.api.v0_1_8.command.commands.base import (
+    Command,
+    PostProcess,
+)
+from pokecontrollermodifiedextension.api.v0_1_8.command.sender import Sender
+from pokecontrollermodifiedextension.core.command import get_app_command_state
 
 
 class McuCommand(Command, ABC):

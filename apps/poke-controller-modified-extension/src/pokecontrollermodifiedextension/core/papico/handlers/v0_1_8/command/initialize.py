@@ -1,12 +1,20 @@
+from pokecontrollermodifiedextension.api.v0_1_8.command.commands.base import Command
 from pokecontrollermodifiedextension.core.info import get_app_info
+from pokecontrollermodifiedextension.core.papico.context import (
+    PapicoExecContext,
+    PapicoFailure,
+    PapicoResult,
+    PapicoSuccess,
+)
+from pokecontrollermodifiedextension.core.papico.exception import (
+    PapicoCommandInitializeHandlerException,
+)
+from pokecontrollermodifiedextension.core.papico.handlers.handler import (
+    PapicoHandler,
+)
 from pokecontrollermodifiedextension.core.runtime_info import get_app_runtime_info
 from pokecontrollermodifiedextension.core.settings import get_app_settings
 from pokecontrollermodifiedextension.core.widget_catalog import get_app_widget_catalog
-
-from ......api.v0_1_8.command.commands.base import Command
-from ....context import PapicoExecContext, PapicoFailure, PapicoResult, PapicoSuccess
-from ....exception import PapicoCommandInitializeHandlerException
-from ...handler import PapicoHandler
 
 
 class PapicoCommandInitializeHandler(PapicoHandler):

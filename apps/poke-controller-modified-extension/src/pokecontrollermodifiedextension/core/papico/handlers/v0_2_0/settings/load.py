@@ -3,14 +3,22 @@ from pathlib import Path
 from tkinter import BooleanVar, DoubleVar, IntVar, StringVar
 from typing import Any
 
+from pokecontrollermodifiedextension.core.papico.context import (
+    PapicoExecContext,
+    PapicoFailure,
+    PapicoResult,
+    PapicoSuccess,
+)
+from pokecontrollermodifiedextension.core.papico.exception import (
+    PapicoSettingsLoadHandlerException,
+)
+from pokecontrollermodifiedextension.core.papico.handlers.handler import (
+    PapicoHandler,
+)
 from pokecontrollermodifiedextension.core.settings import (
     DEFAULT,
     AppSettings,
 )
-
-from ....context import PapicoExecContext, PapicoFailure, PapicoResult, PapicoSuccess
-from ....exception import PapicoSettingsLoadHandlerException
-from ...handler import PapicoHandler
 
 
 class PapicoSettingsLoadHandler(PapicoHandler):

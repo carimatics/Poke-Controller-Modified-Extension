@@ -2,7 +2,7 @@ import logging
 import tkinter as tk
 from typing import Any
 
-from ....widgets.app import AppFrame
+from pokecontrollermodifiedextension.widgets.app import AppFrame
 
 logger = logging.getLogger(__name__)
 

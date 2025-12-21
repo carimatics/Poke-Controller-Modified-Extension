@@ -1,8 +1,8 @@
 import tkinter as tk
 from typing import Any
 
-from .... import widgets
-from ....widgets.app import AppFrame
+from pokecontrollermodifiedextension import widgets
+from pokecontrollermodifiedextension.widgets.app import AppFrame
 
 
 class Output(AppFrame):

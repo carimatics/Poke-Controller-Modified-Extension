@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from typing import Any, Literal
 
-from .exception import PapicoException
+from pokecontrollermodifiedextension.core.papico.exception import PapicoException
 
 
 @dataclass(frozen=True, kw_only=True)

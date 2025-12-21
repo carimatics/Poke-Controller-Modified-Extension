@@ -4,6 +4,7 @@ import tkinter as tk
 from abc import ABC, abstractmethod
 from typing import Callable, Literal, Never, overload
 
+from pokecontrollermodifiedextension.api.v0_1_8.command.sender import Sender
 from pokecontrollermodifiedextension.api.v0_1_8.external_tools import (
     MQTTCommunications,
     SocketCommunications,
@@ -17,8 +18,6 @@ from pokecontrollermodifiedextension.api.v0_1_8.widgets.dialogue import (
     get_settings_list,
     save_dialogue_settings,
 )
-
-from ..sender import Sender
 
 PostProcess = Callable[[], None]
 
