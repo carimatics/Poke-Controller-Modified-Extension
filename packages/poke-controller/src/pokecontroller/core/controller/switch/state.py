@@ -2,7 +2,7 @@ from ..button import ButtonState
 from ..stick import StickAxisRange, StickRange, StickState
 from .dpad import SwitchDpad, SwitchDpadState
 
-stick_range = StickRange(
+STICK_RANGE = StickRange(
     x=StickAxisRange(min=0, max=255, neutral=128),
     y=StickAxisRange(min=0, max=255, neutral=127),
 )
@@ -12,8 +12,8 @@ class SwitchControllerState:
     def __init__(self) -> None:
         self._button = ButtonState()
         self._hat = SwitchDpadState(neutral=SwitchDpad.NEUTRAL)
-        self._lstick = StickState(stick_range)
-        self._rstick = StickState(stick_range)
+        self._lstick = StickState(STICK_RANGE)
+        self._rstick = StickState(STICK_RANGE)
 
     @property
     def button(self) -> ButtonState:
@@ -40,33 +40,3 @@ class SwitchControllerState:
     def clean(self) -> None:
         self._lstick.clean()
         self._rstick.clean()
-
-
-class SwitchControllerStateSerializer:
-    @staticmethod
-    def serialize(state: SwitchControllerState) -> str:
-        # buttons
-        buttons = state.button.value << 2
-
-        # sticks
-        y_max = stick_range.y.max
-        lstick, rstick = ("", "")
-        if state.lstick.is_dirty:
-            buttons |= 0x2
-            lstick = (
-                f"{format(state.lstick.x, 'x')} {format(y_max - state.lstick.y, 'x')}"
-            )
-        if state.rstick.is_dirty:
-            buttons |= 0x1
-            rstick = (
-                f"{format(state.rstick.x, 'x')} {format(y_max - state.rstick.y, 'x')}"
-            )
-
-        # hat
-        hat = str(int(state.hat.value))
-
-        # contract
-        serialized = f"{format(buttons, '#06x')} {hat} {lstick} {rstick}"
-
-        state.clean()
-        return serialized

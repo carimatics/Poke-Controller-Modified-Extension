@@ -7,7 +7,8 @@ from ...serial import Serial
 from .. import StickTilt
 from .button import SwitchButton
 from .dpad import SwitchDpad
-from .state import SwitchControllerState, SwitchControllerStateSerializer
+from .serializers.leonardo import SwitchControllerStateSerializer
+from .state import SwitchControllerState
 
 KEYMAP_JSON_ACTIONS: dict[str, dict[str, Any]] = {
     "button": {

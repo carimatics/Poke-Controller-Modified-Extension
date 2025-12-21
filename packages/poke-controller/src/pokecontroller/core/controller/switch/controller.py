@@ -2,7 +2,8 @@ from ...serial import Serial
 from ..button import ButtonState
 from ..dpad import DpadState
 from ..stick import StickState
-from .state import SwitchControllerState, SwitchControllerStateSerializer
+from .serializers.leonardo import SwitchControllerStateSerializer
+from .state import SwitchControllerState
 
 
 class SwitchController:
