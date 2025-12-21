@@ -1,4 +1,4 @@
-class N3dsTouchScreenState:
+class N3dsTouchscreenState:
     def __init__(self) -> None:
         self._x = 0
         self._y = 0

@@ -9,7 +9,7 @@ from .serializers.n3ds_controller import (
 )
 from .serializers.qingpi import N3dsControllerStateSerializer as QingpiSerializer
 from .state import N3dsControllerState
-from .touch_screen import N3dsTouchScreenState
+from .touchscreen import N3dsTouchscreenState
 
 logger = logging.getLogger(__name__)
 
@@ -39,16 +39,16 @@ class N3dsController:
         return self._state.button
 
     @property
-    def hat(self) -> DpadState:
-        return self._state.hat
+    def dpad(self) -> DpadState:
+        return self._state.dpad
 
     @property
     def stick(self) -> StickState:
         return self._state.stick
 
     @property
-    def touch_screen(self) -> N3dsTouchScreenState:
-        return self._state.touch_screen
+    def touchscreen(self) -> N3dsTouchscreenState:
+        return self._state.touchscreen
 
     @property
     def is_opened(self) -> bool:

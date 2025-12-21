@@ -108,7 +108,7 @@ class SwitchKeyboard:
         if isinstance(action, SwitchButton):
             self._state.button.push([action])
         elif isinstance(action, SwitchDpad):
-            self._state.hat.add(action)
+            self._state.dpad.add(action)
         elif isinstance(action, StickTilt):
             self._current_direction |= action
             self._state.lstick.tilt_full(self._current_direction)
@@ -125,7 +125,7 @@ class SwitchKeyboard:
         if isinstance(action, SwitchButton):
             self._state.button.release([action])
         elif isinstance(action, SwitchDpad):
-            self._state.hat.sub(action)
+            self._state.dpad.sub(action)
         elif isinstance(action, StickTilt):
             self._current_direction &= ~action
             self._state.lstick.tilt_full(self._current_direction)

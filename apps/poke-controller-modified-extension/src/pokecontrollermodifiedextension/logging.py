@@ -1,6 +1,4 @@
-import os
 import tomllib
-from pathlib import Path
 
 from pokecontroller.utils import logging as logginglib
 
@@ -96,28 +94,3 @@ def setup_logging(
         debug=debug,
         show_config=show_config,
     )
-
-
-def generate_default_config(output_path: str, force: bool = False) -> None:
-    """
-    output_pathにデフォルト設定の設定ファイル(toml形式)を作成する
-
-    Args:
-        output_path: 設定ファイルの出力先のパス
-        force: Trueの場合、設定ファイルが存在する場合に上書きする
-    """
-    if Path(output_path).exists() and not force:
-        raise FileExistsError(
-            os.linesep.join(
-                [
-                    f"Config file already exists: {output_path}.",
-                    "Use --force to overwrite it.",
-                ]
-            )
-        )
-
-    _save_to_file(output_path, DEFAULT_TOML)
-
-
-# FIXME: 後回し
-def _save_to_file(config_path: str, conf_str: str) -> None: ...

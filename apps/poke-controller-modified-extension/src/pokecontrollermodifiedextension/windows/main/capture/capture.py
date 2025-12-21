@@ -10,7 +10,7 @@ from typing import Any
 import cv2
 from PIL import Image, ImageTk
 from pokecontroller.core import controller, image
-from pokecontroller.core.controller import switch
+from pokecontroller.core.controller import StickState, n3ds, switch
 from pokecontroller.utils import platform
 from pokecontroller.utils.math import clamp
 
@@ -38,6 +38,8 @@ class Capture(AppFrame):
     _image: ImageTk.PhotoImage
     _image_id: int
 
+    _controller: switch.SwitchController | n3ds.N3dsController
+
     def __init__(self, master: tk.Misc, *args: Any, **kwargs: Any) -> None:
         super().__init__(master, *args, **kwargs)
 
@@ -63,8 +65,13 @@ class Capture(AppFrame):
 
         # for mouse control
         self._data_format = self._app_settings.serial.data_format
+        if self._data_format.get() == "Default":
+            self._controller = switch.SwitchController(self._serial)
+        elif self._data_format.get() == "Qingpi":
+            self._controller = n3ds.N3dsController(self._serial, "qingpi")
+        elif self._data_format.get() == "3DS Controller":
+            self._controller = n3ds.N3dsController(self._serial, "3ds controller")
         self._mouse_right_mode = "Default"
-        self._controller = switch.SwitchController(self._serial)
         self._enabled_lstick_mouse = self._app_settings.device.mouse.enabled_lclick
         self._enabled_rstick_mouse = self._app_settings.device.mouse.enabled_rclick
         self._mouse_circle_radius = 60
@@ -102,6 +109,30 @@ class Capture(AppFrame):
         self._register_hooks()
         self._bind_all()
         self._update_frame()
+
+    @property
+    def _switch_controller(self) -> switch.SwitchController | None:
+        if isinstance(self._controller, switch.SwitchController):
+            return self._controller
+        return None
+
+    @property
+    def _n3ds_controller(self) -> n3ds.N3dsController | None:
+        if isinstance(self._controller, n3ds.N3dsController):
+            return self._controller
+        return None
+
+    @property
+    def _lstick(self) -> StickState:
+        if isinstance(self._controller, n3ds.N3dsController):
+            return self._controller.stick
+        return self._controller.lstick
+
+    @property
+    def _rstick(self) -> StickState | None:
+        if isinstance(self._controller, n3ds.N3dsController):
+            return None
+        return self._controller.rstick
 
     @property
     def frame_size(self) -> tuple[int, int]:
@@ -276,14 +307,14 @@ class Capture(AppFrame):
 
     def _on_serial_data_format_changed(self, *_: Any) -> None:
         data_format = self._data_format.get()
-        if data_format == "Qingpi":
-            # FIXME
-            self._bind_ctrl_mouse_right()
-        elif data_format == "Switch":
+        if data_format == "Default":
             self._controller = switch.SwitchController(self._serial)
             self._unbind_ctrl_mouse_right()
+        if data_format == "Qingpi":
+            self._controller = n3ds.N3dsController(self._serial, "qingpi")
+            self._bind_ctrl_mouse_right()
         elif data_format == "3DS Controller":
-            # FIXME
+            self._controller = n3ds.N3dsController(self._serial, "3ds controller")
             self._unbind_ctrl_mouse_right()
 
     def _resize(self) -> None:
@@ -555,7 +586,7 @@ class Capture(AppFrame):
         pressing_point = (event.x, event.y)
         self._on_switch_mouse_pressing(
             pressing_point,
-            self._controller.state.lstick,
+            self._lstick,
         )
 
     def _on_mouse_left_released(self, event: tk.Event) -> None:
@@ -565,7 +596,7 @@ class Capture(AppFrame):
         released_point = (event.x, event.y)
         self._on_switch_mouse_released(
             released_point,
-            self._controller.state.lstick,
+            self._lstick,
         )
         self._finish_mouse_log(released_point)
         self._output_mouse_log()
@@ -596,23 +627,26 @@ class Capture(AppFrame):
         if self._right_stick_mode == "Qingpi":
             self._on_qingpi_mouse_pressed(pressing_point)
         else:
-            self._on_switch_mouse_pressing(
-                pressing_point,
-                self._controller.state.rstick,
-            )
+            if (rstick := self._lstick) is not None:
+                self._on_switch_mouse_pressing(
+                    pressing_point,
+                    rstick,
+                )
 
     def _on_mouse_right_released(self, event: tk.Event) -> None:
         if not self._enabled_rstick_mouse.get():
             return
 
         released_point = (event.x, event.y)
+
         if self._right_stick_mode == "Qingpi":
-            self._on_qingpi_mouse_released(released_point)
+            self._on_qingpi_mouse_released()
         else:
-            self._on_switch_mouse_released(
-                released_point,
-                self._controller.state.rstick,
-            )
+            if (rstick := self._lstick) is not None:
+                self._on_switch_mouse_released(
+                    released_point,
+                    rstick,
+                )
             self._finish_mouse_log(released_point)
             self._output_mouse_log()
 
@@ -723,13 +757,15 @@ class Capture(AppFrame):
         logger.debug("Unbound mouse right functions")
 
     def _on_qingpi_mouse_pressed(self, pressed_point: tuple[int, int]) -> None:
+        if isinstance((c := self._controller), switch.SwitchController):
+            return
+
         (sx, sy), (ex, ey) = self._touchscreen_area
         if sx < pressed_point[0] < ex and sy < pressed_point[1] < ey:
             width, height = ex - sx, ey - sy
             _pos_x = int(320.0 * (pressed_point[0] - sx) / width)
             _pos_y = int(240.0 * (pressed_point[1] - sy) / height)
-            # FIXME
-            # self._controller.state.touchscreen.touch((pos_x, pos_y))
+            c.touchscreen.touch(_pos_x, _pos_y)
 
     def _on_switch_mouse_pressed(self, pressed_point: tuple[int, int]) -> None:
         self._pressed_point = pressed_point
@@ -790,10 +826,10 @@ class Capture(AppFrame):
 
         self._add_mouse_log(angle, mag)
 
-    def _on_qingpi_mouse_released(self, released_point: tuple[int, int]) -> None:
-        # FIXME
-        # self._controller.state.touchscreen.touch((0, 0))
-        pass
+    def _on_qingpi_mouse_released(self) -> None:
+        if isinstance((c := self._controller), switch.SwitchController):
+            return
+        c.touchscreen.reset()
 
     def _on_switch_mouse_released(
         self,

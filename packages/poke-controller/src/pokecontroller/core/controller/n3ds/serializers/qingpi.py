@@ -6,18 +6,18 @@ class N3dsControllerStateSerializer:
     def serialize(state: N3dsControllerState) -> list[int]:
         header = 0xAB
         buttons = state.button.value
-        hat = state.hat.value
+        dpad = state.dpad.value
         stick_x = state.stick.x
         stick_y = state.stick.y
         center = 128
-        touch_x = state.touch_screen.x
-        touch_y = state.touch_screen.y
+        touch_x = state.touchscreen.x
+        touch_y = state.touchscreen.y
 
         return [
             header,
             buttons & 0xFF,
             (buttons >> 8) & 0xFF,
-            hat,
+            dpad,
             stick_x,
             stick_y,
             center,

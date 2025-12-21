@@ -21,11 +21,11 @@ class SwitchControllerStateSerializer:
                 f"{format(state.rstick.x, 'x')} {format(y_max - state.rstick.y, 'x')}"
             )
 
-        # hat
-        hat = str(int(state.hat.value))
+        # dpad
+        dpad = str(int(state.dpad.value))
 
         # contract
-        serialized = f"{format(buttons, '#06x')} {hat} {lstick} {rstick}"
+        serialized = f"{format(buttons, '#06x')} {dpad} {lstick} {rstick}"
 
         state.clean()
         return serialized

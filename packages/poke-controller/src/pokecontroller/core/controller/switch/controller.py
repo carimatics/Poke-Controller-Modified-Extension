@@ -20,8 +20,8 @@ class SwitchController:
         return self._state.button
 
     @property
-    def hat(self) -> DpadState:
-        return self._state.hat
+    def dpad(self) -> DpadState:
+        return self._state.dpad
 
     @property
     def lstick(self) -> StickState:
