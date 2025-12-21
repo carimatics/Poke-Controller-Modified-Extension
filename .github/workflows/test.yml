@@ -28,11 +28,5 @@ jobs:
           cache: true
       - name: Setup Runtime via uv
         run: uv sync
-      - name: CI (Lint/Format/Typecheck)
-        if: runner.os != 'Windows'
+      - name: CI
         run: mise run ci
-      - name: CI for windows (Lint/Format/Typecheck)
-        if: runner.os == 'Windows'
-        run: mise run ci
-        env:
-          MISE_ENV: ci_windows
