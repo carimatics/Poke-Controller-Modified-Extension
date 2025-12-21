@@ -2,7 +2,6 @@ from typing import Any
 
 from pynput.keyboard import Key, Listener
 
-from ....utils import platform
 from ...serial import Serial
 from .. import StickTilt
 from .button import SwitchButton
@@ -91,9 +90,6 @@ class SwitchKeyboard:
 
     def stop(self) -> None:
         self._enabled = False
-
-        if platform.is_macos():
-            return
 
         if (listener := self._listener) is None:
             return
