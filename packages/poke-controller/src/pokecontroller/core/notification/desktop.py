@@ -3,8 +3,8 @@ import os
 
 from plyer import notification
 
-from pokecontroller.core.image import RawImage
-from pokecontroller.core.notification import Notifier, RateLimit
+from pokecontroller.core.image.raw_image import RawImage
+from pokecontroller.core.notification.notifier import Notifier, RateLimit
 from pokecontroller.utils import platform
 
 logger = logging.getLogger(__name__)

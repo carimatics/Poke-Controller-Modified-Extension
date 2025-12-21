@@ -1,6 +1,6 @@
 import tkinter as tk
 
-from pokecontrollermodifiedextension.app import App
+from pokecontrollermodifiedextension.core.app import App
 
 
 class AppAccessorMixIn(tk.Misc):
