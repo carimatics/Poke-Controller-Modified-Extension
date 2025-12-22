@@ -50,10 +50,6 @@ class AppMenu(tk.Menu, AppAccessorMixIn):
     def _build_command_cascade(self) -> None:
         command_cascade = tk.Menu(self, tearoff=False)
         command_cascade.add_command(
-            label="LINE",
-            command=self._on_command_line_settings_pushed,
-        )
-        command_cascade.add_command(
             label="Discord",
             command=self._on_command_discord_settings_pushed,
         )
@@ -65,11 +61,6 @@ class AppMenu(tk.Menu, AppAccessorMixIn):
         command_cascade.add_command(
             label="プロファイル作成",
             command=self._on_command_profile_pushed,
-        )
-        command_cascade.add_separator()
-        command_cascade.add_command(
-            label="Pokémon HOME連携",
-            command=self._on_command_pokemon_home_pushed,
         )
         command_cascade.add_separator()
         command_cascade.add_command(
@@ -129,9 +120,6 @@ class AppMenu(tk.Menu, AppAccessorMixIn):
     def _on_menu_reset_window_size_pushed(self) -> None:
         self._app_settings.capture.size.set(DEFAULT["capture"]["size"])
 
-    def _on_command_line_settings_pushed(self) -> None:
-        pass
-
     def _on_command_discord_settings_pushed(self) -> None:
         pass
 
@@ -139,9 +127,6 @@ class AppMenu(tk.Menu, AppAccessorMixIn):
         pass
 
     def _on_command_profile_pushed(self) -> None:
-        pass
-
-    def _on_command_pokemon_home_pushed(self) -> None:
         pass
 
     def _on_command_key_config_pushed(self) -> None:
