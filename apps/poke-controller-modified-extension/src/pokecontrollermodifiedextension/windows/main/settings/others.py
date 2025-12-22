@@ -149,7 +149,7 @@ class OthersSettings(AppFrame):
                 tooltip=t(f"{tid_prefix}.{i}"),
                 command=lambda i=i: self._on_clear_pushed(output_id=i),
             )
-            for i in range(1, 3)
+            for i in [1, 2]
         ]
 
         # Layout
