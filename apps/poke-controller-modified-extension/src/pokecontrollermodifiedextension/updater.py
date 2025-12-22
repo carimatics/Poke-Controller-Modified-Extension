@@ -4,6 +4,10 @@ from pathlib import Path
 from git import Repo
 
 
+class PokeControllerUpdaterCheckoutBranchException(Exception):
+    pass
+
+
 class PokeControllerUpdater:
     def __init__(
         self,
@@ -28,16 +32,21 @@ class PokeControllerUpdater:
 
         repo.remotes[remote].fetch()
 
-        self._has_uncommitted_changes = repo.is_dirty() or len(repo.untracked_files) > 0
-
-        repo.heads[branch].checkout()
-
         local_commit = repo.heads[branch].commit
         remote_commit = repo.commit(f"{remote}/{branch}")
 
         if local_commit == remote_commit:
             print(f"{branch} is already up to date with {remote}/{branch}")
             return False
+
+        self._has_uncommitted_changes = repo.is_dirty() or len(repo.untracked_files) > 0
+
+        try:
+            repo.heads[branch].checkout()
+        except Exception as e:
+            raise PokeControllerUpdaterCheckoutBranchException(
+                f"Failed to checkout branch {branch}: {e}"
+            ) from e
 
         has_local_commit = False
         try:

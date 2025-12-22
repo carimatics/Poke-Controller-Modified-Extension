@@ -7,7 +7,10 @@
 from tkinter import messagebox
 from pathlib import Path
 
-from pokecontrollermodifiedextension.updater import PokeControllerUpdater
+from pokecontrollermodifiedextension.updater import (
+    PokeControllerUpdater,
+    PokeControllerUpdaterCheckoutBranchException,
+)
 
 
 def _update_repository() -> None:
@@ -37,6 +40,11 @@ def _update_repository() -> None:
                 title="更新確認",
                 message="更新が完了しました。",
             )
+    except PokeControllerUpdaterCheckoutBranchException as e:
+        messagebox.showinfo(
+            title="更新確認",
+            message=f"ブランチの切り替えに失敗しました: {e}\n手動でGitリポジトリを最新に更新してください。",
+        )
     finally:
         updater.checkout_original_branch()
 
