@@ -7,8 +7,8 @@ from pokecontroller.core import controller
 from pokecontroller.core.controller import switch
 
 from pokecontrollermodifiedextension import widgets
-from pokecontrollermodifiedextension.core.model import get_app_model
-from pokecontrollermodifiedextension.core.resources import get_app_resources
+from pokecontrollermodifiedextension.state.model import get_app_model
+from pokecontrollermodifiedextension.state.resources import get_app_resources
 from pokecontrollermodifiedextension.widgets.app import AppFrame
 
 A = "A"

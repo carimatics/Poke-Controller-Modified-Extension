@@ -3,8 +3,8 @@ import tkinter as tk
 from typing import Any
 
 from pokecontrollermodifiedextension import widgets
-from pokecontrollermodifiedextension.core.model import get_app_model
-from pokecontrollermodifiedextension.core.settings import get_app_settings
+from pokecontrollermodifiedextension.state.model import get_app_model
+from pokecontrollermodifiedextension.state.settings import get_app_settings
 from pokecontrollermodifiedextension.widgets.app import AppFrame
 from pokecontrollermodifiedextension.widgets.components import ComponentPackBuilder
 

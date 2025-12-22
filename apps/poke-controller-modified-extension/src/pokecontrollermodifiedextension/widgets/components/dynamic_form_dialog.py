@@ -2,8 +2,8 @@ import tkinter as tk
 import tkinter.ttk as ttk
 from typing import Any, Self, overload
 
-from pokecontrollermodifiedextension.core.settings import get_app_settings
 from pokecontrollermodifiedextension.mixins import AppAccessorMixIn
+from pokecontrollermodifiedextension.state.settings import get_app_settings
 from pokecontrollermodifiedextension.widgets.app.dialog import AppDialog
 from pokecontrollermodifiedextension.widgets.components.dynamic_form import (
     DynamicForm,

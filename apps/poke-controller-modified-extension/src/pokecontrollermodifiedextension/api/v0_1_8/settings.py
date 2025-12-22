@@ -2,7 +2,7 @@ import configparser
 import logging
 from typing import Protocol
 
-from pokecontrollermodifiedextension.core.papico import Papico, get_papico
+from pokecontrollermodifiedextension.papico import Papico, get_papico
 
 logger = logging.getLogger(__name__)
 

@@ -2,7 +2,7 @@ from functools import wraps
 from time import sleep
 from typing import Callable, Concatenate, Protocol
 
-from pokecontrollermodifiedextension.core.command import get_app_command_state
+from pokecontrollermodifiedextension.state.command import get_app_command_state
 
 
 class Pausable(Protocol):

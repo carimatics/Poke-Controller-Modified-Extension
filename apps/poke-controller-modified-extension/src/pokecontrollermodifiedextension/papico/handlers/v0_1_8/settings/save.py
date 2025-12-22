@@ -4,22 +4,22 @@ from typing import Any
 
 from pokecontroller.utils.config import Config
 
-from pokecontrollermodifiedextension.core.papico.context import (
+from pokecontrollermodifiedextension.papico.context import (
     PapicoExecContext,
     PapicoFailure,
     PapicoResult,
     PapicoSuccess,
 )
-from pokecontrollermodifiedextension.core.papico.exception import (
+from pokecontrollermodifiedextension.papico.exception import (
     PapicoSettingsLoadHandlerException,
 )
-from pokecontrollermodifiedextension.core.papico.handlers import (
+from pokecontrollermodifiedextension.papico.handlers import (
     PapicoHandler,
 )
-from pokecontrollermodifiedextension.core.papico.handlers.v0_1_8.settings.mapping import (
+from pokecontrollermodifiedextension.papico.handlers.v0_1_8.settings.mapping import (
     MAPPING,
 )
-from pokecontrollermodifiedextension.core.settings import (
+from pokecontrollermodifiedextension.state.settings import (
     AppSettings,
     settings_to_dict,
 )

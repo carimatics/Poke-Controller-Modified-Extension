@@ -3,7 +3,7 @@ import tkinter as tk
 from typing import Any, Callable
 
 from pokecontrollermodifiedextension import widgets
-from pokecontrollermodifiedextension.core.settings import get_app_settings
+from pokecontrollermodifiedextension.state.settings import get_app_settings
 from pokecontrollermodifiedextension.widgets.app import AppFrame
 
 logger = logging.getLogger(__name__)

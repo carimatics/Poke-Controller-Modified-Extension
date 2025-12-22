@@ -4,8 +4,8 @@ import webbrowser
 from typing import Any
 
 from pokecontrollermodifiedextension.core.app import App
-from pokecontrollermodifiedextension.core.settings import DEFAULT, get_app_settings
 from pokecontrollermodifiedextension.mixins import AppAccessorMixIn
+from pokecontrollermodifiedextension.state.settings import DEFAULT, get_app_settings
 from pokecontrollermodifiedextension.windows import SettingsWindow
 
 logger = logging.getLogger(__name__)

@@ -1,4 +1,4 @@
-from pokecontrollermodifiedextension.core.info import get_app_info
+from pokecontrollermodifiedextension.state.info import get_app_info
 
 _app_info = get_app_info()
 

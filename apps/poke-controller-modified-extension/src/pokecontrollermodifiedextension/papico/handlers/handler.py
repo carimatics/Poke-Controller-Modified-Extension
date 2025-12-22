@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 
-from pokecontrollermodifiedextension.core.papico.context import (
+from pokecontrollermodifiedextension.papico.context import (
     PapicoExecContext,
     PapicoResult,
 )

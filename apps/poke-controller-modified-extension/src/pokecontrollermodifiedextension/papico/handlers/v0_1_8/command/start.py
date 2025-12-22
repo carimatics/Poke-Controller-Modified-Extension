@@ -11,18 +11,18 @@ from pokecontrollermodifiedextension.api.v0_1_8.command.commands.python.image_pr
     ImageProcPythonCommand,
 )
 from pokecontrollermodifiedextension.api.v0_1_8.command.sender import Sender
-from pokecontrollermodifiedextension.core.command import CommandInfo
-from pokecontrollermodifiedextension.core.papico.context import (
+from pokecontrollermodifiedextension.command import CommandInfo
+from pokecontrollermodifiedextension.papico.context import (
     PapicoExecContext,
     PapicoFailure,
     PapicoResult,
     PapicoSuccess,
 )
-from pokecontrollermodifiedextension.core.papico.exception import (
+from pokecontrollermodifiedextension.papico.exception import (
     PapicoCommandStartHandlerException,
 )
-from pokecontrollermodifiedextension.core.papico.handlers import PapicoHandler
-from pokecontrollermodifiedextension.core.settings import get_app_settings
+from pokecontrollermodifiedextension.papico.handlers import PapicoHandler
+from pokecontrollermodifiedextension.state.settings import get_app_settings
 
 
 class PapicoCommandStartHandler(PapicoHandler):

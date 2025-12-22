@@ -2,24 +2,24 @@ import logging
 from pathlib import Path
 from typing import Any
 
-from pokecontrollermodifiedextension.core.papico.context import (
+from pokecontrollermodifiedextension.papico.context import (
     PapicoExecContext,
     PapicoFailure,
     PapicoResult,
     PapicoSuccess,
 )
-from pokecontrollermodifiedextension.core.papico.exception import (
+from pokecontrollermodifiedextension.papico.exception import (
     PapicoSettingsSaveHandlerException,
 )
-from pokecontrollermodifiedextension.core.papico.handlers.handler import (
+from pokecontrollermodifiedextension.papico.handlers.handler import (
     PapicoHandler,
 )
-from pokecontrollermodifiedextension.core.papico.types import (
+from pokecontrollermodifiedextension.papico.types import (
     PapicoContainer,
     PapicoHandlerGenerator,
 )
-from pokecontrollermodifiedextension.core.runtime_info import get_app_runtime_info
-from pokecontrollermodifiedextension.core.settings import (
+from pokecontrollermodifiedextension.state.runtime_info import get_app_runtime_info
+from pokecontrollermodifiedextension.state.settings import (
     AppSettings,
     get_app_settings_or_none,
     setup_app_settings,

@@ -6,15 +6,17 @@ from typing import Any, Literal
 from pokecontroller.utils import platform
 
 from pokecontrollermodifiedextension import widgets
-from pokecontrollermodifiedextension.core.command import get_app_command_state
-from pokecontrollermodifiedextension.core.command.info import (
+from pokecontrollermodifiedextension.command.info import (
     get_selected_command_info,
     set_selected_command_info,
 )
-from pokecontrollermodifiedextension.core.model import get_app_model
-from pokecontrollermodifiedextension.core.papico import get_papico
-from pokecontrollermodifiedextension.core.runtime_info import get_app_runtime_info
-from pokecontrollermodifiedextension.core.settings import get_app_settings
+from pokecontrollermodifiedextension.papico import get_papico
+from pokecontrollermodifiedextension.state.command import (
+    get_app_command_state,
+)
+from pokecontrollermodifiedextension.state.model import get_app_model
+from pokecontrollermodifiedextension.state.runtime_info import get_app_runtime_info
+from pokecontrollermodifiedextension.state.settings import get_app_settings
 from pokecontrollermodifiedextension.translation import t
 from pokecontrollermodifiedextension.widgets.app import AppFrame
 

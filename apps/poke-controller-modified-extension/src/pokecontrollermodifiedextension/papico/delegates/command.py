@@ -1,20 +1,19 @@
 import logging
 from typing import Any, Callable
 
-from pokecontrollermodifiedextension.core.command import CommandInfo
-from pokecontrollermodifiedextension.core.command.info import (
+from pokecontrollermodifiedextension.command.info import (
+    CommandInfo,
     clear_running_command_info,
     get_running_command_info,
     set_running_command_info,
 )
-from pokecontrollermodifiedextension.core.command.state import get_app_command_state
-from pokecontrollermodifiedextension.core.papico.context import (
+from pokecontrollermodifiedextension.papico.context import (
     PapicoExecContext,
     PapicoFailure,
     PapicoResult,
     PapicoSuccess,
 )
-from pokecontrollermodifiedextension.core.papico.exception import (
+from pokecontrollermodifiedextension.papico.exception import (
     PapicoCommandInitializeHandlerException,
     PapicoCommandLoadHandlerException,
     PapicoCommandPauseHandlerException,
@@ -22,12 +21,15 @@ from pokecontrollermodifiedextension.core.papico.exception import (
     PapicoCommandStartHandlerException,
     PapicoCommandStopHandlerException,
 )
-from pokecontrollermodifiedextension.core.papico.handlers.handler import PapicoHandler
-from pokecontrollermodifiedextension.core.papico.types import (
+from pokecontrollermodifiedextension.papico.handlers.handler import PapicoHandler
+from pokecontrollermodifiedextension.papico.types import (
     PapicoContainer,
     PapicoHandlerGenerator,
 )
-from pokecontrollermodifiedextension.core.runtime_info import get_app_runtime_info
+from pokecontrollermodifiedextension.state.command import (
+    get_app_command_state,
+)
+from pokecontrollermodifiedextension.state.runtime_info import get_app_runtime_info
 
 logger = logging.getLogger(__name__)
 

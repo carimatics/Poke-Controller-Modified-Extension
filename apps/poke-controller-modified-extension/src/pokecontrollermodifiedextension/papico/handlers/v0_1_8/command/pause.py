@@ -1,16 +1,16 @@
 from pokecontrollermodifiedextension.api.v0_1_8.command.commands.python.base import (
     PythonCommand,
 )
-from pokecontrollermodifiedextension.core.papico.context import (
+from pokecontrollermodifiedextension.papico.context import (
     PapicoExecContext,
     PapicoFailure,
     PapicoResult,
     PapicoSuccess,
 )
-from pokecontrollermodifiedextension.core.papico.exception import (
+from pokecontrollermodifiedextension.papico.exception import (
     PapicoCommandPauseHandlerException,
 )
-from pokecontrollermodifiedextension.core.papico.handlers import PapicoHandler
+from pokecontrollermodifiedextension.papico.handlers import PapicoHandler
 
 
 class PapicoCommandPauseHandler(PapicoHandler):

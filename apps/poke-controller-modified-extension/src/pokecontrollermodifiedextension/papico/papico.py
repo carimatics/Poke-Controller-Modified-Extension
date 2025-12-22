@@ -2,23 +2,23 @@ import logging
 from pathlib import Path
 from typing import Callable
 
-from pokecontrollermodifiedextension.core.command import CommandInfo
-from pokecontrollermodifiedextension.core.papico.context import PapicoResult
-from pokecontrollermodifiedextension.core.papico.delegates.command import (
+from pokecontrollermodifiedextension.command import CommandInfo
+from pokecontrollermodifiedextension.papico.context import PapicoResult
+from pokecontrollermodifiedextension.papico.delegates.command import (
     PapicoCommandDelegate,
 )
-from pokecontrollermodifiedextension.core.papico.delegates.settings import (
+from pokecontrollermodifiedextension.papico.delegates.settings import (
     PapicoSettingsDelegate,
 )
-from pokecontrollermodifiedextension.core.papico.handlers import (
+from pokecontrollermodifiedextension.papico.handlers import (
     PapicoRegisterHandlerContext,
 )
-from pokecontrollermodifiedextension.core.papico.types import (
+from pokecontrollermodifiedextension.papico.types import (
     PapicoContainer,
     PapicoHandlerGenerator,
 )
-from pokecontrollermodifiedextension.core.runtime_info import get_app_runtime_info
-from pokecontrollermodifiedextension.core.settings import AppSettings
+from pokecontrollermodifiedextension.state.runtime_info import get_app_runtime_info
+from pokecontrollermodifiedextension.state.settings import AppSettings
 
 LATEST_API_VERSION = "0.2.0"
 

@@ -1,7 +1,7 @@
 import tkinter as tk
 from typing import Any
 
-from pokecontrollermodifiedextension.core.widget_catalog import get_app_widget_catalog
+from pokecontrollermodifiedextension.state.widget_catalog import get_app_widget_catalog
 from pokecontrollermodifiedextension.widgets.app import AppFrame
 from pokecontrollermodifiedextension.windows.main.outputs.output import Output
 

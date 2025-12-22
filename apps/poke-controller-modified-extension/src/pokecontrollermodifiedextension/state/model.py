@@ -7,11 +7,11 @@ from pokecontroller.core.notification.desktop import DesktopNotifier
 from pokecontroller.core.serial import SerialPort, get_serial_ports
 
 from pokecontrollermodifiedextension.core.exception import AppRuntimeException
-from pokecontrollermodifiedextension.core.info import get_app_info
-from pokecontrollermodifiedextension.core.papico import get_papico
-from pokecontrollermodifiedextension.core.resources import get_app_resources
-from pokecontrollermodifiedextension.core.runtime_info import get_app_runtime_info
-from pokecontrollermodifiedextension.core.settings import get_app_settings
+from pokecontrollermodifiedextension.papico import get_papico
+from pokecontrollermodifiedextension.state.info import get_app_info
+from pokecontrollermodifiedextension.state.resources import get_app_resources
+from pokecontrollermodifiedextension.state.runtime_info import get_app_runtime_info
+from pokecontrollermodifiedextension.state.settings import get_app_settings
 
 logger = logging.getLogger(__name__)
 

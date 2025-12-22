@@ -4,10 +4,10 @@ from dataclasses import fields, is_dataclass
 from typing import Any
 
 from pokecontrollermodifiedextension import widgets
-from pokecontrollermodifiedextension.core.info import get_app_info
-from pokecontrollermodifiedextension.core.papico import get_papico
-from pokecontrollermodifiedextension.core.settings import get_app_settings
 from pokecontrollermodifiedextension.mixins import AppAccessorMixIn
+from pokecontrollermodifiedextension.papico import get_papico
+from pokecontrollermodifiedextension.state.info import get_app_info
+from pokecontrollermodifiedextension.state.settings import get_app_settings
 from pokecontrollermodifiedextension.widgets.app import AppDialog, AppFrame
 from pokecontrollermodifiedextension.windows.settings.buttons import SettingsButtonsPane
 from pokecontrollermodifiedextension.windows.settings.contents import (
