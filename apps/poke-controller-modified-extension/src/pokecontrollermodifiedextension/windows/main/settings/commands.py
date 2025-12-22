@@ -446,6 +446,12 @@ class CommandsSettings(AppFrame):
     def _configure_stop_button(self) -> None:
         self._start_button.configure(text="Stop", command=self._on_stop_pushed)
 
+    def _configure_pause_button(self) -> None:
+        self._pause_button.configure(text="Pause", command=self._on_pause_pushed)
+
+    def _configure_resume_button(self) -> None:
+        self._pause_button.configure(text="Resume", command=self._on_resume_pushed)
+
     def _enable_shortcut_buttons(self) -> None:
         for i in range(10):
             button = self._shortcut_buttons[i]
@@ -466,21 +472,25 @@ class CommandsSettings(AppFrame):
         if self._app_command_state.is_running.get():
             self._disable_shortcut_buttons()
             self._configure_stop_button()
+            self._on_paused_changed()
 
     def _on_stopped_changed(self, *_: str) -> None:
         if self._app_command_state.is_stopped.get():
             self._enable_shortcut_buttons()
             self._configure_start_button()
+            self._on_paused_changed()
 
     def _on_paused_changed(self, *_: str) -> None:
         is_running = self._app_command_state.is_running.get()
         is_paused = self._app_command_state.is_paused.get()
-        if not is_running:
-            self._disable_pause_button()
-        elif is_running and not is_paused:
-            self._disable_pause_button()
-        else:
+        if is_running:
             self._enable_pause_button()
+            if is_paused:
+                self._configure_resume_button()
+            else:
+                self._configure_pause_button()
+        else:
+            self._disable_pause_button()
 
     def _on_reload_pushed(self) -> None:
         self._load_commands()
@@ -494,6 +504,9 @@ class CommandsSettings(AppFrame):
 
     def _on_pause_pushed(self) -> None:
         self._papico.pause_command()
+
+    def _on_resume_pushed(self) -> None:
+        self._papico.resume_command()
 
     def _on_shortcut_pushed(self, shortcut_number: int) -> None:
         self._start_shortcut_command(shortcut_number)
