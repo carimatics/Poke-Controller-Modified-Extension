@@ -20,14 +20,21 @@ class ScrollableFrame(Frame):
         *args: Any,
         **kwargs: Any,
     ) -> None:
-        super().__init__(master, **kwargs)
+        width = kwargs.pop("width", None)
+        super().__init__(master, *args, **kwargs)
 
         bg_color = (
             kwargs.pop("bg", None)
             or kwargs.pop("background", None)
             or self._get_default_bg(master)
         )
-        self._canvas = tk.Canvas(self, highlightthickness=0, bg=bg_color)
+        canvas_kwargs: dict[str, Any] = {
+            "highlightthickness": 0,
+            "bg": bg_color,
+        }
+        if width is not None:
+            canvas_kwargs["width"] = width
+        self._canvas = tk.Canvas(self, **canvas_kwargs)
         self._scrollbar = Scrollbar(
             master,
             orient="vertical",

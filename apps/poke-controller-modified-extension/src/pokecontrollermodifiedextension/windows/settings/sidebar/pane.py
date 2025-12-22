@@ -29,7 +29,7 @@ class SettingsSidebarPane(AppFrame):
         self.build_ui()
 
     def build_ui(self) -> None:
-        self._scrollable_frame = widgets.ScrollableFrame(self)
+        self._scrollable_frame = widgets.ScrollableFrame(self, width=160)
         self._scrollable_frame.pack(expand=True, fill=tk.BOTH)
 
         self._current_button: tk.Button | None = None
