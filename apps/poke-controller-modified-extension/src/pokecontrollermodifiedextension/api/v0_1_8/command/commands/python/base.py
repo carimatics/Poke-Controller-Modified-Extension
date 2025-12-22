@@ -153,25 +153,22 @@ class PythonCommand(Command, ABC):
             )
             thread.start()
 
-    def end(self, ser: Sender) -> Never:
-        self.finish()
-
-    def finish(self) -> Never:
-        """
-        自動化スクリプトを終了します。(自動化スクリプト内で意図的に終了したい場合に使用。)
-        """
+    def end(self, ser: Sender | None = None) -> Never:
         if (socket := self.socket0) is not None:
             socket.alive = False
         if (mqtt := self.mqtt0) is not None:
             mqtt.alive = False
         self.sendStopRequest()
-        if (keys := self.keys) is not None:
-            if keys.ser.isOpened():
-                keys.ser.closeSerial()
-
         logger.info("Exit from command successfully")
         self._command_state.finish()
         raise StopThread("exit successfully")
+
+    def finish(self) -> Never:
+        """
+        自動化スクリプトを終了します。(自動化スクリプト内で意図的に終了したい場合に使用。)
+        """
+        self.alive = False
+        self.end()
 
     def checkIfAlive(self) -> bool:
         """
