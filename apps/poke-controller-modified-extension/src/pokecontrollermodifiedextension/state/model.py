@@ -83,13 +83,14 @@ class AppModel:
         return ["Default", "Qingpi", "3DS Controller"]
 
     def connect_serial_port(self) -> None:
-        serial = get_app_resources().serial
+        serial = self._app_resources.serial
         port = self._app_settings.serial.port.get()
         baud_rate = self._app_settings.serial.baud_rate.get()
         serial.open(port_path=port, baud_rate=baud_rate)
 
     def disconnect_serial_port(self) -> None:
-        pass
+        serial = self._app_resources.serial
+        serial.close()
 
     def push_controller_button(self, button: str) -> None:
         pass
