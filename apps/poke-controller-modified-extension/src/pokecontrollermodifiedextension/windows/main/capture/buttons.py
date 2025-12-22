@@ -11,6 +11,7 @@ from pokecontrollermodifiedextension.state.command import (
     get_app_command_state,
 )
 from pokecontrollermodifiedextension.state.model import get_app_model
+from pokecontrollermodifiedextension.state.resources import get_app_resources
 from pokecontrollermodifiedextension.state.runtime_info import get_app_runtime_info
 from pokecontrollermodifiedextension.translation import t
 from pokecontrollermodifiedextension.widgets.app import AppDialog, AppFrame
@@ -48,6 +49,7 @@ class Buttons(AppFrame):
         self._app_model = get_app_model()
         self._command_state = get_app_command_state()
         self._controller_window: AppDialog | None = None
+        self._app_resources = get_app_resources()
 
         self.build_ui()
 
@@ -140,7 +142,7 @@ class Buttons(AppFrame):
         self._app_model.open_screencapture_directory_window()
 
     def _on_notify_discord_pushed(self) -> None:
-        self._app_model.notify_discord()
+        self._app_model.notify_discord(image=self._app_resources.camera.frame)
 
     def _on_controller_window_closed(self) -> None:
         if (window := self._controller_window) is None:
