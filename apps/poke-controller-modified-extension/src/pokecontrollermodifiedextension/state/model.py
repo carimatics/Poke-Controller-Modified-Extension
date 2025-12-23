@@ -48,7 +48,9 @@ class AppModel:
         return [f"{320 * i}x{180 * i}" for i in range(1, 7)]
 
     def connect_camera(self) -> None:
-        pass
+        camera = self._app_resources.camera
+        camera_id = self._app_settings.capture.camera_id.get()
+        camera.open(camera_id=camera_id)
 
     def save_screencapture(self) -> None:
         capture_dir = self._runtime_info.base_dir / "Captures"

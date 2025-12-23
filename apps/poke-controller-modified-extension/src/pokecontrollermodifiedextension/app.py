@@ -53,7 +53,7 @@ class App(tk.Tk):
         # Camera
         self._camera_id = self._settings.capture.camera_id
         try:
-            self._resources.camera.open(camera_id=int(self._camera_id.get()))
+            self._resources.camera.open(camera_id=self._camera_id.get())
         except Exception as e:
             logger.warning(f"Failed to open camera: {e}")
 
@@ -78,11 +78,7 @@ class App(tk.Tk):
         self.mainloop()
 
     def _register_traces(self) -> None:
-        self._camera_id.trace_add("write", self._on_camera_id_changed)
         self._settings.general.theme.trace_add("write", self._apply_theme)
 
     def _apply_theme(self, *_: Any) -> None:
         self._style_manager.change_theme(self._settings.general.theme.get())
-
-    def _on_camera_id_changed(self, *_: Any) -> None:
-        self._resources.camera.open(camera_id=int(self._camera_id.get()))
