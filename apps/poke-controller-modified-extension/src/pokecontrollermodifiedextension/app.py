@@ -2,7 +2,7 @@ import logging
 import tkinter as tk
 from typing import Any
 
-from pokecontrollermodifiedextension.core.exception import AppRuntimeException
+from pokecontrollermodifiedextension.exception import AppRuntimeException
 from pokecontrollermodifiedextension.papico import get_papico
 from pokecontrollermodifiedextension.state.command import setup_app_command_state
 from pokecontrollermodifiedextension.state.info import get_app_info

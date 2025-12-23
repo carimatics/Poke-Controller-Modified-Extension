@@ -6,7 +6,7 @@ from typing import Any
 from pokecontroller.core.camera import use_camera
 from pokecontroller.core.serial import use_serial
 
-from pokecontrollermodifiedextension.core.app import App
+from pokecontrollermodifiedextension.app import App
 from pokecontrollermodifiedextension.logging import setup_logging
 from pokecontrollermodifiedextension.papico import (
     Papico,

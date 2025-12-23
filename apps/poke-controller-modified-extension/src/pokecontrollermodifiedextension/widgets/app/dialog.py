@@ -1,7 +1,7 @@
 import tkinter as tk
 from typing import Any, Callable, Literal
 
-from pokecontrollermodifiedextension.core.app import App
+from pokecontrollermodifiedextension.app import App
 from pokecontrollermodifiedextension.mixins import AppAccessorMixIn
 
 

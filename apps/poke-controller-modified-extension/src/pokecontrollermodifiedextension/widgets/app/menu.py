@@ -3,7 +3,7 @@ import tkinter as tk
 import webbrowser
 from typing import Any
 
-from pokecontrollermodifiedextension.core.app import App
+from pokecontrollermodifiedextension.app import App
 from pokecontrollermodifiedextension.mixins import AppAccessorMixIn
 from pokecontrollermodifiedextension.state.settings import DEFAULT, get_app_settings
 from pokecontrollermodifiedextension.windows import SettingsWindow

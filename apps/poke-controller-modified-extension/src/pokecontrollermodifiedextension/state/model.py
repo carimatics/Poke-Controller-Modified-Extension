@@ -11,7 +11,7 @@ from pokecontroller.core.serial import SerialPort, get_serial_ports
 from pokecontroller.utils import platform
 from pokecontroller.utils.datetime import format_datetime
 
-from pokecontrollermodifiedextension.core.exception import AppRuntimeException
+from pokecontrollermodifiedextension.exception import AppRuntimeException
 from pokecontrollermodifiedextension.papico import get_papico
 from pokecontrollermodifiedextension.state.info import get_app_info
 from pokecontrollermodifiedextension.state.resources import get_app_resources
