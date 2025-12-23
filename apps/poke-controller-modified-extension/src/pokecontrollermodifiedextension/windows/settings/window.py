@@ -3,12 +3,12 @@ import tkinter as tk
 from dataclasses import fields, is_dataclass
 from typing import Any
 
-from pokecontrollermodifiedextension import widgets
-from pokecontrollermodifiedextension.mixins import AppAccessorMixIn
 from pokecontrollermodifiedextension.papico import get_papico
 from pokecontrollermodifiedextension.state.info import get_app_info
 from pokecontrollermodifiedextension.state.settings import get_app_settings
-from pokecontrollermodifiedextension.widgets.app import AppDialog, AppFrame
+from pokecontrollermodifiedextension.widgets.frame import Frame
+from pokecontrollermodifiedextension.widgets.labelframe import Labelframe
+from pokecontrollermodifiedextension.widgets.window import Window
 from pokecontrollermodifiedextension.windows.settings.buttons import SettingsButtonsPane
 from pokecontrollermodifiedextension.windows.settings.contents import (
     CaptureSettingsPane,
@@ -25,16 +25,16 @@ from pokecontrollermodifiedextension.windows.settings.sidebar import SettingsSid
 logger = logging.getLogger(__name__)
 
 
-class SettingsWindow(AppDialog):
+class SettingsWindow(Window):
     _backup: dict[str, Any]
     _has_changes: tk.BooleanVar
-    _content_labelframe: widgets.Labelframe
-    _contents: dict[str, AppFrame]
-    _current_content: AppFrame | None
+    _content_labelframe: Labelframe
+    _contents: dict[str, Frame]
+    _current_content: Frame | None
 
     def __init__(
         self,
-        master: AppAccessorMixIn,
+        master: tk.Misc,
         *args: Any,
         **kwargs: Any,
     ) -> None:
@@ -55,7 +55,7 @@ class SettingsWindow(AppDialog):
         self.build_ui()
 
     def build_ui(self) -> None:
-        upper_frame = widgets.Frame(self)
+        upper_frame = Frame(self)
 
         # Sidebar
         sidebar = self._build_sidebar(master=upper_frame)
@@ -63,7 +63,7 @@ class SettingsWindow(AppDialog):
         # Content
         self._build_contents(master=upper_frame)
 
-        lower_frame = widgets.Frame(self)
+        lower_frame = Frame(self)
         buttons = SettingsButtonsPane(
             lower_frame,
             self._has_changes,
@@ -84,7 +84,7 @@ class SettingsWindow(AppDialog):
         # Select first section
         sidebar.select_section("general", "General")
 
-    def _build_sidebar(self, master: widgets.Frame) -> SettingsSidebarPane:
+    def _build_sidebar(self, master: Frame) -> SettingsSidebarPane:
         sidebar = SettingsSidebarPane(
             master,
             self._on_section_selected,
@@ -101,8 +101,8 @@ class SettingsWindow(AppDialog):
 
         return sidebar
 
-    def _build_contents(self, master: widgets.Frame) -> None:
-        self._content_labelframe = widgets.Labelframe(master)
+    def _build_contents(self, master: Frame) -> None:
+        self._content_labelframe = Labelframe(master)
         self._contents["general"] = GeneralSettingsPane(self._content_labelframe)
         self._contents["capture"] = CaptureSettingsPane(self._content_labelframe)
         self._contents["serial"] = SerialSettingsPane(self._content_labelframe)

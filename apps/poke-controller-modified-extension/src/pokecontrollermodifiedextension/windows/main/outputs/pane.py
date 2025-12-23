@@ -2,11 +2,11 @@ import tkinter as tk
 from typing import Any
 
 from pokecontrollermodifiedextension.state.widget_catalog import get_app_widget_catalog
-from pokecontrollermodifiedextension.widgets.app import AppFrame
+from pokecontrollermodifiedextension.widgets.frame import Frame
 from pokecontrollermodifiedextension.windows.main.outputs.output import Output
 
 
-class OutputsPane(AppFrame):
+class OutputsPane(Frame):
     def __init__(self, master: tk.Misc, *args: Any, **kwargs: Any) -> None:
         super().__init__(master, *args, **kwargs)
 

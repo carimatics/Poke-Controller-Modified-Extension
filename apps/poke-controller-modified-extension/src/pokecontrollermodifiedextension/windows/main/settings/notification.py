@@ -1,14 +1,16 @@
 import tkinter as tk
 from typing import Any, Callable
 
-from pokecontrollermodifiedextension import widgets
 from pokecontrollermodifiedextension.state.model import get_app_model
 from pokecontrollermodifiedextension.state.settings import get_app_settings
 from pokecontrollermodifiedextension.translation import t
-from pokecontrollermodifiedextension.widgets.app import AppFrame
+from pokecontrollermodifiedextension.widgets.button import Button
+from pokecontrollermodifiedextension.widgets.checkbutton import Checkbutton
+from pokecontrollermodifiedextension.widgets.frame import Frame
+from pokecontrollermodifiedextension.widgets.labelframe import Labelframe
 
 
-class NotificationSettings(AppFrame):
+class NotificationSettings(Frame):
     def __init__(self, master: tk.Misc, *args: Any, **kwargs: Any) -> None:
         super().__init__(master, *args, **kwargs)
 
@@ -48,7 +50,7 @@ class NotificationSettings(AppFrame):
             padx=8,
         )
 
-    def _build_desktop_notification(self) -> widgets.Labelframe:
+    def _build_desktop_notification(self) -> Labelframe:
         return self._build_notification(
             platform="desktop",
             enabled_started=self._enabled_windows_started,
@@ -58,7 +60,7 @@ class NotificationSettings(AppFrame):
             on_test_pushed=self._on_desktop_test_pushed,
         )
 
-    def _build_discord_notification(self) -> widgets.Labelframe:
+    def _build_discord_notification(self) -> Labelframe:
         return self._build_notification(
             platform="discord",
             enabled_started=self._enabled_discord_started,
@@ -76,14 +78,14 @@ class NotificationSettings(AppFrame):
         on_enabled_started_changed: Callable[[], None],
         on_enabled_ended_changed: Callable[[], None],
         on_test_pushed: Callable[[], None],
-    ) -> widgets.Labelframe:
-        labelframe = widgets.Labelframe(
+    ) -> Labelframe:
+        labelframe = Labelframe(
             self,
             text=t(f"main.settings.notification.{platform}.title"),
         )
 
         # Start
-        enable_start_checkbutton = widgets.Checkbutton(
+        enable_start_checkbutton = Checkbutton(
             labelframe,
             text=t(f"main.settings.notification.{platform}.start"),
             tooltip=t(f"main.settings.notification.{platform}.start.tooltip"),
@@ -92,7 +94,7 @@ class NotificationSettings(AppFrame):
         )
 
         # End
-        enable_end_checkbutton = widgets.Checkbutton(
+        enable_end_checkbutton = Checkbutton(
             labelframe,
             text=t(f"main.settings.notification.{platform}.end"),
             tooltip=t(f"main.settings.notification.{platform}.end.tooltip"),
@@ -101,7 +103,7 @@ class NotificationSettings(AppFrame):
         )
 
         # Test
-        test_button = widgets.Button(
+        test_button = Button(
             labelframe,
             text=t(f"main.settings.notification.{platform}.test"),
             tooltip=t(f"main.settings.notification.{platform}.test.tooltip"),

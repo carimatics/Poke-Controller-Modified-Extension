@@ -19,6 +19,9 @@ from .label import (
 from .labelframe import (
     Labelframe as Labelframe,
 )
+from .menu import (
+    Menu as Menu,
+)
 from .radiobutton import (
     Radiobutton as Radiobutton,
 )
@@ -36,4 +39,7 @@ from .separator import (
 )
 from .spinbox import (
     Spinbox as Spinbox,
+)
+from .window import (
+    Window as Window,
 )

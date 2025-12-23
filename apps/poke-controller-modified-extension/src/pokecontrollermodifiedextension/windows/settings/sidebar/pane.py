@@ -2,15 +2,15 @@ import logging
 import tkinter as tk
 from typing import Any, Callable
 
-from pokecontrollermodifiedextension import widgets
 from pokecontrollermodifiedextension.state.settings import get_app_settings
-from pokecontrollermodifiedextension.widgets.app import AppFrame
+from pokecontrollermodifiedextension.widgets.frame import Frame
+from pokecontrollermodifiedextension.widgets.scrollable_frame import ScrollableFrame
 
 logger = logging.getLogger(__name__)
 
 
-class SettingsSidebarPane(AppFrame):
-    _scrollable_frame: widgets.ScrollableFrame
+class SettingsSidebarPane(Frame):
+    _scrollable_frame: ScrollableFrame
     _current_button: tk.Button | None
     _section_buttons: dict[str, tk.Button]
 
@@ -29,7 +29,7 @@ class SettingsSidebarPane(AppFrame):
         self.build_ui()
 
     def build_ui(self) -> None:
-        self._scrollable_frame = widgets.ScrollableFrame(self, width=160)
+        self._scrollable_frame = ScrollableFrame(self, width=160)
         self._scrollable_frame.pack(expand=True, fill=tk.BOTH)
 
         self._current_button: tk.Button | None = None

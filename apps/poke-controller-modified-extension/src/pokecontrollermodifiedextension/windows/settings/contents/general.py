@@ -4,13 +4,14 @@ from typing import Any
 
 from pokecontrollermodifiedextension.state.info import get_app_info
 from pokecontrollermodifiedextension.state.settings import get_app_settings
-from pokecontrollermodifiedextension.widgets.app import AppFrame
+from pokecontrollermodifiedextension.state.style import get_style_manager
 from pokecontrollermodifiedextension.widgets.components import ComponentPackBuilder
+from pokecontrollermodifiedextension.widgets.frame import Frame
 
 logger = logging.getLogger(__name__)
 
 
-class GeneralSettingsPane(AppFrame):
+class GeneralSettingsPane(Frame):
     _current_version: tk.StringVar
 
     def __init__(self, master: tk.Misc, *args: Any, **kwargs: Any) -> None:
@@ -21,7 +22,7 @@ class GeneralSettingsPane(AppFrame):
         self._current_version = self._app_settings.general.version
         self._latest_settings_version = self._app_info.latest_settings_version
 
-        self._style_manager = self.app.style_manager
+        self._style_manager = get_style_manager()
         self._theme = self._app_settings.general.theme
         self._language = self._app_settings.general.language
 

@@ -6,10 +6,10 @@ from typing import Any
 from pokecontroller.core import controller
 from pokecontroller.core.controller import switch
 
-from pokecontrollermodifiedextension import widgets
 from pokecontrollermodifiedextension.state.model import get_app_model
 from pokecontrollermodifiedextension.state.resources import get_app_resources
-from pokecontrollermodifiedextension.widgets.app import AppFrame
+from pokecontrollermodifiedextension.widgets.frame import Frame
+from pokecontrollermodifiedextension.widgets.labelframe import Labelframe
 
 A = "A"
 B = "B"
@@ -51,7 +51,7 @@ BUTTON_COLORS = {
 logger = logging.getLogger(__name__)
 
 
-class ControllerPane(AppFrame):
+class ControllerPane(Frame):
     BUTTON_CONFIGS: dict[str, dict[str, Any]] = {
         A: {
             "text": "A",
@@ -219,10 +219,10 @@ class ControllerPane(AppFrame):
         self.build_ui()
 
     def build_ui(self) -> None:
-        labelframe = widgets.Labelframe(self, text="Software-Controller")
+        labelframe = Labelframe(self, text="Software-Controller")
 
         # Wrapper Frame
-        wrapper = widgets.Frame(labelframe)
+        wrapper = Frame(labelframe)
 
         # Left
         left_frame = tk.Frame(wrapper, bg="#56ccf2")

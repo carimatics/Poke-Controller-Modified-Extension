@@ -2,12 +2,12 @@ import logging
 import tkinter as tk
 from typing import Any
 
-from pokecontrollermodifiedextension.widgets.app import AppFrame
+from pokecontrollermodifiedextension.widgets import Frame
 
 logger = logging.getLogger(__name__)
 
 
-class ExternalSettingsPane(AppFrame):
+class ExternalSettingsPane(Frame):
     def __init__(self, master: tk.Misc, *args: Any, **kwargs: Any) -> None:
         super().__init__(master, *args, **kwargs)
         self.build_ui()

@@ -4,7 +4,6 @@ import webbrowser
 from typing import Any
 
 from pokecontrollermodifiedextension.app import App
-from pokecontrollermodifiedextension.mixins import AppAccessorMixIn
 from pokecontrollermodifiedextension.state.settings import DEFAULT, get_app_settings
 from pokecontrollermodifiedextension.windows import SettingsWindow
 
@@ -15,18 +14,13 @@ POKECONTROLLER_GUIDE_URL = "https://pokecontroller.info/"
 WEBBROWSER_OPEN_IN_NEW_TAB = 2
 
 
-class AppMenu(tk.Menu, AppAccessorMixIn):
+class Menu(tk.Menu):
     _settings_window: SettingsWindow | None = None
 
     def __init__(self, master: App, *args: Any, **kwargs: Any) -> None:
         super().__init__(master, *args, **kwargs)
-        self._app: App = master
         self._app_settings = get_app_settings()
         self.build_ui()
-
-    @property
-    def app(self) -> App:
-        return self._app
 
     def build_ui(self) -> None:
         self._build_menu_cascade()

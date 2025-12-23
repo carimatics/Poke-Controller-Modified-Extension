@@ -10,7 +10,10 @@ from pokecontrollermodifiedextension.state.model import setup_app_model
 from pokecontrollermodifiedextension.state.resources import get_app_resources
 from pokecontrollermodifiedextension.state.runtime_info import get_app_runtime_info
 from pokecontrollermodifiedextension.state.settings import setup_app_settings
-from pokecontrollermodifiedextension.style import StyleManager
+from pokecontrollermodifiedextension.state.style import (
+    StyleManager,
+    setup_style_manager,
+)
 from pokecontrollermodifiedextension.translation import setup_translation
 
 logger = logging.getLogger(__name__)
@@ -41,7 +44,7 @@ class App(tk.Tk):
 
         self._resources = get_app_resources()
 
-        self._style_manager = StyleManager(self)
+        self._style_manager = setup_style_manager(self)
         self._style_manager.change_theme(self._settings.general.theme.get())
 
         # Title

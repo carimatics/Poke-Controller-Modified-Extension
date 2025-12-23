@@ -1,14 +1,16 @@
 import tkinter as tk
 from typing import Any
 
-from pokecontrollermodifiedextension import widgets
 from pokecontrollermodifiedextension.state.model import get_app_model
 from pokecontrollermodifiedextension.state.settings import get_app_settings
 from pokecontrollermodifiedextension.translation import t
-from pokecontrollermodifiedextension.widgets.app import AppFrame
+from pokecontrollermodifiedextension.widgets.button import Button
+from pokecontrollermodifiedextension.widgets.checkbutton import Checkbutton
+from pokecontrollermodifiedextension.widgets.frame import Frame
+from pokecontrollermodifiedextension.widgets.labelframe import Labelframe
 
 
-class ManualControlSettings(AppFrame):
+class ManualControlSettings(Frame):
     def __init__(self, master: tk.Misc, *args: Any, **kwargs: Any) -> None:
         super().__init__(master, *args, **kwargs)
 
@@ -34,14 +36,14 @@ class ManualControlSettings(AppFrame):
         software_settings.pack(expand=False, fill=tk.X, anchor=tk.N, pady=4)
         hardware_settings.pack(expand=False, fill=tk.X, anchor=tk.N, pady=4)
 
-    def _build_software_settings(self) -> widgets.Labelframe:
-        labelframe = widgets.Labelframe(self, text="Software")
+    def _build_software_settings(self) -> Labelframe:
+        labelframe = Labelframe(self, text="Software")
 
-        upper_frame = widgets.Frame(labelframe)
-        lower_frame = widgets.Frame(labelframe)
+        upper_frame = Frame(labelframe)
+        lower_frame = Frame(labelframe)
 
         # Controller Button
-        controller_button = widgets.Button(
+        controller_button = Button(
             upper_frame,
             text=t("main.settings.manual_control.software.controller"),
             tooltip=t("main.settings.manual_control.software.controller.tooltip"),
@@ -50,7 +52,7 @@ class ManualControlSettings(AppFrame):
         )
 
         # Use Keyboard
-        use_keyboard_checkbutton = widgets.Checkbutton(
+        use_keyboard_checkbutton = Checkbutton(
             lower_frame,
             text=t("main.settings.manual_control.software.keyboard.use_keyboard"),
             tooltip=t(
@@ -61,7 +63,7 @@ class ManualControlSettings(AppFrame):
         )
 
         # Use LStick Mouse
-        use_lstick_mouse_checkbutton = widgets.Checkbutton(
+        use_lstick_mouse_checkbutton = Checkbutton(
             lower_frame,
             text=t("main.settings.manual_control.software.mouse.use_lclick"),
             tooltip=t("main.settings.manual_control.software.mouse.use_lclick.tooltip"),
@@ -70,7 +72,7 @@ class ManualControlSettings(AppFrame):
         )
 
         # Use RStick Mouse
-        use_rstick_mouse_checkbutton = widgets.Checkbutton(
+        use_rstick_mouse_checkbutton = Checkbutton(
             lower_frame,
             text=t("main.settings.manual_control.software.mouse.use_rclick"),
             tooltip=t("main.settings.manual_control.software.mouse.use_rclick.tooltip"),
@@ -88,11 +90,11 @@ class ManualControlSettings(AppFrame):
 
         return labelframe
 
-    def _build_hardware_settings(self) -> widgets.Labelframe:
-        labelframe = widgets.Labelframe(self, text="Hardware")
+    def _build_hardware_settings(self) -> Labelframe:
+        labelframe = Labelframe(self, text="Hardware")
 
         # Use Pro Controller
-        use_pro_controller_checkbutton = widgets.Checkbutton(
+        use_pro_controller_checkbutton = Checkbutton(
             labelframe,
             text=t("main.settings.manual_control.hardware.pro_controller.use"),
             tooltip=t(
@@ -103,7 +105,7 @@ class ManualControlSettings(AppFrame):
         )
 
         # Record Pro Controller
-        record_pro_controller_checkbutton = widgets.Checkbutton(
+        record_pro_controller_checkbutton = Checkbutton(
             labelframe,
             text=t("main.settings.manual_control.hardware.pro_controller.record"),
             tooltip=t(

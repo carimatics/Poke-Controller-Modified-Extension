@@ -2,23 +2,22 @@ import tkinter as tk
 import tkinter.ttk as ttk
 from typing import Any, Self, overload
 
-from pokecontrollermodifiedextension.mixins import AppAccessorMixIn
 from pokecontrollermodifiedextension.state.settings import get_app_settings
-from pokecontrollermodifiedextension.widgets.app.dialog import AppDialog
 from pokecontrollermodifiedextension.widgets.components.dynamic_form import (
     DynamicForm,
     DynamicFormItem,
 )
+from pokecontrollermodifiedextension.widgets.window import Window
 
 
-class DynamicFormDialog(AppDialog):
+class DynamicFormWindow(Window):
     _form: DynamicForm
     _is_ok: bool
     _items: list[DynamicFormItem]
 
     def __init__(
         self,
-        master: AppAccessorMixIn,
+        master: tk.Misc,
         title: str,
         items: list[DynamicFormItem],
         *args: Any,
@@ -107,13 +106,13 @@ class DynamicFormDialog(AppDialog):
 
 
 class DynamicFormDialogBuilder:
-    def __init__(self, master: AppAccessorMixIn, title: str) -> None:
+    def __init__(self, master: tk.Misc, title: str) -> None:
         self.master = master
         self.title = title
         self.items: list[DynamicFormItem] = []
 
-    def build(self) -> DynamicFormDialog:
-        return DynamicFormDialog(self.master, self.title, self.items)
+    def build(self) -> DynamicFormWindow:
+        return DynamicFormWindow(self.master, self.title, self.items)
 
     def add_checkbutton_row(self, name: str, text: str, initial_value: bool) -> Self:
         variable = tk.BooleanVar(value=initial_value)

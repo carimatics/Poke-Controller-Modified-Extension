@@ -1,11 +1,11 @@
 import tkinter as tk
 from typing import Any
 
-from pokecontrollermodifiedextension import widgets
-from pokecontrollermodifiedextension.widgets.app import AppFrame
+from pokecontrollermodifiedextension.widgets.frame import Frame
+from pokecontrollermodifiedextension.widgets.labelframe import Labelframe
 
 
-class Output(AppFrame):
+class Output(Frame):
     def __init__(
         self, master: tk.Misc, output_id: int, *args: Any, **kwargs: Any
     ) -> None:
@@ -17,9 +17,7 @@ class Output(AppFrame):
         self.build_ui()
 
     def build_ui(self) -> None:
-        labelframe = widgets.Labelframe(
-            self, text=f"Output#{self._id}", relief=tk.GROOVE
-        )
+        labelframe = Labelframe(self, text=f"Output#{self._id}", relief=tk.GROOVE)
 
         # Text Area
         self.textarea = tk.Text(

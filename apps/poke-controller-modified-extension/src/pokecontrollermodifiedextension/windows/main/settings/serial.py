@@ -1,14 +1,19 @@
 import tkinter as tk
 from typing import Any
 
-from pokecontrollermodifiedextension import widgets
 from pokecontrollermodifiedextension.state.model import get_app_model
 from pokecontrollermodifiedextension.state.settings import get_app_settings
 from pokecontrollermodifiedextension.translation import t
-from pokecontrollermodifiedextension.widgets.app import AppFrame
+from pokecontrollermodifiedextension.widgets.button import Button
+from pokecontrollermodifiedextension.widgets.checkbutton import Checkbutton
+from pokecontrollermodifiedextension.widgets.combobox import Combobox
+from pokecontrollermodifiedextension.widgets.frame import Frame
+from pokecontrollermodifiedextension.widgets.label import Label
+from pokecontrollermodifiedextension.widgets.labelframe import Labelframe
+from pokecontrollermodifiedextension.widgets.separator import Separator
 
 
-class SerialSettings(AppFrame):
+class SerialSettings(Frame):
     def __init__(self, master: tk.Misc, *args: Any, **kwargs: Any) -> None:
         super().__init__(master, *args, **kwargs)
 
@@ -35,16 +40,16 @@ class SerialSettings(AppFrame):
         serial_settings.pack(expand=False, fill=tk.X, anchor=tk.N, pady=4)
         data_settings.pack(expand=False, fill=tk.X, anchor=tk.N, pady=4)
 
-    def _build_serial_settings(self) -> widgets.Labelframe:
-        labelframe = widgets.Labelframe(self, text="Port Settings")
+    def _build_serial_settings(self) -> Labelframe:
+        labelframe = Labelframe(self, text="Port Settings")
 
         # Port
-        port_label = widgets.Label(
+        port_label = Label(
             labelframe,
             text=t("main.settings.serial.port.port.label"),
             tooltip=t("main.settings.serial.port.port.label.tooltip"),
         )
-        port_entry = widgets.Combobox(
+        port_entry = Combobox(
             labelframe,
             tooltip=t("main.settings.serial.port.port.combobox.tooltip"),
             width=5,
@@ -55,12 +60,12 @@ class SerialSettings(AppFrame):
             port_entry.current(0)
 
         # Baud Rate
-        baud_rate_label = widgets.Label(
+        baud_rate_label = Label(
             labelframe,
             text=t("main.settings.serial.port.baud_rate.label"),
             tooltip=t("main.settings.serial.port.baud_rate.label.tooltip"),
         )
-        baud_rate_combobox = widgets.Combobox(
+        baud_rate_combobox = Combobox(
             labelframe,
             tooltip=t("main.settings.serial.port.baud_rate.combobox.tooltip"),
             width=6,
@@ -70,7 +75,7 @@ class SerialSettings(AppFrame):
         )
 
         # Reconnect Button
-        reconnect_button = widgets.Button(
+        reconnect_button = Button(
             labelframe,
             text=t("main.settings.serial.port.reload"),
             tooltip=t("main.settings.serial.port.reload.tooltip"),
@@ -78,7 +83,7 @@ class SerialSettings(AppFrame):
         )
 
         # Disconnect Button
-        disconnect_button = widgets.Button(
+        disconnect_button = Button(
             labelframe,
             text=t("main.settings.serial.port.disconnect"),
             tooltip=t("main.settings.serial.port.disconnect.tooltip"),
@@ -88,12 +93,12 @@ class SerialSettings(AppFrame):
         # Layout
         port_label.pack(expand=False, side=tk.LEFT, padx=4)
         port_entry.pack(expand=True, fill=tk.X, side=tk.LEFT)
-        widgets.Separator(master=labelframe, orient=tk.VERTICAL).pack(
+        Separator(master=labelframe, orient=tk.VERTICAL).pack(
             expand=False, fill=tk.Y, side=tk.LEFT, padx=5, pady=8
         )
         baud_rate_label.pack(expand=False, side=tk.LEFT)
         baud_rate_combobox.pack(expand=False, fill=tk.X, side=tk.LEFT)
-        widgets.Separator(master=labelframe, orient=tk.VERTICAL).pack(
+        Separator(master=labelframe, orient=tk.VERTICAL).pack(
             expand=False, fill=tk.Y, side=tk.LEFT, padx=5, pady=8
         )
         reconnect_button.pack(expand=False, fill=tk.X, side=tk.LEFT, padx=4, pady=4)
@@ -101,16 +106,16 @@ class SerialSettings(AppFrame):
 
         return labelframe
 
-    def _build_data_settings(self) -> widgets.Labelframe:
-        labelframe = widgets.Labelframe(self, text="Data")
+    def _build_data_settings(self) -> Labelframe:
+        labelframe = Labelframe(self, text="Data")
 
         # Data Format
-        data_format_label = widgets.Label(
+        data_format_label = Label(
             labelframe,
             text=t("main.settings.serial.data.format.label"),
             anchor=tk.CENTER,
         )
-        data_format_combobox = widgets.Combobox(
+        data_format_combobox = Combobox(
             labelframe,
             state=tk.NORMAL,
             textvariable=self._data_format,
@@ -118,7 +123,7 @@ class SerialSettings(AppFrame):
         )
 
         # Show Serial
-        show_serial_checkbutton = widgets.Checkbutton(
+        show_serial_checkbutton = Checkbutton(
             labelframe,
             text=t("main.settings.serial.data.show_data"),
             tooltip=t("main.settings.serial.data.show_data.tooltip"),

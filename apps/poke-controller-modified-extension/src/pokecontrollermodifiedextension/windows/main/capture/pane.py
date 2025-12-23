@@ -1,14 +1,14 @@
 import tkinter as tk
 from typing import Any
 
-from pokecontrollermodifiedextension import widgets
 from pokecontrollermodifiedextension.state.settings import get_app_settings
-from pokecontrollermodifiedextension.widgets.app import AppFrame
+from pokecontrollermodifiedextension.widgets.frame import Frame
+from pokecontrollermodifiedextension.widgets.labelframe import Labelframe
 from pokecontrollermodifiedextension.windows.main.capture.buttons import Buttons
 from pokecontrollermodifiedextension.windows.main.capture.capture import Capture
 
 
-class CapturePane(AppFrame):
+class CapturePane(Frame):
     def __init__(self, master: tk.Misc, *args: Any, **kwargs: Any) -> None:
         super().__init__(master, *args, **kwargs)
 
@@ -24,7 +24,7 @@ class CapturePane(AppFrame):
 
     def build_ui(self) -> None:
         # Create Labelframe
-        labelframe = widgets.Labelframe(self, text="Main Panel")
+        labelframe = Labelframe(self, text="Main Panel")
 
         # Main Panel
         buttons = Buttons(labelframe)

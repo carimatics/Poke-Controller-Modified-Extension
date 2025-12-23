@@ -5,9 +5,8 @@ from typing import Any
 from pokecontroller.core import controller
 from pokecontroller.core.controller import switch
 
-from pokecontrollermodifiedextension.mixins import AppAccessorMixIn
 from pokecontrollermodifiedextension.state.resources import get_app_resources
-from pokecontrollermodifiedextension.widgets.app import AppDialog
+from pokecontrollermodifiedextension.widgets.window import Window
 
 logger = logging.getLogger(__name__)
 
@@ -79,7 +78,7 @@ STYLES = {
 }
 
 
-class ControllerWindow(AppDialog):
+class ControllerWindow(Window):
     BUTTON_CONFIGS: dict[str, dict[str, Any]] = {
         A: {
             "text": "A",
@@ -379,7 +378,7 @@ class ControllerWindow(AppDialog):
 
     def __init__(
         self,
-        master: AppAccessorMixIn,
+        master: tk.Misc,
         *args: Any,
         **kwargs: Any,
     ) -> None:

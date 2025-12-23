@@ -3,14 +3,20 @@ from typing import Any
 
 from pokecontroller.core.camera import CameraInfo
 
-from pokecontrollermodifiedextension import widgets
 from pokecontrollermodifiedextension.state.model import get_app_model
 from pokecontrollermodifiedextension.state.settings import get_app_settings
 from pokecontrollermodifiedextension.translation import t
-from pokecontrollermodifiedextension.widgets.app import AppFrame
+from pokecontrollermodifiedextension.widgets.button import Button
+from pokecontrollermodifiedextension.widgets.checkbutton import Checkbutton
+from pokecontrollermodifiedextension.widgets.combobox import Combobox
+from pokecontrollermodifiedextension.widgets.entry import Entry
+from pokecontrollermodifiedextension.widgets.frame import Frame
+from pokecontrollermodifiedextension.widgets.label import Label
+from pokecontrollermodifiedextension.widgets.labelframe import Labelframe
+from pokecontrollermodifiedextension.widgets.separator import Separator
 
 
-class CameraSettings(AppFrame):
+class CameraSettings(Frame):
     _cameras: list[CameraInfo]
 
     def __init__(self, master: tk.Misc, *args: Any, **kwargs: Any) -> None:
@@ -44,21 +50,21 @@ class CameraSettings(AppFrame):
         camera_settings.pack(expand=False, fill=tk.BOTH, pady=4)
         display_settings.pack(expand=False, fill=tk.BOTH, pady=4)
 
-    def _build_camera_settings(self) -> widgets.Labelframe:
-        labelframe = widgets.Labelframe(self, text="Camera Settings")
+    def _build_camera_settings(self) -> Labelframe:
+        labelframe = Labelframe(self, text="Camera Settings")
 
         # Upper Frame
-        upper_frame = widgets.Frame(labelframe)
+        upper_frame = Frame(labelframe)
 
         # Name
-        name_label = widgets.Label(
+        name_label = Label(
             upper_frame,
             text=t("main.settings.capture.camera.name.label"),
             tooltip=t("main.settings.capture.camera.name.label.tooltip"),
             width=11,
             anchor=tk.CENTER,
         )
-        name_combobox = widgets.Combobox(
+        name_combobox = Combobox(
             upper_frame,
             tooltip=t("main.settings.capture.camera.name.combobox.tooltip"),
             textvariable=self._camera_name,
@@ -67,18 +73,18 @@ class CameraSettings(AppFrame):
         self._camera_name.set(self._name_list[0])
 
         # Lower Frame
-        lower_frame = widgets.Frame(labelframe)
+        lower_frame = Frame(labelframe)
 
         # ID
         self._adjust_camera_id()
-        id_label = widgets.Label(
+        id_label = Label(
             lower_frame,
             text=t("main.settings.capture.camera.id.label"),
             tooltip=t("main.settings.capture.camera.id.label.tooltip"),
             width=11,
             anchor=tk.W,
         )
-        id_entry = widgets.Entry(
+        id_entry = Entry(
             lower_frame,
             tooltip=t("main.settings.capture.camera.id.entry.tooltip"),
             width=3,
@@ -88,12 +94,12 @@ class CameraSettings(AppFrame):
 
         # FPS
         fps_list = [60, 45, 30, 15, 5]
-        fps_label = widgets.Label(
+        fps_label = Label(
             lower_frame,
             text=t("main.settings.capture.camera.fps.label"),
             tooltip=t("main.settings.capture.camera.fps.label.tooltip"),
         )
-        fps_combobox = widgets.Combobox(
+        fps_combobox = Combobox(
             lower_frame,
             tooltip=t("main.settings.capture.camera.fps.combobox.tooltip"),
             width=3,
@@ -104,12 +110,12 @@ class CameraSettings(AppFrame):
         )
 
         # Size
-        size_label = widgets.Label(
+        size_label = Label(
             lower_frame,
             text=t("main.settings.capture.camera.size.label"),
             tooltip=t("main.settings.capture.camera.size.label.tooltip"),
         )
-        size_combobox = widgets.Combobox(
+        size_combobox = Combobox(
             lower_frame,
             tooltip=t("main.settings.capture.camera.size.combobox.tooltip"),
             width=8,
@@ -120,7 +126,7 @@ class CameraSettings(AppFrame):
         size_combobox.current(self._size_list.index(self._size.get()))
 
         # Reload
-        reload_button = widgets.Button(
+        reload_button = Button(
             lower_frame,
             text=t("main.settings.capture.camera.reload"),
             tooltip=t("main.settings.capture.camera.reload.tooltip"),
@@ -135,18 +141,18 @@ class CameraSettings(AppFrame):
         id_label.pack(expand=False, fill=tk.X, side=tk.LEFT)
         id_entry.pack(expand=True, fill=tk.X, side=tk.LEFT)
         # noinspection DuplicatedCode
-        widgets.Separator(master=lower_frame).pack(
+        Separator(master=lower_frame).pack(
             expand=False, fill=tk.Y, side=tk.LEFT, padx=5, pady=8
         )
         fps_label.pack(expand=False, fill=tk.X, side=tk.LEFT)
         fps_combobox.pack(expand=False, fill=tk.X, side=tk.LEFT)
         # noinspection DuplicatedCode
-        widgets.Separator(master=lower_frame).pack(
+        Separator(master=lower_frame).pack(
             expand=False, fill=tk.Y, side=tk.LEFT, padx=5, pady=8
         )
         size_label.pack(expand=False, fill=tk.X, side=tk.LEFT)
         size_combobox.pack(expand=False, fill=tk.X, side=tk.LEFT)
-        widgets.Separator(master=lower_frame).pack(
+        Separator(master=lower_frame).pack(
             expand=False, fill=tk.Y, side=tk.LEFT, padx=5, pady=8
         )
         reload_button.pack(expand=False, fill=tk.X, side=tk.LEFT, padx=4)
@@ -154,11 +160,11 @@ class CameraSettings(AppFrame):
 
         return labelframe
 
-    def _build_display_settings(self) -> widgets.Labelframe:
-        labelframe = widgets.Labelframe(self, text="Display Settings")
+    def _build_display_settings(self) -> Labelframe:
+        labelframe = Labelframe(self, text="Display Settings")
 
         # Show Realtime
-        show_realtime_checkbutton = widgets.Checkbutton(
+        show_realtime_checkbutton = Checkbutton(
             labelframe,
             text=t("main.settings.capture.display.realtime"),
             tooltip=t("main.settings.capture.display.realtime.tooltip"),
@@ -167,7 +173,7 @@ class CameraSettings(AppFrame):
         )
 
         # Show Value
-        show_matched_checkbutton = widgets.Checkbutton(
+        show_matched_checkbutton = Checkbutton(
             labelframe,
             text=t("main.settings.capture.display.matched"),
             tooltip=t("main.settings.capture.display.matched.tooltip"),
@@ -176,7 +182,7 @@ class CameraSettings(AppFrame):
         )
 
         # Show Guide
-        show_guide_checkbutton = widgets.Checkbutton(
+        show_guide_checkbutton = Checkbutton(
             labelframe,
             text=t("main.settings.capture.display.guide"),
             tooltip=t("main.settings.capture.display.guide.tooltip"),

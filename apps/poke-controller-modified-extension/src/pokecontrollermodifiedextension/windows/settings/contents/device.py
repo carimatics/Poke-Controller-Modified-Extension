@@ -4,18 +4,15 @@ from dataclasses import fields
 from typing import Any
 
 from pokecontrollermodifiedextension.state.settings import get_app_settings
-from pokecontrollermodifiedextension.widgets import (
-    Frame,
-    Labelframe,
-    ScrollableFrame,
-)
-from pokecontrollermodifiedextension.widgets.app import AppFrame
 from pokecontrollermodifiedextension.widgets.components import ComponentPackBuilder
+from pokecontrollermodifiedextension.widgets.frame import Frame
+from pokecontrollermodifiedextension.widgets.labelframe import Labelframe
+from pokecontrollermodifiedextension.widgets.scrollable_frame import ScrollableFrame
 
 logger = logging.getLogger(__name__)
 
 
-class DeviceSettingsPane(AppFrame):
+class DeviceSettingsPane(Frame):
     _frame: Frame | Labelframe | ScrollableFrame
 
     def __init__(self, master: tk.Misc, *args: Any, **kwargs: Any) -> None:

@@ -2,10 +2,9 @@ import math
 import tkinter as tk
 from typing import Any, Literal
 
-from pokecontrollermodifiedextension import widgets
 from pokecontrollermodifiedextension.state.model import get_app_model
 from pokecontrollermodifiedextension.state.settings import get_app_settings
-from pokecontrollermodifiedextension.widgets.app import AppFrame
+from pokecontrollermodifiedextension.widgets.frame import Frame
 from pokecontrollermodifiedextension.windows.main.capture import CapturePane
 from pokecontrollermodifiedextension.windows.main.controller import ControllerPane
 from pokecontrollermodifiedextension.windows.main.outputs import OutputsPane
@@ -24,7 +23,7 @@ PANES = [
 ]
 
 
-class MainWindow(AppFrame):
+class MainWindow(Frame):
     def __init__(self, master: tk.Misc, *args: Any, **kwargs: Any) -> None:
         super().__init__(master, *args, **kwargs)
 
@@ -43,8 +42,8 @@ class MainWindow(AppFrame):
         self._serial_port = self._app_settings.serial.port
         self._serial_port_name = self._app_settings.serial.port_name
 
-        self._panes: dict[str, widgets.Frame] = {}
-        self._frames: dict[str, widgets.Frame] = {}
+        self._panes: dict[str, Frame] = {}
+        self._frames: dict[str, Frame] = {}
         self._register_traces()
         self.build_ui()
 
@@ -61,17 +60,17 @@ class MainWindow(AppFrame):
         return self._panes[CONTROLLER]  # type: ignore[return-value]
 
     @property
-    def _left_frame(self) -> widgets.Frame:
+    def _left_frame(self) -> Frame:
         return self._frames[tk.LEFT]
 
     @property
-    def _right_frame(self) -> widgets.Frame:
+    def _right_frame(self) -> Frame:
         return self._frames[tk.RIGHT]
 
     def build_ui(self) -> None:
         # Frames
-        self._frames[tk.LEFT] = widgets.Frame(self)
-        self._frames[tk.RIGHT] = widgets.Frame(self)
+        self._frames[tk.LEFT] = Frame(self)
+        self._frames[tk.RIGHT] = Frame(self)
 
         # Create Panes
         for name, pane_class, side in PANES:
@@ -104,7 +103,7 @@ class MainWindow(AppFrame):
 
     def _layout_right_frame(self) -> None:
         def pack(
-            frame: widgets.Frame,
+            frame: Frame,
             visible: bool,
             *,
             side: Literal["top", "left"] = tk.TOP,

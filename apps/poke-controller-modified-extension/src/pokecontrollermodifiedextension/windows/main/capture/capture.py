@@ -18,7 +18,7 @@ from pokecontrollermodifiedextension.state.resources import get_app_resources
 from pokecontrollermodifiedextension.state.runtime_info import get_app_runtime_info
 from pokecontrollermodifiedextension.state.settings import get_app_settings
 from pokecontrollermodifiedextension.state.widget_catalog import get_app_widget_catalog
-from pokecontrollermodifiedextension.widgets.app import AppFrame
+from pokecontrollermodifiedextension.widgets.frame import Frame
 
 logger = logging.getLogger(__name__)
 
@@ -32,7 +32,7 @@ type Font = (
 )
 
 
-class Capture(AppFrame):
+class Capture(Frame):
     _canvas: tk.Canvas
     _ratio: tuple[float, float]
     _image: ImageTk.PhotoImage

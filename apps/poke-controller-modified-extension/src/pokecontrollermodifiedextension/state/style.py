@@ -7,6 +7,8 @@ from typing import Any
 from pokecontroller.utils import platform
 from pokecontroller.utils.collection import deep_merge
 
+from pokecontrollermodifiedextension.exception import AppRuntimeException
+
 
 @dataclass
 class ComponentStyle:
@@ -226,3 +228,19 @@ class StyleManager:
             "alt": StyleSettings(),
             "classic": StyleSettings(),
         }
+
+
+_style_manager: StyleManager | None = None
+
+
+def get_style_manager() -> StyleManager:
+    global _style_manager
+    if _style_manager is None:
+        raise AppRuntimeException("Style manager is not initialized.")
+    return _style_manager
+
+
+def setup_style_manager(root: tk.Tk) -> StyleManager:
+    global _style_manager
+    _style_manager = StyleManager(root)
+    return _style_manager

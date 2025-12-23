@@ -33,7 +33,7 @@ from pokecontrollermodifiedextension.papico.handlers.v0_2_0.settings import (
 )
 from pokecontrollermodifiedextension.state.resources import setup_app_resources
 from pokecontrollermodifiedextension.state.runtime_info import setup_runtime_info
-from pokecontrollermodifiedextension.widgets.app import AppMenu
+from pokecontrollermodifiedextension.widgets.menu import Menu
 from pokecontrollermodifiedextension.windows import MainWindow
 
 
@@ -64,7 +64,7 @@ def run_app(*, base_dir: Path, profile: str) -> None:
         app = App()
 
         # menubar
-        menu = AppMenu(app)
+        menu = Menu(app)
         app.config(menu=menu)
 
         # main window

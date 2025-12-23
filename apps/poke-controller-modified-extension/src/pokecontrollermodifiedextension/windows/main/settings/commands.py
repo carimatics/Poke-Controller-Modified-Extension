@@ -5,7 +5,6 @@ from typing import Any, Literal
 
 from pokecontroller.utils import platform
 
-from pokecontrollermodifiedextension import widgets
 from pokecontrollermodifiedextension.command.info import (
     get_selected_command_info,
     set_selected_command_info,
@@ -18,7 +17,12 @@ from pokecontrollermodifiedextension.state.model import get_app_model
 from pokecontrollermodifiedextension.state.runtime_info import get_app_runtime_info
 from pokecontrollermodifiedextension.state.settings import get_app_settings
 from pokecontrollermodifiedextension.translation import t
-from pokecontrollermodifiedextension.widgets.app import AppFrame
+from pokecontrollermodifiedextension.widgets.button import Button
+from pokecontrollermodifiedextension.widgets.combobox import Combobox
+from pokecontrollermodifiedextension.widgets.frame import Frame
+from pokecontrollermodifiedextension.widgets.label import Label
+from pokecontrollermodifiedextension.widgets.separator import Separator
+from pokecontrollermodifiedextension.widgets.spinbox import Spinbox
 
 PYTHON = "python"
 MCU = "mcu"
@@ -31,22 +35,22 @@ COMMANDS = [
 ]
 
 
-class CommandsSettings(AppFrame):
+class CommandsSettings(Frame):
     _notebook: ttk.Notebook
 
     _python_commands_filter_list: list[str]
     _python_command_list: list[str]
-    _python_commands_filter_combobox: widgets.Combobox
-    _python_command_combobox: widgets.Combobox
+    _python_commands_filter_combobox: Combobox
+    _python_command_combobox: Combobox
     _mcu_commands_filter_list: list[str]
     _mcu_command_list: list[str]
-    _mcu_commands_filter_combobox: widgets.Combobox
-    _mcu_command_combobox: widgets.Combobox
+    _mcu_commands_filter_combobox: Combobox
+    _mcu_command_combobox: Combobox
 
-    _shortcut_buttons: list[widgets.Button]
+    _shortcut_buttons: list[Button]
 
-    _start_button: widgets.Button
-    _pause_button: widgets.Button
+    _start_button: Button
+    _pause_button: Button
 
     def __init__(self, master: tk.Misc, *args: Any, **kwargs: Any) -> None:
         super().__init__(master, *args, **kwargs)
@@ -78,14 +82,14 @@ class CommandsSettings(AppFrame):
         self.build_ui()
 
     def build_ui(self) -> None:
-        upper_frame = widgets.Frame(self)
-        lower_frame = widgets.Frame(self)
+        upper_frame = Frame(self)
+        lower_frame = Frame(self)
 
         # Notebook
         self._notebook = self._build_commands_notebook(upper_frame)
 
         # Open Commands Directory
-        open_dir_button = widgets.Button(
+        open_dir_button = Button(
             upper_frame,
             tooltip=t("main.settings.commands.open_dir.tooltip"),
             width=5,
@@ -93,12 +97,12 @@ class CommandsSettings(AppFrame):
             command=self._on_open_dir_pushed,
         )
 
-        shortcut_label = widgets.Label(
+        shortcut_label = Label(
             lower_frame,
             text=t("main.settings.commands.shortcut.label"),
             tooltip=t("main.settings.commands.shortcut.label.tooltip"),
         )
-        shortcut_spinbox = widgets.Spinbox(
+        shortcut_spinbox = Spinbox(
             lower_frame,
             tooltip=t("main.settings.commands.shortcut.spinbox.tooltip"),
             width=7,
@@ -107,25 +111,25 @@ class CommandsSettings(AppFrame):
             increment=1,
             textvariable=self._shortcut_number,
         )
-        shortcut_set_button = widgets.Button(
+        shortcut_set_button = Button(
             lower_frame,
             text=t("main.settings.commands.set"),
             tooltip=t("main.settings.commands.set.tooltip"),
             command=self._on_set_pushed,
         )
-        command_reload_button = widgets.Button(
+        command_reload_button = Button(
             lower_frame,
             text=t("main.settings.commands.reload"),
             tooltip=t("main.settings.commands.reload.tooltip"),
             command=self._on_reload_pushed,
         )
-        self._start_button = widgets.Button(
+        self._start_button = Button(
             lower_frame,
             text=t("main.settings.commands.start"),
             tooltip=t("main.settings.commands.start.tooltip"),
             command=self._on_start_pushed,
         )
-        self._pause_button = widgets.Button(
+        self._pause_button = Button(
             lower_frame,
             text=t("main.settings.commands.pause"),
             tooltip=t("main.settings.commands.pause.tooltip"),
@@ -141,7 +145,7 @@ class CommandsSettings(AppFrame):
         shortcut_label.pack(expand=False, fill=tk.X, side=tk.LEFT)
         shortcut_spinbox.pack(expand=False, fill=tk.X, side=tk.LEFT)
         shortcut_set_button.pack(expand=False, fill=tk.X, side=tk.LEFT, padx=4)
-        widgets.Separator(master=lower_frame, orient=tk.VERTICAL).pack(
+        Separator(master=lower_frame, orient=tk.VERTICAL).pack(
             expand=False, fill=tk.Y, side=tk.LEFT, padx=5, pady=8
         )
         command_reload_button.pack(expand=False, fill=tk.X, side=tk.LEFT, padx=4)
@@ -149,23 +153,23 @@ class CommandsSettings(AppFrame):
         self._pause_button.pack(expand=False, fill=tk.X, side=tk.LEFT, padx=4)
         lower_frame.pack(expand=False, fill=tk.BOTH, side=tk.TOP, padx=4, pady=4)
 
-    def _build_commands_notebook(self, master: widgets.Frame) -> ttk.Notebook:
+    def _build_commands_notebook(self, master: Frame) -> ttk.Notebook:
         notebook = ttk.Notebook(master)
 
-        command_frames: list[widgets.Frame] = [
+        command_frames: list[Frame] = [
             self._build_python_commands_frame(notebook),
             self._build_mcu_commands_frame(notebook),
             self._build_shortcut_commands_frame(notebook),
         ]
 
-        commands: dict[str, widgets.Frame] = {}
+        commands: dict[str, Frame] = {}
         for (name, tag_text), frame in zip(COMMANDS, command_frames):
             commands[name] = frame
             notebook.add(frame, text=tag_text, padding=5, sticky=tk.NSEW)
 
         return notebook
 
-    def _build_python_commands_frame(self, notebook: ttk.Notebook) -> widgets.Frame:
+    def _build_python_commands_frame(self, notebook: ttk.Notebook) -> Frame:
         return self._build_commands_frame(
             notebook=notebook,
             kind="python",
@@ -175,7 +179,7 @@ class CommandsSettings(AppFrame):
             command_var=self._python_command,
         )
 
-    def _build_mcu_commands_frame(self, notebook: ttk.Notebook) -> widgets.Frame:
+    def _build_mcu_commands_frame(self, notebook: ttk.Notebook) -> Frame:
         return self._build_commands_frame(
             notebook=notebook,
             kind="mcu",
@@ -194,17 +198,17 @@ class CommandsSettings(AppFrame):
         filter_var: tk.StringVar,
         command_list: list[str],
         command_var: tk.StringVar,
-    ) -> widgets.Frame:
-        frame = widgets.Frame(notebook)
+    ) -> Frame:
+        frame = Frame(notebook)
 
         def _combobox_frame(
-            master: widgets.Frame,
+            master: Frame,
             component: str,
             var: tk.StringVar,
             values: list[str],
-        ) -> tuple[widgets.Frame, widgets.Combobox]:
-            combobox_frame = widgets.Frame(master=master)
-            label = widgets.Label(
+        ) -> tuple[Frame, Combobox]:
+            combobox_frame = Frame(master=master)
+            label = Label(
                 combobox_frame,
                 text=t(f"main.settings.commands.notebook.{kind}.{component}.label"),
                 tooltip=t(
@@ -212,7 +216,7 @@ class CommandsSettings(AppFrame):
                 ),
                 width=8,
             )
-            combobox = widgets.Combobox(
+            combobox = Combobox(
                 combobox_frame,
                 tooltip=t(
                     f"main.settings.commands.notebook.{kind}.{component}.combobox.tooltip"
@@ -256,17 +260,17 @@ class CommandsSettings(AppFrame):
 
         return frame
 
-    def _build_shortcut_commands_frame(self, notebook: ttk.Notebook) -> widgets.Frame:
-        frame = widgets.Frame(notebook)
+    def _build_shortcut_commands_frame(self, notebook: ttk.Notebook) -> Frame:
+        frame = Frame(notebook)
 
         shortcut_commands = [
             lambda num=i: self._on_shortcut_pushed(num) for i in range(1, 11)
         ]
 
-        upper_frame = widgets.Frame(frame)
-        lower_frame = widgets.Frame(frame)
+        upper_frame = Frame(frame)
+        lower_frame = Frame(frame)
         self._shortcut_buttons = [
-            widgets.Button(
+            Button(
                 upper_frame if i < 5 else lower_frame,
                 width=7,
                 text=(self._registered_commands[str(i + 1)]).name.get()[:8],
@@ -345,7 +349,7 @@ class CommandsSettings(AppFrame):
 
     def _update_commands(self) -> None:
         def update_combobox(
-            combobox: widgets.Combobox,
+            combobox: Combobox,
             items: list[str],
         ) -> None:
             combobox.configure(values=items)

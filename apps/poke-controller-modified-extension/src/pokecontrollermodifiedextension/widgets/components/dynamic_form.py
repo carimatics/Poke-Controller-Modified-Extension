@@ -3,8 +3,7 @@ import tkinter.ttk as ttk
 from dataclasses import dataclass, field
 from typing import Any, Literal, Self, overload
 
-from pokecontrollermodifiedextension.mixins import AppAccessorMixIn
-from pokecontrollermodifiedextension.widgets.app.frame import AppFrame
+from pokecontrollermodifiedextension.widgets.frame import Frame
 
 type WidgetType = Literal[
     "checkbutton",
@@ -24,7 +23,7 @@ class DynamicFormItem:
     kwargs: dict[str, Any] = field(default_factory=dict)
 
 
-class DynamicForm(AppFrame):
+class DynamicForm(Frame):
     def __init__(
         self,
         master: tk.Misc,
@@ -229,7 +228,7 @@ class DynamicForm(AppFrame):
 
 
 class DynamicFormBuilder:
-    def __init__(self, master: AppAccessorMixIn, title: str) -> None:
+    def __init__(self, master: tk.Misc, title: str) -> None:
         self.master = master
         self.title = title
         self.items: list[DynamicFormItem] = []

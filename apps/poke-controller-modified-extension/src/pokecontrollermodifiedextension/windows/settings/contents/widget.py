@@ -2,12 +2,12 @@ import logging
 import tkinter as tk
 from typing import Any
 
-from pokecontrollermodifiedextension.widgets.app import AppFrame
+from pokecontrollermodifiedextension.widgets import Frame
 
 logger = logging.getLogger(__name__)
 
 
-class WidgetSettingsPane(AppFrame):
+class WidgetSettingsPane(Frame):
     _current_version: tk.StringVar
 
     def __init__(self, master: tk.Misc, *args: Any, **kwargs: Any) -> None:

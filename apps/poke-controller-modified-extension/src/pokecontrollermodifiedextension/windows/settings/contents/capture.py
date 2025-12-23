@@ -4,13 +4,13 @@ from typing import Any
 
 from pokecontrollermodifiedextension.state.model import get_app_model
 from pokecontrollermodifiedextension.state.settings import get_app_settings
-from pokecontrollermodifiedextension.widgets.app import AppFrame
 from pokecontrollermodifiedextension.widgets.components import ComponentPackBuilder
+from pokecontrollermodifiedextension.widgets.frame import Frame
 
 logger = logging.getLogger(__name__)
 
 
-class CaptureSettingsPane(AppFrame):
+class CaptureSettingsPane(Frame):
     _camera_size_scale: tk.Scale
 
     def __init__(self, master: tk.Misc, *args: Any, **kwargs: Any) -> None:

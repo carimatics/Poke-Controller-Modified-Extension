@@ -26,6 +26,9 @@ class Frame(ttk.Frame):
     ) -> None:
         self._trace_ids.append((variable, mode, variable.trace_add(mode, callback)))
 
+    def refresh(self) -> None:
+        pass
+
     def destroy(self) -> None:
         self._unregister_traces()
         super().destroy()

@@ -1,14 +1,18 @@
 import tkinter as tk
 from typing import Any
 
-from pokecontrollermodifiedextension import widgets
 from pokecontrollermodifiedextension.state.model import get_app_model
 from pokecontrollermodifiedextension.state.settings import get_app_settings
 from pokecontrollermodifiedextension.translation import t
-from pokecontrollermodifiedextension.widgets.app import AppFrame
+from pokecontrollermodifiedextension.widgets.button import Button
+from pokecontrollermodifiedextension.widgets.checkbutton import Checkbutton
+from pokecontrollermodifiedextension.widgets.frame import Frame
+from pokecontrollermodifiedextension.widgets.labelframe import Labelframe
+from pokecontrollermodifiedextension.widgets.radiobutton import Radiobutton
+from pokecontrollermodifiedextension.widgets.scale import Scale
 
 
-class OthersSettings(AppFrame):
+class OthersSettings(Frame):
     def __init__(self, master: tk.Misc, *args: Any, **kwargs: Any) -> None:
         super().__init__(master, *args, **kwargs)
 
@@ -32,12 +36,12 @@ class OthersSettings(AppFrame):
         self.build_ui()
 
     def build_ui(self) -> None:
-        upper_frame = widgets.Labelframe(self, text="Output Settings")
+        upper_frame = Labelframe(self, text="Output Settings")
         size_adjuster = self._build_size_adjuster(upper_frame)
         standard_output_destination_settings = self._build_stdout_settings(upper_frame)
         clear_outputs = self._build_clear_outputs(upper_frame)
 
-        lower_frame = widgets.Labelframe(self, text="Widget Settings")
+        lower_frame = Labelframe(self, text="Widget Settings")
         widget_mode = self._build_widget_mode(lower_frame)
         software_controller_position_settings = (
             self._build_software_controller_position_settings(lower_frame)
@@ -83,15 +87,15 @@ class OthersSettings(AppFrame):
         )
         lower_frame.pack(expand=False, fill=tk.X, side=tk.TOP, padx=4, pady=4)
 
-    def _build_size_adjuster(self, master: tk.Misc) -> widgets.Labelframe:
+    def _build_size_adjuster(self, master: tk.Misc) -> Labelframe:
         tid_prefix = "main.settings.others.output.size_adjuster"
-        labelframe = widgets.Labelframe(
+        labelframe = Labelframe(
             master,
             text=t(f"{tid_prefix}"),
         )
 
         # Size
-        size_scale = widgets.Scale(
+        size_scale = Scale(
             labelframe,
             tooltip=t(f"{tid_prefix}.tooltip"),
             length=200,
@@ -114,13 +118,13 @@ class OthersSettings(AppFrame):
 
         return labelframe
 
-    def _build_stdout_settings(self, master: tk.Misc) -> widgets.Labelframe:
-        labelframe = widgets.Labelframe(master, text="Standard Output")
+    def _build_stdout_settings(self, master: tk.Misc) -> Labelframe:
+        labelframe = Labelframe(master, text="Standard Output")
 
         # Destinations
         tid_prefix = "main.settings.others.output.stdout"
         stdout_radiobuttons = [
-            widgets.Radiobutton(
+            Radiobutton(
                 labelframe,
                 text=t(f"{tid_prefix}.{i}"),
                 tooltip=t(f"{tid_prefix}.{i}.tooltip"),
@@ -137,13 +141,13 @@ class OthersSettings(AppFrame):
 
         return labelframe
 
-    def _build_clear_outputs(self, master: tk.Misc) -> widgets.Labelframe:
-        labelframe = widgets.Labelframe(master, text="Clear")
+    def _build_clear_outputs(self, master: tk.Misc) -> Labelframe:
+        labelframe = Labelframe(master, text="Clear")
 
         # Outputs Clear Buttons
         tid_prefix = "main.settings.others.output.clear"
         buttons = [
-            widgets.Button(
+            Button(
                 labelframe,
                 text=t(f"{tid_prefix}.{i}"),
                 tooltip=t(f"{tid_prefix}.{i}"),
@@ -158,13 +162,13 @@ class OthersSettings(AppFrame):
 
         return labelframe
 
-    def _build_widget_mode(self, master: tk.Misc) -> widgets.Labelframe:
-        labelframe = widgets.Labelframe(master, text="Display")
+    def _build_widget_mode(self, master: tk.Misc) -> Labelframe:
+        labelframe = Labelframe(master, text="Display")
 
         # Widget Mode Checkbuttons
         tid_prefix = "main.settings.others.widget.display"
         checkbuttons = [
-            widgets.Checkbutton(
+            Checkbutton(
                 labelframe,
                 text=text,
                 tooltip=tooltip,
@@ -202,13 +206,13 @@ class OthersSettings(AppFrame):
     def _build_software_controller_position_settings(
         self,
         master: tk.Misc,
-    ) -> widgets.Labelframe:
-        labelframe = widgets.Labelframe(master, text="Software-Controller Position")
+    ) -> Labelframe:
+        labelframe = Labelframe(master, text="Software-Controller Position")
 
         # Positions
         tid_prefix = "main.settings.others.widget.software_controller"
         position_radiobuttons = [
-            widgets.Radiobutton(
+            Radiobutton(
                 labelframe,
                 text=t(f"{tid_prefix}.{value}"),
                 tooltip=t(f"{tid_prefix}.{value}.tooltip"),
@@ -228,13 +232,13 @@ class OthersSettings(AppFrame):
     def _build_dialogue_confirm_buttons_position_settings(
         self,
         master: tk.Misc,
-    ) -> widgets.Labelframe:
-        labelframe = widgets.Labelframe(master, text="Dialogue OK/Cancel Position")
+    ) -> Labelframe:
+        labelframe = Labelframe(master, text="Dialogue OK/Cancel Position")
 
         # Positions
         tid_prefix = "main.settings.others.widget.dialog.confirm_buttons_position"
         position_radiobuttons = [
-            widgets.Radiobutton(
+            Radiobutton(
                 labelframe,
                 text=t(f"{tid_prefix}.{value}"),
                 tooltip=t(f"{tid_prefix}.{value}.tooltip"),

@@ -1,12 +1,12 @@
 import tkinter as tk
 from typing import Any, Callable
 
-from pokecontrollermodifiedextension import widgets
-from pokecontrollermodifiedextension.widgets.app import AppFrame
+from pokecontrollermodifiedextension.widgets.button import Button
+from pokecontrollermodifiedextension.widgets.frame import Frame
 
 
-class SettingsButtonsPane(AppFrame):
-    _apply_button: widgets.Button
+class SettingsButtonsPane(Frame):
+    _apply_button: Button
     _has_changes: tk.BooleanVar
     _on_apply_pushed: Callable[[], None]
 
@@ -29,17 +29,15 @@ class SettingsButtonsPane(AppFrame):
         self.build_ui()
 
     def build_ui(self) -> None:
-        frame = widgets.Frame(self)
-        ok_button = widgets.Button(frame, text="OK", command=self._on_ok_pushed)
-        self._apply_button = widgets.Button(
+        frame = Frame(self)
+        ok_button = Button(frame, text="OK", command=self._on_ok_pushed)
+        self._apply_button = Button(
             frame,
             text="Apply",
             state=tk.NORMAL if self._has_changes.get() else tk.DISABLED,
             command=self._on_apply_pushed,
         )
-        cancel_button = widgets.Button(
-            frame, text="Cancel", command=self._on_cancel_pushed
-        )
+        cancel_button = Button(frame, text="Cancel", command=self._on_cancel_pushed)
 
         # Layout
         ok_button.pack(side=tk.RIGHT, padx=(4, 0))

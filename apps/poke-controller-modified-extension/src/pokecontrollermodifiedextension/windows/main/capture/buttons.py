@@ -2,7 +2,6 @@ import logging
 import tkinter as tk
 from typing import Any
 
-from pokecontrollermodifiedextension import widgets
 from pokecontrollermodifiedextension.command.info import (
     get_selected_command_info,
 )
@@ -14,7 +13,9 @@ from pokecontrollermodifiedextension.state.model import get_app_model
 from pokecontrollermodifiedextension.state.resources import get_app_resources
 from pokecontrollermodifiedextension.state.runtime_info import get_app_runtime_info
 from pokecontrollermodifiedextension.translation import t
-from pokecontrollermodifiedextension.widgets.app import AppDialog, AppFrame
+from pokecontrollermodifiedextension.widgets.button import Button
+from pokecontrollermodifiedextension.widgets.frame import Frame
+from pokecontrollermodifiedextension.widgets.window import Window
 from pokecontrollermodifiedextension.windows.controller import ControllerWindow
 
 logger = logging.getLogger(__name__)
@@ -36,8 +37,8 @@ BUTTONS = [
 ]
 
 
-class Buttons(AppFrame):
-    _buttons: dict[str, widgets.Button]
+class Buttons(Frame):
+    _buttons: dict[str, Button]
 
     def __init__(self, master: tk.Misc, *args: Any, **kwargs: Any) -> None:
         super().__init__(master, *args, **kwargs)
@@ -48,7 +49,7 @@ class Buttons(AppFrame):
         self._runtime_info = get_app_runtime_info()
         self._app_model = get_app_model()
         self._command_state = get_app_command_state()
-        self._controller_window: AppDialog | None = None
+        self._controller_window: Window | None = None
         self._app_resources = get_app_resources()
 
         self.build_ui()
@@ -57,8 +58,8 @@ class Buttons(AppFrame):
 
     def build_ui(self) -> None:
         # Create Buttons
-        self._buttons: dict[str, widgets.Button] = {
-            button: widgets.Button(self, command=command, **kwargs)  # type: ignore[arg-type]
+        self._buttons: dict[str, Button] = {
+            button: Button(self, command=command, **kwargs)  # type: ignore[arg-type]
             for button, command, kwargs in [
                 (
                     START,
