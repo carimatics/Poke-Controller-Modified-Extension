@@ -1,11 +1,15 @@
 import logging
+import subprocess
 import tkinter as tk
+from pathlib import Path
 
 from pokecontroller.core.camera import CameraDetector, CameraInfo
-from pokecontroller.core.image import RawImage
+from pokecontroller.core.image import RawImage, write
 from pokecontroller.core.notification import DiscordConfig, DiscordNotifier
 from pokecontroller.core.notification.desktop import DesktopNotifier
 from pokecontroller.core.serial import SerialPort, get_serial_ports
+from pokecontroller.utils import platform
+from pokecontroller.utils.datetime import format_datetime
 
 from pokecontrollermodifiedextension.core.exception import AppRuntimeException
 from pokecontrollermodifiedextension.papico import get_papico
@@ -68,10 +72,19 @@ class AppModel:
         pass
 
     def save_screencapture(self) -> None:
-        pass
+        capture_dir = self._runtime_info.base_dir / "Captures"
+        file = capture_dir / f"{format_datetime()}.png"
+
+        if not capture_dir.exists():
+            capture_dir.mkdir(parents=True)
+
+        camera = self._app_resources.camera
+        if (frame := camera.frame) is not None:
+            write(frame, str(file), ())
 
     def open_screencapture_directory_window(self) -> None:
-        pass
+        capture_dir = self._runtime_info.base_dir / "Captures"
+        self.open_dir(capture_dir)
 
     def load_serial_ports(self) -> list[SerialPort]:
         return get_serial_ports()
@@ -175,6 +188,17 @@ class AppModel:
 
     def apply_confirm_buttons_position(self) -> None:
         pass
+
+    def open_dir(self, dir_path: Path) -> None:
+        if not dir_path.exists() or not dir_path.is_dir():
+            logger.warning(f"Directory not found: {dir_path}")
+
+        if platform.is_windows():
+            program = ["explorer"]
+        else:
+            program = ["open"]
+        program.append(str(dir_path))
+        subprocess.run(program)
 
 
 _app_model: AppModel | None = None
