@@ -62,7 +62,6 @@ class ManualControlSettings(Frame):
                 "main.settings.manual_control.software.keyboard.use_keyboard.tooltip"
             ),
             variable=self._enabled_keyboard,
-            command=self._on_enabled_keyboard_changed,
         )
 
         # Use LStick Mouse
@@ -71,7 +70,6 @@ class ManualControlSettings(Frame):
             text=t("main.settings.manual_control.software.mouse.use_lclick"),
             tooltip=t("main.settings.manual_control.software.mouse.use_lclick.tooltip"),
             variable=self._enabled_lstick_mouse,
-            command=self._on_enabled_lstick_mouse_changed,
         )
 
         # Use RStick Mouse
@@ -80,7 +78,6 @@ class ManualControlSettings(Frame):
             text=t("main.settings.manual_control.software.mouse.use_rclick"),
             tooltip=t("main.settings.manual_control.software.mouse.use_rclick.tooltip"),
             variable=self._enabled_rstick_mouse,
-            command=self._on_enabled_rstick_mouse_changed,
         )
 
         # Layout
@@ -104,7 +101,6 @@ class ManualControlSettings(Frame):
                 "main.settings.manual_control.hardware.pro_controller.use.tooltip"
             ),
             variable=self._enabled_pro_controller,
-            command=self._on_enabled_pro_controller_changed,
         )
 
         # Record Pro Controller
@@ -115,7 +111,6 @@ class ManualControlSettings(Frame):
                 "main.settings.manual_control.hardware.pro_controller.record.tooltip"
             ),
             variable=self._enabled_record_pro_controller,
-            command=self._on_enabled_record_pro_controller_changed,
         )
 
         # Layout
@@ -138,19 +133,3 @@ class ManualControlSettings(Frame):
 
     def _on_controller_pushed(self) -> None:
         self._widget_catalog.window.open_controller(self, ControllerWindow)
-        self._app_model.open_software_controller_window()
-
-    def _on_enabled_keyboard_changed(self) -> None:
-        self._app_model.apply_enabled_keyboard()
-
-    def _on_enabled_lstick_mouse_changed(self) -> None:
-        self._app_model.apply_enabled_lstick_mouse()
-
-    def _on_enabled_rstick_mouse_changed(self) -> None:
-        self._app_model.apply_enabled_rstick_mouse()
-
-    def _on_enabled_pro_controller_changed(self) -> None:
-        self._app_model.apply_enabled_pro_controller()
-
-    def _on_enabled_record_pro_controller_changed(self) -> None:
-        self._app_model.apply_enabled_record_pro_controller()

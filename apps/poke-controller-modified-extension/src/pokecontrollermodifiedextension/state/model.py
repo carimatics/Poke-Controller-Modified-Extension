@@ -50,24 +50,6 @@ class AppModel:
     def connect_camera(self) -> None:
         pass
 
-    def apply_camera_name(self) -> None:
-        pass
-
-    def apply_camera_fps(self) -> None:
-        pass
-
-    def apply_camera_size(self) -> None:
-        pass
-
-    def apply_camera_show_realtime(self) -> None:
-        pass
-
-    def apply_camera_show_matched(self) -> None:
-        pass
-
-    def apply_camera_show_guide(self) -> None:
-        pass
-
     def save_screencapture(self) -> None:
         capture_dir = self._runtime_info.base_dir / "Captures"
         file = capture_dir / f"{format_datetime()}.png"
@@ -101,33 +83,6 @@ class AppModel:
     def disconnect_serial_port(self) -> None:
         serial = self._app_resources.serial
         serial.close()
-
-    def push_controller_button(self, button: str) -> None:
-        pass
-
-    def release_controller_button(self, button: str) -> None:
-        pass
-
-    def apply_controller_data_format(self) -> None:
-        pass
-
-    def open_software_controller_window(self) -> None:
-        pass
-
-    def apply_enabled_keyboard(self) -> None:
-        pass
-
-    def apply_enabled_lstick_mouse(self) -> None:
-        pass
-
-    def apply_enabled_rstick_mouse(self) -> None:
-        pass
-
-    def apply_enabled_pro_controller(self) -> None:
-        pass
-
-    def apply_enabled_record_pro_controller(self) -> None:
-        pass
 
     def notify_desktop(self, message: str) -> None:
         self._desktop_notifier.notify(message=message)

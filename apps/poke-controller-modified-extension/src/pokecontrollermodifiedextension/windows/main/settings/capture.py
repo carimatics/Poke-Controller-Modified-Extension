@@ -169,7 +169,6 @@ class CameraSettings(Frame):
             text=t("main.settings.capture.display.realtime"),
             tooltip=t("main.settings.capture.display.realtime.tooltip"),
             variable=self._show_realtime,
-            command=self._on_show_realtime_changed,
         )
 
         # Show Value
@@ -178,7 +177,6 @@ class CameraSettings(Frame):
             text=t("main.settings.capture.display.matched"),
             tooltip=t("main.settings.capture.display.matched.tooltip"),
             variable=self._show_matched,
-            command=self._on_show_matched_changed,
         )
 
         # Show Guide
@@ -187,7 +185,6 @@ class CameraSettings(Frame):
             text=t("main.settings.capture.display.guide"),
             tooltip=t("main.settings.capture.display.guide.tooltip"),
             variable=self._show_guide,
-            command=self._on_show_guide_changed,
         )
 
         # Layout
@@ -218,15 +215,6 @@ class CameraSettings(Frame):
 
     def _on_reload_pushed(self) -> None:
         self._app_model.connect_camera()
-
-    def _on_show_realtime_changed(self) -> None:
-        self._app_model.apply_camera_show_realtime()
-
-    def _on_show_matched_changed(self) -> None:
-        self._app_model.apply_camera_show_matched()
-
-    def _on_show_guide_changed(self) -> None:
-        self._app_model.apply_camera_show_guide()
 
     def _on_camera_name_changed(self, *_: str) -> None:
         self._adjust_camera_id()
