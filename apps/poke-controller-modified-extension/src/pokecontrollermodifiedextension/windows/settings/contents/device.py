@@ -4,7 +4,7 @@ from dataclasses import fields
 from typing import Any
 
 from pokecontrollermodifiedextension.state.settings import get_app_settings
-from pokecontrollermodifiedextension.widgets.components import ComponentPackBuilder
+from pokecontrollermodifiedextension.widgets.components import ComponentBuilder
 from pokecontrollermodifiedextension.widgets.frame import Frame
 from pokecontrollermodifiedextension.widgets.labelframe import Labelframe
 from pokecontrollermodifiedextension.widgets.scrollable_frame import ScrollableFrame
@@ -29,7 +29,7 @@ class DeviceSettingsPane(Frame):
 
     def build_ui(self) -> None:
         builder: Any = (
-            ComponentPackBuilder(self)
+            ComponentBuilder(self)
             .add_scrollable_frame_row()
             # touchscreen
             .add_labelframe_row("Touchscreen")

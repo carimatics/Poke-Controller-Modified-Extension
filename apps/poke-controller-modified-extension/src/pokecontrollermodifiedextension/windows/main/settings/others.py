@@ -3,6 +3,7 @@ from typing import Any
 
 from pokecontrollermodifiedextension.state.model import get_app_model
 from pokecontrollermodifiedextension.state.settings import get_app_settings
+from pokecontrollermodifiedextension.state.widget_catalog import get_app_widget_catalog
 from pokecontrollermodifiedextension.translation import t
 from pokecontrollermodifiedextension.widgets.button import Button
 from pokecontrollermodifiedextension.widgets.checkbutton import Checkbutton
@@ -18,6 +19,7 @@ class OthersSettings(Frame):
 
         self._app_settings = get_app_settings()
         self._app_model = get_app_model()
+        self._widget_catalog = get_app_widget_catalog()
 
         self._output_size = self._app_settings.widget.output.size_balance
         self._output_stdout = self._app_settings.widget.output.stdout
@@ -151,7 +153,7 @@ class OthersSettings(Frame):
                 labelframe,
                 text=t(f"{tid_prefix}.{i}"),
                 tooltip=t(f"{tid_prefix}.{i}"),
-                command=lambda i=i: self._on_clear_pushed(output_id=i),
+                command=lambda i=i: self._on_clear_pushed(textarea_id=i),
             )
             for i in [1, 2]
         ]
@@ -261,8 +263,8 @@ class OthersSettings(Frame):
     def _on_stdout_changed(self) -> None:
         self._app_model.apply_change_log_stdout()
 
-    def _on_clear_pushed(self, output_id: int) -> None:
-        self._app_model.clear_log_output(output_id)
+    def _on_clear_pushed(self, textarea_id: int) -> None:
+        self._widget_catalog.outputs.clear_textarea(textarea_id=textarea_id)
 
     def _on_output_visibility_changed(self) -> None:
         self._app_model.apply_outputs_visibility()

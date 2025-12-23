@@ -4,7 +4,7 @@ from typing import Any
 
 from pokecontrollermodifiedextension.state.model import get_app_model
 from pokecontrollermodifiedextension.state.settings import get_app_settings
-from pokecontrollermodifiedextension.widgets.components import ComponentPackBuilder
+from pokecontrollermodifiedextension.widgets.components import ComponentBuilder
 from pokecontrollermodifiedextension.widgets.frame import Frame
 
 logger = logging.getLogger(__name__)
@@ -36,7 +36,7 @@ class CaptureSettingsPane(Frame):
     def build_ui(self) -> None:
         label_width = 16
         frame = (
-            ComponentPackBuilder(self)
+            ComponentBuilder(self)
             .add_frame_row()
             .add_label(text="Camera ID:", width=label_width)
             .add_combobox(

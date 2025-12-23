@@ -1,6 +1,5 @@
 import logging
 import subprocess
-import tkinter as tk
 from pathlib import Path
 
 from pokecontroller.core.camera import CameraDetector, CameraInfo
@@ -17,7 +16,6 @@ from pokecontrollermodifiedextension.state.info import get_app_info
 from pokecontrollermodifiedextension.state.resources import get_app_resources
 from pokecontrollermodifiedextension.state.runtime_info import get_app_runtime_info
 from pokecontrollermodifiedextension.state.settings import get_app_settings
-from pokecontrollermodifiedextension.state.widget_catalog import get_app_widget_catalog
 
 logger = logging.getLogger(__name__)
 
@@ -29,7 +27,6 @@ class AppModel:
         self._app_info = get_app_info()
         self._app_settings = get_app_settings()
         self._papico = get_papico()
-        self._widget_catalog = get_app_widget_catalog()
 
         app_name = self._app_info.name
         app_version = self._app_info.version
@@ -131,20 +128,6 @@ class AppModel:
 
     def apply_enabled_record_pro_controller(self) -> None:
         pass
-
-    def clear_log_outputs(self) -> None:
-        for i in [1, 2]:
-            self.clear_log_output(output_id=i)
-
-    def clear_log_output(self, output_id: int) -> None:
-        outputs_catalog = self._widget_catalog.outputs
-        if (t := getattr(outputs_catalog, f"textarea{output_id}")) is None:
-            return
-        try:
-            t.config(state=tk.NORMAL)
-            t.delete("1.0", tk.END)
-        finally:
-            t.config(state=tk.DISABLED)
 
     def apply_change_log_stdout(self) -> None:
         pass

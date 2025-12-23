@@ -3,11 +3,13 @@ from typing import Any
 
 from pokecontrollermodifiedextension.state.model import get_app_model
 from pokecontrollermodifiedextension.state.settings import get_app_settings
+from pokecontrollermodifiedextension.state.widget_catalog import get_app_widget_catalog
 from pokecontrollermodifiedextension.translation import t
 from pokecontrollermodifiedextension.widgets.button import Button
 from pokecontrollermodifiedextension.widgets.checkbutton import Checkbutton
 from pokecontrollermodifiedextension.widgets.frame import Frame
 from pokecontrollermodifiedextension.widgets.labelframe import Labelframe
+from pokecontrollermodifiedextension.windows import ControllerWindow
 
 
 class ManualControlSettings(Frame):
@@ -16,6 +18,7 @@ class ManualControlSettings(Frame):
 
         self._app_settings = get_app_settings()
         self._app_model = get_app_model()
+        self._widget_catalog = get_app_widget_catalog()
 
         self._enabled_keyboard = self._app_settings.device.keyboard.enabled
         self._enabled_lstick_mouse = self._app_settings.device.mouse.enabled_lclick
@@ -134,6 +137,7 @@ class ManualControlSettings(Frame):
         return labelframe
 
     def _on_controller_pushed(self) -> None:
+        self._widget_catalog.window.open_controller(self, ControllerWindow)
         self._app_model.open_software_controller_window()
 
     def _on_enabled_keyboard_changed(self) -> None:

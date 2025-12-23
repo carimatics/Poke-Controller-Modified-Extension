@@ -3,8 +3,8 @@ import tkinter as tk
 import webbrowser
 from typing import Any
 
-from pokecontrollermodifiedextension.app import App
 from pokecontrollermodifiedextension.state.settings import DEFAULT, get_app_settings
+from pokecontrollermodifiedextension.state.widget_catalog import get_app_widget_catalog
 from pokecontrollermodifiedextension.windows import SettingsWindow
 
 logger = logging.getLogger(__name__)
@@ -15,11 +15,10 @@ WEBBROWSER_OPEN_IN_NEW_TAB = 2
 
 
 class Menu(tk.Menu):
-    _settings_window: SettingsWindow | None = None
-
-    def __init__(self, master: App, *args: Any, **kwargs: Any) -> None:
+    def __init__(self, master: tk.Misc, *args: Any, **kwargs: Any) -> None:
         super().__init__(master, *args, **kwargs)
         self._app_settings = get_app_settings()
+        self._widget_catalog = get_app_widget_catalog()
         self.build_ui()
 
     def build_ui(self) -> None:
@@ -101,15 +100,7 @@ class Menu(tk.Menu):
         )
 
     def _on_menu_settings_pushed(self) -> None:
-        if (window := self._settings_window) is not None:
-            if window.winfo_exists():
-                window.lift()
-                return
-        self._settings_window = SettingsWindow(self)
-        self._settings_window.protocol(
-            "WM_DELETE_WINDOW",
-            self._on_settings_window_closed,
-        )
+        self._widget_catalog.window.open_settings(self, SettingsWindow)
 
     def _on_menu_reset_window_size_pushed(self) -> None:
         self._app_settings.capture.size.set(DEFAULT["capture"]["size"])
@@ -148,11 +139,3 @@ class Menu(tk.Menu):
 
     def _on_help_license_pushed(self) -> None:
         pass
-
-    def _on_settings_window_closed(self) -> None:
-        logger.info("Settings window closed.")
-        if (window := self._settings_window) is None:
-            return
-        if window.winfo_exists():
-            window.destroy()
-        self._settings_window = None

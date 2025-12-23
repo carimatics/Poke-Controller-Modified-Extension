@@ -5,7 +5,7 @@ from typing import Any
 from pokecontrollermodifiedextension.state.info import get_app_info
 from pokecontrollermodifiedextension.state.settings import get_app_settings
 from pokecontrollermodifiedextension.state.style import get_style_manager
-from pokecontrollermodifiedextension.widgets.components import ComponentPackBuilder
+from pokecontrollermodifiedextension.widgets.components import ComponentBuilder
 from pokecontrollermodifiedextension.widgets.frame import Frame
 
 logger = logging.getLogger(__name__)
@@ -31,7 +31,7 @@ class GeneralSettingsPane(Frame):
     def build_ui(self) -> None:
         label_width = 8
         frame = (
-            ComponentPackBuilder(self)
+            ComponentBuilder(self)
             .add_frame_row()
             .add_label(text="Version:", width=label_width)
             .add_label(variable=self._current_version)

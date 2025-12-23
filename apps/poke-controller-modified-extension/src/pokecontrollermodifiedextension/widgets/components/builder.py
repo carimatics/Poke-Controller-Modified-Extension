@@ -30,7 +30,7 @@ class TraceRegisterable(Protocol):
     def register_refreshable(self, refreshable: Refreshable) -> None: ...
 
 
-class ComponentPackRowBuilder[T: TraceRegisterable]:
+class ComponentRowBuilder[T: TraceRegisterable]:
     def __init__(
         self,
         caller: T,
@@ -223,16 +223,16 @@ class ComponentPackRowBuilder[T: TraceRegisterable]:
         spinbox.pack(side=tk.LEFT)
         return self
 
-    def add_frame_row(self) -> "ComponentPackRowBuilder[Self]":
-        return ComponentPackRowBuilder(self, Frame(self._master))
+    def add_frame_row(self) -> "ComponentRowBuilder[Self]":
+        return ComponentRowBuilder(self, Frame(self._master))
 
-    def add_labelframe_row(self, label: str) -> "ComponentPackRowBuilder[Self]":
-        return ComponentPackRowBuilder(self, Labelframe(self._master, text=label))
+    def add_labelframe_row(self, label: str) -> "ComponentRowBuilder[Self]":
+        return ComponentRowBuilder(self, Labelframe(self._master, text=label))
 
-    def add_scrollable_frame_row(self) -> "ComponentPackRowBuilder[Self]":
+    def add_scrollable_frame_row(self) -> "ComponentRowBuilder[Self]":
         container = ScrollableFrame(self._master)
         self._caller.register_refreshable(container)
-        return ComponentPackRowBuilder(self, container)
+        return ComponentRowBuilder(self, container)
 
     def end(self) -> T:
         self._container.pack(expand=False, side=tk.TOP, fill=tk.BOTH)
@@ -263,7 +263,7 @@ class ComponentPackRowBuilder[T: TraceRegisterable]:
         self._caller.register_refreshable(refreshable)
 
 
-class ComponentPackBuilder:
+class ComponentBuilder:
     _container: Frame | Labelframe | ScrollableFrame | None
 
     def __init__(self, master: Frame | Labelframe | ScrollableFrame) -> None:
@@ -275,18 +275,18 @@ class ComponentPackBuilder:
         for refreshable in self._refreshables:
             refreshable.refresh()
 
-    def add_frame_row(self) -> ComponentPackRowBuilder[Self]:
+    def add_frame_row(self) -> ComponentRowBuilder[Self]:
         self._container = Frame(self._master)
-        return ComponentPackRowBuilder(self, self._container)
+        return ComponentRowBuilder(self, self._container)
 
-    def add_labelframe_row(self, label: str) -> ComponentPackRowBuilder[Self]:
+    def add_labelframe_row(self, label: str) -> ComponentRowBuilder[Self]:
         self._container = Labelframe(self._master, text=label)
-        return ComponentPackRowBuilder(self, self._container)
+        return ComponentRowBuilder(self, self._container)
 
-    def add_scrollable_frame_row(self) -> ComponentPackRowBuilder[Self]:
+    def add_scrollable_frame_row(self) -> ComponentRowBuilder[Self]:
         self._container = ScrollableFrame(self._master)
         self._refreshables.append(self._container)
-        return ComponentPackRowBuilder(self, self._container)
+        return ComponentRowBuilder(self, self._container)
 
     def build(self) -> Frame | Labelframe | ScrollableFrame:
         if self._container is None:

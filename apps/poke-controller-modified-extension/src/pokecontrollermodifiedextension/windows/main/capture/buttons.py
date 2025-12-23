@@ -12,11 +12,11 @@ from pokecontrollermodifiedextension.state.command import (
 from pokecontrollermodifiedextension.state.model import get_app_model
 from pokecontrollermodifiedextension.state.resources import get_app_resources
 from pokecontrollermodifiedextension.state.runtime_info import get_app_runtime_info
+from pokecontrollermodifiedextension.state.widget_catalog import get_app_widget_catalog
 from pokecontrollermodifiedextension.translation import t
 from pokecontrollermodifiedextension.widgets.button import Button
 from pokecontrollermodifiedextension.widgets.frame import Frame
-from pokecontrollermodifiedextension.widgets.window import Window
-from pokecontrollermodifiedextension.windows.controller import ControllerWindow
+from pokecontrollermodifiedextension.windows import ControllerWindow
 
 logger = logging.getLogger(__name__)
 
@@ -49,8 +49,8 @@ class Buttons(Frame):
         self._runtime_info = get_app_runtime_info()
         self._app_model = get_app_model()
         self._command_state = get_app_command_state()
-        self._controller_window: Window | None = None
         self._app_resources = get_app_resources()
+        self._widget_catalog = get_app_widget_catalog()
 
         self.build_ui()
 
@@ -128,13 +128,10 @@ class Buttons(Frame):
         self._papico.stop_command()
 
     def _on_controller_pushed(self) -> None:
-        self._controller_window = ControllerWindow(self)
-        self._controller_window.protocol(
-            "WM_DELETE_WINDOW", self._on_controller_window_closed
-        )
+        self._widget_catalog.window.open_controller(self, ControllerWindow)
 
     def _on_clear_outputs_pushed(self) -> None:
-        self._app_model.clear_log_outputs()
+        self._widget_catalog.outputs.clear_textareas()
 
     def _on_capture_pushed(self) -> None:
         self._app_model.save_screencapture()
@@ -144,12 +141,6 @@ class Buttons(Frame):
 
     def _on_notify_discord_pushed(self) -> None:
         self._app_model.notify_discord(image=self._app_resources.camera.frame)
-
-    def _on_controller_window_closed(self) -> None:
-        if (window := self._controller_window) is None:
-            return
-        window.destroy()
-        self._controller_window = None
 
     def _on_running_changed(self, *_: str) -> None:
         if self._command_state.is_running.get():
