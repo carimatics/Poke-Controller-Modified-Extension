@@ -55,8 +55,6 @@ class NotificationSettings(Frame):
             platform="desktop",
             enabled_started=self._enabled_windows_started,
             enabled_ended=self._enabled_windows_ended,
-            on_enabled_started_changed=self._on_windows_start_changed,
-            on_enabled_ended_changed=self._on_windows_end_changed,
             on_test_pushed=self._on_desktop_test_pushed,
         )
 
@@ -65,8 +63,6 @@ class NotificationSettings(Frame):
             platform="discord",
             enabled_started=self._enabled_discord_started,
             enabled_ended=self._enabled_discord_ended,
-            on_enabled_started_changed=self._on_discord_start_changed,
-            on_enabled_ended_changed=self._on_discord_end_changed,
             on_test_pushed=self._on_discord_test_pushed,
         )
 
@@ -75,8 +71,6 @@ class NotificationSettings(Frame):
         platform: str,
         enabled_started: tk.BooleanVar,
         enabled_ended: tk.BooleanVar,
-        on_enabled_started_changed: Callable[[], None],
-        on_enabled_ended_changed: Callable[[], None],
         on_test_pushed: Callable[[], None],
     ) -> Labelframe:
         labelframe = Labelframe(
@@ -90,7 +84,6 @@ class NotificationSettings(Frame):
             text=t(f"main.settings.notification.{platform}.start"),
             tooltip=t(f"main.settings.notification.{platform}.start.tooltip"),
             variable=enabled_started,
-            command=on_enabled_started_changed,
         )
 
         # End
@@ -99,7 +92,6 @@ class NotificationSettings(Frame):
             text=t(f"main.settings.notification.{platform}.end"),
             tooltip=t(f"main.settings.notification.{platform}.end.tooltip"),
             variable=enabled_ended,
-            command=on_enabled_ended_changed,
         )
 
         # Test
@@ -117,20 +109,8 @@ class NotificationSettings(Frame):
 
         return labelframe
 
-    def _on_windows_start_changed(self) -> None:
-        self._app_model.apply_enabled_notify_windows_when_command_started()
-
-    def _on_windows_end_changed(self) -> None:
-        self._app_model.apply_enabled_notify_windows_when_command_ended()
-
     def _on_desktop_test_pushed(self) -> None:
         self._app_model.notify_desktop(message="Notification Test")
-
-    def _on_discord_start_changed(self) -> None:
-        self._app_model.apply_enabled_notify_discord_when_command_started()
-
-    def _on_discord_end_changed(self) -> None:
-        self._app_model.apply_enabled_notify_discord_when_command_ended()
 
     def _on_discord_test_pushed(self) -> None:
         self._app_model.notify_discord(message="Notification Test")

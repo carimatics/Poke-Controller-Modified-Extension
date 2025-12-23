@@ -105,7 +105,6 @@ class OthersSettings(Frame):
             from_=0,
             to=100,
             variable=self._output_size,
-            command=self._on_size_adjuster_changed,
         )
 
         # Layout
@@ -132,7 +131,6 @@ class OthersSettings(Frame):
                 tooltip=t(f"{tid_prefix}.{i}.tooltip"),
                 value=i,
                 variable=self._output_stdout,
-                command=self._on_stdout_changed,
             )
             for i in range(1, 3)
         ]
@@ -175,26 +173,22 @@ class OthersSettings(Frame):
                 text=text,
                 tooltip=tooltip,
                 variable=var,
-                command=command,
             )
-            for text, tooltip, var, command in [
+            for text, tooltip, var in [
                 (
                     t(f"{tid_prefix}.output1"),
                     t(f"{tid_prefix}.output1.tooltip"),
                     self._output1_visibility,
-                    self._on_output_visibility_changed,
                 ),
                 (
                     t(f"{tid_prefix}.output2"),
                     t(f"{tid_prefix}.output2.tooltip"),
                     self._output2_visibility,
-                    self._on_output_visibility_changed,
                 ),
                 (
                     t(f"{tid_prefix}.software_controller"),
                     t(f"{tid_prefix}.software_controller.tooltip"),
                     self._software_controller_visibility,
-                    self._on_software_controller_visibility_changed,
                 ),
             ]
         ]
@@ -220,7 +214,6 @@ class OthersSettings(Frame):
                 tooltip=t(f"{tid_prefix}.{value}.tooltip"),
                 value=value,
                 variable=self._software_controller_position,
-                command=self._on_software_controller_position_changed,
             )
             for value in ["top", "bottom"]
         ]
@@ -246,7 +239,6 @@ class OthersSettings(Frame):
                 tooltip=t(f"{tid_prefix}.{value}.tooltip"),
                 value=value,
                 variable=self._confirm_dialogue_buttons_position,
-                command=self._on_confirm_buttons_position_changed,
             )
             for value in ["top", "bottom", "both"]
         ]
@@ -257,23 +249,5 @@ class OthersSettings(Frame):
 
         return labelframe
 
-    def _on_size_adjuster_changed(self, _value: str) -> None:
-        self._app_model.adjust_log_outputs_size()
-
-    def _on_stdout_changed(self) -> None:
-        self._app_model.apply_change_log_stdout()
-
     def _on_clear_pushed(self, textarea_id: int) -> None:
         self._widget_catalog.outputs.clear_textarea(textarea_id=textarea_id)
-
-    def _on_output_visibility_changed(self) -> None:
-        self._app_model.apply_outputs_visibility()
-
-    def _on_software_controller_visibility_changed(self) -> None:
-        self._app_model.apply_software_controller_visibility()
-
-    def _on_software_controller_position_changed(self) -> None:
-        self._app_model.apply_software_controller_position()
-
-    def _on_confirm_buttons_position_changed(self) -> None:
-        self._app_model.apply_confirm_buttons_position()

@@ -129,12 +129,6 @@ class AppModel:
     def apply_enabled_record_pro_controller(self) -> None:
         pass
 
-    def apply_change_log_stdout(self) -> None:
-        pass
-
-    def adjust_log_outputs_size(self) -> None:
-        pass
-
     def notify_desktop(self, message: str) -> None:
         self._desktop_notifier.notify(message=message)
 
@@ -144,33 +138,6 @@ class AppModel:
         image: RawImage | None = None,
     ) -> None:
         self._discord_notifier.notify(message=message, image=image)
-
-    def apply_enabled_notify_windows_when_command_started(self) -> None:
-        pass
-
-    def apply_enabled_notify_windows_when_command_ended(self) -> None:
-        pass
-
-    def apply_enabled_notify_discord_when_command_started(self) -> None:
-        pass
-
-    def apply_enabled_notify_discord_when_command_ended(self) -> None:
-        pass
-
-    def apply_widget_layout(self) -> None:
-        pass
-
-    def apply_outputs_visibility(self) -> None:
-        pass
-
-    def apply_software_controller_visibility(self) -> None:
-        pass
-
-    def apply_software_controller_position(self) -> None:
-        pass
-
-    def apply_confirm_buttons_position(self) -> None:
-        pass
 
     def open_dir(self, dir_path: Path) -> None:
         if not dir_path.exists() or not dir_path.is_dir():
