@@ -3,7 +3,7 @@ import threading
 import time
 from abc import ABC, abstractmethod
 from time import sleep
-from typing import Never, Callable
+from typing import Callable, Never
 
 from pokecontrollermodifiedextension.api.v0_1_8.command.commands.base import (
     Command,
@@ -81,9 +81,9 @@ class PythonCommand(Command, ABC):
                 self._notify_when_started()
                 self.do()
 
-        self._call_safe(do_after_notify)
-        self._call_safe(self.finish)
-        self._call_safe(self._notify_when_ended)
+        self._call_safe(ser, do_after_notify)
+        self._call_safe(ser, self.finish)
+        self._call_safe(ser, self._notify_when_ended)
         self._command_state.finish()
 
     def start(
@@ -350,13 +350,9 @@ class PythonCommand(Command, ABC):
             else:
                 print('"plyer" is not installed.')
         if self.isLineNotStart:
-            self.LINE_text(
-                f"{title}\n{message}"
-            )
+            self.LINE_text(f"{title}\n{message}")
         if self.isDiscordNotStart:
-            self.discord_text(
-                f"{title}\n{message}"
-            )
+            self.discord_text(f"{title}\n{message}")
 
     def _notify_when_ended(self) -> None:
         global flag_import_plyer
@@ -372,15 +368,11 @@ class PythonCommand(Command, ABC):
             else:
                 print('"plyer" is not installed.')
         if self.isLineNotEnd:
-            self.LINE_text(
-                f"{title}\n{message}"
-            )
+            self.LINE_text(f"{title}\n{message}")
         if self.isDiscordNotEnd:
-            self.discord_text(
-                f"{title}\n{message}"
-            )
+            self.discord_text(f"{title}\n{message}")
 
-    def _call_safe(self, func: Callable[[], None]) -> None:
+    def _call_safe(self, sender: Sender, func: Callable[[], None]) -> None:
         try:
             func()
         except StopThread:
@@ -388,7 +380,7 @@ class PythonCommand(Command, ABC):
             logger.info("Command stopped successfully")
         except Exception as e:
             if self.keys is None:
-                self.keys = keys = KeyPress(ser)  # type: ignore[unreachable]
+                self.keys = keys = KeyPress(sender)
                 keys.init_hat()
             logger.warning("Interrupt:cmd(黒い画面)を確認してください。")
             logger.warning(e)
