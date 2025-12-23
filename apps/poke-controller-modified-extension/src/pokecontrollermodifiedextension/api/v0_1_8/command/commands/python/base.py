@@ -3,7 +3,7 @@ import threading
 import time
 from abc import ABC, abstractmethod
 from time import sleep
-from typing import Never
+from typing import Never, Callable
 
 from pokecontrollermodifiedextension.api.v0_1_8.command.commands.base import (
     Command,
@@ -76,60 +76,15 @@ class PythonCommand(Command, ABC):
             self.keys = keys = KeyPress(ser)
             keys.init_hat()
 
-        global flag_import_plyer
-        try:
+        def do_after_notify() -> None:
             if self.alive:
-                if self.isWinNotStart:
-                    if flag_import_plyer:
-                        notification.notify(
-                            title=f"{self.app_name} (profile:{self.profilename})",
-                            message=f"{self.cur_command_name} started.",
-                            timeout=5,
-                        )
-                    else:
-                        print('"plyer" is not installed.')
-                if self.isLineNotStart:
-                    self.LINE_text(
-                        f"{self.app_name} (profile:{self.profilename})\n{self.cur_command_name} started."
-                    )
-                if self.isDiscordNotStart:
-                    self.discord_text(
-                        f"{self.app_name} (profile:{self.profilename})\n{self.cur_command_name} started."
-                    )
+                self._notify_when_started()
                 self.do()
-                self.finish()
-        except StopThread:
-            print("-- finished successfully. --")
-            logger.info("Command finished successfully")
-            if self.isWinNotEnd:
-                if flag_import_plyer:
-                    notification.notify(
-                        title=f"{self.app_name} (profile:{self.profilename})",
-                        message=f"{self.cur_command_name} finished.",
-                        timeout=5,
-                    )
-                else:
-                    print('"plyer" is not installed.')
-            if self.isLineNotEnd:
-                self.LINE_text(
-                    f"{self.app_name} (profile:{self.profilename})\n{self.cur_command_name} finished."
-                )
-            if self.isDiscordNotEnd:
-                self.discord_text(
-                    f"{self.app_name} (profile:{self.profilename})\n{self.cur_command_name} finished."
-                )
-        except Exception as e:
-            if self.keys is None:
-                self.keys = keys = KeyPress(ser)  # type: ignore[unreachable]
-                keys.init_hat()
-            logger.warning("Interrupt:cmd(黒い画面)を確認してください。")
-            logger.warning(e)
-            logger.warning("Command stopped unexpectedly")
-            import traceback
 
-            traceback.print_exc()
-            self.keys.end()
-            self.alive = False
+        self._call_safe(do_after_notify)
+        self._call_safe(self.finish)
+        self._call_safe(self._notify_when_ended)
+        self._command_state.finish()
 
     def start(
         self,
@@ -160,7 +115,6 @@ class PythonCommand(Command, ABC):
             mqtt.alive = False
         self.sendStopRequest()
         logger.info("Exit from command successfully")
-        self._command_state.finish()
         raise StopThread("exit successfully")
 
     def finish(self) -> Never:
@@ -381,3 +335,66 @@ class PythonCommand(Command, ABC):
                 notifier.send_message(notification_message=content, keys=keys)
             except Exception:
                 pass
+
+    def _notify_when_started(self) -> None:
+        global flag_import_plyer
+        title = f"{self.app_name} (profile:{self.profilename})"
+        message = f"{self.cur_command_name} started."
+        if self.isWinNotStart:
+            if flag_import_plyer:
+                notification.notify(
+                    title=title,
+                    message=message,
+                    timeout=5,
+                )
+            else:
+                print('"plyer" is not installed.')
+        if self.isLineNotStart:
+            self.LINE_text(
+                f"{title}\n{message}"
+            )
+        if self.isDiscordNotStart:
+            self.discord_text(
+                f"{title}\n{message}"
+            )
+
+    def _notify_when_ended(self) -> None:
+        global flag_import_plyer
+        title = f"{self.app_name} (profile:{self.profilename})"
+        message = f"{self.cur_command_name} finished."
+        if self.isWinNotEnd:
+            if flag_import_plyer:
+                notification.notify(
+                    title=title,
+                    message=message,
+                    timeout=5,
+                )
+            else:
+                print('"plyer" is not installed.')
+        if self.isLineNotEnd:
+            self.LINE_text(
+                f"{title}\n{message}"
+            )
+        if self.isDiscordNotEnd:
+            self.discord_text(
+                f"{title}\n{message}"
+            )
+
+    def _call_safe(self, func: Callable[[], None]) -> None:
+        try:
+            func()
+        except StopThread:
+            print("-- stopped successfully. --")
+            logger.info("Command stopped successfully")
+        except Exception as e:
+            if self.keys is None:
+                self.keys = keys = KeyPress(ser)  # type: ignore[unreachable]
+                keys.init_hat()
+            logger.warning("Interrupt:cmd(黒い画面)を確認してください。")
+            logger.warning(e)
+            logger.warning("Command stopped unexpectedly")
+            import traceback
+
+            traceback.print_exc()
+            self.keys.end()
+            self.alive = False
