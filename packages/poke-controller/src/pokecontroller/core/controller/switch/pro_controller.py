@@ -54,10 +54,14 @@ class SwitchProController:
         self._recorder = recorder
 
         self._enabled = False
+        self._is_running = False
         self._state = SwitchControllerState()
         self._is_dirty = False
 
     def start_loop(self) -> None:
+        if self._is_running:
+            return
+
         logger.info("Starting Switch Pro Controller loop")
         self._enabled = True
 
@@ -67,6 +71,7 @@ class SwitchProController:
 
         try:
             while self._enabled:
+                self._is_running = True
                 events = pygame.event.get()
                 self._apply_joystick(joystick)
                 self._apply_events(events)
@@ -75,6 +80,7 @@ class SwitchProController:
         except Exception as e:
             logger.error(f"Error in Pro Controller loop: {e}")
         finally:
+            self._is_running = False
             pygame.quit()
 
         logger.info("Stopped Switch Pro Controller loop")
