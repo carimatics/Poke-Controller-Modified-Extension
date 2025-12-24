@@ -2,7 +2,7 @@ import tkinter as tk
 import tkinter.ttk as ttk
 from typing import Any, Literal, overload
 
-from pokecontrollermodifiedextension.mixins.tooltip import TooltipMixIn
+from pokecontrollermodifiedextension.widgets.mixins.tooltip import TooltipMixIn
 
 type VariantType = Literal["base", "primary", "error", "success", "warning"]
 type SizeType = Literal["xs", "s", "md", "l", "xl"]
