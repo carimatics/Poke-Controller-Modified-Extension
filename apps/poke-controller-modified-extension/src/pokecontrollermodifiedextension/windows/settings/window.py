@@ -12,13 +12,9 @@ from pokecontrollermodifiedextension.widgets.window import Window
 from pokecontrollermodifiedextension.windows.settings.buttons import SettingsButtonsPane
 from pokecontrollermodifiedextension.windows.settings.contents import (
     CaptureSettingsPane,
-    CommandSettingsPane,
     DeviceSettingsPane,
-    ExternalSettingsPane,
     GeneralSettingsPane,
-    NotificationSettingsPane,
     SerialSettingsPane,
-    WidgetSettingsPane,
 )
 from pokecontrollermodifiedextension.windows.settings.sidebar import SettingsSidebarPane
 
@@ -94,10 +90,6 @@ class SettingsWindow(Window):
         sidebar.add_section("capture", "Capture")
         sidebar.add_section("serial", "Serial")
         sidebar.add_section("device", "Device")
-        sidebar.add_section("command", "Command")
-        sidebar.add_section("notification", "Notification")
-        sidebar.add_section("widget", "Widget")
-        sidebar.add_section("external", "External")
 
         return sidebar
 
@@ -107,12 +99,6 @@ class SettingsWindow(Window):
         self._contents["capture"] = CaptureSettingsPane(self._content_labelframe)
         self._contents["serial"] = SerialSettingsPane(self._content_labelframe)
         self._contents["device"] = DeviceSettingsPane(self._content_labelframe)
-        self._contents["command"] = CommandSettingsPane(self._content_labelframe)
-        self._contents["notification"] = NotificationSettingsPane(
-            self._content_labelframe
-        )
-        self._contents["widget"] = WidgetSettingsPane(self._content_labelframe)
-        self._contents["external"] = ExternalSettingsPane(self._content_labelframe)
 
     def _save_settings(self) -> None:
         logger.info("Settings saving.")
