@@ -1,4 +1,4 @@
-from pokecontrollermodifiedextension.singletons.runtime.app_info import get_app_info
+from pokecontrollerext.singletons.runtime.app_info import get_app_info
 
 _app_info = get_app_info()
 

@@ -1,5 +1,5 @@
 # for compatibility
-from pokecontrollermodifiedextension.api.v0_1_8.command.commands.unit import (  # noqa
+from pokecontrollerext.api.v0_1_8.command.commands.unit import (  # noqa
     UnitCommand as UnitCommand,
     A as A,
     B as B,

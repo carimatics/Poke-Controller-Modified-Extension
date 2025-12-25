@@ -7,7 +7,7 @@
 from tkinter import messagebox
 from pathlib import Path
 
-from pokecontrollermodifiedextension.updater import (
+from pokecontrollerext.updater import (
     PokeControllerUpdater,
     PokeControllerUpdaterCheckoutBranchException,
 )

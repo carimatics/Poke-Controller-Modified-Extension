@@ -19,4 +19,4 @@ requires = ["uv_build>=0.9.9,<0.10.0"]
 build-backend = "uv_build"
 
 [tool.uv.build-backend]
-module-name = "pokecontrollermodifiedextension"
+module-name = "pokecontrollerext"

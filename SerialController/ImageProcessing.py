@@ -1,5 +1,5 @@
 # for compatibility
-from pokecontrollermodifiedextension.api.v0_1_8.image_processing import (  # noqa
+from pokecontrollerext.api.v0_1_8.image_processing import (  # noqa
     crop_image as crop_image,
     crop_image_extend as crop_image_extend,
     getInterframeDiff as getInterframeDiff,
