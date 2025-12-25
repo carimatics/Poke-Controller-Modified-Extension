@@ -42,6 +42,12 @@ class MainWindow(Frame):
         self._serial_port = self._app_settings.serial.port
         self._serial_port_name = self._app_settings.serial.port_name
 
+        # keyboard
+        self._enabled_keyboard = self._app_settings.device.keyboard.enabled
+
+        # pro-controller
+        self._enabled_pro_controller = self._app_settings.device.pro_controller.enabled
+
         self._panes: dict[str, Frame] = {}
         self._frames: dict[str, Frame] = {}
         self._register_traces()
@@ -81,14 +87,17 @@ class MainWindow(Frame):
         self._layout_right_frame()
 
     def _register_traces(self) -> None:
-        self._outputs_size.trace_add("write", self._on_outputs_size_changed)
-        self._visible_output1.trace_add("write", self._on_widget_visibility_changed)
-        self._visible_output2.trace_add("write", self._on_widget_visibility_changed)
-        self._visible_controller.trace_add("write", self._on_widget_visibility_changed)
-        self._controller_position.trace_add(
-            "write", self._on_controller_position_changed
-        )
-        self._serial_port.trace_add("write", self._on_serial_port_changed)
+        for var, func in (
+            (self._outputs_size, self._on_outputs_size_changed),
+            (self._visible_output1, self._on_widget_visibility_changed),
+            (self._visible_output2, self._on_widget_visibility_changed),
+            (self._visible_controller, self._on_widget_visibility_changed),
+            (self._controller_position, self._on_controller_position_changed),
+            (self._serial_port, self._on_serial_port_changed),
+            (self._enabled_keyboard, self._on_enabled_keyboard_changed),
+            (self._enabled_pro_controller, self._on_enabled_pro_controller_changed),
+        ):
+            self.register_trace("write", var, func)
 
     def _layout_left_frame(self) -> None:
         self._panes[CAPTURE].pack(expand=True, fill=tk.BOTH, anchor=tk.CENTER)
@@ -201,3 +210,15 @@ class MainWindow(Frame):
                 self._serial_port_name.set(port.name)
         if serial_ports:
             self._serial_port_name.set(serial_ports[0].name)
+
+    def _on_enabled_keyboard_changed(self, *_: Any) -> None:
+        if self._enabled_keyboard.get():
+            self._app_model.start_keyboard()
+        else:
+            self._app_model.stop_keyboard()
+
+    def _on_enabled_pro_controller_changed(self, *_: Any) -> None:
+        if self._enabled_pro_controller.get():
+            self._app_model.start_pro_controller()
+        else:
+            self._app_model.stop_pro_controller()

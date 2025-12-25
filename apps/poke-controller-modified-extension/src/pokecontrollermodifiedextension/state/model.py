@@ -1,8 +1,12 @@
+import datetime
 import logging
 import subprocess
+import threading
+import tkinter as tk
 from pathlib import Path
 
 from pokecontroller.core.camera import CameraDetector, CameraInfo
+from pokecontroller.core.controller.switch import SwitchControllerState
 from pokecontroller.core.image import RawImage, write
 from pokecontroller.core.notification import DiscordConfig, DiscordNotifier
 from pokecontroller.core.notification.desktop import DesktopNotifier
@@ -17,7 +21,40 @@ from pokecontrollermodifiedextension.state.resources import get_app_resources
 from pokecontrollermodifiedextension.state.runtime_info import get_app_runtime_info
 from pokecontrollermodifiedextension.state.settings import get_app_settings
 
+if not platform.is_macos():
+    from pokecontroller.core.controller.switch.keyboard import SwitchKeyboard
+    from pokecontroller.core.controller.switch.pro_controller import SwitchProController
+    from pokecontroller.core.controller.switch.serializers.leonardo import (
+        SwitchControllerStateSerializer,
+    )
+
 logger = logging.getLogger(__name__)
+
+
+class SwitchProControllerRecorder:
+    def __init__(self, base_dir: Path, should_record: tk.BooleanVar) -> None:
+        self._file_path = (
+            base_dir / "Controller_Log" / f"controller_log_{format_datetime()}.txt"
+        )
+        self._log: list[str] = []
+        self._should_record = should_record
+
+    def record(self, state: SwitchControllerState) -> None:
+        if not self._should_record.get():
+            if self._log:
+                self.write()
+            return
+
+        today = datetime.datetime.today()
+        serialized = SwitchControllerStateSerializer.serialize(state)
+        self._log.append(f"{today},{serialized}\n")
+        if len(self._log) >= 100:
+            self.write()
+
+    def write(self) -> None:
+        with open(self._file_path, "a", encoding="utf-8") as f:
+            f.writelines(self._log)
+        self._log.clear()
 
 
 class AppModel:
@@ -40,6 +77,23 @@ class AppModel:
         self._desktop_notifier = DesktopNotifier(
             title=f"{app_name} ver. {app_version}(profile: {profile})"
         )
+
+        if platform.is_macos():
+            self._keyboard = None
+        else:
+            serial = self._app_resources.serial
+            keymap = self._app_settings.to_dict()["device"]["keyboard"]["keymap"]
+            self._keyboard = SwitchKeyboard(serial, keymap)
+
+        if platform.is_macos():
+            self._pro_controller = None
+        else:
+            serial = self._app_resources.serial
+            recorder = SwitchProControllerRecorder(
+                base_dir=base_dir,
+                should_record=self._app_settings.device.pro_controller.enabled_record,
+            )
+            self._pro_controller = SwitchProController(serial, recorder)
 
     def load_camera_list(self) -> list[CameraInfo]:
         return CameraDetector(max_cameras=20).detect()
@@ -106,6 +160,26 @@ class AppModel:
             program = ["open"]
         program.append(str(dir_path))
         subprocess.run(program)
+
+    def start_keyboard(self) -> None:
+        if (keyboard := self._keyboard) is None:
+            return
+        keyboard.start()
+
+    def stop_keyboard(self) -> None:
+        if (keyboard := self._keyboard) is None:
+            return
+        keyboard.stop()
+
+    def start_pro_controller(self) -> None:
+        if (pro_controller := self._pro_controller) is None:
+            return
+        threading.Thread(target=pro_controller.start_loop).start()
+
+    def stop_pro_controller(self) -> None:
+        if (pro_controller := self._pro_controller) is None:
+            return
+        pro_controller.stop()
 
 
 _app_model: AppModel | None = None
