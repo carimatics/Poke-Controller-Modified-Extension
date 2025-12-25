@@ -14,12 +14,15 @@ from pokecontroller.core.serial import SerialPort, get_serial_ports
 from pokecontroller.utils import platform
 from pokecontroller.utils.datetime import format_datetime
 
-from pokecontrollermodifiedextension.exception import AppRuntimeException
-from pokecontrollermodifiedextension.papico import get_papico
-from pokecontrollermodifiedextension.state.info import get_app_info
-from pokecontrollermodifiedextension.state.resources import get_app_resources
-from pokecontrollermodifiedextension.state.runtime_info import get_app_runtime_info
-from pokecontrollermodifiedextension.state.settings import get_app_settings
+from pokecontrollermodifiedextension.singletons.app.settings import get_app_settings
+from pokecontrollermodifiedextension.singletons.runtime.app_info import get_app_info
+from pokecontrollermodifiedextension.singletons.runtime.papico import get_papico
+from pokecontrollermodifiedextension.singletons.runtime.resources import (
+    get_app_resources,
+)
+from pokecontrollermodifiedextension.singletons.runtime.runtime_info import (
+    get_app_runtime_info,
+)
 
 if not platform.is_macos():
     from pokecontroller.core.controller.switch.keyboard import SwitchKeyboard
@@ -180,19 +183,3 @@ class AppModel:
         if (pro_controller := self._pro_controller) is None:
             return
         pro_controller.stop()
-
-
-_app_model: AppModel | None = None
-
-
-def get_app_model() -> AppModel:
-    global _app_model
-    if _app_model is None:
-        raise AppRuntimeException("App model is not initialized.")
-    return _app_model
-
-
-def setup_app_model() -> AppModel:
-    global _app_model
-    _app_model = AppModel()
-    return _app_model

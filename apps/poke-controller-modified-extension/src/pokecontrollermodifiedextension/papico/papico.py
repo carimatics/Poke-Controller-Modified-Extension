@@ -2,7 +2,8 @@ import logging
 from pathlib import Path
 from typing import Callable
 
-from pokecontrollermodifiedextension.command import CommandInfo
+from pokecontrollermodifiedextension.command.info import CommandInfo
+from pokecontrollermodifiedextension.core.settings import AppSettings
 from pokecontrollermodifiedextension.papico.context import PapicoResult
 from pokecontrollermodifiedextension.papico.delegates.command import (
     PapicoCommandDelegate,
@@ -17,8 +18,9 @@ from pokecontrollermodifiedextension.papico.types import (
     PapicoContainer,
     PapicoHandlerGenerator,
 )
-from pokecontrollermodifiedextension.state.runtime_info import get_app_runtime_info
-from pokecontrollermodifiedextension.state.settings import AppSettings
+from pokecontrollermodifiedextension.singletons.runtime.runtime_info import (
+    get_app_runtime_info,
+)
 
 LATEST_API_VERSION = "0.2.0"
 
@@ -122,19 +124,3 @@ class Papico:
         if not result.success:
             logger.warning(f"Failed to resume command: {result.error}")
         return result
-
-
-PAPICO_SINGLETON: Papico | None = None
-
-
-def setup_papico() -> Papico:
-    global PAPICO_SINGLETON
-    PAPICO_SINGLETON = Papico()
-    return PAPICO_SINGLETON
-
-
-def get_papico() -> Papico:
-    global PAPICO_SINGLETON
-    if PAPICO_SINGLETON is None:
-        raise RuntimeError("Papico is not initialized.")
-    return PAPICO_SINGLETON

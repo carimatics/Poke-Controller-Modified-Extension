@@ -4,6 +4,10 @@ from typing import Any
 
 from pokecontroller.utils.config import Config
 
+from pokecontrollermodifiedextension.core.settings import (
+    AppSettings,
+    settings_to_dict,
+)
 from pokecontrollermodifiedextension.papico.context import (
     PapicoExecContext,
     PapicoFailure,
@@ -18,10 +22,6 @@ from pokecontrollermodifiedextension.papico.handlers import (
 )
 from pokecontrollermodifiedextension.papico.handlers.v0_1_8.settings.mapping import (
     MAPPING,
-)
-from pokecontrollermodifiedextension.state.settings import (
-    AppSettings,
-    settings_to_dict,
 )
 
 logger = logging.getLogger(__name__)

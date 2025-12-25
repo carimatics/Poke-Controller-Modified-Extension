@@ -1,7 +1,7 @@
 import tkinter as tk
 from typing import Any
 
-from pokecontrollermodifiedextension.state.settings import get_app_settings
+from pokecontrollermodifiedextension.singletons.app.settings import get_app_settings
 from pokecontrollermodifiedextension.widgets.frame import Frame
 from pokecontrollermodifiedextension.widgets.labelframe import Labelframe
 from pokecontrollermodifiedextension.windows.main.capture.buttons import Buttons

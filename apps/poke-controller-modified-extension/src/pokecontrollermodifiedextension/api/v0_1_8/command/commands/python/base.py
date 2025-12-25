@@ -24,7 +24,7 @@ from pokecontrollermodifiedextension.api.v0_1_8.notification.line import (
     Line_Notify,
 )
 from pokecontrollermodifiedextension.api.v0_1_8.settings import GuiSettings
-from pokecontrollermodifiedextension.state.command import get_app_command_state
+from pokecontrollermodifiedextension.singletons.app.command import get_app_command_state
 
 try:
     from plyer import notification

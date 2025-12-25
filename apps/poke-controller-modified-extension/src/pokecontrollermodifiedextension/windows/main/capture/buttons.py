@@ -2,18 +2,19 @@ import logging
 import tkinter as tk
 from typing import Any
 
-from pokecontrollermodifiedextension.command.info import (
-    get_selected_command_info,
+from pokecontrollermodifiedextension.core.translation import t
+from pokecontrollermodifiedextension.singletons.app.command import get_app_command_state
+from pokecontrollermodifiedextension.singletons.app.model import get_app_model
+from pokecontrollermodifiedextension.singletons.runtime.papico import get_papico
+from pokecontrollermodifiedextension.singletons.runtime.resources import (
+    get_app_resources,
 )
-from pokecontrollermodifiedextension.papico import get_papico
-from pokecontrollermodifiedextension.state.command import (
-    get_app_command_state,
+from pokecontrollermodifiedextension.singletons.runtime.runtime_info import (
+    get_app_runtime_info,
 )
-from pokecontrollermodifiedextension.state.model import get_app_model
-from pokecontrollermodifiedextension.state.resources import get_app_resources
-from pokecontrollermodifiedextension.state.runtime_info import get_app_runtime_info
-from pokecontrollermodifiedextension.state.widget_catalog import get_app_widget_catalog
-from pokecontrollermodifiedextension.translation import t
+from pokecontrollermodifiedextension.singletons.widget.catalog import (
+    get_app_widget_catalog,
+)
 from pokecontrollermodifiedextension.widgets.button import Button
 from pokecontrollermodifiedextension.widgets.frame import Frame
 from pokecontrollermodifiedextension.windows import ControllerWindow
@@ -120,9 +121,9 @@ class Buttons(Frame):
             )
 
     def _on_start_pushed(self) -> None:
-        current_command_info = get_selected_command_info()
-        if current_command_info is not None:
-            self._papico.start_command(current_command_info)
+        running_command_info = get_app_command_state().running_command_info
+        if running_command_info is not None:
+            self._papico.start_command(running_command_info)
 
     def _on_stop_pushed(self) -> None:
         self._papico.stop_command()

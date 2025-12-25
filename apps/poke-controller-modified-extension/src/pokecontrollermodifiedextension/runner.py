@@ -6,11 +6,10 @@ from typing import Any
 from pokecontroller.core.camera import use_camera
 from pokecontroller.core.serial import use_serial
 
-from pokecontrollermodifiedextension.app import App
+from pokecontrollermodifiedextension.core.app import App
 from pokecontrollermodifiedextension.logging import setup_logging
 from pokecontrollermodifiedextension.papico import (
     Papico,
-    setup_papico,
 )
 from pokecontrollermodifiedextension.papico.handlers import (
     PapicoRegisterHandlerContext,
@@ -31,8 +30,13 @@ from pokecontrollermodifiedextension.papico.handlers.v0_2_0.settings import (
     PapicoSettingsLoadHandler as PapicoSettingsLoadHandler_v0_2_0,
     PapicoSettingsSaveHandler as PapicoSettingsSaveHandler_v0_2_0,
 )
-from pokecontrollermodifiedextension.state.resources import setup_app_resources
-from pokecontrollermodifiedextension.state.runtime_info import setup_runtime_info
+from pokecontrollermodifiedextension.singletons.runtime.papico import setup_papico
+from pokecontrollermodifiedextension.singletons.runtime.resources import (
+    setup_app_resources,
+)
+from pokecontrollermodifiedextension.singletons.runtime.runtime_info import (
+    setup_runtime_info,
+)
 from pokecontrollermodifiedextension.widgets.menu import Menu
 from pokecontrollermodifiedextension.windows import MainWindow
 

@@ -3,9 +3,9 @@ import tkinter as tk
 from dataclasses import fields, is_dataclass
 from typing import Any
 
-from pokecontrollermodifiedextension.papico import get_papico
-from pokecontrollermodifiedextension.state.info import get_app_info
-from pokecontrollermodifiedextension.state.settings import get_app_settings
+from pokecontrollermodifiedextension.singletons.app.settings import get_app_settings
+from pokecontrollermodifiedextension.singletons.runtime.app_info import get_app_info
+from pokecontrollermodifiedextension.singletons.runtime.papico import get_papico
 from pokecontrollermodifiedextension.widgets.frame import Frame
 from pokecontrollermodifiedextension.widgets.labelframe import Labelframe
 from pokecontrollermodifiedextension.widgets.window import Window

@@ -2,9 +2,9 @@ import logging
 import tkinter as tk
 from typing import Any
 
-from pokecontrollermodifiedextension.state.info import get_app_info
-from pokecontrollermodifiedextension.state.settings import get_app_settings
-from pokecontrollermodifiedextension.state.style import get_style_manager
+from pokecontrollermodifiedextension.singletons.app.settings import get_app_settings
+from pokecontrollermodifiedextension.singletons.app.style import get_style_manager
+from pokecontrollermodifiedextension.singletons.runtime.app_info import get_app_info
 from pokecontrollermodifiedextension.widgets.components import ComponentBuilder
 from pokecontrollermodifiedextension.widgets.frame import Frame
 

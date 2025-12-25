@@ -2,8 +2,8 @@ import math
 import tkinter as tk
 from typing import Any, Literal
 
-from pokecontrollermodifiedextension.state.model import get_app_model
-from pokecontrollermodifiedextension.state.settings import get_app_settings
+from pokecontrollermodifiedextension.singletons.app.model import get_app_model
+from pokecontrollermodifiedextension.singletons.app.settings import get_app_settings
 from pokecontrollermodifiedextension.widgets.frame import Frame
 from pokecontrollermodifiedextension.windows.main.capture import CapturePane
 from pokecontrollermodifiedextension.windows.main.controller import ControllerPane

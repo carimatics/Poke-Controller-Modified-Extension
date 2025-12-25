@@ -3,8 +3,11 @@ import tkinter as tk
 import webbrowser
 from typing import Any
 
-from pokecontrollermodifiedextension.state.settings import DEFAULT, get_app_settings
-from pokecontrollermodifiedextension.state.widget_catalog import get_app_widget_catalog
+from pokecontrollermodifiedextension.core.settings import DEFAULT
+from pokecontrollermodifiedextension.singletons.app.settings import get_app_settings
+from pokecontrollermodifiedextension.singletons.widget.catalog import (
+    get_app_widget_catalog,
+)
 from pokecontrollermodifiedextension.windows import SettingsWindow
 
 logger = logging.getLogger(__name__)

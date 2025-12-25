@@ -3,9 +3,9 @@ from typing import Any
 
 from pokecontroller.core.camera import CameraInfo
 
-from pokecontrollermodifiedextension.state.model import get_app_model
-from pokecontrollermodifiedextension.state.settings import get_app_settings
-from pokecontrollermodifiedextension.translation import t
+from pokecontrollermodifiedextension.core.translation import t
+from pokecontrollermodifiedextension.singletons.app.model import get_app_model
+from pokecontrollermodifiedextension.singletons.app.settings import get_app_settings
 from pokecontrollermodifiedextension.widgets.button import Button
 from pokecontrollermodifiedextension.widgets.checkbutton import Checkbutton
 from pokecontrollermodifiedextension.widgets.combobox import Combobox

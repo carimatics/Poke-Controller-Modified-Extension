@@ -16,7 +16,7 @@ from pokecontrollermodifiedextension.papico.exception import (
     PapicoCommandStopHandlerException,
 )
 from pokecontrollermodifiedextension.papico.handlers import PapicoHandler
-from pokecontrollermodifiedextension.state.settings import get_app_settings
+from pokecontrollermodifiedextension.singletons.app.settings import get_app_settings
 
 
 class PapicoCommandStopHandler(PapicoHandler):

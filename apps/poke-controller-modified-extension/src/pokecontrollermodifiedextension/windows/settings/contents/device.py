@@ -3,7 +3,7 @@ import tkinter as tk
 from dataclasses import fields
 from typing import Any
 
-from pokecontrollermodifiedextension.state.settings import get_app_settings
+from pokecontrollermodifiedextension.singletons.app.settings import get_app_settings
 from pokecontrollermodifiedextension.widgets.components import ComponentBuilder
 from pokecontrollermodifiedextension.widgets.frame import Frame
 from pokecontrollermodifiedextension.widgets.labelframe import Labelframe

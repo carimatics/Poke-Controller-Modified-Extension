@@ -1,16 +1,8 @@
-from dataclasses import dataclass
-
 from pokecontroller.core.camera import Camera
 from pokecontroller.core.serial import Serial
 
-from pokecontrollermodifiedextension.exception import AppRuntimeException
-
-
-@dataclass(kw_only=True, frozen=True)
-class AppResources:
-    camera: Camera
-    serial: Serial
-
+from pokecontrollermodifiedextension.core.exception import AppRuntimeException
+from pokecontrollermodifiedextension.core.resources import AppResources
 
 _app_resources: AppResources | None = None
 

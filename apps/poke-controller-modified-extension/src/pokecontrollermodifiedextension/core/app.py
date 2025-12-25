@@ -2,19 +2,25 @@ import logging
 import tkinter as tk
 from typing import Any
 
-from pokecontrollermodifiedextension.exception import AppRuntimeException
-from pokecontrollermodifiedextension.papico import get_papico
-from pokecontrollermodifiedextension.state.command import setup_app_command_state
-from pokecontrollermodifiedextension.state.info import get_app_info
-from pokecontrollermodifiedextension.state.model import setup_app_model
-from pokecontrollermodifiedextension.state.resources import get_app_resources
-from pokecontrollermodifiedextension.state.runtime_info import get_app_runtime_info
-from pokecontrollermodifiedextension.state.settings import setup_app_settings
-from pokecontrollermodifiedextension.state.style import (
+from pokecontrollermodifiedextension.core.exception import AppRuntimeException
+from pokecontrollermodifiedextension.core.style import (
     StyleManager,
-    setup_style_manager,
 )
-from pokecontrollermodifiedextension.translation import setup_translation
+from pokecontrollermodifiedextension.singletons.app.command import (
+    setup_app_command_state,
+)
+from pokecontrollermodifiedextension.singletons.app.model import setup_app_model
+from pokecontrollermodifiedextension.singletons.app.settings import setup_app_settings
+from pokecontrollermodifiedextension.singletons.app.style import setup_style_manager
+from pokecontrollermodifiedextension.singletons.app.translation import setup_translation
+from pokecontrollermodifiedextension.singletons.runtime.app_info import get_app_info
+from pokecontrollermodifiedextension.singletons.runtime.papico import get_papico
+from pokecontrollermodifiedextension.singletons.runtime.resources import (
+    get_app_resources,
+)
+from pokecontrollermodifiedextension.singletons.runtime.runtime_info import (
+    get_app_runtime_info,
+)
 
 logger = logging.getLogger(__name__)
 

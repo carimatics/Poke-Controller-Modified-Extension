@@ -1,7 +1,9 @@
 import tkinter as tk
 from typing import Any
 
-from pokecontrollermodifiedextension.state.widget_catalog import get_app_widget_catalog
+from pokecontrollermodifiedextension.singletons.widget.catalog import (
+    get_app_widget_catalog,
+)
 from pokecontrollermodifiedextension.widgets.frame import Frame
 from pokecontrollermodifiedextension.windows.main.outputs.output import Output
 

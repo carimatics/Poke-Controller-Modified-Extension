@@ -1,4 +1,4 @@
-from pokecontrollermodifiedextension.exception import AppException
+from pokecontrollermodifiedextension.core.exception import AppException
 
 
 class PapicoException(AppException):

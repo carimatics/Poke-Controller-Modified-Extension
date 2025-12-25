@@ -1,10 +1,12 @@
 import tkinter as tk
 from typing import Any
 
-from pokecontrollermodifiedextension.state.model import get_app_model
-from pokecontrollermodifiedextension.state.settings import get_app_settings
-from pokecontrollermodifiedextension.state.widget_catalog import get_app_widget_catalog
-from pokecontrollermodifiedextension.translation import t
+from pokecontrollermodifiedextension.core.translation import t
+from pokecontrollermodifiedextension.singletons.app.model import get_app_model
+from pokecontrollermodifiedextension.singletons.app.settings import get_app_settings
+from pokecontrollermodifiedextension.singletons.widget.catalog import (
+    get_app_widget_catalog,
+)
 from pokecontrollermodifiedextension.widgets.button import Button
 from pokecontrollermodifiedextension.widgets.checkbutton import Checkbutton
 from pokecontrollermodifiedextension.widgets.frame import Frame

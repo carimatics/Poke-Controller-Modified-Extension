@@ -2,7 +2,9 @@ import configparser
 import logging
 from typing import Protocol
 
-from pokecontrollermodifiedextension.papico import Papico, get_papico
+from pokecontrollermodifiedextension.papico import Papico
+from pokecontrollermodifiedextension.singletons.app.settings import get_app_settings
+from pokecontrollermodifiedextension.singletons.runtime.papico import get_papico
 
 logger = logging.getLogger(__name__)
 
@@ -104,10 +106,7 @@ class GuiSettings:
     def __init__(self) -> None:
         self._papico = get_papico()
         GuiSettings.SETTING_PATH = str(self._papico.settings_path)
-
-        if (settings := self._papico.load_settings().data) is None:
-            raise RuntimeError("Failed to load settings")
-        self._app_settings = settings
+        self._app_settings = get_app_settings()
         self._assign_settings()
 
         self.setting = configparser.ConfigParser()

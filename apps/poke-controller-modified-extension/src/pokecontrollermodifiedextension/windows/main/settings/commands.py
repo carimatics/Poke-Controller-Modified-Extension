@@ -5,18 +5,14 @@ from typing import Any, Literal
 
 from pokecontroller.utils import platform
 
-from pokecontrollermodifiedextension.command.info import (
-    get_selected_command_info,
-    set_selected_command_info,
+from pokecontrollermodifiedextension.core.translation import t
+from pokecontrollermodifiedextension.singletons.app.command import get_app_command_state
+from pokecontrollermodifiedextension.singletons.app.model import get_app_model
+from pokecontrollermodifiedextension.singletons.app.settings import get_app_settings
+from pokecontrollermodifiedextension.singletons.runtime.papico import get_papico
+from pokecontrollermodifiedextension.singletons.runtime.runtime_info import (
+    get_app_runtime_info,
 )
-from pokecontrollermodifiedextension.papico import get_papico
-from pokecontrollermodifiedextension.state.command import (
-    get_app_command_state,
-)
-from pokecontrollermodifiedextension.state.model import get_app_model
-from pokecontrollermodifiedextension.state.runtime_info import get_app_runtime_info
-from pokecontrollermodifiedextension.state.settings import get_app_settings
-from pokecontrollermodifiedextension.translation import t
 from pokecontrollermodifiedextension.widgets.button import Button
 from pokecontrollermodifiedextension.widgets.combobox import Combobox
 from pokecontrollermodifiedextension.widgets.frame import Frame
@@ -75,7 +71,8 @@ class CommandsSettings(Frame):
         )
 
         self._load_commands()
-        set_selected_command_info(self._commands[0])
+        if self._commands:
+            self._app_command_state.select(self._commands[0])
 
         self._register_traces()
 
@@ -422,7 +419,7 @@ class CommandsSettings(Frame):
         button.set_tooltip(text=name)
 
     def _start_command(self) -> None:
-        if (command := get_selected_command_info()) is not None:
+        if (command := self._app_command_state.selected_command_info) is not None:
             self._papico.start_command(command)
 
     def _start_shortcut_command(self, num: int) -> None:
@@ -524,13 +521,13 @@ class CommandsSettings(Frame):
             command for command in self._commands if command.kind == PYTHON
         ]:
             if command.display_name == self._python_command.get():
-                set_selected_command_info(command)
+                self._app_command_state.select(command)
                 return
 
     def _on_mcu_command_changed(self, *_: str) -> None:
         for command in [command for command in self._commands if command.kind == MCU]:
             if command.display_name == self._mcu_command.get():
-                set_selected_command_info(command)
+                self._app_command_state.select(command)
                 return
 
     def _register_traces(self) -> None:

@@ -3,6 +3,10 @@ from pathlib import Path
 from tkinter import BooleanVar, DoubleVar, IntVar, StringVar
 from typing import Any
 
+from pokecontrollermodifiedextension.core.settings import (
+    DEFAULT,
+    AppSettings,
+)
 from pokecontrollermodifiedextension.papico.context import (
     PapicoExecContext,
     PapicoFailure,
@@ -14,10 +18,6 @@ from pokecontrollermodifiedextension.papico.exception import (
 )
 from pokecontrollermodifiedextension.papico.handlers.handler import (
     PapicoHandler,
-)
-from pokecontrollermodifiedextension.state.settings import (
-    DEFAULT,
-    AppSettings,
 )
 
 

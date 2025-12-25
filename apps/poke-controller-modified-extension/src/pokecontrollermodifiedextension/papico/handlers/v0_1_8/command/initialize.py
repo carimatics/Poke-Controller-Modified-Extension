@@ -11,10 +11,14 @@ from pokecontrollermodifiedextension.papico.exception import (
 from pokecontrollermodifiedextension.papico.handlers.handler import (
     PapicoHandler,
 )
-from pokecontrollermodifiedextension.state.info import get_app_info
-from pokecontrollermodifiedextension.state.runtime_info import get_app_runtime_info
-from pokecontrollermodifiedextension.state.settings import get_app_settings
-from pokecontrollermodifiedextension.state.widget_catalog import get_app_widget_catalog
+from pokecontrollermodifiedextension.singletons.app.settings import get_app_settings
+from pokecontrollermodifiedextension.singletons.runtime.app_info import get_app_info
+from pokecontrollermodifiedextension.singletons.runtime.runtime_info import (
+    get_app_runtime_info,
+)
+from pokecontrollermodifiedextension.singletons.widget.catalog import (
+    get_app_widget_catalog,
+)
 
 
 class PapicoCommandInitializeHandler(PapicoHandler):

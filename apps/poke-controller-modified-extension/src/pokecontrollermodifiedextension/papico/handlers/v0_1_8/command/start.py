@@ -11,7 +11,7 @@ from pokecontrollermodifiedextension.api.v0_1_8.command.commands.python.image_pr
     ImageProcPythonCommand,
 )
 from pokecontrollermodifiedextension.api.v0_1_8.command.sender import Sender
-from pokecontrollermodifiedextension.command import CommandInfo
+from pokecontrollermodifiedextension.command.info import CommandInfo
 from pokecontrollermodifiedextension.papico.context import (
     PapicoExecContext,
     PapicoFailure,
@@ -22,7 +22,7 @@ from pokecontrollermodifiedextension.papico.exception import (
     PapicoCommandStartHandlerException,
 )
 from pokecontrollermodifiedextension.papico.handlers import PapicoHandler
-from pokecontrollermodifiedextension.state.settings import get_app_settings
+from pokecontrollermodifiedextension.singletons.app.settings import get_app_settings
 
 
 class PapicoCommandStartHandler(PapicoHandler):

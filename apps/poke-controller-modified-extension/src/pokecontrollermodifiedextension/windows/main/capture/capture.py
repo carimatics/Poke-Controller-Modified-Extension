@@ -14,10 +14,16 @@ from pokecontroller.core.controller import StickState, n3ds, switch
 from pokecontroller.utils import platform
 from pokecontroller.utils.math import clamp
 
-from pokecontrollermodifiedextension.state.resources import get_app_resources
-from pokecontrollermodifiedextension.state.runtime_info import get_app_runtime_info
-from pokecontrollermodifiedextension.state.settings import get_app_settings
-from pokecontrollermodifiedextension.state.widget_catalog import get_app_widget_catalog
+from pokecontrollermodifiedextension.singletons.app.settings import get_app_settings
+from pokecontrollermodifiedextension.singletons.runtime.resources import (
+    get_app_resources,
+)
+from pokecontrollermodifiedextension.singletons.runtime.runtime_info import (
+    get_app_runtime_info,
+)
+from pokecontrollermodifiedextension.singletons.widget.catalog import (
+    get_app_widget_catalog,
+)
 from pokecontrollermodifiedextension.widgets.frame import Frame
 
 logger = logging.getLogger(__name__)

@@ -10,7 +10,7 @@ from pokecontrollermodifiedextension.api.v0_1_8.command.commands.mcu.base import
 from pokecontrollermodifiedextension.api.v0_1_8.command.commands.python.base import (
     PythonCommand,
 )
-from pokecontrollermodifiedextension.command import CommandInfo
+from pokecontrollermodifiedextension.command.info import CommandInfo
 from pokecontrollermodifiedextension.papico.context import (
     PapicoExecContext,
     PapicoFailure,
@@ -23,7 +23,9 @@ from pokecontrollermodifiedextension.papico.exception import (
 from pokecontrollermodifiedextension.papico.handlers.handler import (
     PapicoHandler,
 )
-from pokecontrollermodifiedextension.state.runtime_info import get_app_runtime_info
+from pokecontrollermodifiedextension.singletons.runtime.runtime_info import (
+    get_app_runtime_info,
+)
 
 logger = logging.getLogger(__name__)
 
