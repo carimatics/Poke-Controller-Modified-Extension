@@ -2,7 +2,6 @@ import logging
 from typing import Protocol
 
 import numpy as np
-import pygame
 
 from pokecontroller.core.controller import StickState
 from pokecontroller.core.controller.stick import StickAxisRange
@@ -16,6 +15,10 @@ from pokecontroller.core.controller.switch.state import (
     SwitchControllerState,
 )
 from pokecontroller.core.serial import Serial
+from pokecontroller.utils import platform
+
+if not platform.is_macos():
+    import pygame
 
 logger = logging.getLogger(__name__)
 

@@ -1,7 +1,5 @@
 from typing import Any
 
-from pynput.keyboard import Key, Listener
-
 from pokecontroller.core.controller import StickTilt
 from pokecontroller.core.controller.switch.button import SwitchButton
 from pokecontroller.core.controller.switch.dpad import SwitchDpad
@@ -10,6 +8,10 @@ from pokecontroller.core.controller.switch.serializers.leonardo import (
 )
 from pokecontroller.core.controller.switch.state import SwitchControllerState
 from pokecontroller.core.serial import Serial
+from pokecontroller.utils import platform
+
+if not platform.is_macos():
+    from pynput.keyboard import Key, Listener
 
 KEYMAP_JSON_ACTIONS: dict[str, dict[str, Any]] = {
     "button": {
