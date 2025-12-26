@@ -118,13 +118,4 @@ class PapicoSettingsSaveHandler(PapicoHandler):
             dialogue_buttons_position = "3"
         config.set("Output", "dialogue_buttons_position", dialogue_buttons_position)
 
-        pokemon_home_single_or_double = self._values["external"]["pokemon_home"][
-            "single_or_double"
-        ]
-        if pokemon_home_single_or_double == "single":
-            pokemon_home_single_or_double = "シングル"
-        else:
-            pokemon_home_single_or_double = "ダブル"
-        config.set("Pokemon Home", "Single or Double", pokemon_home_single_or_double)
-
         config.save()

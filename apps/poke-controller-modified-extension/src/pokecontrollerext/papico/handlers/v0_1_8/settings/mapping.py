@@ -159,10 +159,4 @@ MAPPING: dict[str, Any] = {
             "confirm_buttons_position": False,
         },
     },
-    "external": {
-        "pokemon_home": {
-            "season": "Pokemon Home/season",
-            "single_or_double": False,
-        },
-    },
 }

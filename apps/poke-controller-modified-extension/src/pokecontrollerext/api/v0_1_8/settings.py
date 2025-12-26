@@ -42,17 +42,6 @@ class FpsValue:
         self._backing_field.set(int(value))
 
 
-class SeasonValue:
-    def __init__(self, backing_field: Value[int]) -> None:
-        self._backing_field = backing_field
-
-    def get(self) -> str:
-        return str(self._backing_field.get())
-
-    def set(self, value: str) -> None:
-        self._backing_field.set(int(value))
-
-
 class CommandClassDict(dict[str, str]):
     def __init__(self, backing_fields: dict[str, Value[str]]) -> None:
         super().__init__()
@@ -92,8 +81,6 @@ class GuiSettings:
     is_show_serial: Value[bool]
     is_use_keyboard: Value[bool]
     serial_data_format_name: Value[str]
-    season: Value[str]
-    is_SingleBattle: Value[str]
     command_class_dict: dict[str, str]
     command_name_dict: dict[str, Value[str]]
     is_win_notification_start: Value[bool]
@@ -272,8 +259,6 @@ class GuiSettings:
         self.is_show_serial = self._app_settings.serial.show_data
         self.serial_data_format_name = self._app_settings.serial.data_format
         self.is_use_keyboard = self._app_settings.device.keyboard.enabled
-        self.season = SeasonValue(self._app_settings.external.pokemon_home.season)
-        self.is_SingleBattle = self._app_settings.external.pokemon_home.single_or_double
         self.is_win_notification_end = (
             self._app_settings.notification.windows.enabled_started
         )
@@ -303,7 +288,6 @@ class GuiSettings:
 
     def _assign_setting_config(self) -> None:
         self._assign_general_setting()
-        self._assign_pokemon_home_setting()
         self._assign_shortcut_setting()
         self._assign_notification_setting()
         self._assign_output_setting()
@@ -326,12 +310,6 @@ class GuiSettings:
             "touchscreen_start_y": str(self.touchscreen_start_y),
             "touchscreen_end_x": str(self.touchscreen_end_x),
             "touchscreen_end_y": str(self.touchscreen_end_y),
-        }
-
-    def _assign_pokemon_home_setting(self) -> None:
-        self.setting["Pokemon Home"] = {
-            "Season": self.season.get(),
-            "Single or Double": self.is_SingleBattle.get(),
         }
 
     def _assign_shortcut_setting(self) -> None:

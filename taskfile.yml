@@ -75,7 +75,7 @@ tasks:
       - |
         cd SerialControllerSandbox
         {{ if .DEV }}
-        uv run main.py --profile {{.PROFILE}} -X dev
+        uv run Window.py --profile {{.PROFILE}} -X dev
         {{ else }}
-        uv run main.py --profile {{.PROFILE}}
+        uv run Window.py --profile {{.PROFILE}}
         {{ end }}

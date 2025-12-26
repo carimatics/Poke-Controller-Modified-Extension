@@ -167,12 +167,6 @@ SCHEMA: dict[str, Any] = {
             "confirm_buttons_position": str,
         },
     },
-    "external": {
-        "pokemon_home": {
-            "season": int,
-            "single_or_double": str,
-        },
-    },
 }
 
 DEFAULT: dict[str, Any] = {
@@ -333,12 +327,6 @@ DEFAULT: dict[str, Any] = {
         },
         "dialog": {
             "confirm_buttons_position": "bottom",
-        },
-    },
-    "external": {
-        "pokemon_home": {
-            "season": 1,
-            "single_or_double": "single",
         },
     },
 }
@@ -594,17 +582,6 @@ class PokemonHomeSettings:
 
 
 @dataclass(kw_only=True, frozen=True)
-class ExternalSettings:
-    pokemon_home: PokemonHomeSettings
-
-    @classmethod
-    def from_dict(cls, d: dict[str, Any]) -> Self:
-        return cls(
-            pokemon_home=PokemonHomeSettings(**d["pokemon_home"]),
-        )
-
-
-@dataclass(kw_only=True, frozen=True)
 class AppSettings:
     general: GeneralSettings
     capture: CaptureSettings
@@ -613,7 +590,6 @@ class AppSettings:
     command: CommandSettings
     notification: NotificationSettings
     widget: WidgetSettings
-    external: ExternalSettings
 
     @classmethod
     def from_dict(cls, d: dict[str, Any]) -> Self:
@@ -625,7 +601,6 @@ class AppSettings:
             command=CommandSettings.from_dict(d["command"]),
             notification=NotificationSettings.from_dict(d["notification"]),
             widget=WidgetSettings.from_dict(d["widget"]),
-            external=ExternalSettings.from_dict(d["external"]),
         )
 
     def to_dict(self) -> dict[str, Any]:
