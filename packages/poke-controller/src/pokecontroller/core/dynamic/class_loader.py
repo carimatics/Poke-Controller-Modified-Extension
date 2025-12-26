@@ -13,10 +13,18 @@ logger = logging.getLogger(__name__)
 
 
 class PokeControllerDynamicClassLoaderException(PokeControllerException):
+    """動的クラスローダー関連のエラーで発生する例外."""
+
     pass
 
 
 class DynamicClassLoader[T]:
+    """指定されたディレクトリから動的にクラスをロードするクラス.
+
+    指定された基底クラスのサブクラスを、ディレクトリツリーから
+    動的に検索してロードします。
+    """
+
     def __init__(
         self,
         *,
@@ -24,11 +32,31 @@ class DynamicClassLoader[T]:
         klass: type[T],
         namespace: str = "",
     ) -> None:
+        """DynamicClassLoaderインスタンスを初期化します.
+
+        Args:
+            search_root: クラスを検索するルートディレクトリ.
+            klass: ロード対象の基底クラス.
+            namespace: モジュール名のプレフィックスとして使用する名前空間.
+                デフォルトは空文字列.
+        """
         self._search_root = search_root
         self._klass = klass
         self._base_namespace = namespace
 
     def load(self) -> Generator[tuple[ModuleType, str, type[T]], None, None]:
+        """指定されたディレクトリからクラスを動的にロードします.
+
+        検索ルート配下のすべての.pyファイル（_で始まるファイルを除く）を
+        スキャンし、基底クラスのサブクラスを検出してロードします。
+
+        Yields:
+            (モジュール, クラス名, クラス型)のタプル.
+
+        Raises:
+            PokeControllerDynamicClassLoaderException: 検索ルートが
+                存在しない場合.
+        """
         if not self._search_root.exists():
             raise PokeControllerDynamicClassLoaderException(
                 f"{self._search_root} is not found."
