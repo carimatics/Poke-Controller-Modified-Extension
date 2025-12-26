@@ -17,17 +17,46 @@ LINE_NOTIFY_API_URL = f"{LINE_API_URL_BASE}/notify"
 
 
 class LineConfig(Config):
+    """LINE Notify通知の設定を管理するクラス.
+
+    設定ファイルからLINE Notifyのトークンなどの情報を読み書きします。
+    """
+
     def __init__(self, path: Path) -> None:
+        """LineConfigインスタンスを初期化します.
+
+        Args:
+            path: 設定ファイルのパス.
+        """
         super().__init__(path)
         self._initialize()
 
     def get_token(self, option: str) -> str | None:
+        """指定されたオプション名のトークンを取得します.
+
+        Args:
+            option: トークンのオプション名.
+
+        Returns:
+            トークン、または存在しない場合はNone.
+        """
         return self["LINE"][option]
 
     def set_token(self, option: str, value: str) -> None:
+        """指定されたオプション名のトークンを設定します.
+
+        Args:
+            option: トークンのオプション名.
+            value: 設定するトークン値.
+        """
         self["LINE"][option] = value
 
     def get_tokens(self) -> dict[str, str]:
+        """全てのトークンを取得します.
+
+        Returns:
+            オプション名をキーとし、トークンを値とする辞書.
+        """
         return self.options("LINE")
 
     def _initialize(self) -> None:
@@ -44,7 +73,18 @@ class LineConfig(Config):
 
 
 class LineNotifier(Notifier):
+    """LINE Notifyを使用して通知を送信するクラス.
+
+    複数のトークンを管理し、テキストメッセージと画像の送信をサポートします。
+    レート制限情報（画像リクエスト制限を含む）の取得にも対応しています。
+    """
+
     def __init__(self, config: LineConfig):
+        """LineNotifierインスタンスを初期化します.
+
+        Args:
+            config: LINE設定オブジェクト.
+        """
         self._config = config
         self._tokens = self._config.get_tokens()
         self._token_keys = list(self._tokens.keys())
@@ -53,10 +93,22 @@ class LineNotifier(Notifier):
 
     @property
     def keys(self) -> list[str]:
+        """利用可能な通知キーのリストを取得します.
+
+        Returns:
+            トークンのキー名のリスト.
+        """
         return list(self._tokens.keys())
 
     @property
     def has_error(self) -> bool:
+        """エラーが発生しているかどうかを取得します.
+
+        最後のレスポンスのステータスコードが4xxの場合にTrueを返します。
+
+        Returns:
+            エラーが発生している場合はTrue、それ以外はFalse.
+        """
         return any(
             400 <= response.status_code < 500
             for response in self._last_responses
@@ -69,6 +121,17 @@ class LineNotifier(Notifier):
         image: RawImage | None = None,
         keys: list[str] | None = None,
     ) -> None:
+        """LINE Notifyを使用して通知を送信します.
+
+        テキストメッセージと画像の両方をサポートします。
+        複数のトークンに対して同時に送信できます。
+
+        Args:
+            message: 送信するメッセージ.
+            image: 送信する画像.
+            keys: 通知を送信する対象のトークンキーのリスト. Noneの場合は
+                全てのトークンに送信します.
+        """
         if not (targets := keys if keys is not None else self._token_keys):
             logger.error("有効なkeysを指定してください")
             return
@@ -88,6 +151,14 @@ class LineNotifier(Notifier):
                 logger.error("tokenを確認してください。")
 
     def get_late_limits(self) -> list[RateLimit]:
+        """レート制限情報のリストを取得します.
+
+        各トークンの最後のレスポンスヘッダーからレート制限情報を抽出します。
+        画像リクエストの制限情報も含まれます。
+
+        Returns:
+            各トークンに対するレート制限情報のリスト.
+        """
         return [
             RateLimit(
                 key=key,
@@ -102,6 +173,10 @@ class LineNotifier(Notifier):
         ]
 
     def apply_config(self) -> None:
+        """設定を適用します.
+
+        設定ファイルから最新のトークン情報を読み込み、ステータスを更新します。
+        """
         self._tokens = self._config.get_tokens()
         self._token_keys = list(self._tokens.keys())
         self._headers_list = self._make_headers_list()
