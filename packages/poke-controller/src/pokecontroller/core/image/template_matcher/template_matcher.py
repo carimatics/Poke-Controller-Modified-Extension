@@ -3,6 +3,7 @@ from typing import Self
 
 import cv2
 
+from pokecontroller.core.exception.base import PokeControllerException
 from pokecontroller.core.image.image_processing import TemplateMatchResult
 from pokecontroller.core.image.raw_image import RawImage
 
@@ -70,8 +71,7 @@ class TemplateMatcher(ABC):
         _, value_max, _, location_max = cv2.minMaxLoc(result)
 
         if (tmpl := self._template) is None:
-            # FIXME: define better exception
-            raise ValueError("Template is not set")
+            raise PokeControllerException("Template is not set")
 
         h, w = tmpl.shape
         self._last_result = TemplateMatchResult(

@@ -2,6 +2,8 @@ import configparser
 import os
 from pathlib import Path
 
+from pokecontroller.core.exception import PokeControllerException
+
 
 class Config:
     def __init__(self, path: Path) -> None:
@@ -94,8 +96,7 @@ class Config:
         directory = self._path.parent
         exists_dir = self._exists_directory()
         if not exists_dir and not should_create:
-            # FIXME: declare better error
-            raise FileNotFoundError(directory)
+            raise PokeControllerException(directory)
         self._create_directories()
 
     def _exists_directory(self) -> bool:

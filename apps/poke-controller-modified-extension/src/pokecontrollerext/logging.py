@@ -2,7 +2,6 @@ import tomllib
 
 from pokecontroller.utils import logging as logginglib
 
-# FIXME: PR出す前にロギングの調整する
 # @formatter:off (for PyCharm)
 # fmt: off
 # language=TOML
