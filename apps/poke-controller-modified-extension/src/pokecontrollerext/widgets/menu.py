@@ -9,7 +9,7 @@ from pokecontrollerext.singletons.widget.catalog import (
     get_app_widget_catalog,
 )
 from pokecontrollerext.windows import SettingsWindow
-from pokecontrollerext.windows.change_logs.window import ChangelogWindow
+from pokecontrollerext.windows.changelogs.window import ChangelogWindow
 from pokecontrollerext.windows.discord.window import DiscordSettingsWindow
 from pokecontrollerext.windows.new_profile.window import NewProfileWindow
 from pokecontrollerext.windows.question.window import QuestionWindow
