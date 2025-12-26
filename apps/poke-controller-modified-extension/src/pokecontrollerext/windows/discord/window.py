@@ -90,9 +90,6 @@ class DiscordSettingsWindow(Window):
 
         frame.pack(expand=True, fill=tk.BOTH)
 
-    def destroy(self) -> None:
-        super().destroy()
-
     def _on_test_pressed(self) -> None:
         self._test_notify()
 
