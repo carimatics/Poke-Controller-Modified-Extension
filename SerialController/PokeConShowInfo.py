@@ -9,7 +9,7 @@ import tkinter.messagebox as tkmsg
 import tkinter.scrolledtext as st
 import platform
 import Constant
-import importlib.metadata
+import pkg_resources
 
 # ソースコードの見た目がよくないので、こっちで定義する。
 QUESTION_TITLE = """--------------------------質問をする際の注意事項--------------------------
@@ -169,9 +169,9 @@ class PokeConVersionCheck(object):
             for line in file:
                 library_name = line.strip()
                 try:
-                    version = importlib.metadata.version(library_name)
+                    version = pkg_resources.get_distribution(library_name).version
                     txt += f"{library_name}: {version}\n"
-                except ValueError:
+                except pkg_resources.DistributionNotFound:
                     txt += f"{library_name}: Not installed\n"
                 except Exception:
                     pass

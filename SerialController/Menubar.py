@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import annotations
 
+import cv2
 import tkinter as tk
 from tkinter import messagebox
 import os
@@ -17,7 +18,6 @@ from PokeConUpdateChecker import PokeConUpdateCheck
 from PokeConDialogue import PokeConDialogue
 from logging import getLogger, DEBUG, NullHandler
 import webbrowser
-import pokecontroller.gui.image as lib_image_utils
 
 
 class PokeController_Menubar(tk.Menu):
@@ -284,7 +284,7 @@ class PokeController_Menubar(tk.Menu):
         self.settings.save()
 
         self.camera.destroy()
-        lib_image_utils.destroy_all_windows()
+        cv2.destroyAllWindows()
         self.master.destroy()
 
 
