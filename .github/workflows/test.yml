@@ -19,20 +19,12 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
-      - name: Install Mise
-        uses: jdx/mise-action@v2
-        with:
-          version: 2025.12.12
-          install: true
-          cache: true
+        uses: actions/checkout@v5
+      - name: Install Task
+        uses: go-task/setup-task@v1
+      - name: Install uv
+        uses: astral-sh/setup-uv@v7
       - name: Setup Runtime via uv
         run: uv sync
       - name: CI (Lint/Format/Typecheck)
-        if: runner.os != 'Windows'
-        run: mise run ci
-      - name: CI for windows (Lint/Format/Typecheck)
-        if: runner.os == 'Windows'
-        run: mise run ci
-        env:
-          MISE_ENV: ci_windows
+        run: task ci
