@@ -12,16 +12,44 @@ logger = logging.getLogger(__name__)
 
 @dataclass
 class CameraInfo:
+    """検出されたカメラの情報を保持するデータクラス.
+
+    Attributes:
+        index: カメラのインデックス番号.
+        name: カメラの名前.
+        backend: カメラが使用するバックエンドの名前. 省略可能.
+    """
+
     index: int
     name: str
     backend: str | None = None
 
 
 class CameraDetector:
+    """システムに接続されているカメラデバイスを検出するクラス.
+
+    このクラスは、Windows、macOS、Linuxの各プラットフォームで利用可能な
+    カメラデバイスを検出し、その情報を取得します。
+    """
+
     def __init__(self, max_cameras: int) -> None:
+        """CameraDetectorインスタンスを初期化します.
+
+        Args:
+            max_cameras: 検出を試みるカメラの最大数.
+        """
         self._max_cameras = max_cameras
 
     def detect(self) -> list[CameraInfo]:
+        """システムに接続されているカメラを検出します.
+
+        指定された最大カメラ数まで順番にカメラデバイスを開いて確認し、
+        利用可能なカメラの情報を収集します。各プラットフォーム固有の
+        方法でカメラ名を取得します。
+
+        Returns:
+            検出されたカメラ情報のリスト. 各要素はCameraInfoインスタンス.
+        """
         camera_names = self._get_all_camera_names()
         logger.debug(f"camera_name_map: {camera_names}")
 
