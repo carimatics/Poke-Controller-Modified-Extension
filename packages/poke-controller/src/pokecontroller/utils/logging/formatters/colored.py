@@ -19,7 +19,12 @@ ESCAPED_LEVELS = {
 
 
 class ColoredFormatter(StandardFormatter):
-    """クロスプラットフォーム対応のカラーフォーマッター"""
+    """クロスプラットフォーム対応のカラーログフォーマッター.
+
+    ANSIエスケープシーケンスを使用してログレベルに色を付けます。
+    Windows 10以降ではANSI対応を自動的に有効化します。
+    環境変数（NO_COLOR、FORCE_COLOR）による色の制御にも対応しています。
+    """
 
     def __init__(
         self,
@@ -27,6 +32,13 @@ class ColoredFormatter(StandardFormatter):
         datefmt: str | None = None,
         use_colors: bool | None = None,
     ) -> None:
+        """ColoredFormatterインスタンスを初期化します.
+
+        Args:
+            fmt: ログフォーマット文字列.
+            datefmt: 日時フォーマット文字列.
+            use_colors: 色を使用するかどうか. Noneの場合は自動判定します.
+        """
         super().__init__(fmt=fmt, datefmt=datefmt)
 
         if use_colors is None:
@@ -38,8 +50,18 @@ class ColoredFormatter(StandardFormatter):
             self._enable_window_ansi()
 
     def format(self, record: logging.LogRecord) -> str:
-        """ログレコードをフォーマット"""
+        """ログレコードをフォーマットします.
 
+        色が有効な場合、ログレベル名をANSIエスケープシーケンスで装飾します。
+        フォーマット後はログレコードを元の状態に戻し、他のハンドラーに
+        影響を与えないようにします。
+
+        Args:
+            record: ログレコード.
+
+        Returns:
+            フォーマットされたログ文字列（色付き、または色なし）.
+        """
         if not self.use_colors:
             return super().format(record)
 

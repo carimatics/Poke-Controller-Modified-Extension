@@ -38,7 +38,11 @@ def setup_logging(
 
 
 def show_current_config() -> None:
-    """現在のロギング設定を標準出力に表示"""
+    """現在のロギング設定を標準出力に表示します.
+
+    ルートロガー、登録済みロガー、各ハンドラー、フィルター、
+    フォーマッターの情報を整形して表示します。
+    """
     print("\n" + "=" * 60)
     print("Logging Configuration")
     print("=" * 60)
