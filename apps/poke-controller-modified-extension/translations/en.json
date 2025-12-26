@@ -401,5 +401,8 @@
   },
   "version": {
     "title": "バージョン確認"
+  },
+  "changelog": {
+    "title": "更新履歴"
   }
 }

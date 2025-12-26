@@ -9,6 +9,7 @@ from pokecontrollerext.singletons.widget.catalog import (
     get_app_widget_catalog,
 )
 from pokecontrollerext.windows import SettingsWindow
+from pokecontrollerext.windows.change_logs.window import ChangelogWindow
 from pokecontrollerext.windows.discord.window import DiscordSettingsWindow
 from pokecontrollerext.windows.new_profile.window import NewProfileWindow
 from pokecontrollerext.windows.question.window import QuestionWindow
@@ -87,7 +88,7 @@ class Menu(tk.Menu):
         )
         help_cascade.add_command(
             label="更新履歴表示",
-            command=self._on_help_update_note_pushed,
+            command=self._on_help_changelog_pushed,
         )
         help_cascade.add_command(
             label="アップデート確認",
@@ -131,8 +132,8 @@ class Menu(tk.Menu):
     def _on_help_version_pushed(self) -> None:
         self._widget_catalog.window.open_version(self, VersionWindow)
 
-    def _on_help_update_note_pushed(self) -> None:
-        pass
+    def _on_help_changelog_pushed(self) -> None:
+        self._widget_catalog.window.open_changelog(self, ChangelogWindow)
 
     def _on_help_check_for_update_pushed(self) -> None:
         pass
