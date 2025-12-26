@@ -12,6 +12,7 @@ from pokecontrollerext.windows import SettingsWindow
 from pokecontrollerext.windows.discord.window import DiscordSettingsWindow
 from pokecontrollerext.windows.new_profile.window import NewProfileWindow
 from pokecontrollerext.windows.question.window import QuestionWindow
+from pokecontrollerext.windows.version.window import VersionWindow
 
 logger = logging.getLogger(__name__)
 
@@ -128,7 +129,7 @@ class Menu(tk.Menu):
         self._widget_catalog.window.open_question(self, QuestionWindow)
 
     def _on_help_version_pushed(self) -> None:
-        pass
+        self._widget_catalog.window.open_version(self, VersionWindow)
 
     def _on_help_update_note_pushed(self) -> None:
         pass

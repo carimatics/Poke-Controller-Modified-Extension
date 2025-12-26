@@ -15,12 +15,6 @@ from pokecontrollerext.widgets.label import Label
 from pokecontrollerext.widgets.separator import Separator
 from pokecontrollerext.widgets.window import Window
 
-BAT_CONTENT = """python SerialController/PokeConUpdateChecker.py
-cd SerialController
-python Window.py --profile {profile}
-pause
-"""
-
 
 class QuestionWindow(Window):
     _content_text: st.ScrolledText

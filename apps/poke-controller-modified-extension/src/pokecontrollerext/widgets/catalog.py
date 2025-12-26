@@ -50,6 +50,7 @@ class WindowWidgetCatalog:
     discord_settings: tk.Toplevel | None = None
     new_profile: tk.Toplevel | None = None
     question: tk.Toplevel | None = None
+    version: tk.Toplevel | None = None
 
     def open_controller(
         self,
@@ -126,6 +127,21 @@ class WindowWidgetCatalog:
             self._on_question_closed,
         )
 
+    def open_version(
+        self,
+        master: tk.Misc,
+        gen: Callable[[tk.Misc], tk.Toplevel],
+    ) -> None:
+        if (window := self.version) is not None:
+            if window.winfo_exists():
+                window.lift()
+                return
+        self.version = gen(master)
+        self.version.protocol(
+            "WM_DELETE_WINDOW",
+            self._on_version_closed,
+        )
+
     def _on_controller_closed(self) -> None:
         self._destroy(self.controller)
         self.controller = None
@@ -145,6 +161,10 @@ class WindowWidgetCatalog:
     def _on_question_closed(self) -> None:
         self._destroy(self.question)
         self.question = None
+
+    def _on_version_closed(self) -> None:
+        self._destroy(self.version)
+        self.version = None
 
     def _destroy(self, window: tk.Toplevel | None) -> None:
         if window is None:
