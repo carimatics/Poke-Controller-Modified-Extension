@@ -347,5 +347,26 @@
     "username": "Username:",
     "avatar_url": "Avatar URL:",
     "test": "Test"
+  },
+  "new_profile": {
+    "title": "新規プロファイル作成",
+    "profile": {
+      "text": "プロファイル名:",
+      "tooltip": "作成するプロファイルの名前"
+    },
+    "bat": {
+      "text": ".batファイル作成",
+      "tooltip": "作成するプロファイルでPoke-Conを起動するための.batファイルを作成します"
+    },
+    "copy": {
+      "text": "コピー",
+      "tooltip": "現在のプロファイルのコピーとして作成します"
+    },
+    "create": "作成",
+    "message": {
+      "created": "新規プロファイルが作成されました。",
+      "empty_profile_name": "プロファイル名を入力してください。",
+      "profile_already_exists": "同じ名前のプロファイルが既に存在します。"
+    }
   }
 }

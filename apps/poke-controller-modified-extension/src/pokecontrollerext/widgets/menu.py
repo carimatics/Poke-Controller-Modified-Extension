@@ -10,6 +10,7 @@ from pokecontrollerext.singletons.widget.catalog import (
 )
 from pokecontrollerext.windows import SettingsWindow
 from pokecontrollerext.windows.discord.window import DiscordSettingsWindow
+from pokecontrollerext.windows.new_profile.window import NewProfileWindow
 
 logger = logging.getLogger(__name__)
 
@@ -52,12 +53,8 @@ class Menu(tk.Menu):
         )
         command_cascade.add_separator()
         command_cascade.add_command(
-            label="batファイル作成",
-            command=self._on_command_bat_pushed,
-        )
-        command_cascade.add_command(
-            label="プロファイル作成",
-            command=self._on_command_profile_pushed,
+            label="新規プロファイル作成",
+            command=self._on_command_new_profile_pushed,
         )
         command_cascade.add_separator()
         command_cascade.add_command(
@@ -112,11 +109,8 @@ class Menu(tk.Menu):
     def _on_command_discord_settings_pushed(self) -> None:
         self._widget_catalog.window.open_discord_settings(self, DiscordSettingsWindow)
 
-    def _on_command_bat_pushed(self) -> None:
-        pass
-
-    def _on_command_profile_pushed(self) -> None:
-        pass
+    def _on_command_new_profile_pushed(self) -> None:
+        self._widget_catalog.window.open_new_profile(self, NewProfileWindow)
 
     def _on_command_key_config_pushed(self) -> None:
         pass
