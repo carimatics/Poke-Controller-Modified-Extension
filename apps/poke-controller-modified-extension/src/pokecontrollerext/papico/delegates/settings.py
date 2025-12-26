@@ -154,7 +154,7 @@ class PapicoSettingsDelegate:
         ctx = self._create_context(
             api_version=api_version,
             operation=operation,
-            params={"settings": settings.to_dict(), "path": path},
+            params={"settings": settings, "path": path},
         )
         handler = self._get_handler(ctx)
         result = handler.handle(ctx)

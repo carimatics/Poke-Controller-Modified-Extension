@@ -4,3 +4,7 @@ class AppException(Exception):
 
 class AppRuntimeException(AppException):
     pass
+
+
+class AppSettingsException(AppException):
+    pass

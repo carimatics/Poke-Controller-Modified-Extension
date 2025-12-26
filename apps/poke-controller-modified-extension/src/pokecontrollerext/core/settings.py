@@ -2,6 +2,7 @@ import logging
 from dataclasses import dataclass, fields, is_dataclass
 from tkinter import BooleanVar, DoubleVar, IntVar, StringVar, Variable
 from typing import Any, Self
+from pokecontrollerext.core.exception import AppSettingsException
 
 logger = logging.getLogger(__name__)
 
@@ -643,7 +644,7 @@ class AppSettings:
                 return
 
             if not is_dataclass(current):
-                raise ValueError(f"unsupported type: {type(current)}")
+                raise AppSettingsException(f"unsupported type: {current}({type(current)})")
 
             for field in fields(current):
                 k, v = field.name, getattr(current, field.name)
@@ -665,7 +666,7 @@ class AppSettings:
                 return False
 
             if not is_dataclass(current):
-                raise ValueError(f"unsupported type: {type(current)}")
+                raise AppSettingsException(f"unsupported type: {current}({type(current)})")
 
             for field in fields(current):
                 k, v = field.name, getattr(current, field.name)
@@ -686,7 +687,7 @@ def settings_to_dict(settings: AppSettings) -> dict[str, Any]:
             return {k: convert(v) for k, v in s.items()}
 
         if not is_dataclass(s):
-            raise ValueError(f"unsupported type: {type(s)}")
+            raise AppSettingsException(f"unsupported type: {s}({type(s)})")
 
         result: dict[str, Any] = {}
         for field in fields(s):

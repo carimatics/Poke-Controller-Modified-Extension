@@ -3,6 +3,7 @@ import tkinter as tk
 from dataclasses import fields, is_dataclass
 from typing import Any
 
+from pokecontrollerext.core.exception import AppSettingsException
 from pokecontrollerext.singletons.app.settings import get_app_settings
 from pokecontrollerext.singletons.runtime.app_info import get_app_info
 from pokecontrollerext.singletons.runtime.papico import get_papico
@@ -11,10 +12,8 @@ from pokecontrollerext.widgets.labelframe import Labelframe
 from pokecontrollerext.widgets.window import Window
 from pokecontrollerext.windows.settings.buttons import SettingsButtonsPane
 from pokecontrollerext.windows.settings.contents import (
-    CaptureSettingsPane,
     DeviceSettingsPane,
     GeneralSettingsPane,
-    SerialSettingsPane,
 )
 from pokecontrollerext.windows.settings.sidebar import SettingsSidebarPane
 
@@ -87,8 +86,6 @@ class SettingsWindow(Window):
         )
 
         sidebar.add_section("general", "General")
-        sidebar.add_section("capture", "Capture")
-        sidebar.add_section("serial", "Serial")
         sidebar.add_section("device", "Device")
 
         return sidebar
@@ -96,8 +93,6 @@ class SettingsWindow(Window):
     def _build_contents(self, master: Frame) -> None:
         self._content_labelframe = Labelframe(master)
         self._contents["general"] = GeneralSettingsPane(self._content_labelframe)
-        self._contents["capture"] = CaptureSettingsPane(self._content_labelframe)
-        self._contents["serial"] = SerialSettingsPane(self._content_labelframe)
         self._contents["device"] = DeviceSettingsPane(self._content_labelframe)
 
     def _save_settings(self) -> None:
@@ -148,7 +143,7 @@ class SettingsWindow(Window):
                 return
 
             if not is_dataclass(current):
-                raise ValueError(f"unsupported type: {type(current)}")
+                raise AppSettingsException(f"unsupported type: {current}({type(current)})")
 
             for field in fields(current):
                 v = getattr(current, field.name)
