@@ -1,8 +1,4 @@
 #!/usr/bin/env -S uv run --script
-# @formatter:off
-#MISE description="Update Poke-Controller Modified Extension"
-#MISE dir="{{cwd}}"
-# @formatter:on
 
 from tkinter import messagebox
 from pathlib import Path

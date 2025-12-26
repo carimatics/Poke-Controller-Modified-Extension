@@ -1,0 +1,81 @@
+# yaml-language-server: $schema=https://taskfile.dev/schema.json
+
+version: '3'
+
+tasks:
+  sync:
+    desc: Sync dependencies
+    cmds:
+      - uv sync
+
+  lint:
+    desc: Lint the codebase
+    cmds:
+      - uv run ruff check {{.CLI_ARGS}}
+
+  format:
+    desc: Format the codebase
+    cmds:
+      - uv run ruff format {{.CLI_ARGS}}
+
+  typecheck:
+    desc: Typecheck the codebase
+    cmds:
+      - uv run mypy
+
+  check:
+    desc: Lint, Format, Typecheck
+    cmds:
+      - task lint -- --fix
+      - task format
+      - task typecheck
+
+  ci:
+    desc: Lint, Format, Typecheck (without modifying codebase)
+    deps:
+      - task: lint
+      - task: format
+        vars:
+          CLI_ARGS: --check
+      - task: typecheck
+
+  update_app:
+    desc: Update Poke-Controller Modified Extension
+    cmds:
+      - uv run ./scripts/update_app.py
+
+  setup_dev:
+    desc: Setup development environment
+    cmds:
+      - git config core.hooksPath .githooks
+
+  app:
+    vars:
+      PROFILE: "default"
+      DEV: false
+    cmds:
+      - task update_app
+      - task sync
+      - |
+        cd SerialController
+        {{ if .DEV }}
+        uv run Window.py --profile {{.PROFILE}} -X dev
+        {{ else }}
+        uv run Window.py --profile {{.PROFILE}}
+        {{ end }}
+
+  app_sandbox:
+    desc: Launch Poke-Controller Modified Extension
+    vars:
+      PROFILE: "default"
+      DEV: false
+    cmds:
+      - task update_app
+      - task sync
+      - |
+        cd SerialControllerSandbox
+        {{ if .DEV }}
+        uv run main.py --profile {{.PROFILE}} -X dev
+        {{ else }}
+        uv run main.py --profile {{.PROFILE}}
+        {{ end }}

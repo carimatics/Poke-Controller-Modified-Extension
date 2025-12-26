@@ -3,9 +3,3 @@ uv = "0.8.24"
 
 [settings]
 python.uv_venv_auto = true
-
-[task_config]
-includes = ["mise-tasks"]
-
-########## Tasks ##########
-# See: mise-tasks/*
