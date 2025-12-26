@@ -18,6 +18,7 @@ from pokecontrollerext.updater import (
 from pokecontrollerext.windows import SettingsWindow
 from pokecontrollerext.windows.changelogs.window import ChangelogWindow
 from pokecontrollerext.windows.discord.window import DiscordSettingsWindow
+from pokecontrollerext.windows.license.window import LicenseWindow
 from pokecontrollerext.windows.new_profile.window import NewProfileWindow
 from pokecontrollerext.windows.question.window import QuestionWindow
 from pokecontrollerext.windows.version.window import VersionWindow
@@ -181,4 +182,4 @@ class Menu(tk.Menu):
             updater.checkout_original_branch()
 
     def _on_help_license_pushed(self) -> None:
-        pass
+        self._widget_catalog.window.open_license(self, LicenseWindow)

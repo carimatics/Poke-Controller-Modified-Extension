@@ -52,6 +52,7 @@ class WindowWidgetCatalog:
     question: tk.Toplevel | None = None
     version: tk.Toplevel | None = None
     changelog: tk.Toplevel | None = None
+    license: tk.Toplevel | None = None
 
     def open_controller(
         self,
@@ -158,6 +159,21 @@ class WindowWidgetCatalog:
             self._on_changelog_closed,
         )
 
+    def open_license(
+        self,
+        master: tk.Misc,
+        gen: Callable[[tk.Misc], tk.Toplevel],
+    ) -> None:
+        if (window := self.license) is not None:
+            if window.winfo_exists():
+                window.lift()
+                return
+        self.license = gen(master)
+        self.license.protocol(
+            "WM_DELETE_WINDOW",
+            self._on_license_closed,
+        )
+
     def _on_controller_closed(self) -> None:
         self._destroy(self.controller)
         self.controller = None
@@ -185,6 +201,10 @@ class WindowWidgetCatalog:
     def _on_changelog_closed(self) -> None:
         self._destroy(self.changelog)
         self.changelog = None
+
+    def _on_license_closed(self) -> None:
+        self._destroy(self.license)
+        self.license = None
 
     def _destroy(self, window: tk.Toplevel | None) -> None:
         if window is None:

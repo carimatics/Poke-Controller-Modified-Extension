@@ -414,5 +414,8 @@
       "success": "更新が完了しました。",
       "checkout_error": "ブランチの切り替えに失敗しました: {error}\n手動でGitリポジトリを最新に更新してください。"
     }
+  },
+  "license": {
+    "title": "LICENSE"
   }
 }
