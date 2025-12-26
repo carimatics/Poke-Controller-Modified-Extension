@@ -74,6 +74,8 @@ class App(tk.Tk):
         except Exception as e:
             logger.warning(f"Failed to open serial port: {e}")
 
+        self.protocol("WM_DELETE_WINDOW", self._on_closing)
+
         self._register_traces()
 
     @property
@@ -88,3 +90,7 @@ class App(tk.Tk):
 
     def _apply_theme(self, *_: Any) -> None:
         self._style_manager.change_theme(self._settings.general.theme.get())
+
+    def _on_closing(self) -> None:
+        self._papico.save_settings()
+        self.destroy()
