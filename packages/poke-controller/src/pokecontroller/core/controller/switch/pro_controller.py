@@ -48,11 +48,31 @@ DPAD_MAP = {
 
 
 class StateRecorder(Protocol):
-    def record(self, state: SwitchControllerState) -> None: ...
+    """コントローラー状態を記録するためのプロトコル."""
+
+    def record(self, state: SwitchControllerState) -> None:
+        """コントローラー状態を記録します.
+
+        Args:
+            state: 記録するコントローラー状態.
+        """
+        ...
 
 
 class SwitchProController:
+    """Switch Pro Controllerの入力を処理するクラス.
+
+    Pygameを使用してPro Controllerの入力を読み取り、
+    Switchコントローラー状態に変換してシリアルポートに送信します。
+    """
+
     def __init__(self, serial: Serial, recorder: StateRecorder) -> None:
+        """SwitchProControllerインスタンスを初期化します.
+
+        Args:
+            serial: シリアル通信インスタンス.
+            recorder: 状態を記録するレコーダー.
+        """
         self._serial = serial
         self._recorder = recorder
 
@@ -62,6 +82,11 @@ class SwitchProController:
         self._is_dirty = False
 
     def start_loop(self) -> None:
+        """Pro Controllerの入力処理ループを開始します.
+
+        Pygameイベントループを開始し、コントローラー入力の
+        継続的な処理と送信を行います。
+        """
         if self._is_running:
             return
 
@@ -89,6 +114,7 @@ class SwitchProController:
         logger.info("Stopped Switch Pro Controller loop")
 
     def stop(self) -> None:
+        """Pro Controllerの入力処理ループを停止します."""
         self._enabled = False
 
     def _apply_joystick(self, joystick: pygame.joystick.JoystickType) -> None:

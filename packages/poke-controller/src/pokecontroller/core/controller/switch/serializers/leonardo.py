@@ -5,8 +5,18 @@ from pokecontroller.core.controller.switch.state import (
 
 
 class SwitchControllerStateSerializer:
+    """Leonardo形式でSwitchコントローラー状態をシリアライズするクラス."""
+
     @staticmethod
     def serialize(state: SwitchControllerState) -> str:
+        """コントローラー状態をLeonardo形式の文字列にシリアライズします.
+
+        Args:
+            state: シリアライズするコントローラー状態.
+
+        Returns:
+            シリアライズされた文字列.
+        """
         # buttons
         buttons = state.button.value << 2
 

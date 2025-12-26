@@ -55,6 +55,14 @@ KEYMAP_JSON_ACTIONS: dict[str, dict[str, Any]] = {
 
 
 def parse_keymap_json(key_map_json: dict[str, dict[str, str]]) -> dict[Key | str, Any]:
+    """キーマップJSONを解析してキーとアクションのマッピングを生成します.
+
+    Args:
+        key_map_json: キーマップ設定のJSON辞書.
+
+    Returns:
+        キーとアクションのマッピング辞書.
+    """
     parsed: dict[Key | str, Any] = {}
     for kind, value in key_map_json.items():
         for action, key in value.items():
@@ -70,7 +78,19 @@ def parse_keymap_json(key_map_json: dict[str, dict[str, str]]) -> dict[Key | str
 
 
 class SwitchKeyboard:
+    """キーボード入力をSwitchコントローラー入力に変換するクラス.
+
+    キーボードイベントをリスニングし、設定されたキーマップに基づいて
+    Switchコントローラーの入力に変換してシリアルポートに送信します。
+    """
+
     def __init__(self, serial: Serial, keymap: dict[Key | str, Any]) -> None:
+        """SwitchKeyboardインスタンスを初期化します.
+
+        Args:
+            serial: シリアル通信インスタンス.
+            keymap: キーとアクションのマッピング辞書.
+        """
         self._serial = serial
         self._keymap = keymap
         self._enabled = False
@@ -80,6 +100,10 @@ class SwitchKeyboard:
         self._current_direction: int = 0
 
     def start(self) -> None:
+        """キーボードリスナーを開始します.
+
+        キーボードイベントの監視を開始し、入力の変換を有効にします。
+        """
         self._enabled = True
 
         if self._listener is not None:
@@ -93,6 +117,10 @@ class SwitchKeyboard:
         self._listener.start()
 
     def stop(self) -> None:
+        """キーボードリスナーを停止します.
+
+        キーボードイベントの監視を停止し、入力の変換を無効にします。
+        """
         self._enabled = False
 
         if (listener := self._listener) is None:

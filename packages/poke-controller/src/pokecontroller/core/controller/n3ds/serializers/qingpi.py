@@ -2,8 +2,18 @@ from pokecontroller.core.controller.n3ds.state import N3dsControllerState
 
 
 class N3dsControllerStateSerializer:
+    """QingPi形式でコントローラー状態をシリアライズするクラス."""
+
     @staticmethod
     def serialize(state: N3dsControllerState) -> list[int]:
+        """コントローラー状態をQingPi形式のバイト列にシリアライズします.
+
+        Args:
+            state: シリアライズするコントローラー状態.
+
+        Returns:
+            シリアライズされたバイト値のリスト.
+        """
         header = 0xAB
         buttons = state.button.value
         dpad = state.dpad.value
