@@ -252,4 +252,4 @@ class OthersSettings(Frame):
         return labelframe
 
     def _on_clear_pushed(self, textarea_id: int) -> None:
-        self._widget_catalog.outputs.clear_textarea(textarea_id=textarea_id)
+        self._widget_catalog.outputs.clear(textarea_id=textarea_id)

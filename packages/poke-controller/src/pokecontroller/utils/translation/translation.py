@@ -29,6 +29,8 @@ class Translation:
             if not isinstance(txt := ts["text"], str):
                 return key
             text = txt
+        elif isinstance(ts, list):
+            text = "\n".join(ts)
         elif isinstance(ts, str):
             text = ts
         else:

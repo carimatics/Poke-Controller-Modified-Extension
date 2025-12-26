@@ -132,7 +132,7 @@ class Buttons(Frame):
         self._widget_catalog.window.open_controller(self, ControllerWindow)
 
     def _on_clear_outputs_pushed(self) -> None:
-        self._widget_catalog.outputs.clear_textareas()
+        self._widget_catalog.outputs.clear_all()
 
     def _on_capture_pushed(self) -> None:
         self._app_model.save_screencapture()

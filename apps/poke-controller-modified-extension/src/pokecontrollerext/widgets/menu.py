@@ -11,6 +11,7 @@ from pokecontrollerext.singletons.widget.catalog import (
 from pokecontrollerext.windows import SettingsWindow
 from pokecontrollerext.windows.discord.window import DiscordSettingsWindow
 from pokecontrollerext.windows.new_profile.window import NewProfileWindow
+from pokecontrollerext.windows.question.window import QuestionWindow
 
 logger = logging.getLogger(__name__)
 
@@ -124,7 +125,7 @@ class Menu(tk.Menu):
         webbrowser.open(url=POKECONTROLLER_GUIDE_URL, new=WEBBROWSER_OPEN_IN_NEW_TAB)
 
     def _on_help_question_template_pushed(self) -> None:
-        pass
+        self._widget_catalog.window.open_question(self, QuestionWindow)
 
     def _on_help_version_pushed(self) -> None:
         pass

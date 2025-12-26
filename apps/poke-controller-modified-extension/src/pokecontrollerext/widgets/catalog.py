@@ -8,15 +8,34 @@ class OutputsWidgetCatalog:
     textarea1: tk.Text | None = None
     textarea2: tk.Text | None = None
 
-    def clear_textarea(self, textarea_id: int) -> None:
+    def write(self, textarea_id: int, text: str) -> None:
+        if (textarea := getattr(self, f"textarea{textarea_id}")) is not None:
+            textarea.config(state=tk.NORMAL)
+            textarea.delete("1.0", tk.END)
+            textarea.insert("1.0", text)
+            textarea.config(state=tk.DISABLED)
+
+    def write_line(self, textarea_id: int, text: str) -> None:
+        self.write(textarea_id, f"{text}\n")
+
+    def append(self, textarea_id: int, text: str) -> None:
+        if (textarea := getattr(self, f"textarea{textarea_id}")) is not None:
+            textarea.config(state=tk.NORMAL)
+            textarea.insert(tk.END, text)
+            textarea.config(state=tk.DISABLED)
+
+    def append_line(self, textarea_id: int, text: str) -> None:
+        self.append(textarea_id, f"{text}\n")
+
+    def clear(self, textarea_id: int) -> None:
         if (textarea := getattr(self, f"textarea{textarea_id}")) is not None:
             textarea.config(state=tk.NORMAL)
             textarea.delete("1.0", tk.END)
             textarea.config(state=tk.DISABLED)
 
-    def clear_textareas(self) -> None:
+    def clear_all(self) -> None:
         for i in [1, 2]:
-            self.clear_textarea(i)
+            self.clear(i)
 
 
 @dataclass(kw_only=True)
@@ -30,6 +49,7 @@ class WindowWidgetCatalog:
     settings: tk.Toplevel | None = None
     discord_settings: tk.Toplevel | None = None
     new_profile: tk.Toplevel | None = None
+    question: tk.Toplevel | None = None
 
     def open_controller(
         self,
@@ -91,6 +111,21 @@ class WindowWidgetCatalog:
             self._on_new_profile_closed,
         )
 
+    def open_question(
+        self,
+        master: tk.Misc,
+        gen: Callable[[tk.Misc], tk.Toplevel],
+    ) -> None:
+        if (window := self.question) is not None:
+            if window.winfo_exists():
+                window.lift()
+                return
+        self.question = gen(master)
+        self.question.protocol(
+            "WM_DELETE_WINDOW",
+            self._on_question_closed,
+        )
+
     def _on_controller_closed(self) -> None:
         self._destroy(self.controller)
         self.controller = None
@@ -106,6 +141,10 @@ class WindowWidgetCatalog:
     def _on_new_profile_closed(self) -> None:
         self._destroy(self.new_profile)
         self.new_profile = None
+
+    def _on_question_closed(self) -> None:
+        self._destroy(self.question)
+        self.question = None
 
     def _destroy(self, window: tk.Toplevel | None) -> None:
         if window is None:
