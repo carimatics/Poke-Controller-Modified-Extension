@@ -2,6 +2,7 @@ import logging
 from dataclasses import dataclass, fields, is_dataclass
 from tkinter import BooleanVar, DoubleVar, IntVar, StringVar, Variable
 from typing import Any, Self
+
 from pokecontrollerext.core.exception import AppSettingsException
 
 logger = logging.getLogger(__name__)
@@ -644,7 +645,9 @@ class AppSettings:
                 return
 
             if not is_dataclass(current):
-                raise AppSettingsException(f"unsupported type: {current}({type(current)})")
+                raise AppSettingsException(
+                    f"unsupported type: {current}({type(current)})"
+                )
 
             for field in fields(current):
                 k, v = field.name, getattr(current, field.name)
@@ -666,7 +669,9 @@ class AppSettings:
                 return False
 
             if not is_dataclass(current):
-                raise AppSettingsException(f"unsupported type: {current}({type(current)})")
+                raise AppSettingsException(
+                    f"unsupported type: {current}({type(current)})"
+                )
 
             for field in fields(current):
                 k, v = field.name, getattr(current, field.name)

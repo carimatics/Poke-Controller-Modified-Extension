@@ -134,7 +134,9 @@ class PapicoSettingsLoadHandler(PapicoHandler):
                 elif schema[k] is str:
                     res[k] = StringVar(value=v)
                 else:
-                    raise PapicoSettingsLoadHandlerException(f"unsupported type: {v}({type(v)})")
+                    raise PapicoSettingsLoadHandlerException(
+                        f"unsupported type: {v}({type(v)})"
+                    )
 
         result: dict[str, Any] = {}
         to_tk_variables(self._settings, SCHEMA, result)

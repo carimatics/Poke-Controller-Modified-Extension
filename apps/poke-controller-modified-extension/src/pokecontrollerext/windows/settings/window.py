@@ -143,7 +143,9 @@ class SettingsWindow(Window):
                 return
 
             if not is_dataclass(current):
-                raise AppSettingsException(f"unsupported type: {current}({type(current)})")
+                raise AppSettingsException(
+                    f"unsupported type: {current}({type(current)})"
+                )
 
             for field in fields(current):
                 v = getattr(current, field.name)
