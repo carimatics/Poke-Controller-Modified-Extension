@@ -2,7 +2,6 @@ import tkinter as tk
 from typing import Any
 
 from pokecontrollerext.core.translation import t
-from pokecontrollerext.singletons.runtime.app_info import get_app_info
 from pokecontrollerext.singletons.runtime.runtime_info import get_app_runtime_info
 from pokecontrollerext.widgets.button import Button
 from pokecontrollerext.widgets.frame import Frame
@@ -21,7 +20,6 @@ class ChangelogWindow(Window):
         super().__init__(master, *args, **kwargs)
         self.title(t("changelog.title"))
 
-        self._app_info = get_app_info()
         self._runtime_info = get_app_runtime_info()
         self.wm_geometry("720x480")
 
