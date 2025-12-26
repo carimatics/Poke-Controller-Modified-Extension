@@ -340,5 +340,12 @@
         }
       }
     }
+  },
+  "discord": {
+    "title": "Discord Settings Assignment",
+    "webhook_url": "Webhook URL:",
+    "username": "Username:",
+    "avatar_url": "Avatar URL:",
+    "test": "Test"
   }
 }

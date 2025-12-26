@@ -28,6 +28,7 @@ class CaptureWidgetCatalog:
 class WindowWidgetCatalog:
     controller: tk.Toplevel | None = None
     settings: tk.Toplevel | None = None
+    discord_settings: tk.Toplevel | None = None
 
     def open_controller(
         self,
@@ -59,6 +60,21 @@ class WindowWidgetCatalog:
             self._on_settings_closed,
         )
 
+    def open_discord_settings(
+        self,
+        master: tk.Misc,
+        gen: Callable[[tk.Misc], tk.Toplevel],
+    ) -> None:
+        if (window := self.discord_settings) is not None:
+            if window.winfo_exists():
+                window.lift()
+                return
+        self.discord_settings = gen(master)
+        self.discord_settings.protocol(
+            "WM_DELETE_WINDOW",
+            self._on_discord_settings_closed,
+        )
+
     def _on_controller_closed(self) -> None:
         self._destroy(self.controller)
         self.controller = None
@@ -66,6 +82,10 @@ class WindowWidgetCatalog:
     def _on_settings_closed(self) -> None:
         self._destroy(self.settings)
         self.settings = None
+
+    def _on_discord_settings_closed(self) -> None:
+        self._destroy(self.discord_settings)
+        self.discord_settings = None
 
     def _destroy(self, window: tk.Toplevel | None) -> None:
         if window is None:

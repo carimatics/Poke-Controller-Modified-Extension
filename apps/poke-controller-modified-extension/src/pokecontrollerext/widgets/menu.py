@@ -9,6 +9,7 @@ from pokecontrollerext.singletons.widget.catalog import (
     get_app_widget_catalog,
 )
 from pokecontrollerext.windows import SettingsWindow
+from pokecontrollerext.windows.discord.window import DiscordSettingsWindow
 
 logger = logging.getLogger(__name__)
 
@@ -109,7 +110,7 @@ class Menu(tk.Menu):
         self._app_settings.capture.size.set(DEFAULT["capture"]["size"])
 
     def _on_command_discord_settings_pushed(self) -> None:
-        pass
+        self._widget_catalog.window.open_discord_settings(self, DiscordSettingsWindow)
 
     def _on_command_bat_pushed(self) -> None:
         pass
