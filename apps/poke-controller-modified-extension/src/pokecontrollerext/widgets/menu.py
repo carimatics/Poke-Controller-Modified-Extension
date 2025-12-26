@@ -1,12 +1,19 @@
 import logging
 import tkinter as tk
+import tkinter.messagebox as mb
 import webbrowser
 from typing import Any
 
 from pokecontrollerext.core.settings import DEFAULT
+from pokecontrollerext.core.translation import t
 from pokecontrollerext.singletons.app.settings import get_app_settings
+from pokecontrollerext.singletons.runtime.runtime_info import get_app_runtime_info
 from pokecontrollerext.singletons.widget.catalog import (
     get_app_widget_catalog,
+)
+from pokecontrollerext.updater import (
+    PokeControllerUpdater,
+    PokeControllerUpdaterCheckoutBranchException,
 )
 from pokecontrollerext.windows import SettingsWindow
 from pokecontrollerext.windows.changelogs.window import ChangelogWindow
@@ -27,6 +34,7 @@ class Menu(tk.Menu):
         super().__init__(master, *args, **kwargs)
         self._app_settings = get_app_settings()
         self._widget_catalog = get_app_widget_catalog()
+        self._runtime_info = get_app_runtime_info()
         self.build_ui()
 
     def build_ui(self) -> None:
@@ -136,7 +144,41 @@ class Menu(tk.Menu):
         self._widget_catalog.window.open_changelog(self, ChangelogWindow)
 
     def _on_help_check_for_update_pushed(self) -> None:
-        pass
+        repository_root = self._runtime_info.base_dir.parent
+        updater = PokeControllerUpdater(root=str(repository_root))
+
+        try:
+            if not updater.has_changes():
+                mb.showinfo(
+                    title=t("update.title"),
+                    message=t("update.message.no_changes"),
+                )
+                return
+            if mb.askyesno(
+                title=t("update.title"),
+                message=t("update.message.has_changes"),
+            ):
+                try:
+                    updater.backup()
+                    updater.update()
+                except Exception as e:
+                    logger.error(f"Error while updating repository: {e}")
+                    mb.showinfo(
+                        title=t("update.title"),
+                        message=t("update.message.error"),
+                    )
+                    return
+                mb.showinfo(
+                    title=t("update.title"),
+                    message=t("update.message.success"),
+                )
+        except PokeControllerUpdaterCheckoutBranchException as e:
+            mb.showinfo(
+                title=t("update.title"),
+                message=t("update.message.checkout_error").format(error=f"{e}"),
+            )
+        finally:
+            updater.checkout_original_branch()
 
     def _on_help_license_pushed(self) -> None:
         pass
