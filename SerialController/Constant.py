@@ -1,8 +1,4 @@
-from pokecontrollerext.singletons.runtime.app_info import get_app_info
-
-_app_info = get_app_info()
-
-# for compatibility
-NAME = _app_info.name
-# for compatibility
-VERSION = _app_info.version
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+NAME = "Poke-Controller Modified Extension"
+VERSION = "0.1.8"
