@@ -58,7 +58,7 @@ tasks:
       - task sync
       - |
         cd SerialController
-        {{ if .DEV }}
+        {{ if eq .DEV "true" }}
         uv run python -X dev -- Window.py --profile {{.PROFILE}}
         {{ else }}
         uv run python -- Window.py --profile {{.PROFILE}}
@@ -74,7 +74,7 @@ tasks:
       - task sync
       - |
         cd SerialControllerSandbox
-        {{ if .DEV }}
+        {{ if eq .DEV "true" }}
         uv run python -X dev -- Window.py --profile {{.PROFILE}}
         {{ else }}
         uv run python -- Window.py --profile {{.PROFILE}}
