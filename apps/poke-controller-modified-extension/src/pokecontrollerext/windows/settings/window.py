@@ -83,6 +83,7 @@ class SettingsWindow(Window):
         sidebar = SettingsSidebarPane(
             master,
             self._on_section_selected,
+            width=160,
         )
 
         sidebar.add_section("general", "General")
