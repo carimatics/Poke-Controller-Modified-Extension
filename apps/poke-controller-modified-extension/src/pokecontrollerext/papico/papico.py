@@ -33,7 +33,10 @@ logger = logging.getLogger(__name__)
 class Papico:
     """Poke-Controller Public API Compatible Orchestrator
 
-    Poke-Controllerの公開APIのバージョンによって異なる処理を適切に振り分けるクラス
+    Poke-Controllerの公開APIのバージョンによって異なる処理を適切に振り分けるクラス。
+    それぞれのAPIバージョンに対応したハンドラを定義することで、同一アプリケーション上で
+    複数のバージョンのAPIをサポートできるようにしています。
+    この仕組みにより、v0.1.8のCommandの動作を維持しつつ、全く新規のバージョンのCommand APIの提供も可能になります。
     """
 
     _settings_path: Path
