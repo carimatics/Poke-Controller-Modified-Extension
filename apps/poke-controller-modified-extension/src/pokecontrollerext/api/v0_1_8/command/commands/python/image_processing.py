@@ -94,12 +94,12 @@ class ImageProcPythonCommand(PythonCommand):
     def __init__(
         self,
         cam: Camera,
-        gui: Any | None = None,  # FIXME: ちゃんとした型をつける
+        gui: Any | None = None,
     ) -> None:
         super().__init__()
 
         self.camera = cam
-        self.gui: Any | None = gui  # FIXME: ちゃんとした型をつける
+        self.gui: Any | None = gui
 
     def start(
         self,
@@ -602,15 +602,15 @@ class ImageProcPythonCommand(PythonCommand):
 
         if self.gui is not None or self.isGuide:
             if crop_pillow != []:
-                canvas.ImgRect(
+                canvas.draw_rect(
                     *crop_pillow[0:2],
                     *crop_pillow[2:4],
                     outline=color[1],
                     tag=tag,
-                    ms=int(ms),
+                    delete_after_ms=int(ms),
                     flag=False,
                 )
-            canvas.ImgRect(
+            canvas.draw_rect(
                 *top_left, *bottom_right, outline=color[0], tag=tag, ms=int(ms)
             )
 
@@ -635,13 +635,13 @@ class ImageProcPythonCommand(PythonCommand):
             tag = generateRandomCharacter(10)
 
         if self.gui is not None or self.isGuide:
-            canvas.ImgText(
+            canvas.draw_text(
                 position[0],
                 position[1],
-                txt=txt,
+                text=txt,
                 tag=tag,
-                ms=int(ms),
-                ft=ft,
+                delete_after_ms=int(ms),
+                font=ft,
                 color=color,
             )
 

@@ -2,6 +2,8 @@ import tkinter as tk
 from dataclasses import dataclass
 from typing import Callable
 
+from pokecontrollerext.widgets.canvas import Canvas
+
 
 @dataclass(kw_only=True)
 class OutputsWidgetCatalog:
@@ -40,7 +42,7 @@ class OutputsWidgetCatalog:
 
 @dataclass(kw_only=True)
 class CaptureWidgetCatalog:
-    canvas: tk.Canvas | None = None
+    canvas: Canvas | None = None
 
 
 @dataclass(kw_only=True)

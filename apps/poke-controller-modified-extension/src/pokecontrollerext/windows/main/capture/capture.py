@@ -24,6 +24,7 @@ from pokecontrollerext.singletons.runtime.runtime_info import (
 from pokecontrollerext.singletons.widget.catalog import (
     get_app_widget_catalog,
 )
+from pokecontrollerext.widgets.canvas import Canvas
 from pokecontrollerext.widgets.frame import Frame
 
 logger = logging.getLogger(__name__)
@@ -39,7 +40,7 @@ type Font = (
 
 
 class Capture(Frame):
-    _canvas: tk.Canvas
+    _canvas: Canvas
     _ratio: tuple[float, float]
     _image: ImageTk.PhotoImage
     _image_id: int
@@ -146,7 +147,7 @@ class Capture(Frame):
 
     def build_ui(self) -> None:
         logger.info(f"Creating new canvas: {self._width}x{self._height}")
-        self._canvas = tk.Canvas(
+        self._canvas = Canvas(
             self,
             width=self._width,
             height=self._height,
@@ -193,18 +194,15 @@ class Capture(Frame):
         if not self._show_realtime.get() or self._is_resizing:
             return
 
-        rat = ratio if ratio is not None else self._ratio
-        self._canvas.create_rectangle(
-            start[0] * rat[0],
-            start[1] * rat[1],
-            end[0] * rat[0],
-            end[1] * rat[1],
-            width=width,
+        self._canvas.draw_rect(
+            start=start,
+            end=end,
             outline=outline,
-            tags=tag,
+            tag=tag,
+            width=width,
+            ratio=ratio,
+            delete_after_ms=delete_after_ms,
         )
-        if delete_after_ms is not None:
-            self.after(delete_after_ms, self._delete_tagged_item, tag)
 
     def _draw_circle(
         self,
@@ -220,18 +218,15 @@ class Capture(Frame):
         if not self._show_realtime.get() or self._is_resizing:
             return
 
-        rat = ratio if ratio is not None else self._ratio
-        self._canvas.create_oval(
-            (center[0] - radius) * rat[0],
-            (center[1] - radius) * rat[1],
-            (center[0] + radius) * rat[0],
-            (center[1] + radius) * rat[1],
-            width=width,
+        self._canvas.draw_circle(
+            center=center,
+            radius=radius,
             outline=outline,
-            tags=tag,
+            tag=tag,
+            width=width,
+            ratio=ratio,
+            delete_after_ms=delete_after_ms,
         )
-        if delete_after_ms is not None:
-            self.after(delete_after_ms, self._delete_tagged_item, tag)
 
     def _draw_text(
         self,
@@ -247,20 +242,18 @@ class Capture(Frame):
         if not self._show_realtime.get() or self._is_resizing:
             return
 
-        rat = ratio if ratio is not None else self._ratio
-        self._canvas.create_text(
-            start[0] * rat[0],
-            start[1] * rat[1],
+        self._canvas.draw_text(
+            start=start,
             text=text,
             font=font,
-            fill=color,
-            tags=tag,
+            color=color,
+            tag=tag,
+            ratio=ratio,
+            delete_after_ms=delete_after_ms,
         )
-        if delete_after_ms is not None:
-            self.after(delete_after_ms, self._delete_tagged_item, tag)
 
     def _delete_tagged_item(self, tag: str) -> None:
-        self._canvas.delete(tag)
+        self._canvas.delete_tagged_item(tag)
 
     def _load_frame(self) -> None:
         try:
@@ -331,6 +324,7 @@ class Capture(Frame):
 
         self._width, self._height = new_size
         self._update_ratio()
+        self._canvas.ratio = self._ratio
         # resize disabled image
         if (disabled_raw_image := self._disabled_raw_image) is not None:
             self._disabled_image = ImageTk.PhotoImage(
