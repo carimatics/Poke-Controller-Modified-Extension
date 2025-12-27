@@ -2,6 +2,7 @@ import logging
 import re
 import subprocess
 from dataclasses import dataclass
+from pathlib import Path
 
 import cv2
 
@@ -77,6 +78,30 @@ class CameraDetector:
             return []
 
     def _get_windows_camera_names(self) -> list[str]:
+        try:
+            import clr
+
+            # XXX
+            direct_show_lib_path = (
+                Path(__file__).parent.parent.parent.parent.parent.parent.parent
+                / "DirectShowLib"
+                / "DirectShowLib-2005.dll"
+            )
+            clr.AddReference(str(direct_show_lib_path))
+            from DirectShowLib import (  # type: ignore[attr-defined]
+                DsDevice,
+                FilterCategory,
+            )
+
+            return [
+                device.Name
+                for device in DsDevice.GetDevicesOfCat(FilterCategory.VideoInputDevice)
+            ]
+        except Exception as e:
+            logger.warning(f"DirectShowLib not available, falling back to ffmpeg: {e}")
+            return self._get_windows_camera_names_ffmpeg()
+
+    def _get_windows_camera_names_ffmpeg(self) -> list[str]:
         try:
             result = subprocess.run(
                 ["ffmpeg", "-list_devices", "true", "-f", "dshow", "-i", "dummy"],
