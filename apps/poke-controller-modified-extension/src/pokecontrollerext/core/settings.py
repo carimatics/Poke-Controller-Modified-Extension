@@ -88,12 +88,7 @@ SCHEMA: dict[str, Any] = {
         },
     },
     "command": {
-        "python_commands_filter": str,
-        "python_command": str,
-        "mcu_commands_filter": str,
-        "mcu_command": str,
         "shortcut": {
-            "number": int,
             "registered_commands": {
                 "1": {
                     "klass": str,
@@ -250,12 +245,7 @@ DEFAULT: dict[str, Any] = {
         },
     },
     "command": {
-        "python_commands_filter": "-",
-        "python_command": "",
-        "mcu_commands_filter": "-",
-        "mcu_command": "",
         "shortcut": {
-            "number": 1,
             "registered_commands": {
                 "1": {
                     "klass": "None",
@@ -475,13 +465,11 @@ class ShortcutCommandSettings:
 
 @dataclass(kw_only=True, frozen=True)
 class ShortcutSettings:
-    number: IntVar
     registered_commands: dict[str, ShortcutCommandSettings]
 
     @classmethod
     def from_dict(cls, d: dict[str, Any]) -> Self:
         return cls(
-            number=d["number"],
             registered_commands={
                 k: ShortcutCommandSettings(**v)
                 for k, v in d["registered_commands"].items()
@@ -491,19 +479,11 @@ class ShortcutSettings:
 
 @dataclass(kw_only=True, frozen=True)
 class CommandSettings:
-    python_commands_filter: StringVar
-    python_command: StringVar
-    mcu_commands_filter: StringVar
-    mcu_command: StringVar
     shortcut: ShortcutSettings
 
     @classmethod
     def from_dict(cls, d: dict[str, Any]) -> Self:
         return cls(
-            python_commands_filter=d["python_commands_filter"],
-            python_command=d["python_command"],
-            mcu_commands_filter=d["mcu_commands_filter"],
-            mcu_command=d["mcu_command"],
             shortcut=ShortcutSettings.from_dict(d["shortcut"]),
         )
 

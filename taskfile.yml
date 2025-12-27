@@ -51,31 +51,31 @@ tasks:
 
   app:
     vars:
-      PROFILE: "default"
-      DEV: false
+      PROFILE: '{{.PROFILE|default "default"}}'
+      DEV: '{{.DEV|default false}}'
     cmds:
       - task update_app
       - task sync
       - |
         cd SerialController
         {{ if .DEV }}
-        uv run Window.py --profile {{.PROFILE}} -X dev
+        uv run python -X dev -- Window.py --profile {{.PROFILE}}
         {{ else }}
-        uv run Window.py --profile {{.PROFILE}}
+        uv run python -- Window.py --profile {{.PROFILE}}
         {{ end }}
 
   app_sandbox:
     desc: Launch Poke-Controller Modified Extension
     vars:
-      PROFILE: "default"
-      DEV: false
+      PROFILE: '{{.PROFILE|default "default"}}'
+      DEV: '{{.DEV|default false}}'
     cmds:
       - task update_app
       - task sync
       - |
         cd SerialControllerSandbox
         {{ if .DEV }}
-        uv run Window.py --profile {{.PROFILE}} -X dev
+        uv run python -X dev -- Window.py --profile {{.PROFILE}}
         {{ else }}
-        uv run Window.py --profile {{.PROFILE}}
+        uv run python -- Window.py --profile {{.PROFILE}}
         {{ end }}

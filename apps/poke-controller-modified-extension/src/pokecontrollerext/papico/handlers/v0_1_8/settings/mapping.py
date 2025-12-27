@@ -80,12 +80,7 @@ MAPPING: dict[str, Any] = {
         },
     },
     "command": {
-        "python_commands_filter": "General Setting/python_commands_filter",
-        "python_command": "General Setting/python_command",
-        "mcu_commands_filter": "General Setting/mcu_commands_filter",
-        "mcu_command": "General Setting/mcu_command",
         "shortcut": {
-            "number": "General Setting/shortcut_number",
             "registered_commands": {
                 "1": {
                     "klass": "Shortcut/command_class_1",

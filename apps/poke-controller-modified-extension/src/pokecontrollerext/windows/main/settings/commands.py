@@ -61,11 +61,11 @@ class CommandsSettings(Frame):
             file="../assets/icons8-OpenDir-16.png"
         )
 
-        self._python_commands_filter = self._app_settings.command.python_commands_filter
-        self._python_command = self._app_settings.command.python_command
-        self._mcu_commands_filter = self._app_settings.command.mcu_commands_filter
-        self._mcu_command = self._app_settings.command.mcu_command
-        self._shortcut_number = self._app_settings.command.shortcut.number
+        self._python_commands_filter = tk.StringVar(value="")
+        self._python_command = tk.StringVar(value="")
+        self._mcu_commands_filter = tk.StringVar(value="")
+        self._mcu_command = tk.StringVar(value="")
+        self._shortcut_number = tk.IntVar(value=1)
         self._registered_commands = (
             self._app_settings.command.shortcut.registered_commands
         )
@@ -74,9 +74,8 @@ class CommandsSettings(Frame):
         if self._commands:
             self._app_command_state.select(self._commands[0])
 
-        self._register_traces()
-
         self.build_ui()
+        self._register_traces()
 
     def build_ui(self) -> None:
         upper_frame = Frame(self)
@@ -221,7 +220,7 @@ class CommandsSettings(Frame):
                 textvariable=var,
                 values=values,
             )
-            if var.get() == "":
+            if var.get() == "" and len(values) > 0:
                 combobox.current(0)
 
             # Layout
@@ -297,12 +296,14 @@ class CommandsSettings(Frame):
             filter_var: tk.StringVar,
         ) -> tuple[list[str], list[str]]:
             filter_value = filter_var.get()
-            use_filter = filter_value != "-"
-            tags = set([t for c in self._commands if c.kind == kind for t in c.tags])
+            use_filter = filter_value != "-" and filter_value != ""
+            tags = set(
+                [tag for c in self._commands if c.kind == kind for tag in c.tags]
+            )
             filters = (
                 ["-"]
-                + sorted([t for t in tags if not t.startswith("@")])
-                + sorted([t for t in tags if t.startswith("@")])
+                + sorted([tag for tag in tags if not tag.startswith("@")])
+                + sorted([tag for tag in tags if tag.startswith("@")])
             )
             commands = [
                 c.display_name
@@ -326,7 +327,7 @@ class CommandsSettings(Frame):
             filter_var: tk.StringVar,
         ) -> list[str]:
             filter_value = filter_var.get()
-            use_filter = filter_value != "-"
+            use_filter = filter_value != "-" and filter_value != ""
             commands = [
                 c.display_name
                 for c in self._commands
@@ -355,8 +356,9 @@ class CommandsSettings(Frame):
                 return
 
             hit = False
+            name = combobox.get()
             for i, item in enumerate(items):
-                if item == combobox.get():
+                if item == name:
                     hit = True
                     combobox.current(i)
                     break
