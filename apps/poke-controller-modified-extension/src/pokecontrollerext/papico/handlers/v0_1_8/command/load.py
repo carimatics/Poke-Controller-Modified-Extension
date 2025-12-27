@@ -10,7 +10,7 @@ from pokecontrollerext.api.v0_1_8.command.commands.mcu.base import (
 from pokecontrollerext.api.v0_1_8.command.commands.python.base import (
     PythonCommand,
 )
-from pokecontrollerext.command.info import CommandInfo
+from pokecontrollerext.core.command.info import CommandInfo
 from pokecontrollerext.papico.context import (
     PapicoExecContext,
     PapicoFailure,

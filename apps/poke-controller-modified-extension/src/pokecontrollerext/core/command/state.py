@@ -1,6 +1,6 @@
 import tkinter as tk
 
-from pokecontrollerext.command.info import CommandInfo
+from pokecontrollerext.core.command.info import CommandInfo
 
 
 class AppCommandState:

@@ -1,7 +1,7 @@
 import logging
 from typing import Any, Callable
 
-from pokecontrollerext.command.info import (
+from pokecontrollerext.core.command.info import (
     CommandInfo,
 )
 from pokecontrollerext.papico.context import (

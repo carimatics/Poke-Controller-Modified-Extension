@@ -2,7 +2,7 @@ import logging
 from pathlib import Path
 from typing import Callable
 
-from pokecontrollerext.command.info import CommandInfo
+from pokecontrollerext.core.command.info import CommandInfo
 from pokecontrollerext.core.settings import AppSettings
 from pokecontrollerext.papico.context import PapicoResult
 from pokecontrollerext.papico.delegates.command import (
