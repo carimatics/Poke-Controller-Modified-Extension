@@ -602,16 +602,21 @@ class ImageProcPythonCommand(PythonCommand):
 
         if self.gui is not None or self.isGuide:
             if crop_pillow != []:
+                start = tuple(crop_pillow[0:2])
+                end = tuple(crop_pillow[2:4])
                 canvas.draw_rect(
-                    *crop_pillow[0:2],
-                    *crop_pillow[2:4],
+                    start=start,
+                    end=end,
                     outline=color[1],
                     tag=tag,
-                    delete_after_ms=int(ms),
-                    flag=False,
+                    delete_after_ms=None,
                 )
             canvas.draw_rect(
-                *top_left, *bottom_right, outline=color[0], tag=tag, ms=int(ms)
+                top_left,
+                bottom_right,
+                outline=color[0],
+                tag=tag,
+                delete_after_ms=int(ms),
             )
 
     def displayText(
