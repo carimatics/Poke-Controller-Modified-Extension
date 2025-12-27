@@ -3,7 +3,7 @@ from dataclasses import dataclass, fields, is_dataclass
 from tkinter import BooleanVar, DoubleVar, IntVar, StringVar, Variable
 from typing import Any, Self
 
-from pokecontrollerext.core.exception import AppSettingsException
+from pokecontrollerext.app.exception import AppSettingsException
 
 logger = logging.getLogger(__name__)
 

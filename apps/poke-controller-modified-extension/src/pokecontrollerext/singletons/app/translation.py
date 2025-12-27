@@ -3,7 +3,7 @@ from pathlib import Path
 from pokecontroller.utils import platform
 from pokecontroller.utils.translation import Translation
 
-from pokecontrollerext.core.exception import AppRuntimeException
+from pokecontrollerext.app.exception import AppRuntimeException
 
 _translation: Translation | None = None
 

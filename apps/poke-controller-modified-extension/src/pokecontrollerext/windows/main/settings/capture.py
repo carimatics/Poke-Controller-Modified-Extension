@@ -3,7 +3,7 @@ from typing import Any
 
 from pokecontroller.core.camera import CameraInfo
 
-from pokecontrollerext.core.translation import t
+from pokecontrollerext.app.translation import t
 from pokecontrollerext.singletons.app.model import get_app_model
 from pokecontrollerext.singletons.app.settings import get_app_settings
 from pokecontrollerext.widgets.button import Button

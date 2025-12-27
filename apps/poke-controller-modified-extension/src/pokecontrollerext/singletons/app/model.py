@@ -1,5 +1,5 @@
-from pokecontrollerext.core.exception import AppRuntimeException
-from pokecontrollerext.core.model import AppModel
+from pokecontrollerext.app.exception import AppRuntimeException
+from pokecontrollerext.app.model import AppModel
 
 _app_model: AppModel | None = None
 

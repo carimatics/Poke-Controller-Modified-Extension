@@ -3,7 +3,7 @@ import tkinter as tk
 from dataclasses import fields, is_dataclass
 from typing import Any
 
-from pokecontrollerext.core.exception import AppSettingsException
+from pokecontrollerext.app.exception import AppSettingsException
 from pokecontrollerext.singletons.app.settings import get_app_settings
 from pokecontrollerext.singletons.runtime.app_info import get_app_info
 from pokecontrollerext.singletons.runtime.papico import get_papico

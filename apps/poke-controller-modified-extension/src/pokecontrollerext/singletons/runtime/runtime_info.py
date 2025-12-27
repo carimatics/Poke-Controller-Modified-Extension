@@ -1,7 +1,7 @@
 from pathlib import Path
 
-from pokecontrollerext.core.exception import AppRuntimeException
-from pokecontrollerext.core.runtime_info import AppRuntimeInfo
+from pokecontrollerext.app.exception import AppRuntimeException
+from pokecontrollerext.app.runtime_info import AppRuntimeInfo
 
 _runtime_info: AppRuntimeInfo | None = None
 

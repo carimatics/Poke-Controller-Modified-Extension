@@ -3,7 +3,7 @@ import tkinter.messagebox as mb
 import tkinter.scrolledtext as st
 from typing import Any
 
-from pokecontrollerext.core.translation import t
+from pokecontrollerext.app.translation import t
 from pokecontrollerext.singletons.app.command import get_app_command_state
 from pokecontrollerext.singletons.app.model import get_app_model
 from pokecontrollerext.singletons.app.settings import get_app_settings

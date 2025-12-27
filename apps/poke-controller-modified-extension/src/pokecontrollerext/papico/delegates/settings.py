@@ -2,7 +2,7 @@ import logging
 from pathlib import Path
 from typing import Any
 
-from pokecontrollerext.core.settings import AppSettings
+from pokecontrollerext.app.settings import AppSettings
 from pokecontrollerext.papico.context import (
     PapicoExecContext,
     PapicoFailure,

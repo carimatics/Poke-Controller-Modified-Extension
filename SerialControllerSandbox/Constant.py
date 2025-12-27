@@ -1,4 +1,4 @@
-from pokecontrollerext.core.app import INFO
+from pokecontrollerext.app.app import INFO
 
 # for compatibility
 NAME = INFO.name

@@ -1,4 +1,4 @@
-from pokecontrollerext.core.exception import AppRuntimeException
+from pokecontrollerext.app.exception import AppRuntimeException
 from pokecontrollerext.papico import Papico
 
 _papico: Papico | None = None

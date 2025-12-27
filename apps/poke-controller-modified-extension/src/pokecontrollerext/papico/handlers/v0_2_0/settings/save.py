@@ -2,7 +2,7 @@ import json
 from pathlib import Path
 from typing import Any
 
-from pokecontrollerext.core.settings import AppSettings, settings_to_dict
+from pokecontrollerext.app.settings import AppSettings, settings_to_dict
 from pokecontrollerext.papico.context import (
     PapicoExecContext,
     PapicoFailure,

@@ -3,11 +3,11 @@ import tkinter as tk
 import tkinter.messagebox as mb
 from typing import Any
 
-from pokecontrollerext.core.exception import AppRuntimeException
-from pokecontrollerext.core.style import (
+from pokecontrollerext.app.exception import AppRuntimeException
+from pokecontrollerext.app.style import (
     StyleManager,
 )
-from pokecontrollerext.core.translation import t
+from pokecontrollerext.app.translation import t
 from pokecontrollerext.singletons.app.command import (
     setup_app_command_state,
 )

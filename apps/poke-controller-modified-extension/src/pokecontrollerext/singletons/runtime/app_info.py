@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from pokecontrollerext.core.info import AppInfo
+from pokecontrollerext.app.info import AppInfo
 
 _app_info = AppInfo(
     name="Poke-Controller Modified Extension",

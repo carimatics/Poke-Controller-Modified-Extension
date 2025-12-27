@@ -5,7 +5,7 @@ import tkinter as tk
 import tomllib
 from typing import Any
 
-from pokecontrollerext.core.translation import t
+from pokecontrollerext.app.translation import t
 from pokecontrollerext.singletons.runtime.app_info import get_app_info
 from pokecontrollerext.singletons.runtime.runtime_info import get_app_runtime_info
 from pokecontrollerext.widgets.button import Button

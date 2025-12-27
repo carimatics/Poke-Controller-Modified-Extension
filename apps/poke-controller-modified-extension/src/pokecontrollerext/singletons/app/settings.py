@@ -1,5 +1,5 @@
-from pokecontrollerext.core.exception import AppRuntimeException
-from pokecontrollerext.core.settings import AppSettings
+from pokecontrollerext.app.exception import AppRuntimeException
+from pokecontrollerext.app.settings import AppSettings
 
 _app_settings: AppSettings | None = None
 

@@ -4,8 +4,8 @@ import tkinter.messagebox as mb
 import webbrowser
 from typing import Any
 
-from pokecontrollerext.core.settings import DEFAULT
-from pokecontrollerext.core.translation import t
+from pokecontrollerext.app.settings import DEFAULT
+from pokecontrollerext.app.translation import t
 from pokecontrollerext.singletons.app.settings import get_app_settings
 from pokecontrollerext.singletons.runtime.runtime_info import get_app_runtime_info
 from pokecontrollerext.singletons.widget.catalog import (

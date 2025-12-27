@@ -1,7 +1,7 @@
 import tkinter as tk
 
-from pokecontrollerext.core.exception import AppRuntimeException
-from pokecontrollerext.core.style import StyleManager
+from pokecontrollerext.app.exception import AppRuntimeException
+from pokecontrollerext.app.style import StyleManager
 
 _style_manager: StyleManager | None = None
 

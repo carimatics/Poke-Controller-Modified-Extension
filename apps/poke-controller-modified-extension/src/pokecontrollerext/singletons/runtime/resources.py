@@ -1,8 +1,8 @@
 from pokecontroller.core.camera import Camera
 from pokecontroller.core.serial import Serial
 
-from pokecontrollerext.core.exception import AppRuntimeException
-from pokecontrollerext.core.resources import AppResources
+from pokecontrollerext.app.exception import AppRuntimeException
+from pokecontrollerext.app.resources import AppResources
 
 _app_resources: AppResources | None = None
 

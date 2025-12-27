@@ -4,7 +4,7 @@ from typing import Any
 
 from pokecontroller.utils.config import Config
 
-from pokecontrollerext.core.settings import (
+from pokecontrollerext.app.settings import (
     AppSettings,
     settings_to_dict,
 )
