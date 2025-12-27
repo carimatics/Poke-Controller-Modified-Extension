@@ -11,7 +11,7 @@ from pokecontrollerext.api.v0_1_8.command.commands.python.image_processing impor
     ImageProcPythonCommand,
 )
 from pokecontrollerext.api.v0_1_8.command.sender import Sender
-from pokecontrollerext.core.command.info import CommandInfo
+from pokecontrollerext.command.info import CommandInfo
 from pokecontrollerext.papico.context import (
     PapicoExecContext,
     PapicoFailure,
