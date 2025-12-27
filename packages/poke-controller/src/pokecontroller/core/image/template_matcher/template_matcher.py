@@ -170,7 +170,7 @@ class TemplateMatcher(ABC):
         if (tmpl := self._template) is None:
             raise PokeControllerException("Template is not set")
 
-        h, w = tmpl.shape
+        h, w, *_ = tmpl.shape
         self._last_result = TemplateMatchResult(
             contains=value_max > self._threshold,
             location_max=(location_max[0], location_max[1]),
