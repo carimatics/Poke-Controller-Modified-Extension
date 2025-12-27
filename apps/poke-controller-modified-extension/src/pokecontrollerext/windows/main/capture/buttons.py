@@ -121,9 +121,9 @@ class Buttons(Frame):
             )
 
     def _on_start_pressed(self) -> None:
-        running_command_info = get_app_command_state().running_command_info
-        if running_command_info is not None:
-            self._papico.start_command(running_command_info)
+        selected_command_info = get_app_command_state().selected_command_info
+        if selected_command_info is not None:
+            self._papico.start_command(selected_command_info)
 
     def _on_stop_pressed(self) -> None:
         self._papico.stop_command()
