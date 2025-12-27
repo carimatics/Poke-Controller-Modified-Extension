@@ -62,9 +62,9 @@ class SettingsWindow(Window):
         buttons = SettingsButtonsPane(
             lower_frame,
             self._has_changes,
-            self._on_ok_pushed,
-            self._on_apply_pushed,
-            self._on_cancel_pushed,
+            self._on_ok_pressed,
+            self._on_apply_pressed,
+            self._on_cancel_pressed,
         )
 
         # Layout
@@ -114,16 +114,16 @@ class SettingsWindow(Window):
             self.update_idletasks()
         self._settings.apply_dict(self._backup)
 
-    def _on_ok_pushed(self) -> None:
+    def _on_ok_pressed(self) -> None:
         self._save_settings()
         self.destroy()
 
-    def _on_apply_pushed(self) -> None:
+    def _on_apply_pressed(self) -> None:
         self._save_settings()
         self._backup_settings()
         self._check_has_changes()
 
-    def _on_cancel_pushed(self) -> None:
+    def _on_cancel_pressed(self) -> None:
         self._revert_settings()
         self.destroy()
 

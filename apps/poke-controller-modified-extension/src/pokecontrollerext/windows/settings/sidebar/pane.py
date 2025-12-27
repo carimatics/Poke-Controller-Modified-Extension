@@ -48,7 +48,7 @@ class SettingsSidebarPane(Frame):
             anchor=tk.W,
             padx=4,
             pady=4,
-            command=lambda: self._on_section_pushed(section_id, section_name),
+            command=lambda: self._on_section_pressed(section_id, section_name),
         )
         btn.pack(fill=tk.X, padx=5, pady=1)
         self._section_buttons[section_id] = btn
@@ -63,5 +63,5 @@ class SettingsSidebarPane(Frame):
 
         self._on_section_selected(section_id, section_name)
 
-    def _on_section_pushed(self, section_id: str, section_name: str) -> None:
+    def _on_section_pressed(self, section_id: str, section_name: str) -> None:
         self.select_section(section_id, section_name)

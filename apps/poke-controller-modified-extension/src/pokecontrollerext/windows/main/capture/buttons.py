@@ -64,7 +64,7 @@ class Buttons(Frame):
             for button, command, kwargs in [
                 (
                     START,
-                    self._on_start_pushed,
+                    self._on_start_pressed,
                     {
                         "text": t("main.capture.start"),
                         "tooltip": t("main.capture.start.tooltip"),
@@ -72,7 +72,7 @@ class Buttons(Frame):
                 ),
                 (
                     CONTROLLER,
-                    self._on_controller_pushed,
+                    self._on_controller_pressed,
                     {
                         "text": t("main.capture.controller"),
                         "tooltip": t("main.capture.controller.tooltip"),
@@ -80,7 +80,7 @@ class Buttons(Frame):
                 ),
                 (
                     CLEAR_OUTPUTS,
-                    self._on_clear_outputs_pushed,
+                    self._on_clear_outputs_pressed,
                     {
                         "text": t("main.capture.clear_outputs"),
                         "tooltip": t("main.capture.clear_outputs.tooltip"),
@@ -88,7 +88,7 @@ class Buttons(Frame):
                 ),
                 (
                     CAPTURE,
-                    self._on_capture_pushed,
+                    self._on_capture_pressed,
                     {
                         "text": t("main.capture.capture"),
                         "tooltip": t("main.capture.capture.tooltip"),
@@ -96,7 +96,7 @@ class Buttons(Frame):
                 ),
                 (
                     OPEN_CAPTURE_DIR,
-                    self._on_open_dir_pushed,
+                    self._on_open_dir_pressed,
                     {
                         "image": self._open_dir_button_image,
                         "tooltip": t("main.capture.open_capture_dir.tooltip"),
@@ -105,7 +105,7 @@ class Buttons(Frame):
                 ),
                 (
                     NOTIFY_DISCORD,
-                    self._on_notify_discord_pushed,
+                    self._on_notify_discord_pressed,
                     {
                         "text": t("main.capture.discord"),
                         "tooltip": t("main.capture.discord.tooltip"),
@@ -120,27 +120,27 @@ class Buttons(Frame):
                 expand=True, anchor=tk.CENTER, side=tk.LEFT, padx=4
             )
 
-    def _on_start_pushed(self) -> None:
+    def _on_start_pressed(self) -> None:
         running_command_info = get_app_command_state().running_command_info
         if running_command_info is not None:
             self._papico.start_command(running_command_info)
 
-    def _on_stop_pushed(self) -> None:
+    def _on_stop_pressed(self) -> None:
         self._papico.stop_command()
 
-    def _on_controller_pushed(self) -> None:
+    def _on_controller_pressed(self) -> None:
         self._widget_catalog.window.open_controller(self, ControllerWindow)
 
-    def _on_clear_outputs_pushed(self) -> None:
+    def _on_clear_outputs_pressed(self) -> None:
         self._widget_catalog.outputs.clear_all()
 
-    def _on_capture_pushed(self) -> None:
+    def _on_capture_pressed(self) -> None:
         self._app_model.save_screencapture()
 
-    def _on_open_dir_pushed(self) -> None:
+    def _on_open_dir_pressed(self) -> None:
         self._app_model.open_screencapture_directory_window()
 
-    def _on_notify_discord_pushed(self) -> None:
+    def _on_notify_discord_pressed(self) -> None:
         self._app_model.notify_discord(image=self._app_resources.camera.frame)
 
     def _on_running_changed(self, *_: str) -> None:
@@ -148,7 +148,7 @@ class Buttons(Frame):
             self._buttons[START].configure(
                 text=t("main.capture.stop"),
                 tooltip=t("main.capture.stop.tooltip"),
-                command=self._on_stop_pushed,
+                command=self._on_stop_pressed,
             )
             self.update_idletasks()
 
@@ -157,7 +157,7 @@ class Buttons(Frame):
             self._buttons[START].configure(
                 text=t("main.capture.start"),
                 tooltip=t("main.capture.start.tooltip"),
-                command=self._on_start_pushed,
+                command=self._on_start_pressed,
             )
             self.update_idletasks()
 

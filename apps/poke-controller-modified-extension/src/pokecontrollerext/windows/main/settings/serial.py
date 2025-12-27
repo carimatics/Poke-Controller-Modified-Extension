@@ -79,7 +79,7 @@ class SerialSettings(Frame):
             labelframe,
             text=t("main.settings.serial.port.reload"),
             tooltip=t("main.settings.serial.port.reload.tooltip"),
-            command=self._on_reconnect_pushed,
+            command=self._on_reconnect_pressed,
         )
 
         # Disconnect Button
@@ -87,7 +87,7 @@ class SerialSettings(Frame):
             labelframe,
             text=t("main.settings.serial.port.disconnect"),
             tooltip=t("main.settings.serial.port.disconnect.tooltip"),
-            command=self._on_disconnect_pushed,
+            command=self._on_disconnect_pressed,
         )
 
         # Layout
@@ -146,8 +146,8 @@ class SerialSettings(Frame):
     def _load_serial_data_format_list(self) -> list[str]:
         return self._app_model.load_serial_data_format_list()
 
-    def _on_reconnect_pushed(self) -> None:
+    def _on_reconnect_pressed(self) -> None:
         self._app_model.connect_serial_port()
 
-    def _on_disconnect_pushed(self) -> None:
+    def _on_disconnect_pressed(self) -> None:
         self._app_model.disconnect_serial_port()

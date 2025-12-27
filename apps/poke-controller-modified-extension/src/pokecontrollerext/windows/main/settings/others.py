@@ -153,7 +153,7 @@ class OthersSettings(Frame):
                 labelframe,
                 text=t(f"{tid_prefix}.{i}"),
                 tooltip=t(f"{tid_prefix}.{i}"),
-                command=lambda i=i: self._on_clear_pushed(textarea_id=i),
+                command=lambda i=i: self._on_clear_pressed(textarea_id=i),
             )
             for i in [1, 2]
         ]
@@ -251,5 +251,5 @@ class OthersSettings(Frame):
 
         return labelframe
 
-    def _on_clear_pushed(self, textarea_id: int) -> None:
+    def _on_clear_pressed(self, textarea_id: int) -> None:
         self._widget_catalog.outputs.clear(textarea_id=textarea_id)

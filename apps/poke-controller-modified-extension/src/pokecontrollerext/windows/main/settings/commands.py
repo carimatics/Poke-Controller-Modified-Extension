@@ -1,3 +1,4 @@
+import logging
 import subprocess
 import tkinter as tk
 import tkinter.ttk as ttk
@@ -19,6 +20,8 @@ from pokecontrollerext.widgets.frame import Frame
 from pokecontrollerext.widgets.label import Label
 from pokecontrollerext.widgets.separator import Separator
 from pokecontrollerext.widgets.spinbox import Spinbox
+
+logger = logging.getLogger(__name__)
 
 PYTHON = "python"
 MCU = "mcu"
@@ -50,6 +53,7 @@ class CommandsSettings(Frame):
 
     def __init__(self, master: tk.Misc, *args: Any, **kwargs: Any) -> None:
         super().__init__(master, *args, **kwargs)
+        self._command_loading = True
 
         self._papico = get_papico()
         self._app_runtime_info = get_app_runtime_info()
@@ -76,6 +80,8 @@ class CommandsSettings(Frame):
 
         self.build_ui()
         self._register_traces()
+        self._register_binds()
+        self._command_loading = False
 
     def build_ui(self) -> None:
         upper_frame = Frame(self)
@@ -90,7 +96,7 @@ class CommandsSettings(Frame):
             tooltip=t("main.settings.commands.open_dir.tooltip"),
             width=5,
             image=self._open_dir_button_image,
-            command=self._on_open_dir_pushed,
+            command=self._on_open_dir_pressed,
         )
 
         shortcut_label = Label(
@@ -111,25 +117,25 @@ class CommandsSettings(Frame):
             lower_frame,
             text=t("main.settings.commands.set"),
             tooltip=t("main.settings.commands.set.tooltip"),
-            command=self._on_set_pushed,
+            command=self._on_set_pressed,
         )
         command_reload_button = Button(
             lower_frame,
             text=t("main.settings.commands.reload"),
             tooltip=t("main.settings.commands.reload.tooltip"),
-            command=self._on_reload_pushed,
+            command=self._on_reload_pressed,
         )
         self._start_button = Button(
             lower_frame,
             text=t("main.settings.commands.start"),
             tooltip=t("main.settings.commands.start.tooltip"),
-            command=self._on_start_pushed,
+            command=self._on_start_pressed,
         )
         self._pause_button = Button(
             lower_frame,
             text=t("main.settings.commands.pause"),
             tooltip=t("main.settings.commands.pause.tooltip"),
-            command=self._on_pause_pushed,
+            command=self._on_pause_pressed,
             state=tk.DISABLED,
         )
 
@@ -260,7 +266,7 @@ class CommandsSettings(Frame):
         frame = Frame(notebook)
 
         shortcut_commands = [
-            lambda num=i: self._on_shortcut_pushed(num) for i in range(1, 11)
+            lambda num=i: self._on_shortcut_pressed(num) for i in range(1, 11)
         ]
 
         upper_frame = Frame(frame)
@@ -363,6 +369,7 @@ class CommandsSettings(Frame):
                     combobox.current(i)
                     break
             if not hit:
+                logger.warning(f"Could not find item {name} in combobox {combobox}")
                 combobox.current(0)
 
         update_combobox(
@@ -382,7 +389,7 @@ class CommandsSettings(Frame):
             self._mcu_command_list,
         )
 
-    def _on_open_dir_pushed(self) -> None:
+    def _on_open_dir_pressed(self) -> None:
         base_dir = self._app_runtime_info.base_dir / "Commands"
         if self._notebook.index(self._notebook.select()) == 1:
             path = base_dir / "McuCommands"
@@ -397,7 +404,7 @@ class CommandsSettings(Frame):
         print(program)
         subprocess.run(program)
 
-    def _on_set_pushed(self) -> None:
+    def _on_set_pressed(self) -> None:
         shortcut_number = self._shortcut_number.get()
         if self._notebook.index(self._notebook.select()) == 0:
             klass = "Python"
@@ -444,16 +451,16 @@ class CommandsSettings(Frame):
         self._papico.stop_command()
 
     def _configure_start_button(self) -> None:
-        self._start_button.configure(text="Start", command=self._on_start_pushed)
+        self._start_button.configure(text="Start", command=self._on_start_pressed)
 
     def _configure_stop_button(self) -> None:
-        self._start_button.configure(text="Stop", command=self._on_stop_pushed)
+        self._start_button.configure(text="Stop", command=self._on_stop_pressed)
 
     def _configure_pause_button(self) -> None:
-        self._pause_button.configure(text="Pause", command=self._on_pause_pushed)
+        self._pause_button.configure(text="Pause", command=self._on_pause_pressed)
 
     def _configure_resume_button(self) -> None:
-        self._pause_button.configure(text="Resume", command=self._on_resume_pushed)
+        self._pause_button.configure(text="Resume", command=self._on_resume_pressed)
 
     def _enable_shortcut_buttons(self) -> None:
         for i in range(10):
@@ -495,23 +502,34 @@ class CommandsSettings(Frame):
         else:
             self._disable_pause_button()
 
-    def _on_reload_pushed(self) -> None:
+    def _on_f5_pressed(self, _: tk.Event) -> None:
+        self._on_reload_pressed()
+
+    def _on_f6_pressed(self, _: tk.Event) -> None:
+        self._on_start_pressed()
+
+    def _on_esc_pressed(self, _: tk.Event) -> None:
+        self._on_stop_pressed()
+
+    def _on_reload_pressed(self) -> None:
+        self._command_loading = True
         self._load_commands()
         self._update_commands()
+        self._command_loading = False
 
-    def _on_start_pushed(self) -> None:
+    def _on_start_pressed(self) -> None:
         self._start_command()
 
-    def _on_stop_pushed(self) -> None:
+    def _on_stop_pressed(self) -> None:
         self._stop_command()
 
-    def _on_pause_pushed(self) -> None:
+    def _on_pause_pressed(self) -> None:
         self._papico.pause_command()
 
-    def _on_resume_pushed(self) -> None:
+    def _on_resume_pressed(self) -> None:
         self._papico.resume_command()
 
-    def _on_shortcut_pushed(self, shortcut_number: int) -> None:
+    def _on_shortcut_pressed(self, shortcut_number: int) -> None:
         self._start_shortcut_command(shortcut_number)
 
     def _on_filter_changed(self, *_: str) -> None:
@@ -519,6 +537,9 @@ class CommandsSettings(Frame):
         self._update_commands()
 
     def _on_python_command_changed(self, *_: str) -> None:
+        if self._command_loading:
+            return
+
         for command in [
             command for command in self._commands if command.kind == PYTHON
         ]:
@@ -527,6 +548,9 @@ class CommandsSettings(Frame):
                 return
 
     def _on_mcu_command_changed(self, *_: str) -> None:
+        if self._command_loading:
+            return
+
         for command in [command for command in self._commands if command.kind == MCU]:
             if command.display_name == self._mcu_command.get():
                 self._app_command_state.select(command)
@@ -568,3 +592,9 @@ class CommandsSettings(Frame):
             self._app_command_state.is_paused,
             self._on_paused_changed,
         )
+
+    def _register_binds(self) -> None:
+        root = self.winfo_toplevel()
+        root.bind("<Key-F5>", self._on_f5_pressed)
+        root.bind("<Key-F6>", self._on_f6_pressed)
+        root.bind("<Key-Escape>", self._on_esc_pressed)

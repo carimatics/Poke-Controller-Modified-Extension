@@ -53,7 +53,7 @@ class ManualControlSettings(Frame):
             text=t("main.settings.manual_control.software.controller"),
             tooltip=t("main.settings.manual_control.software.controller.tooltip"),
             width=15,
-            command=self._on_controller_pushed,
+            command=self._on_controller_pressed,
         )
 
         # Use Keyboard
@@ -133,5 +133,5 @@ class ManualControlSettings(Frame):
 
         return labelframe
 
-    def _on_controller_pushed(self) -> None:
+    def _on_controller_pressed(self) -> None:
         self._widget_catalog.window.open_controller(self, ControllerWindow)

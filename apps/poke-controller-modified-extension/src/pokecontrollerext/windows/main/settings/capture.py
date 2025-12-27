@@ -130,7 +130,7 @@ class CameraSettings(Frame):
             lower_frame,
             text=t("main.settings.capture.camera.reload"),
             tooltip=t("main.settings.capture.camera.reload.tooltip"),
-            command=self._on_reload_pushed,
+            command=self._on_reload_pressed,
         )
 
         # Layout
@@ -213,7 +213,7 @@ class CameraSettings(Frame):
                 camera_id = camera.index
         self._camera_id.set(camera_id)
 
-    def _on_reload_pushed(self) -> None:
+    def _on_reload_pressed(self) -> None:
         self._app_model.connect_camera()
 
     def _on_camera_name_changed(self, *_: str) -> None:

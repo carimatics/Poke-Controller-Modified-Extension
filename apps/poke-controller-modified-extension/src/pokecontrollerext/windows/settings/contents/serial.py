@@ -39,7 +39,7 @@ class SerialSettingsPane(Frame):
             .add_combobox(
                 variable=self._port, values=[s.path for s in self._serial_ports]
             )
-            .add_button(text="Reload", command=self._on_port_reload_pushed)
+            .add_button(text="Reload", command=self._on_port_reload_pressed)
             .end()
             .add_frame_row()
             .add_label(text="Port Name:", width=label_width)
@@ -68,6 +68,6 @@ class SerialSettingsPane(Frame):
 
         frame.pack(expand=False, fill=tk.BOTH, anchor=tk.CENTER)
 
-    def _on_port_reload_pushed(self) -> None:
+    def _on_port_reload_pressed(self) -> None:
         serial_ports = [s.path for s in self._app_model.load_serial_ports()]
         self._port_combobox.configure(values=serial_ports)

@@ -8,36 +8,36 @@ from pokecontrollerext.widgets.frame import Frame
 class SettingsButtonsPane(Frame):
     _apply_button: Button
     _has_changes: tk.BooleanVar
-    _on_apply_pushed: Callable[[], None]
+    _on_apply_pressed: Callable[[], None]
 
     def __init__(
         self,
         master: tk.Misc,
         has_changes: tk.BooleanVar,
-        on_ok_pushed: Callable[[], None],
-        on_apply_pushed: Callable[[], None],
-        on_cancel_pushed: Callable[[], None],
+        on_ok_pressed: Callable[[], None],
+        on_apply_pressed: Callable[[], None],
+        on_cancel_pressed: Callable[[], None],
         *args: Any,
         **kwargs: Any,
     ) -> None:
         super().__init__(master, *args, **kwargs)
         self._has_changes = has_changes
-        self._on_ok_pushed = on_ok_pushed
-        self._on_apply_pushed = on_apply_pushed
-        self._on_cancel_pushed = on_cancel_pushed
+        self._on_ok_pressed = on_ok_pressed
+        self._on_apply_pressed = on_apply_pressed
+        self._on_cancel_pressed = on_cancel_pressed
         self._register_hooks()
         self.build_ui()
 
     def build_ui(self) -> None:
         frame = Frame(self)
-        ok_button = Button(frame, text="OK", command=self._on_ok_pushed)
+        ok_button = Button(frame, text="OK", command=self._on_ok_pressed)
         self._apply_button = Button(
             frame,
             text="Apply",
             state=tk.NORMAL if self._has_changes.get() else tk.DISABLED,
-            command=self._on_apply_pushed,
+            command=self._on_apply_pressed,
         )
-        cancel_button = Button(frame, text="Cancel", command=self._on_cancel_pushed)
+        cancel_button = Button(frame, text="Cancel", command=self._on_cancel_pressed)
 
         # Layout
         ok_button.pack(side=tk.RIGHT, padx=(4, 0))

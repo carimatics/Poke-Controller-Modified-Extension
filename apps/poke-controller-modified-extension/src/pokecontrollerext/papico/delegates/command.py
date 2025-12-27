@@ -136,7 +136,6 @@ class PapicoCommandDelegate:
                 error=PapicoCommandStartHandlerException("Command is running."),
             )
 
-        command_state.start(command_info)
         params: dict[str, Any] = {
             "info": command_info,
         }
@@ -154,6 +153,7 @@ class PapicoCommandDelegate:
         result = handler.handle(ctx)
         if result.success:
             self._current_command = result.data[0]
+            command_state.running_command_info = command_info
         return result
 
     def stop(self) -> PapicoResult[None]:

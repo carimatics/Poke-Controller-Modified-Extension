@@ -10,7 +10,7 @@ class AppCommandState:
         self._is_alive = tk.BooleanVar(value=False)
         self._is_cancelled = tk.BooleanVar(value=False)
         self._is_stopped = tk.BooleanVar(value=True)
-        self._running_command_info: CommandInfo | None = None
+        self.running_command_info: CommandInfo | None = None
         self._selected_command_info: CommandInfo | None = None
 
     @property
@@ -32,10 +32,6 @@ class AppCommandState:
     @property
     def is_stopped(self) -> tk.BooleanVar:
         return self._is_stopped
-
-    @property
-    def running_command_info(self) -> CommandInfo | None:
-        return self._running_command_info
 
     @property
     def selected_command_info(self) -> CommandInfo | None:
@@ -75,4 +71,4 @@ class AppCommandState:
         self._is_cancelled.set(False)
         self._is_stopped.set(True)
 
-        self._running_command_info = None
+        self.running_command_info = None

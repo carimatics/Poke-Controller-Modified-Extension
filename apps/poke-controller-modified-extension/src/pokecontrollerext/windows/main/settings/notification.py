@@ -55,7 +55,7 @@ class NotificationSettings(Frame):
             platform="desktop",
             enabled_started=self._enabled_windows_started,
             enabled_ended=self._enabled_windows_ended,
-            on_test_pushed=self._on_desktop_test_pushed,
+            on_test_pressed=self._on_desktop_test_pressed,
         )
 
     def _build_discord_notification(self) -> Labelframe:
@@ -63,7 +63,7 @@ class NotificationSettings(Frame):
             platform="discord",
             enabled_started=self._enabled_discord_started,
             enabled_ended=self._enabled_discord_ended,
-            on_test_pushed=self._on_discord_test_pushed,
+            on_test_pressed=self._on_discord_test_pressed,
         )
 
     def _build_notification(
@@ -71,7 +71,7 @@ class NotificationSettings(Frame):
         platform: str,
         enabled_started: tk.BooleanVar,
         enabled_ended: tk.BooleanVar,
-        on_test_pushed: Callable[[], None],
+        on_test_pressed: Callable[[], None],
     ) -> Labelframe:
         labelframe = Labelframe(
             self,
@@ -99,7 +99,7 @@ class NotificationSettings(Frame):
             labelframe,
             text=t(f"main.settings.notification.{platform}.test"),
             tooltip=t(f"main.settings.notification.{platform}.test.tooltip"),
-            command=on_test_pushed,
+            command=on_test_pressed,
         )
 
         # Layout
@@ -109,8 +109,8 @@ class NotificationSettings(Frame):
 
         return labelframe
 
-    def _on_desktop_test_pushed(self) -> None:
+    def _on_desktop_test_pressed(self) -> None:
         self._app_model.notify_desktop(message="Notification Test")
 
-    def _on_discord_test_pushed(self) -> None:
+    def _on_discord_test_pressed(self) -> None:
         self._app_model.notify_discord(message="Notification Test")

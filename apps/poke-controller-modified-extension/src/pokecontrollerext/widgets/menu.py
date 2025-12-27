@@ -48,12 +48,12 @@ class Menu(tk.Menu):
         menu_cascade.add_separator()
         menu_cascade.add_command(
             label="設定",
-            command=self._on_menu_settings_pushed,
+            command=self._on_menu_settings_pressed,
         )
         menu_cascade.add_separator()
         menu_cascade.add_command(
             label="画面サイズのリセット",
-            command=self._on_menu_reset_window_size_pushed,
+            command=self._on_menu_reset_window_size_pressed,
         )
         self.add_cascade(menu=menu_cascade, label="メニュー")
 
@@ -61,17 +61,17 @@ class Menu(tk.Menu):
         command_cascade = tk.Menu(self, tearoff=False)
         command_cascade.add_command(
             label="Discord",
-            command=self._on_command_discord_settings_pushed,
+            command=self._on_command_discord_settings_pressed,
         )
         command_cascade.add_separator()
         command_cascade.add_command(
             label="新規プロファイル作成",
-            command=self._on_command_new_profile_pushed,
+            command=self._on_command_new_profile_pressed,
         )
         command_cascade.add_separator()
         command_cascade.add_command(
             label="キーコンフィグ",
-            command=self._on_command_key_config_pushed,
+            command=self._on_command_key_config_pressed,
         )
         self.add_cascade(menu=command_cascade, label="コマンド")
 
@@ -79,72 +79,72 @@ class Menu(tk.Menu):
         help_cascade = tk.Menu(self, tearoff=False)
         help_cascade.add_command(
             label="GitHub",
-            command=self._on_help_github_pushed,
+            command=self._on_help_github_pressed,
         )
         help_cascade.add_command(
             label="Poke-Controller Guide",
-            command=self._on_help_guide_pushed,
+            command=self._on_help_guide_pressed,
         )
         help_cascade.add_separator()
         help_cascade.add_command(
             label="質問テンプレート",
-            command=self._on_help_question_template_pushed,
+            command=self._on_help_question_template_pressed,
         )
         help_cascade.add_separator()
         help_cascade.add_command(
             label="バージョン確認",
-            command=self._on_help_version_pushed,
+            command=self._on_help_version_pressed,
         )
         help_cascade.add_command(
             label="更新履歴表示",
-            command=self._on_help_changelog_pushed,
+            command=self._on_help_changelog_pressed,
         )
         help_cascade.add_command(
             label="アップデート確認",
-            command=self._on_help_check_for_update_pushed,
+            command=self._on_help_check_for_update_pressed,
         )
         help_cascade.add_command(
             label="ライセンス",
-            command=self._on_help_license_pushed,
+            command=self._on_help_license_pressed,
         )
         self.add_cascade(
             menu=help_cascade,
             label="ヘルプ",
         )
 
-    def _on_menu_settings_pushed(self) -> None:
+    def _on_menu_settings_pressed(self) -> None:
         self._widget_catalog.window.open_settings(self, SettingsWindow)
 
-    def _on_menu_reset_window_size_pushed(self) -> None:
+    def _on_menu_reset_window_size_pressed(self) -> None:
         self._app_settings.capture.size.set(DEFAULT["capture"]["size"])
 
-    def _on_command_discord_settings_pushed(self) -> None:
+    def _on_command_discord_settings_pressed(self) -> None:
         self._widget_catalog.window.open_discord_settings(self, DiscordSettingsWindow)
 
-    def _on_command_new_profile_pushed(self) -> None:
+    def _on_command_new_profile_pressed(self) -> None:
         self._widget_catalog.window.open_new_profile(self, NewProfileWindow)
 
-    def _on_command_key_config_pushed(self) -> None:
+    def _on_command_key_config_pressed(self) -> None:
         pass
 
     # noinspection PyMethodMayBeStatic
-    def _on_help_github_pushed(self) -> None:
+    def _on_help_github_pressed(self) -> None:
         webbrowser.open(url=GITHUB_URL, new=WEBBROWSER_OPEN_IN_NEW_TAB)
 
     # noinspection PyMethodMayBeStatic
-    def _on_help_guide_pushed(self) -> None:
+    def _on_help_guide_pressed(self) -> None:
         webbrowser.open(url=POKECONTROLLER_GUIDE_URL, new=WEBBROWSER_OPEN_IN_NEW_TAB)
 
-    def _on_help_question_template_pushed(self) -> None:
+    def _on_help_question_template_pressed(self) -> None:
         self._widget_catalog.window.open_question(self, QuestionWindow)
 
-    def _on_help_version_pushed(self) -> None:
+    def _on_help_version_pressed(self) -> None:
         self._widget_catalog.window.open_version(self, VersionWindow)
 
-    def _on_help_changelog_pushed(self) -> None:
+    def _on_help_changelog_pressed(self) -> None:
         self._widget_catalog.window.open_changelog(self, ChangelogWindow)
 
-    def _on_help_check_for_update_pushed(self) -> None:
+    def _on_help_check_for_update_pressed(self) -> None:
         repository_root = self._runtime_info.base_dir.parent
         updater = PokeControllerUpdater(root=str(repository_root))
 
@@ -181,5 +181,5 @@ class Menu(tk.Menu):
         finally:
             updater.checkout_original_branch()
 
-    def _on_help_license_pushed(self) -> None:
+    def _on_help_license_pressed(self) -> None:
         self._widget_catalog.window.open_license(self, LicenseWindow)

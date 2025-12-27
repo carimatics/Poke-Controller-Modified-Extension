@@ -263,7 +263,7 @@ class ControllerPane(Frame):
                 if fg := BUTTON_COLORS.get("fg"):
                     b.config(fg=fg)
 
-                def on_pushed(_: tk.Event, btn: str | None = button) -> None:
+                def on_pressed(_: tk.Event, btn: str | None = button) -> None:
                     if btn is not None:
                         self._on_button_pressed(btn)
 
@@ -271,7 +271,7 @@ class ControllerPane(Frame):
                     if btn is not None:
                         self._on_button_released(btn)
 
-                b.bind("<ButtonPress>", func=on_pushed, add="")
+                b.bind("<ButtonPress>", func=on_pressed, add="")
                 b.bind("<ButtonRelease>", func=on_released, add="")
                 b.grid(row=row, column=column, padx=2, pady=2, sticky=tk.NSEW)
 
