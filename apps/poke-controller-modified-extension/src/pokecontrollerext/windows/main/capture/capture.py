@@ -324,7 +324,6 @@ class Capture(Frame):
 
         self._width, self._height = new_size
         self._update_ratio()
-        self._canvas.ratio = self._ratio
         # resize disabled image
         if (disabled_raw_image := self._disabled_raw_image) is not None:
             self._disabled_image = ImageTk.PhotoImage(

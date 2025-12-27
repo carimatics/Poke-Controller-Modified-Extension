@@ -12,15 +12,6 @@ type Font = (
 
 
 class Canvas(tk.Canvas):
-    def __init__(
-        self,
-        master: tk.Misc,
-        *args: Any,
-        **kwargs: Any,
-    ) -> None:
-        self.ratio = kwargs.pop("ratio", (1.0, 1.0))
-        super().__init__(master, *args, **kwargs)
-
     def draw_rect(
         self,
         start: tuple[int, int],
@@ -32,7 +23,7 @@ class Canvas(tk.Canvas):
         ratio: tuple[float, float] | None = None,
         delete_after_ms: int | None = 100,
     ) -> None:
-        rat = ratio if ratio is not None else self.ratio
+        rat = ratio if ratio is not None else (1.0, 1.0)
         self.create_rectangle(
             start[0] * rat[0],
             start[1] * rat[1],
@@ -56,7 +47,7 @@ class Canvas(tk.Canvas):
         ratio: tuple[float, float] | None = None,
         delete_after_ms: int | None = 100,
     ) -> None:
-        rat = ratio if ratio is not None else self.ratio
+        rat = ratio if ratio is not None else (1.0, 1.0)
         self.create_oval(
             (center[0] - radius) * rat[0],
             (center[1] - radius) * rat[1],
@@ -80,7 +71,7 @@ class Canvas(tk.Canvas):
         ratio: tuple[float, float] | None = None,
         delete_after_ms: int | None = 100,
     ) -> None:
-        rat = ratio if ratio is not None else self.ratio
+        rat = ratio if ratio is not None else (1.0, 1.0)
         self.create_text(
             start[0] * rat[0],
             start[1] * rat[1],
