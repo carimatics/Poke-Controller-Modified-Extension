@@ -70,7 +70,8 @@ class CameraSettings(Frame):
             textvariable=self._camera_name,
             values=self._name_list,
         )
-        self._camera_name.set(self._name_list[0])
+        if len(self._name_list) > 0:
+            self._camera_name.set(self._name_list[0])
 
         # Lower Frame
         lower_frame = Frame(labelframe)

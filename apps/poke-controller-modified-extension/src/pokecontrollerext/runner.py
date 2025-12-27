@@ -46,6 +46,11 @@ from pokecontrollerext.windows import MainWindow
 
 def run_app(*, base_dir: Path, profile: str) -> None:
     sys.path.append(str(base_dir))
+
+    # logging
+    log_dir = base_dir / "log"
+    if not log_dir.exists():
+        log_dir.mkdir(parents=True, exist_ok=True)
     setup_logging()
 
     with (

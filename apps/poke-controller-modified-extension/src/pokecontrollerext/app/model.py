@@ -76,11 +76,16 @@ class AppModel:
         app_version = self._app_info.version
         base_dir = self._runtime_info.base_dir
         profile = self._runtime_info.profile
-        self._discord_notifier = DiscordNotifier(
-            config=DiscordConfig(
-                path=base_dir / "profiles" / profile / "discord_token.ini"
+
+        try:
+            self._discord_notifier = DiscordNotifier(
+                config=DiscordConfig(
+                    path=base_dir / "profiles" / profile / "discord_token.ini"
+                )
             )
-        )
+        except Exception:
+            self._discord_notifier = None
+
         self._desktop_notifier = DesktopNotifier(
             title=f"{app_name} ver. {app_version}(profile: {profile})"
         )
@@ -155,7 +160,9 @@ class AppModel:
         message: str | None = None,
         image: RawImage | None = None,
     ) -> None:
-        self._discord_notifier.notify(message=message, image=image)
+        if (notifier := self._discord_notifier) is None:
+            return
+        notifier.notify(message=message, image=image)
 
     def open_dir(self, dir_path: Path) -> None:
         if not dir_path.exists() or not dir_path.is_dir():

@@ -71,12 +71,12 @@ class Capture(Frame):
 
         # for mouse control
         self._data_format = self._app_settings.serial.data_format
-        if self._data_format.get() == "Default":
-            self._controller = switch.SwitchController(self._serial)
-        elif self._data_format.get() == "Qingpi":
+        if self._data_format.get() == "Qingpi":
             self._controller = n3ds.N3dsController(self._serial, "qingpi")
         elif self._data_format.get() == "3DS Controller":
             self._controller = n3ds.N3dsController(self._serial, "3ds controller")
+        else:
+            self._controller = switch.SwitchController(self._serial)
         self._mouse_right_mode = "Default"
         self._enabled_lstick_mouse = self._app_settings.device.mouse.enabled_lclick
         self._enabled_rstick_mouse = self._app_settings.device.mouse.enabled_rclick
