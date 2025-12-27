@@ -28,9 +28,22 @@ SerialController/Commands/PythonCommands/*
 !SerialController/Commands/PythonCommands/ImageProcessingOnly/
 SerialController/Commands/PythonCommands/ImageProcessingOnly/*
 !SerialController/Commands/PythonCommands/ImageProcessingOnly/Samples/
-!apps/poke-controller-modified-extension/translations/*
 
-SerialControllerSandbox/
+# tmp
+SerialControllerSandbox/Captures/
+SerialControllerSandbox/Template/*
+!SerialControllerSandbox/Template/Samples/
+SerialControllerSandbox/profiles/
+SerialControllerSandbox/Controller_Log/
+SerialControllerSandbox/log/
+SerialControllerSandbox/settings.poke
+SerialControllerSandbox/Commands/PythonCommands/*
+!SerialControllerSandbox/Commands/PythonCommands/bridge_functions/
+!SerialControllerSandbox/Commands/PythonCommands/bridge_functions/*
+!SerialControllerSandbox/Commands/PythonCommands/Samples/
+!SerialControllerSandbox/Commands/PythonCommands/ImageProcessingOnly/
+SerialControllerSandbox/Commands/PythonCommands/ImageProcessingOnly/*
+!SerialControllerSandbox/Commands/PythonCommands/ImageProcessingOnly/Samples/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
