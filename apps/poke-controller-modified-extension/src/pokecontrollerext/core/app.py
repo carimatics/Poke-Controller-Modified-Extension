@@ -1,11 +1,13 @@
 import logging
 import tkinter as tk
+import tkinter.messagebox as mb
 from typing import Any
 
 from pokecontrollerext.core.exception import AppRuntimeException
 from pokecontrollerext.core.style import (
     StyleManager,
 )
+from pokecontrollerext.core.translation import t
 from pokecontrollerext.singletons.app.command import (
     setup_app_command_state,
 )
@@ -93,5 +95,12 @@ class App(tk.Tk):
         self._style_manager.change_theme(self._settings.general.theme.get())
 
     def _on_closing(self) -> None:
+        should_close = mb.askyesno(
+            title=self._app_info.name,
+            message=t("app.message.close_confirm"),
+        )
+        if not should_close:
+            return
+
         self._papico.save_settings()
         self.destroy()

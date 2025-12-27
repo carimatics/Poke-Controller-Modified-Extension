@@ -1,4 +1,9 @@
 {
+  "app": {
+    "message": {
+      "close_confirm": "Poke-Controllerを終了しますか？"
+    }
+  },
   "main": {
     "capture": {
       "start": {
