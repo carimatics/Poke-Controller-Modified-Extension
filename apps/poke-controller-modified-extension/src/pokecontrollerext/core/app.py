@@ -38,6 +38,7 @@ class App(tk.Tk):
         self._app_command_state = setup_app_command_state()
 
         self._papico = get_papico()
+        self._papico.initialize_external_tools()
         if (settings := self._papico.load_settings().data) is None:
             raise AppRuntimeException("App settings couldn't load.")
         self._settings = setup_app_settings(settings)

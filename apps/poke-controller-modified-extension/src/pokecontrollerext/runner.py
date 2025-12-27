@@ -22,6 +22,9 @@ from pokecontrollerext.papico.handlers.v0_1_8.command import (
     PapicoCommandStartHandler as PapicoCommandStartHandler_v0_1_8,
     PapicoCommandStopHandler as PapicoCommandStopHandler_v0_1_8,
 )
+from pokecontrollerext.papico.handlers.v0_1_8.external_tools import (
+    PapicoExternalToolsInitializeHandler as PapicoExternalToolsInitializeHandler_v0_1_8,
+)
 from pokecontrollerext.papico.handlers.v0_1_8.settings import (
     PapicoSettingsLoadHandler as PapicoSettingsLoadHandler_v0_1_8,
     PapicoSettingsSaveHandler as PapicoSettingsSaveHandler_v0_1_8,
@@ -92,6 +95,11 @@ def _register_handlers(papico: Papico) -> None:
                 "0.2.0": PapicoSettingsSaveHandler_v0_2_0,
                 "0.1.8": PapicoSettingsSaveHandler_v0_1_8,
             },
+        },
+        "external_tools": {
+            "initialize": {
+                "0.1.8": PapicoExternalToolsInitializeHandler_v0_1_8,
+            }
         },
         "command": {
             "initialize": {

@@ -1,6 +1,5 @@
 import datetime
 import logging
-import os
 import socket
 import time
 from functools import wraps
@@ -113,9 +112,7 @@ def exceptiondecorator[**P, R](
 
 # socket通信用class
 class SocketCommunications:
-    SOCKET_TOKEN_PATH = os.path.join(
-        os.path.dirname(__file__), "profiles", "default", "external_token.ini"
-    )
+    SOCKET_TOKEN_PATH: str = ""
 
     def __init__(self) -> None:
         """
@@ -315,9 +312,7 @@ receive_msg: str | None = None
 
 # MQTT通信用class
 class MQTTCommunications:
-    MQTT_TOKEN_PATH = os.path.join(
-        os.path.dirname(__file__), "profiles", "default", "external_token.ini"
-    )
+    MQTT_TOKEN_PATH = ""
 
     def __init__(
         self,

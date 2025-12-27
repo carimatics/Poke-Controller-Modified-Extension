@@ -8,6 +8,9 @@ from pokecontrollerext.papico.context import PapicoResult
 from pokecontrollerext.papico.delegates.command import (
     PapicoCommandDelegate,
 )
+from pokecontrollerext.papico.delegates.external_tools import (
+    PapicoExternalToolsDelegate,
+)
 from pokecontrollerext.papico.delegates.settings import (
     PapicoSettingsDelegate,
 )
@@ -39,6 +42,10 @@ class Papico:
         self._runtime_info = get_app_runtime_info()
         self._handler_generators: PapicoContainer[PapicoHandlerGenerator] = {}
 
+        self._external_tools_delegate = PapicoExternalToolsDelegate(
+            latest_api_version=LATEST_API_VERSION,
+            handler_generators=self._handler_generators,
+        )
         self._settings_delegate = PapicoSettingsDelegate(
             latest_api_version=LATEST_API_VERSION,
             handler_generators=self._handler_generators,
@@ -60,6 +67,12 @@ class Papico:
             ctx.domain,
             {},
         )[ctx.operation] = ctx.handler_generator
+
+    def initialize_external_tools(self) -> PapicoResult[None]:
+        result = self._external_tools_delegate.initialize()
+        if not result.success:
+            logger.warning(f"Failed to initialize external tools: {result.error}")
+        return result
 
     def load_settings(self) -> PapicoResult[AppSettings]:
         result = self._settings_delegate.load()

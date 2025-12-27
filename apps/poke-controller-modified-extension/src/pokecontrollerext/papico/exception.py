@@ -49,3 +49,7 @@ class PapicoCommandPauseHandlerException(PapicoExecException):
 
 class PapicoCommandResumeHandlerException(PapicoExecException):
     pass
+
+
+class PapicoExternalToolsInitializeHandlerException(PapicoExecException):
+    pass
