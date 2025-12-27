@@ -61,6 +61,10 @@ class SwitchProControllerRecorder:
 
 
 class AppModel:
+    """アプリケーションのモデルクラス。
+    色々な場所から呼び出される汎用的なアプリケーションのロジックや、複雑なロジックはここに集約したい。
+    """
+
     def __init__(self) -> None:
         self._runtime_info = get_app_runtime_info()
         self._app_resources = get_app_resources()

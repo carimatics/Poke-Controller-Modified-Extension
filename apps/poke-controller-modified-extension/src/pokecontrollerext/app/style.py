@@ -89,6 +89,8 @@ class StyleSettings:
 
 
 class StyleManager:
+    """Poke-Controllerのttkウィジェットのスタイルを管理するクラス"""
+
     _root: tk.Tk
     _style: ttk.Style
     _os_name: str

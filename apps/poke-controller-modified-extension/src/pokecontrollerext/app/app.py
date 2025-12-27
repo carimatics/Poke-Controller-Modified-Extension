@@ -4,9 +4,6 @@ import tkinter.messagebox as mb
 from typing import Any
 
 from pokecontrollerext.app.exception import AppRuntimeException
-from pokecontrollerext.app.style import (
-    StyleManager,
-)
 from pokecontrollerext.app.translation import t
 from pokecontrollerext.singletons.app.command import (
     setup_app_command_state,
@@ -80,10 +77,6 @@ class App(tk.Tk):
         self.protocol("WM_DELETE_WINDOW", self._on_closing)
 
         self._register_traces()
-
-    @property
-    def style_manager(self) -> StyleManager:
-        return self._style_manager
 
     def run(self) -> None:
         self.mainloop()

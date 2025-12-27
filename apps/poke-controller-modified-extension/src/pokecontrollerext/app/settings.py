@@ -563,6 +563,8 @@ class PokemonHomeSettings:
 
 @dataclass(kw_only=True, frozen=True)
 class AppSettings:
+    """アプリケーションの設定値を保持するクラス"""
+
     general: GeneralSettings
     capture: CaptureSettings
     serial: SerialSettings
