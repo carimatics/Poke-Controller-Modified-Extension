@@ -1,0 +1,46 @@
+Poke-Controller Modified/Extension 橋渡し関数
+Copyright (C) 2025年 フウ(twitterID:@dragonite303)
+
+1.本プログラムは、個人のみ使用可能であり、プログラム利用者は以下のことを実行可能です。
+　・プログラムの実行、複製、改変、改変しない状態での二次配布
+
+2.本プログラム利用者は、以下のことを遵守しなければなりません。
+　・商用利用(※)をしない。
+　　※商用利用とは、本プログラムを用いて金銭的な対価を得ることを指します。
+　　(例：本プログラムの販売、本プログラムを用いて得られた成果物の販売、など。なお、配信サイトにおける配信での利用は対象外です。）
+
+3.本プログラム利用者は、以下の行為を行う場合、プログラムのどこか(例:readme)に引用の旨を記載する必要があります。
+　・本プログラムを同梱したプログラムの配布
+
+4.本プログラムの少なくとも一部を抽出または改変して公開したい場合、プログラム作成者に連絡の上、プログラム作成者より配布するものとします。
+
+5.本プログラムではプログラミング言語(python)およびpythonのライブラリを使用します。各プログラムに関する権利はそれぞれの権利者が有します。
+　権利者から本プログラムの利用中止を求められた場合は直ちに本プログラムの利用を中止するものとします。
+
+Python                               https://docs.python.org/ja/3.11/license.html
+                                     https://docs.python.org/ja/3.10/license.html
+                                     https://docs.python.org/ja/3.9/license.html
+                                     https://docs.python.org/ja/3.8/license.html
+                                     https://docs.python.org/ja/3.7/license.html
+                                     https://docs.python.org/ja/3.6/license.html
+Poke-Controller                      https://github.com/KawaSwitch/Poke-Controller
+lufa                                 https://github.com/abcminiuser/lufa
+Poke-Controller-Modified             https://github.com/Moi-poke/Poke-Controller-Modified
+Poke-Controller-Modified Extension   https://github.com/futo030/Poke-Controller-Modified-Extension
+Pillow                               https://github.com/python-pillow/Pillow
+numpy                                https://numpy.org/doc/stable/license.html
+opencv-python                        https://github.com/opencv/opencv/tree/master
+pandas                               https://pandas.pydata.org/pandas-docs/stable/getting_started/overview.html
+plyer                                https://github.com/kivy/plyer
+pygubu                               https://github.com/alejandroautalan/pygubu
+pynput                               https://github.com/pravinnath/pynput
+pyocr                                https://gitlab.gnome.org/World/OpenPaperwork/pyocr/-/tree/master
+pyperclip                            https://github.com/asweigart/pyperclip
+pyserial                             https://github.com/pyserial/pyserial
+pythonnet                            https://github.com/pythonnet/pythonnet
+requests                             https://github.com/psf/requests
+scipy                                https://github.com/scipy/scipy
+pygame                               https://github.com/pygame/pygame
+paho-mqtt                            https://github.com/eclipse/paho.mqtt.python
+
+6.本プログラム利用者は、自らの責任において本プログラムを利用することに同意し、本プログラムの利用によって生じる一切の損害、損失について、著作権者は損害賠償義務及びその他一切の責任を負いません。

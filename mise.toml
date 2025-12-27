@@ -1,0 +1,5 @@
+[tools]
+uv = "0.8.24"
+
+[settings]
+python.uv_venv_auto = true
