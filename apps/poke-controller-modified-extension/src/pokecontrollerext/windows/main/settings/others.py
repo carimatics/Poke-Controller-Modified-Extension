@@ -104,8 +104,8 @@ class OthersSettings(Frame):
             tooltip=t(f"{tid_prefix}.tooltip"),
             length=200,
             orient=tk.HORIZONTAL,
-            from_=0,
-            to=100,
+            from_=1,
+            to=99,
             variable=self._output_size,
         )
 
