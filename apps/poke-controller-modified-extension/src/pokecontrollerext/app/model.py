@@ -78,7 +78,7 @@ class AppModel:
         profile = self._runtime_info.profile
 
         try:
-            self._discord_notifier = DiscordNotifier(
+            self._discord_notifier: DiscordNotifier | None = DiscordNotifier(
                 config=DiscordConfig(
                     path=base_dir / "profiles" / profile / "discord_token.ini"
                 )
