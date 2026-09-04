@@ -9,7 +9,7 @@ pythonnet
 
 #
 # from modified README:
-# 
+#
 pygubu
 requests
 pandas
@@ -18,7 +18,7 @@ scipy
 
 #
 # from README:
-# 
+#
 pygame
 paho-mqtt
 windows-capture-device-list
